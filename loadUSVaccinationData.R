@@ -96,9 +96,11 @@ loadUSVaccinationData <- function() {
   US_Vaccination_Pcts_A7 <<- movingAverageData(US_Vaccination_Pcts,
                                                updateToThisDate,
                                                getNAvgs, 7, nFirstCols=3,
-                                               tibbleName="US_Vaccination_Pcts")
+                                               tibbleName="US_Vaccination_Pcts",
+                                               traceThisRoutine = TRUE, prepend = "From loadUSVaccinationData")
   US_State_Vaccination_Pcts_A7 <<- movingAverageData(US_State_Vaccination_Pcts,
                                                      updateToThisDate,
                                                      getNAvgs, 7, nFirstCols=3,
-                                                     tibbleName="US_State_Vaccination_Pcts")
+                                                     tibbleName="US_State_Vaccination_Pcts",
+                                                     traceThisRoutine = TRUE, prepend = "From loadUSVaccinationData")
 }

@@ -23,27 +23,33 @@ loadUSDeathsData <- function() {
   US_Deaths_A7 <<- movingAverageData(US_Deaths,
                                      updateToThisDate,
                                      28, 7, nFirstCols=3,
-                                     tibbleName="US_Deaths")
+                                     tibbleName="US_Deaths",
+                                     traceThisRoutine = TRUE, prepend = "From loadUSDeathsData")
   US_Deaths_G7 <<- movingAverageGrowth(US_Deaths,
                                        updateToThisDate,
                                        28, 7, nFirstCols=3,
-                                       tibbleName="US_Deaths")
+                                       tibbleName="US_Deaths",
+                                       traceThisRoutine = TRUE, prepend = "From loadUSDeathsData")
 
   US_State_Deaths_A7 <<- movingAverageData(US_State_Deaths,
                                            updateToThisDate,
                                            28, 7, nFirstCols=3,
-                                           tibbleName="US_State_Deaths")
+                                           tibbleName="US_State_Deaths",
+                                           traceThisRoutine = TRUE, prepend = "From loadUSDeathsData")
   US_State_Deaths_G7 <<- movingAverageGrowth(US_State_Deaths,
                                              updateToThisDate,
                                              28, 7, nFirstCols=3,
-                                             tibbleName="US_State_Deaths")
+                                             tibbleName="US_State_Deaths",
+                                             traceThisRoutine = TRUE, prepend = "From loadUSDeathsData")
 
   US_County_Deaths_A7 <<- movingAverageData(US_County_Deaths,
                                             updateToThisDate,
                                             28, 7, nFirstCols=3,
-                                            tibbleName="US_County_Deaths")
+                                            tibbleName="US_County_Deaths",
+                                            traceThisRoutine = TRUE, prepend = "From loadUSDeathsData")
   US_County_Deaths_G7 <<- movingAverageGrowth(US_County_Deaths,
                                               updateToThisDate,
                                               28, 7, nFirstCols=3,
-                                              tibbleName="US_County_Deaths")
+                                              tibbleName="US_County_Deaths",
+                                              traceThisRoutine = TRUE, prepend = "From loadUSDeathsData")
 }

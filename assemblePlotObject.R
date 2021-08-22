@@ -157,7 +157,7 @@ computePlotDataDirectFromCumulative <- function(aFrame, chooseCounty,
                                                 countyChoices, stateChoices,
                                                 timeWindow, nFirst,
                                                 tibbleName = "from computePlotDataDirectFromCumulative",
-                                                traceThisRoutine = FALSE, prepend = "") {
+                                                traceThisRoutine = TRUE, prepend = "CALLER??") {
   myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered computePlotDataDirectFromCumulative\n")
@@ -168,7 +168,9 @@ computePlotDataDirectFromCumulative <- function(aFrame, chooseCounty,
                                                                  today("EST"),
                                                                  timeWindow,
                                                                  nFirst,
-                                                                 tibbleName = tibbleName)$d2,
+                                                                 tibbleName = tibbleName,
+                                                                 traceThisRoutine = traceThisRoutine,
+                                                                 prepend = myPrepend)$d2,
                                     chooseCounty,
                                     countyChoices,
                                     stateChoices)
@@ -185,7 +187,9 @@ computeEvenZeroPlotDataDirect <- function(aFrame, chooseCounty,
                                                         nFirst,
                                                         getGrowthRate = FALSE,
                                                         nonzeroOnly = FALSE,
-                                                        tibbleName = tibbleName)$d2,
+                                                        tibbleName = tibbleName,
+                                                        traceThisRoutine = TRUE,
+                                                        prepend = "From computeEvenZeroPlotDataDirect")$d2,
                            chooseCounty,
                            countyChoices,
                            stateChoices)
@@ -201,7 +205,9 @@ computeGrowthPlotDataFromCumulative <- function(aFrame, chooseCounty,
                                                    today("EST"),
                                                    timeWindow,
                                                    nFirst,
-                                                   tibbleName = tibbleName)
+                                                   tibbleName = tibbleName,
+                                                   traceThisRoutine = TRUE,
+                                                   prepend = "From computeGrowthPlotDataFromCumulative")
   computePlotDataFromFrame(newAndGrowthList$growth,
                            chooseCounty,
                            countyChoices,
