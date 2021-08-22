@@ -38,6 +38,10 @@ loadUSVaccinationData <- function() {
   rem1000 <- function(n) {
     as.integer(n - 1000 * floor(n / 1000))
   }
+
+  traceThisRoutine = FALSE
+  myPrepend = "From loadUSDeathsData"
+
   updateToThisDate <- today("EST")
   
   US_Vaccinations_As_Filed <- read_csv("./DATA/US_Vaccinations.csv",
@@ -97,10 +101,10 @@ loadUSVaccinationData <- function() {
                                                updateToThisDate,
                                                getNAvgs, 7, nFirstCols=3,
                                                tibbleName="US_Vaccination_Pcts",
-                                               traceThisRoutine = TRUE, prepend = "From loadUSVaccinationData")
+                                               traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   US_State_Vaccination_Pcts_A7 <<- movingAverageData(US_State_Vaccination_Pcts,
                                                      updateToThisDate,
                                                      getNAvgs, 7, nFirstCols=3,
                                                      tibbleName="US_State_Vaccination_Pcts",
-                                                     traceThisRoutine = TRUE, prepend = "From loadUSVaccinationData")
+                                                     traceThisRoutine = traceThisRoutine, prepend = myPrepend)
 }

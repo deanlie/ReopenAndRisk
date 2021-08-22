@@ -418,11 +418,11 @@ ratioDeltaFrame <- function(numeratorFrame, denominatorFrame,
   denominatorNew <- computeNewOnDayAndGrowthRate(denominatorFrame, today("EST"),
                                                  timeWindow, nFirstDenom,
                                                  FALSE, TRUE,
-                                                 tibbleName = denomTibbleFrame)$new
+                                                 tibbleName = denomTibbleName)$new
   numeratorNew   <- computeNewOnDayAndGrowthRate(numeratorFrame, today("EST"),
                                                  timeWindow, nFirstNum,
                                                  FALSE, FALSE,
-                                                 tibbleName = numTibbleFrame)$new
+                                                 tibbleName = numTibbleName)$new
   
   keyTibND <- select(numeratorNew,   Combined_Key)
   keyTibDD <- select(denominatorNew, Combined_Key)

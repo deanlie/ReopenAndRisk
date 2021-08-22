@@ -3,6 +3,8 @@ source("./updateTimeSeriesDataFilesAsNecessary.R")
 source("./computeNewAndGrowth.R")
 
 loadUSConfirmedData <- function() {
+  traceThisRoutine = FALSE
+  myPrepend = "From loadUSConfirmedData"
   updateToThisDate <- expectedLatestUpdateDataDate()
   updateTimeSeriesDataFilesAsNecessary()
 
@@ -27,31 +29,31 @@ loadUSConfirmedData <- function() {
                                           updateToThisDate,
                                           28, 7, nFirstCols=3,
                                           tibbleName="US_Confirmed",
-                                          traceThisRoutine = TRUE, prepend = "From loadUSDeathsData")
+                                          traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   US_State_Confirmed_G7 <<- movingAverageGrowth(US_State_Confirmed,
                                                 updateToThisDate,
                                                 28, 7, nFirstCols=3,
                                                 tibbleName="US_State_Confirmed",
-                                                traceThisRoutine = TRUE, prepend = "From loadUSDeathsData")
+                                                traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   US_County_Confirmed_G7 <<- movingAverageGrowth(US_County_Confirmed,
                                                  updateToThisDate,
                                                  28, 7, nFirstCols=3,
                                                  tibbleName="US_County_Confirmed",
-                                                 traceThisRoutine = TRUE, prepend = "From loadUSDeathsData")
+                                                 traceThisRoutine = traceThisRoutine, prepend = myPrepend)
 
   US_Confirmed_A7 <<- movingAverageData(US_Confirmed,
                                         updateToThisDate,
                                         28, 7, nFirstCols=3,
                                         tibbleName="US_Confirmed",
-                                        traceThisRoutine = TRUE, prepend = "From loadUSConfirmedData")
+                                        traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   US_State_Confirmed_A7 <<- movingAverageData(US_State_Confirmed,
                                               updateToThisDate,
                                               28, 7, nFirstCols=3,
                                               tibbleName="US_State_Confirmed",
-                                              traceThisRoutine = TRUE, prepend = "From loadUSConfirmedData")
+                                              traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   US_County_Confirmed_A7 <<- movingAverageData(US_County_Confirmed,
                                                updateToThisDate,
                                                28, 7, nFirstCols=3,
                                                tibbleName="US_County_Confirmed",
-                                               traceThisRoutine = TRUE, prepend = "From loadUSConfirmedData")
+                                               traceThisRoutine = traceThisRoutine, prepend = myPrepend)
 }
