@@ -6,11 +6,11 @@
 
 library(lubridate)
 
-expectedLatestUpdateDataDate <- function(UT_UpdateHour = 5) {
+expectedLatestUpdateDataDate <- function() {
   UTCNow <- now("UTC")
   UTC_PXlt <- as.POSIXlt(UTCNow)
-  if (UTC_PXlt$hour < UT_UpdateHour ||
-      ((UTC_PXlt$hour == UT_UpdateHour) && (UTC_PXlt$min < 59))) {
+  if (UTC_PXlt$hour < 5 ||
+      ((UTC_PXlt$hour == 5) && (UTC_PXlt$min < 59))) {
     expectedDate <- as.Date(UTC_PXlt) - 2
   } else {
     expectedDate <- as.Date(UTC_PXlt) - 1
@@ -19,8 +19,8 @@ expectedLatestUpdateDataDate <- function(UT_UpdateHour = 5) {
   expectedDate
 }
 
-expectedLatestUpdateDataDateSlashes <- function(UT_UpdateHour = 5) {
-  desiredLatestDate <- expectedLatestUpdateDataDate(UT_UpdateHour = UT_UpdateHour)
+expectedLatestUpdateDataDateSlashes <- function() {
+  desiredLatestDate <- expectedLatestUpdateDataDate()
   desiredLatestDateSlashes <- paste(month(desiredLatestDate),
                                     day(desiredLatestDate),
                                     (year(desiredLatestDate) - 2000), sep="/")

@@ -1,39 +1,21 @@
 source("latestVaccExtremes.R")
 
-activeVaccData <- function(forBoxplot, justUS, movingAvg) {
-  if (forBoxplot || !justUS) {
-    if (movingAvg) {
-      activeData <- US_State_Vaccination_Pcts_A7
-    } else {
-      activeData <- US_State_Vaccination_Pcts
-    }
-  } else {
-    if (movingAvg) {
-      activeData <- US_Vaccination_Pcts_A7
-    } else {
-      activeData <- US_Vaccination_Pcts
-    }
-  }
-  activeData
-}
-
-filteredVaccData <- function(forBoxplot, justUS, movingAvg, vaccChoice) {
-  theData <- activeVaccData(forBoxplot, justUS, movingAvg) %>%
-    filter(Datum == vaccDatumKeyFromChoice(vaccChoice))
-}
-
 vaccHeaderHTML <- function(movingAvg, vaccChoice) {
-  theData <- filteredVaccData(TRUE, FALSE, movingAvg, vaccChoice)
+  if (movingAvg) {
+    tooMuchData <- US_State_Vaccination_Pcts_A7
+  } else {
+    tooMuchData <- US_State_Vaccination_Pcts
+  }
   
   nMin <- 3
   nMax <- 3
-  extremaStates <- latestVaccExtremes(theData, nMin, nMax)
+  extremaStates <- latestVaccExtremes(tooMuchData, vaccChoice, nMin, nMax)
   
   theMaxPct <- format(as.double(extremaStates$bot[nMax, 2]), digits=3)
   max2Pct   <- format(as.double(extremaStates$bot[nMax - 1, 2]), digits=3)
   theMinPct <- format(as.double(extremaStates$top[1, 2]), digits=3)
   min2Pct   <- format(as.double(extremaStates$top[2, 2]), digits=3)
-  theText <- paste(tags$h4(paste("Vaccinations,", vaccChoice)),
+  theText <- paste(tags$h4(paste("Vaccination", vaccChoice, "Data")),
                    tags$p("Vaccination data is shown by percent of state or of US as a whole."),
                    tags$p(paste("Highest ", vaccChoice, " rate: ",
                                 extremaStates$bot[nMax, 1],
@@ -64,49 +46,61 @@ vaccRBoxHTML <- function(movingAvg, vaccChoice) {
 vaccRTrendHTML <- function(movingAvg, vaccChoice) {
 }
 
-vaccPlotTitle <- function(vaccChoice, forBoxplot, justUS, movingAvg) {
-  baseTitleLookup <- c("First Doses"="First Vaccine Doses",
-                       "Second Doses"="Second Vaccine Doses",
-                       "Total Doses"="Total Vaccine Doses Administered",
-                       "People Fully Vaccinated"="People Fully Vaccinated")
-  title <- plotTitle(unname(baseTitleLookup[vaccChoice]), forBoxplot, justUS, movingAvg)
-}
-
-vaccYLabel <- function() {
-  "Vaccinations, percent of population"
-}
-
 plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
-  theData <- filteredVaccData(TRUE, is.null(stateChoices), movingAvg, vaccChoice)
+  if (movingAvg) {
+    title <- paste("Vaccination", vaccChoice, "State Distribution, 7 day moving average")
+    tooMuchData <- US_State_Vaccination_Pcts_A7
+  } else {
+    title <- paste("Vaccination", vaccChoice, "State Distribution")
+    tooMuchData <- US_State_Vaccination_Pcts
+  }
   
-  timeWindow <- min(timeWindow, dim(theData)[2] - 4)
+  theData <- makeFullyVaccDataIfNeeded(tooMuchData, vaccChoice)
   
-  assembleDirectBoxPlot(theData, FALSE, NULL,
+  timeWindow = min(timeWindow, dim(theData)[2] - 4)
+  
+  vaccTrendData <<- list(full=tooMuchData, filtered=theData)
+  
+  assembleDirectBoxPlot(theData, FALSE,
+                        c(""),
                         stateChoices,
-                        vaccPlotTitle(vaccChoice,
-                                      TRUE,
-                                      is.null(stateChoices),
-                                      movingAvg),
-                        timeWindowXLabel(timeWindow),
-                        vaccYLabel(),
-                        clampFactor = 3, timeWindow = timeWindow,
-                        nFirst = 3)
+                        title,
+                        paste("Last", timeWindow, "days"),
+                        "Daily vaccination growth",
+                        clampFactor = 3, timeWindow = timeWindow)
 }
 
 plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
-  theData <- filteredVaccData(FALSE, is.null(stateChoices), movingAvg, vaccChoice)
+  if (movingAvg) {
+    if (length(stateChoices) > 0) {
+      title <- paste("Vaccination", vaccChoice, "For Selected States, 7 day moving average")
+      tooMuchData <- US_State_Vaccination_Pcts_A7
+    } else {
+      title <- paste("Vaccination", vaccChoice, "US Overall, 7 day moving average")
+      tooMuchData <- US_Vaccination_Pcts_A7
+    }
+  } else {
+    if (length(stateChoices) > 0) {
+      title <- paste("Vaccination", vaccChoice, "For Selected States")
+      tooMuchData <- US_State_Vaccination_Pcts
+    } else {
+      title <- paste("Vaccination", vaccChoice, "US Overall")
+      tooMuchData <- US_Vaccination_Pcts
+    }
+  }
+  
+  theData <- makeFullyVaccDataIfNeeded(tooMuchData, vaccChoice)
+  
+  vaccTrendData <<- list(full=tooMuchData, filtered=theData)
   
   timeWindow = min(timeWindow, dim(theData)[2] - 4)
   
   assembleDirectTrendPlot(theData, FALSE,
                           NULL,
                           stateChoices,
-                          vaccPlotTitle(vaccChoice,
-                                        FALSE,
-                                        is.null(stateChoices),
-                                        movingAvg),
-                          timeWindowXLabel(timeWindow),
-                          vaccYLabel(),
+                          title,
+                          paste("Last", timeWindow, "days"),
+                          "Daily vaccination percentages",
                           timeWindow = timeWindow, nFirst = 3,
                           tibbleName = "from plotVaccTrend")
 }

@@ -75,7 +75,7 @@ computePlotDataFromFrame <- function(aFrame,
                                      stateChoices) {
   # "US" is default if stateChoices came in as Null,
   #    list is clamped to 6 states max
-  
+
   areasOfInterest <- processAreaChoices(chooseCounty,
                                         countyChoices,
                                         stateChoices)

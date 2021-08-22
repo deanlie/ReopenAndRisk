@@ -262,7 +262,8 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
                    "{columnDate}" := .data[[thatType]],
                    .keep = "none")
           newData <- left_join(oldData, joinTibble, by="Combined_Key")
-
+          write_csv(newData, newLocalDataPath)
+        
           newUSData <- newData %>%
             summarise(Province_State = "", Combined_Key = "US",
                       across(matches("^Pop|^[1-9]+/"), sumIgnoreNA))

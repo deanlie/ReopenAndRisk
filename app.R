@@ -33,6 +33,10 @@ currentlyTesting <- function() {
   TRUE
 }
 
+currentlyTestingCounties <- function() {
+  currentlyTesting() & TRUE
+}
+
 defaultTimeWindowValue <- function() {
   if (currentlyTesting()) {
     14
@@ -87,7 +91,8 @@ ui <- fluidPage(
                         selected = defaultStateChoices(),
                         multiple = TRUE),
             tags$p("County data is available on the New Cases, New Deaths, and Summary tabs."),
-            checkboxInput("chooseCounty", "Select up to six counties"), # "Select County(ies)"),
+            checkboxInput("chooseCounty", "Select up to six counties",
+                          value = currentlyTestingCounties()), # "Select County(ies)"),
             # Without the spacer, the County dropbox overwrote the
             #  caption "Select County/Counties.
             tags$p("", id="Spacer"),

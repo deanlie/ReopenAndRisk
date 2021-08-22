@@ -1,8 +1,9 @@
 source("./loadUSConfirmedData.R")
+source("./state_abbrev_lookup.R")
 source("./assemblePlotObject.R")
 
-dataForCaseGrowthPlots <- function(forBoxplots, countyChoices, movingAvg, stateChoices) {
-  if ((!forBoxplots) && is.null(stateChoices)) {
+dataForCaseGrowthPlots <- function(countyChoices, movingAvg, stateChoices) {
+  if (is.null(stateChoices)) {
     if (movingAvg) {
       theData <- US_Confirmed_A7
     } else {
@@ -21,7 +22,8 @@ dataForCaseGrowthPlots <- function(forBoxplots, countyChoices, movingAvg, stateC
       } else {
         dataTibble <- US_County_Confirmed
       }
-      theData <- filterToStateChoice(dataTibble, stateChoices[1])
+      theData <- dataTibble %>%
+        filter(Province_State == stateLookup[stateChoices[1]])
     }
   }
   theData
@@ -54,6 +56,15 @@ caseHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
                      to have ONLY the missing areas, and I'll display the NUMBER of
                      cases rather than the growth rate.")
   
+  pgphFour <- paste("On August 6, the Council of State and Territorial Epidemiologists
+                    announced the release of an updated COVID-19 national case
+                    definition recently endorsed by CDC. States may have begun
+                    using this new definition on different dates, and this may account
+                    for sudden drops in the number of reported confirmed cases or
+                    reported COVID-19 deaths. For instance, Massachusetts reported
+                    confirmed cases dropped by 7636 cases between Sept. 2 and Sept. 3,
+                    according to the numbers used by this web site.")
+
   theText <- paste(tags$h4("Trends of new cases"),
                    tags$p("The CDC's recommendation was that a state not begin reopening
                    after the initial lockdown until it had a downward trajectory or
@@ -61,19 +72,10 @@ caseHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
                    The trend of cases is still an important measure."),
                    tags$p(pgphTwo),
                    tags$p(pgphThree),
+                   tags$p(pgphFour),
                    tags$p(),
                    sep="")
   HTML(theText)
-}
-
-casePlotTitle <- function(forBoxplot, justUS, movingAvg, justStates, state1) {
-  baseTitle <- "Covid Case Growth Distribution"
-  title <- plotTitle("Covid Case Growth Distribution",
-                     forBoxplot, justUS, movingAvg, justStates, state1)
-}
-
-caseGrowthYLabel <- function() {
-  "Daily growth rate: new day's cases as percent of previous total cases"
 }
 
 plotCaseGrowthBoxplots <- function(chooseCounty,
@@ -82,17 +84,22 @@ plotCaseGrowthBoxplots <- function(chooseCounty,
                                    stateChoices,
                                    timeWindow) {
   if (is.null(stateChoices)) {
-    theData <- dataForCaseGrowthPlots(TRUE, NULL, movingAvg, stateChoices)
+    theData <- dataForCaseGrowthPlots(NULL, movingAvg, "AK")
   } else {
-    theData <- dataForCaseGrowthPlots(TRUE, countyChoices, movingAvg, stateChoices)
+    theData <- dataForCaseGrowthPlots(countyChoices, movingAvg, stateChoices)
   }
-
+  
+  if (movingAvg) {
+    title <- "COVID Case Growth Distribution, 7 day moving average"
+  } else {
+    title <- "COVID Case Growth Distribution"
+  }
+  
   assembleGrowthBoxPlot(theData, chooseCounty,
                         countyChoices, stateChoices,
-                        casePlotTitle(TRUE, is.null(stateChoices), movingAvg,
-                                      is.null(countyChoices), stateChoices[1]),
-                        timeWindowXLabel(timeWindow),
-                        caseGrowthYLabel(),
+                        title,
+                        paste("Last", timeWindow, "days"),
+                        "Daily growth rate: new day's cases as percent of previous total cases",
                         clampFactor = 3, timeWindow = timeWindow)
 }
 
@@ -101,13 +108,22 @@ plotCaseGrowthTrend <- function(chooseCounty,
                                 countyChoices,
                                 stateChoices,
                                 timeWindow) {
-  theData <- dataForCaseGrowthPlots(FALSE, countyChoices, movingAvg, stateChoices)
+  if (is.null(stateChoices)) {
+    title <- "COVID Case Growth Trend for US as a whole"
+  } else {
+    if (chooseCounty && !(is.null(countyChoices))) {
+      title <- paste("COVID Case Growth Trends for Selected",
+                     admin1TypeFor(stateChoices[1])$UC_PL)
+    } else {
+      title <- "COVID Case Growth Trends for Selected States"
+    }
+  }
+  theData <- dataForCaseGrowthPlots(countyChoices, movingAvg, stateChoices)
 
   assembleGrowthTrendPlot(theData, chooseCounty,
                           countyChoices, stateChoices,
-                          casePlotTitle(FALSE, is.null(stateChoices), movingAvg,
-                                        is.null(countyChoices), stateChoices[1]),
-                          timeWindowXLabel(timeWindow),
-                          caseGrowthYLabel(),
+                          title,
+                          paste("Last", timeWindow, "days"),
+                          "Daily growth rate: new day's cases as percent of previous total cases",
                           timeWindow)
 }

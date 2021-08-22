@@ -39,7 +39,7 @@ loadUSVaccinationData <- function() {
     as.integer(n - 1000 * floor(n / 1000))
   }
   updateToThisDate <- today("EST")
-
+  
   US_Vaccinations_As_Filed <- read_csv("./DATA/US_Vaccinations.csv",
                                        col_types=cols(.default = col_double(),
                                                       Combined_Key = col_character(),
@@ -63,9 +63,8 @@ loadUSVaccinationData <- function() {
     select(-FIPSREM) %>%
     select(Province_State, Population) %>%
     mutate(Doses_alloc = 0, Doses_shipped = 0, Doses_admin = 0,
-           Stage_One_Doses = 0, Stage_Two_Doses = 0,
-           People_Fully_Vaccinated = 0, .keep ="all") %>%
-    gather(key="Datum", "Zero", 3:8) %>%
+           Stage_One_Doses = 0, Stage_Two_Doses = 0, .keep ="all") %>%
+    gather(key="Datum", "Zero", 3:7) %>%
     mutate(Loc_Datum = paste(Province_State, Datum, sep="_"), .keep = "all")
   
   US_PopData <- semi_join(pop_Data, US_Vaccinations_As_Filed, by = "Loc_Datum") %>%
