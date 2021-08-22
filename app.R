@@ -25,13 +25,13 @@ source("doTestGrowthTab.R")
 source("doTestResultsTab.R")
 source("doSummaryTab.R")
 
-updateTimeSeriesDataFilesAsNecessary()
-updateStateLevelSerializedDataFilesAsNecessary(traceThisRoutine = TRUE, prepend = "APP!")
-loadAllUSData()
-
 currentlyTesting <- function() {
   TRUE
 }
+
+updateTimeSeriesDataFilesAsNecessary(traceThisRoutine = currentlyTesting(), prepend = "")
+updateStateLevelSerializedDataFilesAsNecessary(traceThisRoutine = currentlyTesting(), prepend = "")
+loadAllUSData(traceThisRoutine = currentlyTesting(), prepend = "")
 
 currentlyTestingCounties <- function() {
   currentlyTesting() & TRUE
@@ -55,7 +55,7 @@ defaultStateChoices <- function() {
 
 defaultSelectedTab <- function() {
   if (currentlyTesting()) {
-    "Test Growth"
+    "Vaccination Progress"
   } else {
     NULL
   }
@@ -119,7 +119,7 @@ ui <- fluidPage(
                                                    "Total Doses",
                                                    "People Fully Vaccinated"),
                                                  multiple = FALSE,
-                                                 selected = "Total Doses"),
+                                                 selected = "People Fully Vaccinated"),
                                      htmlOutput("vaccHeaderHTML"),
                                      htmlOutput("vaccRboxHTML"),
                                      plotOutput("vaccRBox"),
@@ -212,7 +212,8 @@ server <- function(input, output, session) {
 
   # "Vaccination" Tab
   output$vaccHeaderHTML <- renderUI({vaccHeaderHTML(input$movingAvg,
-                                                    input$Vaccination)})
+                                                    input$Vaccination,
+                                                    traceThisRoutine = TRUE)})
   output$vaccRBoxHTML   <- renderUI({vaccRBoxHTML(input$movingAvg,
                                                   input$Vaccination)})
   output$vaccRTrendHTML <- renderUI({vaccRTrendHTML(input$movingAvg,
@@ -221,11 +222,13 @@ server <- function(input, output, session) {
   output$vaccRBox <- renderPlot({plotVaccBoxplots(input$movingAvg,
                                                   input$Vaccination,
                                                   input$stateChoices,
-                                                  input$timeWindow)})
+                                                  input$timeWindow,
+                                                  traceThisRoutine = TRUE)})
   output$vaccRTrend <- renderPlot({plotVaccTrend(input$movingAvg,
-                                                    input$Vaccination,
-                                                    input$stateChoices,
-                                                    input$timeWindow)})
+                                                 input$Vaccination,
+                                                 input$stateChoices,
+                                                 input$timeWindow,
+                                                 traceThisRoutine = TRUE)})
 
   # "Cases" Tab
   output$caseHeaderHTML <- renderUI({caseHeaderHTML(input$chooseCounty,

@@ -23,6 +23,10 @@ newStateDataPathForType <- function(aType) {
   paste(localDataDirectory(), "US_State_", aType, ".csv", sep = "")
 }
 
+newUSDataPathForType <- function(aType) {
+  paste(localDataDirectory(), "US_", aType, ".csv", sep = "")
+}
+
 dataPathForDate <- function(aDate) {
   paste(theDataDirectory(), jhuFileDateString(aDate), ".csv",
         sep = "")
@@ -30,6 +34,16 @@ dataPathForDate <- function(aDate) {
 
 sumIgnoreNA <- function(x) {
   sum(x, na.rm = TRUE)
+}
+
+dumpTibbleStart <- function(aTibble, itsName, prepend = "") {
+  cat(file = stderr(), prepend, itsName, "\n")
+  cat(file = stderr(), prepend, paste(names(aTibble)[1:8]), "\n")
+  cat(file = stderr(), prepend, as.character(aTibble[1,1]), as.integer(aTibble[1,2]),
+      round(as.double(aTibble[3]), digits = 1), round(as.double(aTibble[4]), digits = 1),
+      round(as.double(aTibble[5]), digits = 1), round(as.double(aTibble[6]), digits = 1),
+      round(as.double(aTibble[7]), digits = 1), round(as.double(aTibble[8]), digits = 1),
+      "\n\n")
 }
 
 # We're going to need this to read a data file without
@@ -75,15 +89,33 @@ collectConstantColumnsForState <- function(stateName) {
   buildingConstDataTibble
 }
 
-openExistingStateTibbles <- function() {
+openExistingStateTibbles <- function(traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered openExistingStateTibbles\n")
+  }
+
   existingStateTibbles <- list(Total_Test_Results  = NA,
                                Case_Fatality_Ratio = NA,
                                Incident_Rate       = NA,
                                Testing_Rate        = NA)
   for (aType in c("Total_Test_Results", "Case_Fatality_Ratio", "Incident_Rate", "Testing_Rate")) {
-    existingStateTibbles[[aType]] <- read_csv(newStateDataPathForType(aType))
+    if (traceThisRoutine) {
+      cat(file = stderr(), myPrepend, "aType =", aType, "path =", newStateDataPathForType(aType), "\n")
+    }
+    existingStateTibbles[[aType]] <- read_csv(newStateDataPathForType(aType),
+                                              col_types = cols(.default = col_double(),
+                                                               Combined_Key = col_character()))
+    if (traceThisRoutine) {
+      cat(file = stderr(), myPrepend, "read", newStateDataPathForType(aType), "\n")
+    }
   }
-  existingStateTibbles
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving openExistingStateTibbles\n")
+  }
+
+  return(existingStateTibbles)
 }
 
 discardOlderDataFromListOfTibbles <- function(listOfTibbles,
@@ -234,9 +266,6 @@ addDateToStateDataFilesForTypes <- function(newST, columnDate,
 addDateRangeToStateDataFilesForTypes <- function(newST, firstDate, lastDate,
                                                  traceThisRoutine = FALSE,
                                                  prepend = "") {
-  # OUCH remove following for debugging:
-  # traceThisRoutine <- TRUE
-
   myPrepend = paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered addDateRangeToStateDataFilesForTypes\n")
@@ -341,7 +370,13 @@ rebuildStateDataFilesForTypes <- function(nDates = 60, stopNDaysBeforePresent = 
   return(newStateTibbles)
 }
 
-rebuildUSDataFileForTypeAsSummary <- function(stateDataTibble, aType) {
+rebuildUSDataFileForTypeAsSummary <- function(stateDataTibble, aType,
+                                              traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered rebuildUSDataFileForTypeAsSummary\n")
+  }
+
   # dataFileColSpec <- cols(.default = col_double(),
   #                         Province_State = col_character(),
   #                         Country_Region = col_character(),
@@ -351,7 +386,7 @@ rebuildUSDataFileForTypeAsSummary <- function(stateDataTibble, aType) {
   #                         People_Hospitalized = col_logical(),
   #                         ISO3 = col_character())
 
-  USDataFileName = newStateDataPathForType(aType)
+  USDataFileName = newUSDataPathForType(aType)
   popFileName <- paste(theDataDirectory(), "US_Population.csv", sep="")
   
   buildingUSTibble <- read_csv(popFileName,
@@ -376,27 +411,66 @@ rebuildUSDataFileForTypeAsSummary <- function(stateDataTibble, aType) {
     mutate(Combined_Key = "US", .before = Population)
 
   write_csv(newUSDataTibble, USDataFileName)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving rebuildUSDataFileForTypeAsSummary\n")
+  }
+  
+  return(newUSDataTibble)
 }
 
-rebuildUSDataFileForTypeAsWeightedAvg <- function(stateTibble, aType) {
-  newUSTibble <- stateTibble %>%
-    mutate(across(.cols = matches("^[1-9]+/"), ~(.x * Population))) %>%
+rebuildUSDataFileForTypeAsWeightedAvg <- function(stateTibble, aType,
+                                                  traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered rebuildUSDataFileForTypeAsWeightedAvg\n")
+  }
+
+  intermedUSTibble1 <- stateTibble %>%
+    mutate(across(.cols = matches("^[1-9]+/"), ~(.x * Population)), .keep = "all")
+  
+  intermedUSTibble2 <- intermedUSTibble1 %>%
     filter(across(.cols = matches("^[1-9]+/"), ~(!is.na(.x)))) %>%
     summarize(Combined_Key = "US",
-              across(.cols = (Population | matches("^[1-9]+/")), ~(sum(.x)))) %>%
+              across(.cols = (Population | matches("^[1-9]+/")), ~(sum(.x))))
+  
+  missingData <- intermedUSTibble1 %>%
+    filter(across(.cols = matches("^[1-9]+/"), ~(is.na(.x))))
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "missingData:\n")
+    cat(file = stderr(), myPrepend, "Combined_Key:", paste(missingData$Combined_Key, sep = ", "), "\n")
+    cat(file = stderr(), myPrepend, "Population:  ", paste(missingData$Population, sep = ", "), "\n")
+  }
+
+  newUSTibble <- intermedUSTibble2 %>%
     mutate(across(.cols = matches("^[1-9]+/"), ~(.x / Population)))
 
   aType0 <- paste(aType, "_0", sep = "")
-  write_csv(newUSTibble, newStateDataPathForType(aType0))
+  write_csv(newUSTibble, newUSDataPathForType(aType0))
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving rebuildUSDataFileForTypeAsWeightedAvg\n")
+  }
   
-  newUSTibble
+  return(list(IM = intermedUSTibble2, FF = newUSTibble))
 }
 
 rebuildUSDataFileForTypeFromProperData <- function(USNumeratorTibble,
                                                    USDenominatorTibble,
-                                                   aType) {
-  commonColumns <- intersect(names(USNumeratorTibble), names(USDenominatorTibble))
+                                                   aType,
+                                                   traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered rebuildUSDataFileForTypeFromProperData\n")
+  }
   
+  commonColumns <- intersect(names(USNumeratorTibble), names(USDenominatorTibble))
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "commonColumns", paste(commonColumns, sep = ", "), "\n")
+  }
+
   # Frankly, commonRows isn't a problem; there's only one row in the US data tibble anyway
   # But if we had more rows we would do this:
   #     commonRows <- intersect(USNumeratorTibble$Combined_Key, USDenominatorTibble$Combined_Key)
@@ -404,89 +478,197 @@ rebuildUSDataFileForTypeFromProperData <- function(USNumeratorTibble,
   #       filter(Combined_Key %in% {commonRows})
 
   numData <- USNumeratorTibble %>%
+    select(-Province_State, -Combined_Key) %>%
     select(any_of(commonColumns))
   
   denomData <- USDenominatorTibble %>%
+    select(-Province_State, -Combined_Key) %>%
     select(any_of(commonColumns))
-  
-  if ("Combined_Key" %in% commonColumns) {
-    numData <-   numData %>%
-      select(-Combined_Key)
-    denomData <-   denomData %>%
-      select(-Combined_Key)
-  }
-  if ("Population" %in% commonColumns) {
-    numData <-   numData %>%
-      select( -Population)
-    denomData <-   denomData %>%
-      select( -Population)
-  }
 
-  KeyPopCols <- USDenominatorTibble %>%
-    select(Combined_Key, Population)
+  KeyCol <- USDenominatorTibble %>%
+    select(Combined_Key)
   
   Quotient <- numData / denomData
   
-  newUSTibble <- bind_cols(KeyPopCols, Quotient)
+  newUSTibble <- bind_cols(KeyCol, Quotient)
  
-  write_csv(newUSTibble, newStateDataPathForType(aType))
+  write_csv(newUSTibble, newUSDataPathForType(aType))
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving rebuildUSDataFileForTypeFromProperData\n")
+  }
   
-  newUSTibble
+  return(newUSTibble)
 }
 
 rebuildUSDataFileForTypeByNormalizing <- function(USNumeratorTibble,
-                                                   aType) {
+                                                   aType,
+                                                  traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered rebuildUSDataFileForTypeByNormalizing\n")
+  }
+  
   popby100k <- as.double(US_Population %>%
                            filter(Combined_Key == "US") %>%
                            select(Population)) / 100000
   
+  if (traceThisRoutine) {
+  #   cat(file = stderr(), myPrepend, "names(USNumeratorTibble):",
+  #       paste(names(USNumeratorTibble), sep = ", "), "\n")
+    cat(file = stderr(), myPrepend, "popby100k =", round(popby100k, digits = 5), "\n")
+  }
+
   UNTNonNum <- select(USNumeratorTibble, !matches("^[1-9]"))
-  UNTNumeric <- select(USNumeratorTibble, !matches("^[1-9]"))
+  UNTNumeric <- select(USNumeratorTibble, matches("^[1-9]"))
   
   NormNumeric <- UNTNumeric / popby100k
   
   newUSTibble <- bind_cols(UNTNonNum, NormNumeric)
   
-  write_csv(newUSTibble, newStateDataPathForType(aType))
+  write_csv(newUSTibble, newUSDataPathForType(aType))
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving rebuildUSDataFileForTypeByNormalizing\n")
+  }
   
-  newUSTibble
+  return(newUSTibble)
 }
-  
-rebuildFourTypes <-  function() {
-  newStateTibbles <- rebuildStateDataFilesForTypes()
-  # US_State_Total_Test_Results <- rebuildStateDataFileForType("Total_Test_Results")
-  # US_State_Case_Fatality_Ratio <- rebuildStateDataFileForType("Case_Fatality_Ratio")
-  # US_StateIncident_Rate <- rebuildStateDataFileForType("Incident_Rate")
-  # US_StateTesting_Rate <- rebuildStateDataFileForType("Testing_Rate")
-  
-  US_Total_Test_Results <- rebuildUSDataFileForTypeAsSummary(newStateTibbles$Total_Test_Results,
-                                                             "Total_Test_Results")
 
-  US_Deaths <- read_csv("./DATA/US_Deaths.csv")
-  US_Confirmed <- read_csv("./DATA/US_Confirmed.csv")
-
+rebuildUSDataFilesForTypes <- function(stateTibbles, traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered rebuildUSDataFilesForTypes\n")
+  }
+  
+  US_Total_Test_Results <- rebuildUSDataFileForTypeAsSummary(stateTibbles$Total_Test_Results,
+                                                             "Total_Test_Results",
+                                                             traceThisRoutine = traceThisRoutine,
+                                                             prepend = myPrepend)
+  
+  US_Deaths <- read_csv("./DATA/US_Deaths.csv",
+                        col_types = cols(.default = col_double(),
+                                         Province_State = col_character(),
+                                         Combined_Key = col_character()))
+  US_Confirmed <- read_csv("./DATA/US_Confirmed.csv",
+                           col_types = cols(.default = col_double(),
+                                            Province_State = col_character(),
+                                            Combined_Key = col_character()))
+  
   # Hypothesis: Case_Fatality_Ratio <- Deaths / Confirmed
-  US_Case_Fatality_Ratio_0 <- rebuildUSDataFileForTypeAsWeightedAvg(newStateTibbles$Case_Fatality_Ratio,
-                                                                    "Case_Fatality_Ratio")
+  US_Case_Fatality_Ratio_0 <- rebuildUSDataFileForTypeAsWeightedAvg(stateTibbles$Case_Fatality_Ratio,
+                                                                    "Case_Fatality_Ratio",
+                                                                    traceThisRoutine = traceThisRoutine,
+                                                                    prepend = myPrepend)
   
-  # OUCH! US_Confirmed does not have a "population" column. Get it somehow before calling this.
   US_Case_Fatality_Ratio <- rebuildUSDataFileForTypeFromProperData(US_Deaths,
                                                                    US_Confirmed,
-                                                                   "Case_Fatality_Ratio")
+                                                                   "Case_Fatality_Ratio",
+                                                                   traceThisRoutine = traceThisRoutine,
+                                                                   prepend = myPrepend)
   
   # Hypothesis: Incident_Rate <- Confirmed / Population * 100000
-  US_Incident_Rate_0 <- rebuildUSDataFileForTypeAsWeightedAvg(newStateTibbles$Incident_Rate,
-                                                              "Incident_Rate")
+  US_Incident_Rate_0 <- rebuildUSDataFileForTypeAsWeightedAvg(stateTibbles$Incident_Rate,
+                                                              "Incident_Rate",
+                                                              traceThisRoutine = traceThisRoutine,
+                                                              prepend = myPrepend)
   US_Incident_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Confirmed,
-                                                            "Incident_Rate")
+                                                            "Incident_Rate",
+                                                            traceThisRoutine = traceThisRoutine,
+                                                            prepend = myPrepend)
   
   # Hypothesis: Testing_Rate <- Total_Test_Results / Population * 100000
-  US_Testing_Rate_0 <- rebuildUSDataFileForTypeAsWeightedAvg(newStateTibbles$Testing_Rate,
-                                                             "Testing_Rate")
+  US_Testing_Rate_0 <- rebuildUSDataFileForTypeAsWeightedAvg(stateTibbles$Testing_Rate,
+                                                             "Testing_Rate",
+                                                             traceThisRoutine = traceThisRoutine,
+                                                             prepend = myPrepend)
   US_Testing_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Total_Test_Results,
-                                                           "Testing_Rate")
+                                                           "Testing_Rate",
+                                                           traceThisRoutine = traceThisRoutine,
+                                                           prepend = myPrepend)
   
-  list(USTTR = US_Total_Test_Results,
+  newUSTibbles <- list(USTTR = US_Total_Test_Results,
+                       US_CFR_i = US_Case_Fatality_Ratio_0$IM,
+                       US_CFR_0 = US_Case_Fatality_Ratio_0$FF,
+                       US_CFR = US_Case_Fatality_Ratio,
+                       US_IR_i = US_Incident_Rate_0$IM,
+                       US_IR_0 = US_Incident_Rate_0$FF,
+                       US_IR = US_Incident_Rate,
+                       US_TR_i = US_Testing_Rate_0$IM,
+                       US_TR_0 = US_Testing_Rate_0$FF,
+                       US_TR = US_Testing_Rate)
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving rebuildUSDataFilesForTypes\n")
+  }
+  
+  return(newUSTibbles)
+}
+  
+rebuildFourTypes <-  function(traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered rebuildFourTypes\n")
+  }
+
+  newStateTibbles <- rebuildStateDataFilesForTypes(traceThisRoutine = traceThisRoutine,
+                                                   prepend = myPrepend)
+  
+  newUSTibbles <- rebuildUSDataFilesForTypes(newStateTibbles,
+                                             traceThisRoutine = traceThisRoutine,
+                                             prepend = "")
+  
+  # US_Total_Test_Results <- rebuildUSDataFileForTypeAsSummary(newStateTibbles$Total_Test_Results,
+  #                                                            "Total_Test_Results",
+  #                                                            traceThisRoutine = traceThisRoutine,
+  #                                                            prepend = myPrepend)
+  # 
+  # US_Deaths <- read_csv("./DATA/US_Deaths.csv",
+  #                       col_types = cols(.default = col_double(),
+  #                                        Province_State = col_character(),
+  #                                        Combined_Key = col_character()))
+  # US_Confirmed <- read_csv("./DATA/US_Confirmed.csv",
+  #                          col_types = cols(.default = col_double(),
+  #                                           Province_State = col_character(),
+  #                                           Combined_Key = col_character()))
+  # 
+  # # Hypothesis: Case_Fatality_Ratio <- Deaths / Confirmed
+  # US_Case_Fatality_Ratio_0 <- rebuildUSDataFileForTypeAsWeightedAvg(newStateTibbles$Case_Fatality_Ratio,
+  #                                                                   "Case_Fatality_Ratio",
+  #                                                                   traceThisRoutine = traceThisRoutine,
+  #                                                                   prepend = myPrepend)
+  # 
+  # US_Case_Fatality_Ratio <- rebuildUSDataFileForTypeFromProperData(US_Deaths,
+  #                                                                  US_Confirmed,
+  #                                                                  "Case_Fatality_Ratio",
+  #                                                                  traceThisRoutine = traceThisRoutine,
+  #                                                                  prepend = myPrepend)
+  # 
+  # # Hypothesis: Incident_Rate <- Confirmed / Population * 100000
+  # US_Incident_Rate_0 <- rebuildUSDataFileForTypeAsWeightedAvg(newStateTibbles$Incident_Rate,
+  #                                                             "Incident_Rate",
+  #                                                             traceThisRoutine = traceThisRoutine,
+  #                                                             prepend = myPrepend)
+  # US_Incident_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Confirmed,
+  #                                                           "Incident_Rate",
+  #                                                           traceThisRoutine = traceThisRoutine,
+  #                                                           prepend = myPrepend)
+  # 
+  # # Hypothesis: Testing_Rate <- Total_Test_Results / Population * 100000
+  # US_Testing_Rate_0 <- rebuildUSDataFileForTypeAsWeightedAvg(newStateTibbles$Testing_Rate,
+  #                                                            "Testing_Rate",
+  #                                                            traceThisRoutine = traceThisRoutine,
+  #                                                            prepend = myPrepend)
+  # US_Testing_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Total_Test_Results,
+  #                                                          "Testing_Rate",
+  #                                                          traceThisRoutine = traceThisRoutine,
+  #                                                          prepend = myPrepend)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving rebuildFourTypes\n")
+  }
+  
+  list(US_TTR = US_Total_Test_Results,
        US_CFR_0 = US_Case_Fatality_Ratio_0,
        US_CFR = US_Case_Fatality_Ratio,
        US_IR_0 = US_Incident_Rate_0,

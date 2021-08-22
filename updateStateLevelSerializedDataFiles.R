@@ -6,23 +6,9 @@ library(RCurl)
 
 source("./dateFormatRoutines.R")
 source("./dataIsCurrent.R")
+source("./downloadJHUData.R")
 
-filenameOfSansCountyDataForDate <- function(aDate) {
-  paste(jhuFileDateString(aDate), ".csv", sep="")
-}
-
-pathnameOfSansCountyUpdateDataForDate <- function(aDate) {
-  paste("./DATA/",filenameOfSansCountyDataForDate(aDate), sep = "")
-}
-
-updateSansCountyDataForDate_URL <- function(aDate) {
-  paste(JHU_repository(),
-        "csse_covid_19_daily_reports_us/",
-        filenameOfSansCountyDataForDate(aDate),
-        sep = "")
-}
-
-typesSansCountyData <- function(aDate) {
+typesStateLevelData <- function(aDate) {
   newTypes <- c("Incident_Rate", "Case_Fatality_Ratio",
                 "Total_Test_Results", "Testing_Rate")
 
@@ -180,68 +166,130 @@ updateStateDataFilesForTypes <- function(nDates = 60, stopNDaysBeforePresent = 0
   return(newStateTibbles)
 }
 
-makeInitialSansCountyData <- function(nDates = 90,
+updatePopulationEstimateData <- function(aDate, dailyStateData,
+                                         traceThisRoutine = FALSE, prepend = "") {
+  # The data set I worked from allowed estimating population two ways.
+  # Population Estimate 1 = 100000 * Confirmed / Incident_Rate
+  # Population Estimate 2 = 100000 * Total_Test_Results / Testing_Rate
+  # While developing this I compared those two estimates.
+  # The difference in the two, when it could be computed, was always
+  # 0, -1, or +1 -- that is, it seemed to be a roundoff error.
+  # Because there were 0 confirmed cases in American Samoa, estimate 1
+  # could not be computed for it. I therefore decided to eliminate
+  # estimate 1 and estimate the population of all items as
+  # 100000 * Total_Test_Results / Testing_Rate.
+  
+  myPrepend = paste("  ", prepend, sep = "")  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered updatePopulationEstimateData\n")
+  }
+  
+  # daily data file passed in dailyStateData
+  newPopulationTibble <- dailyStateData %>%
+    filter(!str_detect(Province_State, "Princess")) %>%
+    mutate(Combined_Key = paste(Province_State, ", US", sep=""),
+           Population = as.integer(100000 * Total_Test_Results / Testing_Rate),
+           .keep = "none")
+  
+  newUSPopTibble <- newPopulationTibble %>%
+    summarise(Combined_Key = "US", across(.cols = "Population", sumIgnoreNA))
+  
+  newData <- bind_rows(newUSPopTibble, newPopulationTibble)
+  
+  # Save new population estimate file
+  
+  write_csv(newData, "./DATA/US_State_Population_Est.csv")
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving updatePopulationEstimateData\n")
+  }
+  return(newData)
+}
+
+makeInitialStateLevelData <- function(nDates = 90,
                                       traceThisRoutine = FALSE, prepend = "") {
   # stop("Per request!")
   myPrepend = paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered makeInitialSansCountyData\n")
+    cat(file = stderr(), prepend, "Entered makeInitialStateLevelData\n")
   }
   
   # Download <first_date>_us.csv from Github if necessary
-  firstDate <- sys.Date()
+  firstDate <- Sys.Date() - nDates
   
   columnDate <- paste(month(firstDate),
                       day(firstDate),
                       (year(firstDate) - 2000), sep="/")
-  options(show.error.messages = traceThisRoutine)
+
+  # If we don't have the data as a local file, download it  
+  if (!file.exists(pathnameOfStateLevelUpdateDataForDate(firstDate))) {
+    # No local file! Let's see if we can download it...
+    downloadAndSaveStateLevelUpdateData(firstDate)
+    # # START
+    # # OUCH Put downloads in a download module with all the error handling
+    # oldShowError <- getOption(show.error.messages)
+    # options(show.error.messages) = TRUE
+    # # No local file! Let's see if we can download it...
+    # if (url.exists(updateStateLevelDataForDate_URL(firstDate))) {
+    #   if (traceThisRoutine) {
+    #     cat(file = stderr(), myPrepend, "Remote file",
+    #         updateStateLevelDataForDate_URL(firstDate),
+    #         "exists, will try to download\n")
+    #   }
+    #   # Get the first file
+    #   updateTibble <- try(read_csv(updateStateLevelDataForDate_URL(firstDate),
+    #                                col_types = cols(.default = col_double(),
+    #                                                 Province_State = col_character(),
+    #                                                 Country_Region = col_character(),
+    #                                                 Last_Update = col_datetime(format = ""),
+    #                                                 People_Hospitalized = col_logical(),
+    #                                                 ISO3 = col_character(),
+    #                                                 Hospitalization_Rate = col_logical())))
+    #   if (class(updateTibble)[1] == "try-error") {
+    #     cat(file = stderr(), myPrepend,
+    #         "download of", updateStateLevelDataForDate_URL(firstDate), "failed\n")
+    #     cat(file = stderr(), myPrepend, "FATAL ERROR\n")
+    #     stop()
+    #   }
+    #   write_csv(updateTibble, pathnameOfStateLevelUpdateDataForDate(firstDate))
+    #   cat(file = stderr(), myPrepend,
+    #       "Downloaded and wrote", pathnameOfStateLevelUpdateDataForDate(firstDate), "\n")
+    # } else {
+    #   cat(file = stderr(), myPrepend,
+    #       "url.exists returns FALSE:", updateStateLevelDataForDate_URL(firstDate), "\n")
+    #   cat(file = stderr(), myPrepend, "FATAL ERROR\n")
+    #   stop()
+    # }
+    # #STOP
+  }
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend,
-        paste("before try(read_csv(", pathnameOfSansCountyUpdateDataForDate(firstDate), "))\n", sep = ""))
+        paste("before try(read_csv(", pathnameOfStateLevelUpdateDataForDate(firstDate), "))\n", sep = ""))
   }
-  updateTibble <- try(read_csv(pathnameOfSansCountyUpdateDataForDate(firstDate)))
+  updateTibble <- try(read_csv(pathnameOfStateLevelUpdateDataForDate(firstDate)))
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, paste("after try(read_csv(",
-                                          pathnameOfSansCountyUpdateDataForDate(firstDate),
+                                          pathnameOfStateLevelUpdateDataForDate(firstDate),
                                           "))\n", sep = ""))
   }
-  options(show.error.messages = TRUE)
   if (class(updateTibble)[1] == "try-error") {
     if (traceThisRoutine) {
       cat(file = stderr(), myPrepend,
-          "Can't read ", pathnameOfSansCountyUpdateDataForDate(firstDate), "\n")
-    }
-    # No local file! Let's see if we can download it...
-    if (url.exists(updateSansCountyDataForDate_URL(firstDate))) {
-      if (traceThisRoutine) {
-        cat(file = stderr(), myPrepend, "Remote file",
-            updateSansCountyDataForDate_URL(firstDate),
-            "exists, will try to download\n")
-      }
-      # Get the first file
-      updateTibble <- read_csv(updateSansCountyDataForDate_URL(firstDate),
-                               col_types = cols(.default = col_double(),
-                                                Province_State = col_character(),
-                                                Country_Region = col_character(),
-                                                Last_Update = col_datetime(format = ""),
-                                                People_Hospitalized = col_logical(),
-                                                ISO3 = col_character(),
-                                                Hospitalization_Rate = col_logical()))
-      write_csv(updateTibble, pathnameOfSansCountyUpdateDataForDate(firstDate))
-      cat(file = stderr(), myPrepend,
-          "Downloaded and wrote", pathnameOfSansCountyUpdateDataForDate(firstDate), "\n")
-    } else {
-      cat(file = stderr(), myPrepend,
-          "url.exists returns FALSE:", updateSansCountyDataForDate_URL(firstDate), "\n")
+          "Can't read ", pathnameOfStateLevelUpdateDataForDate(firstDate), "\n")
     }
   } else {
     if (traceThisRoutine) {
       cat(file = stderr(), myPrepend, "We were able to read",
-          pathnameOfSansCountyUpdateDataForDate(firstDate),
+          pathnameOfStateLevelUpdateDataForDate(firstDate),
           "from local disk/SSD\n")
     }
   }
-  aList <- typesSansCountyData(firstDate)
+  
+  popEstimate <- updatePopulationEstimateData(firstDate, updateTibble,
+                                              traceThisRoutine = traceThisRoutine,
+                                              prepend = myPrepend)
+
+  aList <- typesStateLevelData(firstDate)
   for (i in 1:length(aList$thatDateTypes)) {
     aType <- aList$thatDateTypes[i]
     newTibble <- updateTibble %>%
@@ -262,14 +310,14 @@ makeInitialSansCountyData <- function(nDates = 90,
     write_csv(newUSTibble, paste("./DATA/US_", aType, ".csv", sep=""))
   }
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving makeInitialSansCountyData\n")
+    cat(file = stderr(), prepend, "Leaving makeInitialStateLevelData\n")
   }
 }
 
 updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FALSE, prepend = "CALLER??") {
   myPrepend <- paste("  ", prepend)
   if (traceThisRoutine) {
-    cat(file = stderr(), "Entered updateStateLevelSerializedDataFilesAsNecessary\n")
+    cat(file = stderr(), prepend, "Entered updateStateLevelSerializedDataFilesAsNecessary\n")
   }
 
   # Check the last state level serialized data file for last date;
@@ -277,18 +325,16 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
     options(show.error.messages = traceThisRoutine)
     US_Testing_Rate <- try(read_csv("./DATA/US_Testing_Rate.csv",
                                     col_types = cols(.default = col_double(),
-                                                     Province_State = col_logical(),
                                                      Combined_Key = col_character())))
     options(show.error.messages = TRUE)
     # Update is required
     if (class(US_Testing_Rate)[1] == "try-error") {
       # There's no old data of the type we want.
-      makeInitialSansCountyData(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+      makeInitialStateLevelData(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
       # Now we should be able to get some data
       options(show.error.messages = TRUE)
       US_Testing_Rate <- try(read_csv("./DATA/US_Testing_Rate.csv",
                                       col_types = cols(.default = col_double(),
-                                                       Province_State = col_logical(),
                                                        Combined_Key = col_character())))
     } 
     # We have US_Testing_Rate for that type -- but it may not be up-to-date
@@ -304,6 +350,11 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
 
     lastDate <- mdy(lastName)
     updateDate <- lastDate + 1
+
+    if (traceThisRoutine) {
+      cat(file = stderr(), myPrepend, "Update date is ", lastName, "\n")
+    }
+
     while (updateDate < (today("EST"))) {
       columnDate <- paste(month(updateDate),
                           day(updateDate),
@@ -312,13 +363,18 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
         cat(file = stderr(), myPrepend, "Getting data for update to", columnDate, "\n")
       }
       # Read or download update file for that date
-      options(show.error.messages = traceThisRoutine)
+      
+      if (!file.exists(pathnameOfStateLevelUpdateDataForDate(updateDate))) {
+        # No local file! Let's see if we can download it...
+        downloadAndSaveStateLevelUpdateData(updateDate,
+                                            traceThisRoutine = traceThisRoutine,
+                                            prepend = myPrepend)
+      }
       if (traceThisRoutine) {
-        cat(file = stderr(), myPrepend, paste("before try(read_csv(",
-                                              pathnameOfSansCountyUpdateDataForDate(updateDate),
-                                              "))\n", sep = ""))
-       }
-      updateTibble <- try(read_csv(pathnameOfSansCountyUpdateDataForDate(updateDate),
+        cat(file = stderr(), myPrepend,
+            paste("before try(read_csv(", pathnameOfStateLevelUpdateDataForDate(updateDate), "))\n", sep = ""))
+      }
+      updateTibble <- try(read_csv(pathnameOfStateLevelUpdateDataForDate(updateDate),
                                    col_types = cols(.default = col_double(),
                                                     Province_State = col_character(),
                                                     Country_Region = col_character(),
@@ -327,48 +383,64 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
                                                     ISO3 = col_character(),
                                                     Hospitalization_Rate = col_logical())))
       if (traceThisRoutine) {
-        cat(file = stderr(), myPrepend, "Returned from try(read_csv(...))\n")
+        cat(file = stderr(), myPrepend, paste("after try(read_csv(",
+                                              pathnameOfStateLevelUpdateDataForDate(updateDate),
+                                              "))\n", sep = ""))
       }
-      options(show.error.messages = TRUE)
       if (class(updateTibble)[1] == "try-error") {
         if (traceThisRoutine) {
-          cat(file = stderr(), myPrepend, "Can't read",
-              pathnameOfSansCountyUpdateDataForDate(updateDate),"\n")
+          cat(file = stderr(), myPrepend,
+              "Can't read ", pathnameOfStateLevelUpdateDataForDate(updateDate), "\n")
         }
-        # No local file! Let's see if we can download it...
-        if (url.exists(updateSansCountyDataForDate_URL(updateDate))) {
-          if (traceThisRoutine) {
-            cat(file = stderr(), myPrepend, "Remote file ",
-                updateSansCountyDataForDate_URL(updateDate),
-                "exists, will try to download\n")
-          }
-          # Get the first file
-          updateTibble <- read_csv(updateSansCountyDataForDate_URL(updateDate),
-                                   col_types = cols(.default = col_double(),
-                                                    Province_State = col_character(),
-                                                    Country_Region = col_character(),
-                                                    Last_Update = col_datetime(format = ""),
-                                                    People_Hospitalized = col_logical(),
-                                                    ISO3 = col_character(),
-                                                    Hospitalization_Rate = col_logical()))
-          cat(file = stderr(), myPrepend, "OK, we downloaded",
-              updateSansCountyDataForDate_URL(updateDate), "\n")
-          write_csv(updateTibble, pathnameOfSansCountyUpdateDataForDate(updateDate))
-          if (traceThisRoutine) {
-            cat(file = stderr(), myPrepend, "... and wrote",
-                pathnameOfSansCountyUpdateDataForDate(updateDate), "\n")
-          }
-        } else {
-          if (traceThisRoutine) {
-            cat(file = stderr(), myPrepend, "Remote file ",
-                updateSansCountyDataForDate_URL(updateDate),
-                "not accessible or does not exist","\n")
-          }
+        cat(file = stderr(), myPrepend, "FATAL ERROR -- UPDATE DATA NOT FOUND\n")
+        stop()
+      } else {
+        if (traceThisRoutine) {
+          cat(file = stderr(), myPrepend, "We were able to read",
+              pathnameOfStateLevelUpdateDataForDate(firstDate),
+              "from local disk/SSD\n")
         }
       }
+        # #START
+        # if (url.exists(updateStateLevelDataForDate_URL(updateDate))) {
+        #   if (traceThisRoutine) {
+        #     cat(file = stderr(), myPrepend, "Remote file ",
+        #         updateStateLevelDataForDate_URL(updateDate),
+        #         "exists, will try to download\n")
+        #   }
+        #   # Get the first file
+        #   updateTibble <- read_csv(updateStateLevelDataForDate_URL(updateDate),
+        #                            col_types = cols(.default = col_double(),
+        #                                             Province_State = col_character(),
+        #                                             Country_Region = col_character(),
+        #                                             Last_Update = col_datetime(format = ""),
+        #                                             People_Hospitalized = col_logical(),
+        #                                             ISO3 = col_character(),
+        #                                             Hospitalization_Rate = col_logical()))
+        #   if (traceThisRoutine) {
+        #     cat(file = stderr(), myPrepend, "OK, we downloaded",
+        #       updateStateLevelDataForDate_URL(updateDate), "\n")
+        #   }
+        #   write_csv(updateTibble, pathnameOfStateLevelUpdateDataForDate(updateDate))
+        #   if (traceThisRoutine) {
+        #     cat(file = stderr(), myPrepend, "... and wrote",
+        #         pathnameOfStateLevelUpdateDataForDate(updateDate), "\n")
+        #   }
+        # } else {
+        #   if (traceThisRoutine) {
+        #     cat(file = stderr(), myPrepend, "Remote file ",
+        #         updateStateLevelDataForDate_URL(updateDate),
+        #         "not accessible or does not exist","\n")
+        #   }
+        # }
+        # #STOP
       if ("tbl" %in% class(updateTibble)) {
+        popEstimate <- updatePopulationEstimateData(updateDate, updateTibble,
+                                                    traceThisRoutine = traceThisRoutine,
+                                                    prepend = myPrepend)
+        
         # We need two lists as in createUSNewTypeDataTimeSeries.R
-        aList <- typesSansCountyData(updateDate)
+        aList <- typesStateLevelData(updateDate)
         for (i in 1:length(aList$thatDateTypes)) {
           thatType <- aList$thatDateTypes[i]
           prevType <- aList$prevDateTypes[i]
@@ -383,7 +455,6 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
           options(show.error.messages = traceThisRoutine)
           oldData <- try(read_csv(oldLocalDataPath,
                                   col_types = cols(.default = col_double(),
-                                                   Province_State = col_character(), # OUCH 
                                                    Combined_Key = col_character())))
           if (traceThisRoutine) {
             cat(file = stderr(), myPrepend,

@@ -11,16 +11,28 @@ vaccDatumKeyFromChoice <- function(vaccChoice) {
   unname(vaccDatumLookup[vaccChoice])
 }
 
-makeFullyVaccDataIfNeeded <- function(tooMuchData, vaccChoice) {
-  if (vaccChoice == "Fully Vaccinated") {
-    # Use "State_Two_Doses" as real "Datum" entry and offset dates later
+makeFullyVaccDataIfNeeded <- function(tooMuchData, vaccChoice,
+                                      traceThisRoutine = FALSE,
+                                      prepend = "") {
+  myPrepend <- paste(prepend, "  ", sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered makeFullyVaccDataIfNeeded\n")
+  }
+
+  if (vaccChoice == "People Fully Vaccinated") {
+    # Use "Stage_Two_Doses" as real "Datum" entry and offset dates later
     matchMe <- "Stage_Two_Doses"
   } else {
     # Get the real "Datum" entry from the "vaccChoice" string
     matchMe <- vaccDatumKeyFromChoice(vaccChoice)
   }
   theData <- tooMuchData %>%
-    filter(Datum == matchMe)
+    filter(Datum == {matchMe})
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "after filtering Stage_Two_Doses, dim(theData) = (",
+        paste(dim(theData)), ")\n")
+  }
   
   if (vaccChoice == "Fully Vaccinated") {
     # We've filtered data by "Stage_Two_Doses", now discard newest 2 weeks data
@@ -39,6 +51,10 @@ makeFullyVaccDataIfNeeded <- function(tooMuchData, vaccChoice) {
         mutate(Datum = "Fully Vaccinated", .keep = "all")
     }
   }
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving makeFullyVaccDataIfNeeded\n")
+  }
+
   return(theData)
 }
 

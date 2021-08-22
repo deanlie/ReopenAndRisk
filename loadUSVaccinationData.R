@@ -62,9 +62,9 @@ loadUSVaccinationData <- function() {
                                       Combined_Key = col_character(),
                                       CountyName = col_character(),
                                       Population = col_double())) %>%
-    mutate(FIPSREM = rem1000(FIPS), .keep = "all") %>%
-    filter(FIPSREM == 0) %>%
-    select(-FIPSREM) %>%
+    mutate(FIPSREM = rem1000(FIPS), .keep = "all") %>% # New column is remainder of FIPS / 1000
+    filter(FIPSREM == 0) %>%                           # This selects US & States
+    select(-FIPSREM) %>%                               # Discard that column
     select(Province_State, Population) %>%
     mutate(Doses_alloc = 0, Doses_shipped = 0, Doses_admin = 0,
            Stage_One_Doses = 0, Stage_Two_Doses = 0, .keep ="all") %>%
@@ -76,13 +76,13 @@ loadUSVaccinationData <- function() {
   US_State_PopData <- semi_join(pop_Data, US_State_Vaccinations_As_Filed, by = "Loc_Datum") %>%
     select(Loc_Datum, Population)
   
-  US_Vaccination_WithPop <<- left_join(US_PopData, 
+  US_Vaccination_WithPop <- left_join(US_PopData, 
                                    US_Vaccinations_As_Filed,
                                    by = "Loc_Datum") %>%
     select(-Loc_Datum) %>%
     mutate(Combined_Key = Combined_Key, Datum = Datum, Population = Population, .keep="unused")
 
-  US_State_Vaccination_WithPop <<- left_join(US_State_PopData,
+  US_State_Vaccination_WithPop <- left_join(US_State_PopData,
                                          US_State_Vaccinations_As_Filed,
                                          by = "Loc_Datum") %>%
     select(-Loc_Datum) %>%

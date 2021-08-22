@@ -8,9 +8,9 @@ discardTooNewDataFromStateTibbles <- function(existingStateTibbles,
 
   for (aType in c("Total_Test_Results", "Case_Fatality_Ratio", "Incident_Rate", "Testing_Rate")) {
     theNames <- names(existingStateTibbles[[aType]])
-    newNames <- c("Combined_Key", "Population")
+    newNames <- c("Combined_Key")
     for (aName in theNames) {
-      if (aName != "Combined_Key" & aName != "Population") {
+      if (aName != "Combined_Key") {
         if (mdy(aName) < firstDateToDelete) {
           newNames <- c(newNames, aName)
         }
