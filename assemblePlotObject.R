@@ -32,8 +32,6 @@ leastSquaresTrendParams <- function(x0, y0)  {
 }
 
 processAreaChoices <- function(chooseCounty, countyChoices, stateChoices) {
-  browser()
-
   if (length(stateChoices) == 0) {
     areasOfInterest <- c("US")
   } else if (chooseCounty & (length(countyChoices) > 0)) {
@@ -50,22 +48,6 @@ processAreaChoices <- function(chooseCounty, countyChoices, stateChoices) {
     sort(stateChoices)
     areasOfInterest <- paste(unname(stateLookup[stateChoices]), ", US", sep="")
   }
-  # 
-  # 
-  # } else if ((!chooseCounty) | length(countyChoices) == 0 | (countyChoices == "")) {
-  #   if (length(stateChoices) > 6) {
-  #     stateChoices <- stateChoices[1:6]
-  #   }
-  #   sort(stateChoices)
-  #   areasOfInterest <- paste(unname(stateLookup[stateChoices]), ", US", sep="")
-  # } else {
-  #   if (length(countyChoices) > 6) {
-  #     countyChoices <- countyChoices[1:6]
-  #   }
-  #   sort(countyChoices)
-  #   theState <- unname(stateLookup[stateChoices[1]])
-  #   areasOfInterest <- paste(countyChoices, ", ", theState, ", US", sep="")
-  # }
   areasOfInterest
 }
 

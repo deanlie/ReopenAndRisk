@@ -57,6 +57,14 @@ vaccRBoxHTML <- function(movingAvg, vaccChoice) {
 vaccRTrendHTML <- function(movingAvg, vaccChoice) {
 }
 
+vaccPlotXLabels <- function(timeWindow) {
+  return(paste("Last", timeWindow, "days"))
+}
+
+vaccPlotYLabels <- function() {
+  return("Daily vaccination percentages")
+}
+
 plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
                              traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend)
@@ -92,8 +100,8 @@ plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
                                   c(""),
                                   stateChoices,
                                   title,
-                                  paste("Last", timeWindow, "days"),
-                                  "Daily vaccination growth",
+                                  vaccPlotXLabels(timeWindow),
+                                  vaccPlotYLabels(),
                                   clampFactor = 3, timeWindow = timeWindow,
                                   traceThisRoutine = traceThisRoutine, prepend = myPrepend)
 
@@ -150,8 +158,8 @@ plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
                                     NULL,
                                     stateChoices,
                                     title,
-                                    paste("Last", timeWindow, "days"),
-                                    "Daily vaccination percentages",
+                                    vaccPlotXLabels(timeWindow),
+                                    vaccPlotYLabels(),
                                     timeWindow = timeWindow,
                                     tibbleName = "from plotVaccTrend",
                                     traceThisRoutine = traceThisRoutine, prepend = myPrepend)

@@ -212,8 +212,7 @@ server <- function(input, output, session) {
 
   # "Vaccination" Tab
   output$vaccHeaderHTML <- renderUI({vaccHeaderHTML(input$movingAvg,
-                                                    input$Vaccination,
-                                                    traceThisRoutine = TRUE)})
+                                                    input$Vaccination)})
   output$vaccRBoxHTML   <- renderUI({vaccRBoxHTML(input$movingAvg,
                                                   input$Vaccination)})
   output$vaccRTrendHTML <- renderUI({vaccRTrendHTML(input$movingAvg,
@@ -222,13 +221,11 @@ server <- function(input, output, session) {
   output$vaccRBox <- renderPlot({plotVaccBoxplots(input$movingAvg,
                                                   input$Vaccination,
                                                   input$stateChoices,
-                                                  input$timeWindow,
-                                                  traceThisRoutine = TRUE)})
+                                                  input$timeWindow)})
   output$vaccRTrend <- renderPlot({plotVaccTrend(input$movingAvg,
                                                  input$Vaccination,
                                                  input$stateChoices,
-                                                 input$timeWindow,
-                                                 traceThisRoutine = TRUE)})
+                                                 input$timeWindow)})
 
   # "Cases" Tab
   output$caseHeaderHTML <- renderUI({caseHeaderHTML(input$chooseCounty,
