@@ -29,9 +29,6 @@ updateTimeSeriesDataFilesAsNecessary()
 updateStateLevelSerializedDataFilesAsNecessary()
 loadAllUSData()
 
-# Grep for VACC_OUCH until vaccination data graphs are done!
-
-# VACC_OUCH
 vaccHeaderHTML <- function(movingAvg, vaccChoice) {
   if (movingAvg) {
     tooMuchData <- US_State_Vaccination_Pcts_A7
@@ -47,7 +44,7 @@ vaccHeaderHTML <- function(movingAvg, vaccChoice) {
   max2Pct   <- format(as.double(extremaStates$bot[nMax - 1, 2]), digits=3)
   theMinPct <- format(as.double(extremaStates$top[1, 2]), digits=3)
   min2Pct   <- format(as.double(extremaStates$top[2, 2]), digits=3)
-  theText <- paste(tags$h4(paste("Vaccination", vaccChoice, "Data")),
+  theText <- paste(tags$h4(paste("Vaccinations,", vaccChoice)),
                    tags$p("Vaccination data is shown by percent of state or of US as a whole."),
                    tags$p(paste("Highest ", vaccChoice, " rate: ",
                                 extremaStates$bot[nMax, 1],
@@ -105,16 +102,21 @@ testResultsHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
 }
 
 plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
+  plotTitleLookup <- c("First Doses"="First Vaccine Doses",
+                       "Second Doses"="Second Vaccine Doses",
+                       "Total Doses"="Total Vaccine Doses Administered",
+                       "People Fully Vaccinated"="People Fully Vaccinated")
+  title0 <- unname(plotTitleLookup[vaccChoice])
   if (movingAvg) {
-    title <- paste("Vaccination", vaccChoice, "State Distribution, 7 day moving average")
+    title <- paste(title0, "State Distribution, 7 day moving average")
     tooMuchData <- US_State_Vaccination_Pcts_A7
   } else {
-    title <- paste("Vaccination", vaccChoice, "State Distribution")
+    title <- paste(title0, "State Distribution")
     tooMuchData <- US_State_Vaccination_Pcts
   }
-  
+
   theData <- makeFullyVaccDataIfNeeded(tooMuchData, vaccChoice)
-  
+
   timeWindow <- min(timeWindow, dim(theData)[2] - 4)
   
   vaccTrendData <<- list(full=tooMuchData, filtered=theData)
@@ -123,7 +125,7 @@ plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
                         stateChoices,
                         title,
                         paste("Last", timeWindow, "days"),
-                        "Daily vaccination growth",
+                        "Vaccinations, percent of population",
                         clampFactor = 3, timeWindow = timeWindow,
                         nFirst = 3)
 }
@@ -131,18 +133,18 @@ plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
 plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
   if (movingAvg) {
     if (length(stateChoices) > 0) {
-      title <- paste("Vaccination", vaccChoice, "For Selected States, 7 day moving average")
+      title <- paste(vaccChoice, "For Selected States, 7 Day Moving Average")
       tooMuchData <- US_State_Vaccination_Pcts_A7
     } else {
-      title <- paste("Vaccination", vaccChoice, "US Overall, 7 day moving average")
+      title <- paste(vaccChoice, ", ", "US Overall, 7 Day Moving Average", sep = "")
       tooMuchData <- US_Vaccination_Pcts_A7
     }
   } else {
     if (length(stateChoices) > 0) {
-      title <- paste("Vaccination", vaccChoice, "For Selected States")
+      title <- paste(vaccChoice, "For Selected States")
       tooMuchData <- US_State_Vaccination_Pcts
     } else {
-      title <- paste("Vaccination", vaccChoice, "US Overall")
+      title <- paste(vaccChoice,", ", "US Overall", sep = "")
       tooMuchData <- US_Vaccination_Pcts
     }
   }
@@ -158,7 +160,7 @@ plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
                           stateChoices,
                           title,
                           paste("Last", timeWindow, "days"),
-                          "Daily vaccination percentages",
+                          "Vaccinations, percent of population",
                           timeWindow = timeWindow, nFirst = 3,
                           tibbleName = "from plotVaccTrend")
 }
@@ -272,7 +274,7 @@ ui <- fluidPage(
                                                  c("First Doses",
                                                    "Second Doses",
                                                    "Total Doses",
-                                                   "Fully Vaccinated"),
+                                                   "People Fully Vaccinated"),
                                                  multiple = FALSE,
                                                  selected = "Total Doses"),
                                      htmlOutput("vaccHeaderHTML"),
