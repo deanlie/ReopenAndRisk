@@ -18,9 +18,8 @@ makeFullyVaccDataIfNeeded <- function(tooMuchData, vaccChoice) {
     return(theData)
 }
 
-latestVaccExtremes <- function(aTibble, vaccChoice, nTop, nBot) {
-  theData <- makeFullyVaccDataIfNeeded(aTibble, vaccChoice)
-  TwoCols <- theData[, c(2, dim(theData)[2])]
+latestVaccExtremes <- function(aTibble, nTop, nBot) {
+  TwoCols <- aTibble[, c(2, dim(aTibble)[2])]
   names(TwoCols) <- c("Combined_Key", "Last")
   arrangedTibble <- as_tibble(TwoCols) %>%
     arrange(Last)
@@ -32,7 +31,3 @@ latestVaccExtremes <- function(aTibble, vaccChoice, nTop, nBot) {
        top = topStuff,
        bot = bottomStuff)
 }
-# 
-# foo <- latestVaccExtremes(US_State_Vaccination_Pcts, "Second Doses", 5, 5)
-# View(foo$top)
-# View(foo$bot)

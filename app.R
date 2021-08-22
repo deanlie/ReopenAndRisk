@@ -17,6 +17,7 @@ source("updateStateLevelSerializedDataFiles.R")
 source("assemblePlotObject.R")
 source("loadAllUSData.R")
 source("latestVaccExtremes.R")
+source("reopenPlotUtilities.R")
 
 source("doCaseGrowthPlots.R")
 source("doMortalityPlots.R")
@@ -29,16 +30,34 @@ updateTimeSeriesDataFilesAsNecessary()
 updateStateLevelSerializedDataFilesAsNecessary()
 loadAllUSData()
 
-vaccHeaderHTML <- function(movingAvg, vaccChoice) {
-  if (movingAvg) {
-    tooMuchData <- US_State_Vaccination_Pcts_A7
+activeVaccData <- function(forBoxplot, justUS, movingAvg) {
+  if (forBoxplot || !justUS) {
+    if (movingAvg) {
+      activeData <- US_State_Vaccination_Pcts_A7
+    } else {
+      activeData <- US_State_Vaccination_Pcts
+    }
   } else {
-    tooMuchData <- US_State_Vaccination_Pcts
+    if (movingAvg) {
+      activeData <- US_Vaccination_Pcts_A7
+    } else {
+      activeData <- US_Vaccination_Pcts
+    }
   }
+  activeData
+}
+
+filteredVaccData <- function(forBoxplot, justUS, movingAvg, vaccChoice) {
+  theData <- activeVaccData(forBoxplot, justUS, movingAvg) %>%
+    filter(Datum == vaccDatumKeyFromChoice(vaccChoice))
+}
+
+vaccHeaderHTML <- function(movingAvg, vaccChoice) {
+  theData <- filteredVaccData(TRUE, FALSE, movingAvg, vaccChoice)
 
   nMin <- 3
   nMax <- 3
-  extremaStates <- latestVaccExtremes(tooMuchData, vaccChoice, nMin, nMax)
+  extremaStates <- latestVaccExtremes(theData, nMin, nMax)
   
   theMaxPct <- format(as.double(extremaStates$bot[nMax, 2]), digits=3)
   max2Pct   <- format(as.double(extremaStates$bot[nMax - 1, 2]), digits=3)
@@ -101,86 +120,67 @@ testResultsHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
     HTML(theText)
 }
 
-plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
-  plotTitleLookup <- c("First Doses"="First Vaccine Doses",
+vaccPlotTitle <- function(vaccChoice, forBoxplot, justUS, movingAvg) {
+  baseTitleLookup <- c("First Doses"="First Vaccine Doses",
                        "Second Doses"="Second Vaccine Doses",
                        "Total Doses"="Total Vaccine Doses Administered",
                        "People Fully Vaccinated"="People Fully Vaccinated")
-  title0 <- unname(plotTitleLookup[vaccChoice])
-  if (movingAvg) {
-    title <- paste(title0, "State Distribution, 7 day moving average")
-    tooMuchData <- US_State_Vaccination_Pcts_A7
-  } else {
-    title <- paste(title0, "State Distribution")
-    tooMuchData <- US_State_Vaccination_Pcts
-  }
+  title <- plotTitle(unname(baseTitleLookup[vaccChoice]), forBoxplot, justUS, movingAvg)
+}
 
-  theData <- makeFullyVaccDataIfNeeded(tooMuchData, vaccChoice)
+vaccYLabel <- function() {
+  "Vaccinations, percent of population"
+}
+
+plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
+  theData <- filteredVaccData(TRUE, length(stateChoices) == 0, movingAvg, vaccChoice)
 
   timeWindow <- min(timeWindow, dim(theData)[2] - 4)
   
-  vaccTrendData <<- list(full=tooMuchData, filtered=theData)
-  
   assembleDirectBoxPlot(theData, FALSE, NULL,
                         stateChoices,
-                        title,
-                        paste("Last", timeWindow, "days"),
-                        "Vaccinations, percent of population",
+                        vaccPlotTitle(vaccChoice, TRUE, length(stateChoices) == 0, movingAvg),
+                        timeWindowXLabel(timeWindow),
+                        vaccYLabel(),
                         clampFactor = 3, timeWindow = timeWindow,
                         nFirst = 3)
 }
 
 plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
-  if (movingAvg) {
-    if (length(stateChoices) > 0) {
-      title <- paste(vaccChoice, "For Selected States, 7 Day Moving Average")
-      tooMuchData <- US_State_Vaccination_Pcts_A7
-    } else {
-      title <- paste(vaccChoice, ", ", "US Overall, 7 Day Moving Average", sep = "")
-      tooMuchData <- US_Vaccination_Pcts_A7
-    }
-  } else {
-    if (length(stateChoices) > 0) {
-      title <- paste(vaccChoice, "For Selected States")
-      tooMuchData <- US_State_Vaccination_Pcts
-    } else {
-      title <- paste(vaccChoice,", ", "US Overall", sep = "")
-      tooMuchData <- US_Vaccination_Pcts
-    }
-  }
+  theData <- filteredVaccData(FALSE, length(stateChoices) == 0, movingAvg, vaccChoice)
 
-  theData <- makeFullyVaccDataIfNeeded(tooMuchData, vaccChoice)
-  
-  vaccTrendData <<- list(full=tooMuchData, filtered=theData)
-  
   timeWindow = min(timeWindow, dim(theData)[2] - 4)
   
   assembleDirectTrendPlot(theData, FALSE,
                           NULL,
                           stateChoices,
-                          title,
-                          paste("Last", timeWindow, "days"),
-                          "Vaccinations, percent of population",
+                          vaccPlotTitle(vaccChoice, FALSE, length(stateChoices) == 0, movingAvg),
+                          timeWindowXLabel(timeWindow),
+                          vaccYLabel(),
                           timeWindow = timeWindow, nFirst = 3,
                           tibbleName = "from plotVaccTrend")
+}
+
+testResultPlotTitle <- function(forBoxplot, justUS, movingAvg) {
+  title <- plotTitle("TestPositivity", forBoxplot, justUS, movingAvg)
 }
 
 plotTestResultBoxplots <- function(chooseCounty, movingAvg, countyChoices,
                                    stateChoices, timeWindow) {
   # updateDataForUSTypeIfNeeded("Confirmed")
+  title <- testResultPlotTitle(TRUE, length(stateChoices) == 0, movingAvg)
+
   if (movingAvg) {
-    title <- "Test Positivity Distribution, 7 day moving average"
     theCaseData <- US_State_Confirmed_A7
     theTestData <- US_State_People_Tested_A7 
   } else {
-    title <- "Test Positivity Distribution"
     theCaseData <- US_State_Confirmed
     theTestData <- US_State_People_Tested 
   }
   
   assembleRatioDeltaBoxPlot(theCaseData, theTestData, stateChoices,
                             title,
-                            paste("Last", timeWindow, "days"),
+                            timeWindowXLabel(timeWindow),
                             "Test Positivity: percent of tests returning positive",
                             clampFactor = 1,
                             timeWindow = timeWindow,
@@ -190,23 +190,21 @@ plotTestResultBoxplots <- function(chooseCounty, movingAvg, countyChoices,
 plotTestResultTrend <- function(chooseCounty, movingAvg, countyChoices,
                                 stateChoices, timeWindow) {
   # updateDataForUSTypeIfNeeded("Confirmed")
+  title <- testResultPlotTitle(FALSE, length(stateChoices) == 0, movingAvg)
+
   if (is.null(stateChoices)) {
     if (movingAvg) {
-      title <- "COVID Test Positivity Trend for US as a whole, 7 day moving average"
       theCaseData <- US_Confirmed_A7
       theTestData <- US_People_Tested_A7
     } else {
-      title <- "COVID Test Positivity Trend for US as a whole"
       theCaseData <- US_Confirmed
       theTestData <- US_People_Tested
     }
   } else {
     if (movingAvg) {
-      title <- "COVID Test Positivity Trends for Selected States, 7 day moving average"
       theCaseData <- US_State_Confirmed_A7
       theTestData <- US_State_People_Tested_A7
     } else {
-      title <- "COVID Test Positivity Trends for Selected States"
       theCaseData <- US_State_Confirmed
       theTestData <- US_State_People_Tested
     }
@@ -214,7 +212,7 @@ plotTestResultTrend <- function(chooseCounty, movingAvg, countyChoices,
     
   assembleRatioDeltaTrendPlot(theCaseData, theTestData, stateChoices,
                               title,
-                              paste("Last", timeWindow, "days"),
+                              timeWindowXLabel(timeWindow),
                               "Test Positivity: percent of tests returning positive",
                               timeWindow = timeWindow,
                               nFirstNum = 2, nFirstDenom = 2)
@@ -383,7 +381,7 @@ server <- function(input, output, session) {
     }
   })
 
-  # "Cases" Tab
+  # "Vaccination" Tab
   output$vaccHeaderHTML <- renderUI({vaccHeaderHTML(input$movingAvg,
                                                     input$Vaccination)})
   output$vaccRBoxHTML   <- renderUI({vaccRBoxHTML(input$movingAvg,
@@ -400,6 +398,7 @@ server <- function(input, output, session) {
                                                     input$stateChoices,
                                                     input$timeWindow)})
 
+  # "Cases" Tab
   output$caseHeaderHTML <- renderUI({caseHeaderHTML(input$chooseCounty,
                                                     input$countyChoices,
                                                     input$stateChoices)})
