@@ -16,206 +16,45 @@ source("updateTimeSeriesDataFilesAsNecessary.R")
 source("updateStateLevelSerializedDataFiles.R")
 source("assemblePlotObject.R")
 source("loadAllUSData.R")
-source("latestVaccExtremes.R")
 source("reopenPlotUtilities.R")
 
-source("doCaseGrowthPlots.R")
-source("doMortalityPlots.R")
-
-source("doTestGrowthPlots.R")
-
-source("summaryHTML.R")
+source("doVaccinationTab.R")
+source("doCaseGrowthTab.R")
+source("doMortalityTab.R")
+source("doTestGrowthTab.R")
+source("doTestResultsTab.R")
+source("doSummaryTab.R")
 
 updateTimeSeriesDataFilesAsNecessary()
 updateStateLevelSerializedDataFilesAsNecessary()
 loadAllUSData()
 
-activeVaccData <- function(forBoxplot, justUS, movingAvg) {
-  if (forBoxplot || !justUS) {
-    if (movingAvg) {
-      activeData <- US_State_Vaccination_Pcts_A7
-    } else {
-      activeData <- US_State_Vaccination_Pcts
-    }
+currentlyTesting <- function() {
+  TRUE
+}
+
+defaultTimeWindowValue <- function() {
+  if (currentlyTesting()) {
+    14
   } else {
-    if (movingAvg) {
-      activeData <- US_Vaccination_Pcts_A7
-    } else {
-      activeData <- US_Vaccination_Pcts
-    }
+    14
   }
-  activeData
 }
 
-filteredVaccData <- function(forBoxplot, justUS, movingAvg, vaccChoice) {
-  theData <- activeVaccData(forBoxplot, justUS, movingAvg) %>%
-    filter(Datum == vaccDatumKeyFromChoice(vaccChoice))
-}
-
-vaccHeaderHTML <- function(movingAvg, vaccChoice) {
-  theData <- filteredVaccData(TRUE, FALSE, movingAvg, vaccChoice)
-
-  nMin <- 3
-  nMax <- 3
-  extremaStates <- latestVaccExtremes(theData, nMin, nMax)
-  
-  theMaxPct <- format(as.double(extremaStates$bot[nMax, 2]), digits=3)
-  max2Pct   <- format(as.double(extremaStates$bot[nMax - 1, 2]), digits=3)
-  theMinPct <- format(as.double(extremaStates$top[1, 2]), digits=3)
-  min2Pct   <- format(as.double(extremaStates$top[2, 2]), digits=3)
-  theText <- paste(tags$h4(paste("Vaccinations,", vaccChoice)),
-                   tags$p("Vaccination data is shown by percent of state or of US as a whole."),
-                   tags$p(paste("Highest ", vaccChoice, " rate: ",
-                                extremaStates$bot[nMax, 1],
-                                " with ", theMaxPct,
-                                " percent", sep = "")),
-                   tags$p(paste("Next highest rate: ",
-                                extremaStates$bot[nMax - 1, 1],
-                                " with ", max2Pct,
-                                " percent", sep = "")),
-                   tags$p(paste("Lowest ", vaccChoice, " rate: ",
-                                extremaStates$top[1, 1],
-                                " with ", theMinPct,
-                                " percent", sep = "")),
-                   tags$p(paste("Next lowest rate: ",
-                                extremaStates$top[2, 1],
-                                " with ", min2Pct,
-                                " percent", sep = "")),
-                   tags$p("Note that 'Total Doses' will be above 100% when close to 50% of the population
-                            has had a second dose!"),
-                   sep="")
-  
-  HTML(theText)
-}
-
-vaccRBoxHTML <- function(movingAvg, vaccChoice) {
-}
-
-vaccRTrendHTML <- function(movingAvg, vaccChoice) {
-}
-
-testGrowthHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
-    theText <- paste(tags$h4("Changes in Amount of Testing"),
-                     tags$p("The data used for this tab is not updated as regularly as the
-                            data for cases and mortality, and is not always reliable. Uneven updates
-                            can result in numbers which change the scale so much that the resulting
-                            chart is unreadable. To prevent that, these graphs do not display data
-                            which is far outside the range of the bulk of the data. Dots along the
-                            top or bottom of the chart are not real data."),
-                     tags$p("The amount of testing should generally not be decreasing."),
-                     tags$p("A downward sloping trend line is not necessarily a problem. It just means
-                            that the amount of testing is not growing as fast as it used to be.
-                            So long as the growth rate is above 0 the number of tests is increasing."),
-                     sep="")
-    HTML(theText)
-}
-
-testResultsHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
-    theText <- paste(tags$h4("Changes in Test Results"),
-                     tags$p("A decreasing percentage of positive tests is good;
-                            it means that tests are becoming more widely available."),
-                     tags$p("Think of the extreme case: if everyone were tested,
-                            and 0 percent of tests were positive, the epidemic would be over."),
-                     sep="")
-    HTML(theText)
-}
-
-vaccPlotTitle <- function(vaccChoice, forBoxplot, justUS, movingAvg) {
-  baseTitleLookup <- c("First Doses"="First Vaccine Doses",
-                       "Second Doses"="Second Vaccine Doses",
-                       "Total Doses"="Total Vaccine Doses Administered",
-                       "People Fully Vaccinated"="People Fully Vaccinated")
-  title <- plotTitle(unname(baseTitleLookup[vaccChoice]), forBoxplot, justUS, movingAvg)
-}
-
-vaccYLabel <- function() {
-  "Vaccinations, percent of population"
-}
-
-plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
-  theData <- filteredVaccData(TRUE, length(stateChoices) == 0, movingAvg, vaccChoice)
-
-  timeWindow <- min(timeWindow, dim(theData)[2] - 4)
-  
-  assembleDirectBoxPlot(theData, FALSE, NULL,
-                        stateChoices,
-                        vaccPlotTitle(vaccChoice, TRUE, length(stateChoices) == 0, movingAvg),
-                        timeWindowXLabel(timeWindow),
-                        vaccYLabel(),
-                        clampFactor = 3, timeWindow = timeWindow,
-                        nFirst = 3)
-}
-
-plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
-  theData <- filteredVaccData(FALSE, length(stateChoices) == 0, movingAvg, vaccChoice)
-
-  timeWindow = min(timeWindow, dim(theData)[2] - 4)
-  
-  assembleDirectTrendPlot(theData, FALSE,
-                          NULL,
-                          stateChoices,
-                          vaccPlotTitle(vaccChoice, FALSE, length(stateChoices) == 0, movingAvg),
-                          timeWindowXLabel(timeWindow),
-                          vaccYLabel(),
-                          timeWindow = timeWindow, nFirst = 3,
-                          tibbleName = "from plotVaccTrend")
-}
-
-testResultPlotTitle <- function(forBoxplot, justUS, movingAvg) {
-  title <- plotTitle("TestPositivity", forBoxplot, justUS, movingAvg)
-}
-
-plotTestResultBoxplots <- function(chooseCounty, movingAvg, countyChoices,
-                                   stateChoices, timeWindow) {
-  # updateDataForUSTypeIfNeeded("Confirmed")
-  title <- testResultPlotTitle(TRUE, length(stateChoices) == 0, movingAvg)
-
-  if (movingAvg) {
-    theCaseData <- US_State_Confirmed_A7
-    theTestData <- US_State_People_Tested_A7 
+defaultStateChoices <- function() {
+  if (currentlyTesting()) {
+    c("MA", "ME")
   } else {
-    theCaseData <- US_State_Confirmed
-    theTestData <- US_State_People_Tested 
+    NULL
   }
-  
-  assembleRatioDeltaBoxPlot(theCaseData, theTestData, stateChoices,
-                            title,
-                            timeWindowXLabel(timeWindow),
-                            "Test Positivity: percent of tests returning positive",
-                            clampFactor = 1,
-                            timeWindow = timeWindow,
-                            nFirstNum = 2, nFirstDenom = 2)
 }
 
-plotTestResultTrend <- function(chooseCounty, movingAvg, countyChoices,
-                                stateChoices, timeWindow) {
-  # updateDataForUSTypeIfNeeded("Confirmed")
-  title <- testResultPlotTitle(FALSE, length(stateChoices) == 0, movingAvg)
-
-  if (is.null(stateChoices)) {
-    if (movingAvg) {
-      theCaseData <- US_Confirmed_A7
-      theTestData <- US_People_Tested_A7
-    } else {
-      theCaseData <- US_Confirmed
-      theTestData <- US_People_Tested
-    }
+defaultSelectedTab <- function() {
+  if (currentlyTesting()) {
+    "New Deaths"
   } else {
-    if (movingAvg) {
-      theCaseData <- US_State_Confirmed_A7
-      theTestData <- US_State_People_Tested_A7
-    } else {
-      theCaseData <- US_State_Confirmed
-      theTestData <- US_State_People_Tested
-    }
+    NULL
   }
-    
-  assembleRatioDeltaTrendPlot(theCaseData, theTestData, stateChoices,
-                              title,
-                              timeWindowXLabel(timeWindow),
-                              "Test Positivity: percent of tests returning positive",
-                              timeWindow = timeWindow,
-                              nFirstNum = 2, nFirstDenom = 2)
 }
 
 # Define UI for this application
@@ -240,13 +79,14 @@ ui <- fluidPage(
                         "How many days to trace?",
                         min = 7,
                         max = 28,
-                        value = 14,
+                        value = defaultTimeWindowValue(),
                         step = 1),
             selectInput("stateChoices",
                         "Select up to six states",
                         names(stateLookup),
+                        selected = defaultStateChoices(),
                         multiple = TRUE),
-            tags$p("County data is available on the Case Growth, Mortality, and Summary tabs."),
+            tags$p("County data is available on the New Cases, New Deaths, and Summary tabs."),
             checkboxInput("chooseCounty", "Select up to six counties"), # "Select County(ies)"),
             # Without the spacer, the County dropbox overwrote the
             #  caption "Select County/Counties.
@@ -280,11 +120,11 @@ ui <- fluidPage(
                                      plotOutput("vaccRBox"),
                                      htmlOutput("vaccRTrendHTML"),
                                      plotOutput("vaccRTrend")))),
-                tabPanel("Case Growth",
+                tabPanel("New Cases",
                          mainPanel(htmlOutput("caseHeaderHTML"),
                                    plotOutput("caseBox"),
                                    plotOutput("caseTrend"))),
-                tabPanel("Mortality",
+                tabPanel("New Deaths",
                          mainPanel(htmlOutput("mortalityHeaderHTML"),
                                    # tags$p(textOutput("mortalityP1")),
                                    # tags$p(textOutput("mortalityP2")),
@@ -301,7 +141,8 @@ ui <- fluidPage(
                                    plotOutput("testRTrend"))),
                 tabPanel("Summary",
                          includeHTML("./www/harvard_link.html"),
-                         mainPanel(htmlOutput("summaryHTML"))))
+                         mainPanel(htmlOutput("summaryHTML"))),
+                selected = defaultSelectedTab())
             )
         )
 )
@@ -325,19 +166,10 @@ server <- function(input, output, session) {
       removeUI(selector = "#CountyXX")
     } else {
       if(! is.na(countyChoices()$choices[1])) {
+        # Be sure we use "Parish" or "Municipio" instead of "County" for
+        #  Louisiana, Puerto Rico respectively. Alaska is a problem also
+        #  because it has counties and non-county administrative entities
         admin1 <- admin1TypeFor(countyChoices()$stAbv)$UC_S
-# 
-#         admin1 <- "County"
-#         if (length(countyChoices()$choices) > 0) {
-#           if (! is.null(countyChoices()$stAbv)) {
-#             if (countyChoices()$stAbv == "LA") {
-#               admin1 <- "Parish"
-#             }
-#             if (countyChoices()$stAbv == "PR") {
-#               admin1 <- "Municipio"
-#             }
-#           }
-#         }
         if (length(countyChoices()$choices > 0)) {
           updateSelectInput(session, 'countyChoices',
                             label = admin1,
@@ -351,17 +183,9 @@ server <- function(input, output, session) {
   observeEvent(useCounty(), {
     if ((length(input$stateChoices) > 0) && input$stateChoices[1] != "DC") {
       if (input$chooseCounty) {
+        # cf comment above
         admin1 <- admin1TypeFor(countyChoices()$stAbv)$UC_S
         updateCheckboxInput(session, "movingAvg", value = TRUE)
-        # admin1 <- "County"
-        # if (length(input$stateChoices) > 0) {
-        #   if (input$stateChoices[1] == "LA") {
-        #     admin1 <- "Parish"
-        #   }
-        #   if (countyChoices()$stAbv == "PR") {
-        #     admin1 <- "Municipio"
-        #   }
-        # }
         insertUI(selector = "#Spacer", where="afterEnd",
                  # I couldn't figure out how to to make a selector work (for the call
                  # to removeUI) directly on the UI component created by
