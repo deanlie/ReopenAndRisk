@@ -26,15 +26,18 @@ loadUSConfirmedData <- function() {
   US_Confirmed_G7 <<- movingAverageGrowth(US_Confirmed,
                                           updateToThisDate,
                                           28, 7, nFirstCols=3,
-                                          tibbleName="US_Confirmed")
+                                          tibbleName="US_Confirmed",
+                                          traceThisRoutine = TRUE, prepend = "From loadUSDeathsData")
   US_State_Confirmed_G7 <<- movingAverageGrowth(US_State_Confirmed,
                                                 updateToThisDate,
                                                 28, 7, nFirstCols=3,
-                                                tibbleName="US_State_Confirmed")
+                                                tibbleName="US_State_Confirmed",
+                                                traceThisRoutine = TRUE, prepend = "From loadUSDeathsData")
   US_County_Confirmed_G7 <<- movingAverageGrowth(US_County_Confirmed,
                                                  updateToThisDate,
                                                  28, 7, nFirstCols=3,
-                                                 tibbleName="US_County_Confirmed")
+                                                 tibbleName="US_County_Confirmed",
+                                                 traceThisRoutine = TRUE, prepend = "From loadUSDeathsData")
 
   US_Confirmed_A7 <<- movingAverageData(US_Confirmed,
                                         updateToThisDate,
