@@ -6,7 +6,6 @@ library(RCurl)
 
 source("./dateFormatRoutines.R")
 source("./dataIsCurrent.R")
-source('./variableFieldNames.R')
 
 filenameOfSansCountyDataForDate <- function(aDate) {
   paste(jhuFileDateString(aDate), ".csv", sep="")
@@ -24,63 +23,200 @@ updateSansCountyDataForDate_URL <- function(aDate) {
 }
 
 typesSansCountyData <- function(aDate) {
-  vfn0 <- variableFieldNames(aDate - 1)
-  vfn1 <- variableFieldNames(aDate)
-  
-  newTypes <- c("Hospitalization_Rate", "Incident_Rate", "OUCH",
-                "People_Hospitalized", "OUCH", "Testing_Rate")
-  
-  thatDateTypes <- newTypes
-  prevDateTypes <- newTypes
-  
-  prevDateTypes[3] <- vfn0$mortality
-  prevDateTypes[5] <- vfn0$numberTested
-  thatDateTypes[3] <- vfn1$mortality
-  thatDateTypes[5] <- vfn1$numberTested
-  
-  list(thatDateTypes = thatDateTypes, prevDateTypes = prevDateTypes)
+  newTypes <- c("Incident_Rate", "Case_Fatality_Ratio",
+                "Total_Test_Results", "Testing_Rate")
+
+  list(thatDateTypes = newTypes, prevDateTypes = newTypes)
 }
 
 sumIgnoreNA <- function(x) {
   sum(x, na.rm = TRUE)
 }
 
-makeInitialSansCountyDataFrom0412 <- function(traceMe = FALSE) {
-  stop("Per request!")
-  traceThisRoutine <- traceMe
+discardNewerDataFromListOfTibbles <- function(listOfTibbles,
+                                              firstDateToDelete,
+                                              traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
-    print("Entered 'makeInitialSansCountyDataFrom0412'")
+    cat(file = stderr(), prepend, "Entered discardNewerDataFromListOfTibbles\n")
   }
-  # Download 04-12-2020_us.csv from Github if necessary
-  firstDate <- as.Date("2020-04-12")
+  
+  for (memberName in names(listOfTibbles)) {
+    columnNames <- names(listOfTibbles[[memberName]])
+    dateNames <- columnNames[grep("^1?[0-9]/[1-3]?[0-9]/2[0-9]$", columnNames)]
+    keepTheseNames <- columnNames[grep("^1?[0-9]/[1-3]?[0-9]/2[0-9]$", columnNames, invert = TRUE)]
+    for (aName in dateNames) {
+      if (mdy(aName) < firstDateToDelete) {
+        keepTheseNames <- c(keepTheseNames, aName)
+      }
+    }
+    listOfTibbles[[memberName]] <- listOfTibbles[[memberName]] %>%
+      select(any_of({keepTheseNames}))
+  }
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving discardNewerDataFromListOfTibbles\n")
+  }
+  return(listOfTibbles)
+}
 
+discardTooNewDataFromStateTibbles <- function(existingStateTibbles,
+                                              firstDateToDelete,
+                                              traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered discardTooNewDataFromStateTibbles\n")
+  }
+  
+  postSelectionTibbles <- discardNewerDataFromListOfTibbles(existingStateTibbles,
+                                                            firstDateToDelete,
+                                                            traceThisRoutine = traceThisRoutine,
+                                                            prepend = myPrepend)
+  
+  # for (aType in c("Total_Test_Results", "Case_Fatality_Ratio", "Incident_Rate", "Testing_Rate")) {
+  #   theNames <- names(existingStateTibbles[[aType]])
+  #   newNames <- c("Combined_Key", "Population")
+  #   for (aName in theNames) {
+  #     if (aName != "Combined_Key" & aName != "Population") {
+  #       if (mdy(aName) < firstDateToDelete) {
+  #         newNames <- c(newNames, aName)
+  #       }
+  #     }
+  #   }
+  #   existingStateTibbles[[aType]] <- existingStateTibbles[[aType]] %>%
+  #     select(any_of({newNames}))
+  # }
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving discardTooNewDataFromStateTibbles\n")
+  }
+  return(existingStateTibbles)
+}
+
+updateExistingStateDataFilesForTypes <- function(existingST,
+                                                 nDates = nDates,
+                                                 stopNDaysBeforePresent = stopNDaysBeforePresent,
+                                                 traceThisRoutine = traceThisRoutine,
+                                                 prepend = myPrepend) {
+  myPrepend = paste("  ", prepend, sep = "")  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered updateExistingStateDataFilesForTypes\n")
+  }
+  
+  # Drop the too-early dates
+  existingST <- discardOutdatedDataFromStateTibbles(existingST,
+                                                    keepUpToNDaysBeforePresent = nDates,
+                                                    traceThisRoutine = traceThisRoutine,
+                                                    prepend = myPrepend)
+  
+  # Find dates which are in sequence
+  commonNames <- commonNamesInStateTibbles(existingST)
+  lastDate <- Sys.Date() - stopNDaysBeforePresent
+  firstDate <- lastDate - nDates
+  
+  newST <- existingST
+  
+  # firstDate should be mdy(commonNames[3]), etc. Check everything!
+  lastNameIndex <- length(commonNames)
+  for (i in 0:(nDates - 1)) {
+    if (((i + 3) > lastNameIndex) | (mdy(commonNames[3 + i]) != (firstDate + i))){
+      # Add more dates up to latest
+      if (traceThisRoutine) {
+        cat(file = stderr(), myPrepend, "Must add data for",
+            format.Date(firstDate + i, "%m/%d/%y"), "through",
+            format.Date(lastDate, "%m/%d/%y"), "\n")
+      }
+      newST <- discardTooNewDataFromStateTibbles(existingStateTibbles,
+                                                 firstDate + i,
+                                                 traceThisRoutine = traceThisRoutine,
+                                                 prepend = myPrepend)
+      
+      newST <- addDateRangeToStateDataFilesForTypes(newST, firstDate + i, lastDate,
+                                                    traceThisRoutine = traceThisRoutine,
+                                                    prepend = myPrepend)
+      break
+    }
+  }
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered updateExistingStateDataFilesForTypes\n")
+  }
+  
+  return(newST)
+}
+
+updateStateDataFilesForTypes <- function(nDates = 60, stopNDaysBeforePresent = 0,
+                                         traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered updateStateDataFilesForTypes\n")
+  }
+  existingST <- openExistingStateTibbles()
+  commonNames <- commonNamesInStateTibbles(existingST)
+  lastDate <- Sys.Date() - stopNDaysBeforePresent
+  firstDate <- lastDate - nDates
+  desiredFirstName <- formatDateForColumnName(firstDate)
+  if (desiredFirstName %in% commonNames) {
+    if (traceThisRoutine) {
+      cat(file = stderr(), "We have", desiredFirstName, "in commonNames.\n")
+    }
+    newStateTibbles <- updateExistingStateDataFilesForTypes(existingST,
+                                                            nDates = nDates,
+                                                            stopNDaysBeforePresent = stopNDaysBeforePresent,
+                                                            traceThisRoutine = traceThisRoutine,
+                                                            prepend = myPrepend)
+  } else {
+    if (traceThisRoutine) {
+      cat(file = stderr(), "We don't have", desiredFirstName, "in commonNames, will rebuild from scratch\n")
+    }
+    newStateTibbles <- rebuildStateDataFilesForTypes(nDates = nDates,
+                                                     stopNDaysBeforePresent = stopNDaysBeforePresent,
+                                                     traceThisRoutine = traceThisRoutine,
+                                                     prepend = myPrepend)
+  }
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving updateStateDataFilesForTypes\n")
+  }
+  return(newStateTibbles)
+}
+
+makeInitialSansCountyData <- function(nDates = 90,
+                                      traceThisRoutine = FALSE, prepend = "") {
+  # stop("Per request!")
+  myPrepend = paste("  ", prepend, sep = "")  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered makeInitialSansCountyData\n")
+  }
+  
+  # Download <first_date>_us.csv from Github if necessary
+  firstDate <- sys.Date()
+  
   columnDate <- paste(month(firstDate),
                       day(firstDate),
                       (year(firstDate) - 2000), sep="/")
   options(show.error.messages = traceThisRoutine)
   if (traceThisRoutine) {
-    print(paste("before try(read_csv(",
-                pathnameOfSansCountyUpdateDataForDate(firstDate),
-                "in makeInitialSansCountyDataFrom0412"))
+    cat(file = stderr(), myPrepend,
+        paste("before try(read_csv(", pathnameOfSansCountyUpdateDataForDate(firstDate), "))\n", sep = ""))
   }
   updateTibble <- try(read_csv(pathnameOfSansCountyUpdateDataForDate(firstDate)))
   if (traceThisRoutine) {
-    print(paste("after try(read_csv(",
-                pathnameOfSansCountyUpdateDataForDate(firstDate),
-                "in makeInitialSansCountyDataFrom0412"))
+    cat(file = stderr(), myPrepend, paste("after try(read_csv(",
+                                          pathnameOfSansCountyUpdateDataForDate(firstDate),
+                                          "))\n", sep = ""))
   }
   options(show.error.messages = TRUE)
   if (class(updateTibble)[1] == "try-error") {
     if (traceThisRoutine) {
-      print(paste("Can't read ", pathnameOfSansCountyUpdateDataForDate(firstDate), sep=""))
+      cat(file = stderr(), myPrepend,
+          "Can't read ", pathnameOfSansCountyUpdateDataForDate(firstDate), "\n")
     }
     # No local file! Let's see if we can download it...
     if (url.exists(updateSansCountyDataForDate_URL(firstDate))) {
       if (traceThisRoutine) {
-        print(paste("Remote file ",
-                    updateSansCountyDataForDate_URL(firstDate),
-                    " exists, will try to download", 
-                    sep=""))
+        cat(file = stderr(), myPrepend, "Remote file",
+            updateSansCountyDataForDate_URL(firstDate),
+            "exists, will try to download\n")
       }
       # Get the first file
       updateTibble <- read_csv(updateSansCountyDataForDate_URL(firstDate),
@@ -92,17 +228,17 @@ makeInitialSansCountyDataFrom0412 <- function(traceMe = FALSE) {
                                                 ISO3 = col_character(),
                                                 Hospitalization_Rate = col_logical()))
       write_csv(updateTibble, pathnameOfSansCountyUpdateDataForDate(firstDate))
-      print(paste("OK, we downloaded and wrote", pathnameOfSansCountyUpdateDataForDate(firstDate)))
+      cat(file = stderr(), myPrepend,
+          "Downloaded and wrote", pathnameOfSansCountyUpdateDataForDate(firstDate), "\n")
     } else {
-      print("Maybe JHU removed data??? url.exists says no such file as")
-      print(paste('   ', updateSansCountyDataForDate_URL(firstDate)))
+      cat(file = stderr(), myPrepend,
+          "url.exists returns FALSE:", updateSansCountyDataForDate_URL(firstDate), "\n")
     }
   } else {
     if (traceThisRoutine) {
-      print(paste("We were able to read",
-                  pathnameOfSansCountyUpdateDataForDate(firstDate),
-                  "from local disk/SSD",
-                  sep = " "))
+      cat(file = stderr(), myPrepend, "We were able to read",
+          pathnameOfSansCountyUpdateDataForDate(firstDate),
+          "from local disk/SSD\n")
     }
   }
   aList <- typesSansCountyData(firstDate)
@@ -113,7 +249,7 @@ makeInitialSansCountyDataFrom0412 <- function(traceMe = FALSE) {
              Population = as.integer(100000 * Confirmed / Incident_Rate),
              "{columnDate}" := .data[[aType]],
              .keep = "none")
-
+    
     # TODO:
     # Test Puerto Rico and DC carefully in all paths of UI interaction
     
@@ -122,14 +258,18 @@ makeInitialSansCountyDataFrom0412 <- function(traceMe = FALSE) {
     newUSTibble <- newTibble %>%
       summarise(Province_State = "", Combined_Key = "US",
                 across(matches("^Pop|^[1-9]+/"), sumIgnoreNA))
-
+    
     write_csv(newUSTibble, paste("./DATA/US_", aType, ".csv", sep=""))
+  }
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving makeInitialSansCountyData\n")
   }
 }
 
-updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FALSE) {
+updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FALSE, prepend = "CALLER??") {
+  myPrepend <- paste("  ", prepend)
   if (traceThisRoutine) {
-    print("Entering 'updateStateLevelSerializedDataFilesAsNecessary'")
+    cat(file = stderr(), "Entered updateStateLevelSerializedDataFilesAsNecessary\n")
   }
 
   # Check the last state level serialized data file for last date;
@@ -143,7 +283,7 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
     # Update is required
     if (class(US_Testing_Rate)[1] == "try-error") {
       # There's no old data of the type we want.
-      makeInitialSansCountyDataFrom0412()
+      makeInitialSansCountyData(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
       # Now we should be able to get some data
       options(show.error.messages = TRUE)
       US_Testing_Rate <- try(read_csv("./DATA/US_Testing_Rate.csv",
@@ -153,13 +293,13 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
     } 
     # We have US_Testing_Rate for that type -- but it may not be up-to-date
     if (traceThisRoutine) {
-      print("  We have a data file, but it may not be current.")
+      cat(file = stderr(), myPrepend, "We have a data file, but it may not be current.\n")
     }
     # Get date range needed
     colNames <- names(US_Testing_Rate)
     lastName <- colNames[length(colNames)]
     if (traceThisRoutine) {
-      print(paste("  Latest data is from", lastName, sep = " "))
+      cat(file = stderr(), myPrepend, "Latest data is from", lastName, "\n")
     }
 
     lastDate <- mdy(lastName)
@@ -169,15 +309,15 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
                           day(updateDate),
                           (year(updateDate) - 2000), sep="/")
       if (traceThisRoutine) {
-        print(paste("  Getting data for update to", columnDate, sep = " "))
+        cat(file = stderr(), myPrepend, "Getting data for update to", columnDate, "\n")
       }
       # Read or download update file for that date
       options(show.error.messages = traceThisRoutine)
       if (traceThisRoutine) {
-        print(paste("  before try(read_csv(",
-                    pathnameOfSansCountyUpdateDataForDate(updateDate),
-                    "))", sep = ""))
-      }
+        cat(file = stderr(), myPrepend, paste("before try(read_csv(",
+                                              pathnameOfSansCountyUpdateDataForDate(updateDate),
+                                              "))\n", sep = ""))
+       }
       updateTibble <- try(read_csv(pathnameOfSansCountyUpdateDataForDate(updateDate),
                                    col_types = cols(.default = col_double(),
                                                     Province_State = col_character(),
@@ -187,22 +327,20 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
                                                     ISO3 = col_character(),
                                                     Hospitalization_Rate = col_logical())))
       if (traceThisRoutine) {
-        print("  Returned from try(read_csv(...))")
+        cat(file = stderr(), myPrepend, "Returned from try(read_csv(...))\n")
       }
       options(show.error.messages = TRUE)
       if (class(updateTibble)[1] == "try-error") {
         if (traceThisRoutine) {
-          print(paste("  Can't read ",
-                      pathnameOfSansCountyUpdateDataForDate(updateDate),
-                      sep=""))
+          cat(file = stderr(), myPrepend, "Can't read",
+              pathnameOfSansCountyUpdateDataForDate(updateDate),"\n")
         }
         # No local file! Let's see if we can download it...
         if (url.exists(updateSansCountyDataForDate_URL(updateDate))) {
           if (traceThisRoutine) {
-            print(paste("  Remote file ",
-                        updateSansCountyDataForDate_URL(updateDate),
-                        " exists, will try to download", 
-                        sep=""))
+            cat(file = stderr(), myPrepend, "Remote file ",
+                updateSansCountyDataForDate_URL(updateDate),
+                "exists, will try to download\n")
           }
           # Get the first file
           updateTibble <- read_csv(updateSansCountyDataForDate_URL(updateDate),
@@ -213,16 +351,18 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
                                                     People_Hospitalized = col_logical(),
                                                     ISO3 = col_character(),
                                                     Hospitalization_Rate = col_logical()))
+          cat(file = stderr(), myPrepend, "OK, we downloaded",
+              updateSansCountyDataForDate_URL(updateDate), "\n")
           write_csv(updateTibble, pathnameOfSansCountyUpdateDataForDate(updateDate))
           if (traceThisRoutine) {
-            print(paste("  OK, we downloaded and wrote", pathnameOfSansCountyUpdateDataForDate(updateDate)))
+            cat(file = stderr(), myPrepend, "... and wrote",
+                pathnameOfSansCountyUpdateDataForDate(updateDate), "\n")
           }
         } else {
           if (traceThisRoutine) {
-            print(paste("Remote file ",
-                        updateSansCountyDataForDate_URL(updateDate),
-                        " not accessible or does not exist",
-                        sep=""))
+            cat(file = stderr(), myPrepend, "Remote file ",
+                updateSansCountyDataForDate_URL(updateDate),
+                "not accessible or does not exist","\n")
           }
         }
       }
@@ -236,26 +376,27 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
           newLocalDataPath <- paste("./DATA/US_State_", thatType, ".csv", sep = "")
           newLocalUSDataPath <- paste("./DATA/US_", thatType, ".csv", sep = "")
           if (traceThisRoutine) {
-            print(paste("Updating ", oldLocalDataPath, "to", newLocalDataPath, sep=""))
-            print(paste("before try(read_csv(", oldLocalDataPath,
-                        ".. in updateStateLevelSerializedDataFilesAsNecessary",
-                        sep=""))
+            cat(file = stderr(), myPrepend, "Updating ", oldLocalDataPath, "to", newLocalDataPath,"\n")
+            cat(file = stderr(), myPrepend,
+                paste("before try(read_csv(", oldLocalDataPath, ")\n", sep = ""))
           }
           options(show.error.messages = traceThisRoutine)
           oldData <- try(read_csv(oldLocalDataPath,
                                   col_types = cols(.default = col_double(),
-                                                   # OUCH Province_State = col_logical(),
+                                                   Province_State = col_character(), # OUCH 
                                                    Combined_Key = col_character())))
           if (traceThisRoutine) {
-            print(paste("after try(read_csv(", localDataPath,
-                        ".. in updateStateLevelSerializedDataFilesAsNecessary",
-                        sep=""))
+            cat(file = stderr(), myPrepend,
+                paste("after try(read_csv(", oldLocalDataPath, "))\n", sep=""))
           }
           options(show.error.messages = TRUE)
           # Update is required
-          if (class(oldData)[1] == "try-error") {
-            print(paste("read_csv(", oldLocalDataPath,") failed", sep=""))
-            print(paste("  newLocalDataPath = ", newLocalDataPath))
+          if (traceThisRoutine) {
+            if (class(oldData)[1] == "try-error") {
+              cat(file = stderr(), myPrepend,
+                  paste("read_csv(", oldLocalDataPath,") failed\n", sep=""))
+              cat(file = stderr(), myPrepend, "newLocalDataPath = ", newLocalDataPath, "\n")
+            }
           }
           joinTibble <- updateTibble %>%
             mutate(Combined_Key = paste(Province_State, ", US", sep=""),
@@ -276,6 +417,6 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
     }
   }
   if (traceThisRoutine) {
-    print("Exiting 'updateStateLevelSerializedDataFilesAsNecessary'")
+    cat(file = stderr(), prepend, "Leaving updateStateLevelSerializedDataFilesAsNecessary\n")
   }
 }

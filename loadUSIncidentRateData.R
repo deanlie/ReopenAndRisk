@@ -16,23 +16,19 @@ loadUSIncidentRateData <- function() {
                                       col_types = cols(.default = col_double(),
                                                        Combined_Key = col_character()))
   US_Incident_Rate_G7 <<- movingAverageGrowth(US_Incident_Rate,
-                                              updateToThisDate,
-                                              28, 7, nFirstCols=3,
+                                              updateToThisDate, 28, 7,
                                               tibbleName="US_Incident_Rate",
                                               traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   US_State_Incident_Rate_G7 <<- movingAverageGrowth(US_State_Incident_Rate,
-                                                    updateToThisDate,
-                                                    28, 7, nFirstCols=3,
+                                                    updateToThisDate, 28, 7,
                                                     tibbleName="US_State_Incident_Rate",
                                                     traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   US_Incident_Rate_A7 <<- movingAverageData(US_Incident_Rate,
-                                            updateToThisDate,
-                                            28, 7, nFirstCols=3,
+                                            updateToThisDate, 28, 7,
                                             tibbleName="US_Incident_Rate",
                                             traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   US_State_Incident_Rate_A7 <<- movingAverageData(US_State_Incident_Rate,
-                                                  updateToThisDate,
-                                                  28, 7, nFirstCols=3,
+                                                  updateToThisDate, 28, 7,
                                                   tibbleName="US_State_Incident_Rate",
                                                   traceThisRoutine = traceThisRoutine, prepend = myPrepend)
 }

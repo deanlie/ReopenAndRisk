@@ -26,7 +26,7 @@ source("doTestResultsTab.R")
 source("doSummaryTab.R")
 
 updateTimeSeriesDataFilesAsNecessary()
-updateStateLevelSerializedDataFilesAsNecessary()
+updateStateLevelSerializedDataFilesAsNecessary(traceThisRoutine = TRUE, prepend = "APP!")
 loadAllUSData()
 
 currentlyTesting <- function() {
@@ -55,7 +55,7 @@ defaultStateChoices <- function() {
 
 defaultSelectedTab <- function() {
   if (currentlyTesting()) {
-    "Test Results"
+    "Test Growth"
   } else {
     NULL
   }

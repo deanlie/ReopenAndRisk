@@ -1,57 +1,40 @@
 library(tidyverse)
 library(lubridate)
 
-nColumnsBeforeDates <- function(aTibble) {
-  theNames <- names(aTibble)
-  nCols <- length(theNames)
-  warnOption = getOption("warn")
-  options(warn = -1)
-  maybeDates <- mdy(theNames)
-  options(warn = warnOption)
-  nFirstCols <- 0
-  for (i in 1:nCols) {
-    if (is.na(maybeDates[i])) {
-      nFirstCols <- i
-    } else {
-      break
-    }
-  }
-  nFirstCols
-}
+source("./columnUtilities.R")
 
-findColumnRangeForDate <- function(aTibble, aDate, nDays, tibbleName = "TIBBLE NAME??", nFirstCols = 3,
+findColumnRangeForDate <- function(aTibble, aDate, nDays, tibbleName = "TIBBLE NAME??",
                                    traceThisRoutine = FALSE, prepend = "CALLER??") {
   myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered findColumnRangeForDate\n")
-
-    browser()
   }
   
   theNames <- names(aTibble)
   nCols <- length(theNames)
-  nFirstCols = nColumnsBeforeDates(aTibble)
+  nBeforeDates <- nColumnsBeforeDates(aTibble)
 
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, tibbleName,
-        "nFirstCols = ", nFirstCols,
-        " theNames[nFirstCols + 1] = ", theNames[nFirstCols + 1],
+        "nBeforeDates = ", nBeforeDates,
+        " theNames[nBeforeDates + 1] = ", theNames[nBeforeDates + 1],
         "\n")
   }
-  earliestInTibble <- mdy(theNames[nFirstCols + 1])
+  earliestInTibble <- mdy(theNames[nBeforeDates + 1])
   latestInTibble <- mdy(theNames[nCols])
   
   startColumn <- NA
   endColumn <- NA
+
   if (aDate > latestInTibble) {
     # Give 'em the last nDays that we can;
     # it covers their requested start date that's available.
-    startColumn <- max(nFirstCols + 1, nCols - (nDays - 1))
+    startColumn <- max(nBeforeDates + 1, nCols - (nDays - 1))
     endColumn <- nCols
   } else if ((aDate - (nDays - 1)) < earliestInTibble) {
     # Give 'em the first nDays that we can; that covers
     # their requested end date if that's available.
-    startColumn <- nFirstCols + 1
+    startColumn <- nBeforeDates + 1
     endColumn <- min(nCols, startColumn + (nDays - 1))
   } else {
     endColumn <- nCols - as.integer(latestInTibble - aDate)
@@ -72,7 +55,7 @@ zerolessRowIndices <- function(aTibble, aColumnRange) {
 }
 
 computeNewOnDayAndGrowthRate <- function(aTibble, aDate,
-                                         nDays = 10, nFirst = 4,
+                                         nDays = 10,
                                          getGrowthRate = TRUE, nonzeroOnly = FALSE,
                                          tibbleName = "from computeNewOnDayAndGrowthRate",
                                          traceThisRoutine = TRUE, prepend = "CALLER??") {
@@ -82,7 +65,7 @@ computeNewOnDayAndGrowthRate <- function(aTibble, aDate,
   }
   
   # Get a range of nDays + 1 so you can compute nDays growth
-  theRange <- findColumnRangeForDate(aTibble, aDate, nDays + 1, nFirstCols = nFirst,
+  theRange <- findColumnRangeForDate(aTibble, aDate, nDays + 1,
                                      tibbleName = tibbleName,
                                      traceThisRoutine = traceThisRoutine, prepend = myPrepend)
 
@@ -107,8 +90,8 @@ computeNewOnDayAndGrowthRate <- function(aTibble, aDate,
   # possible, filter them out just before plotting (clamp the ratios
   # to something really high like [-100%, +50%] growth/day)
 
-  # There may not be enough columns after nFirst (as received by this routine)
-  #  to get nDays + 1 of data. Therefore, we have to use theRange to get
+  # There may not be enough columns with per-date data to get
+  #  nDays + 1 of data. Therefore, we have to use theRange to get
   #  NewerData and OlderData.
   NewerData <- theData[, 3:(2 + theRange$endColumn - theRange$startColumn)]
   OlderData <- theData[, 2:(1 + theRange$endColumn - theRange$startColumn)]
@@ -134,29 +117,37 @@ computeNewOnDayAndGrowthRate <- function(aTibble, aDate,
 }
 
 # Make an n-day moving average of a time series
-movingAverageData <- function(aTibble, aDate, mAvgs, nDayAvg, nFirstCols=4,
+movingAverageData <- function(aTibble, aDate, mAvgs, nDayAvg,
                               tibbleName="TIBBLE NAME??",
                               traceThisRoutine = TRUE, prepend = "CALLER??") {
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered movingAverageData\n")
+    cat(file = stderr(), prepend, "Entered movingAverageData for", tibbleName, "\n")
   }
-  theRange  <- findColumnRangeForDate(aTibble, aDate, mAvgs + nDayAvg, nFirstCols=nFirstCols,
+  nBeforeDates <- nColumnsBeforeDates(aTibble)
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "nBeforeDates computed as", nBeforeDates, "\n")
+  }
+
+  theRange  <- findColumnRangeForDate(aTibble, aDate, mAvgs + nDayAvg,
                                       tibbleName=tibbleName,
                                       traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "theRange:", theRange$startColumn, theRange$endColumn, "\n")
   }
-  firstForAvg <- max((nFirstCols + 1), theRange$endColumn - mAvgs + 1)
+  firstForAvg <- max((nBeforeDates + 1), theRange$endColumn - mAvgs + 1)
   lastForAvg  <- theRange$endColumn
-  Avgs <- select(aTibble, all_of(firstForAvg):all_of(lastForAvg))
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "firstForAvg", firstForAvg, "lastForAvg", lastForAvg, "\n")
+  }
+  Avgs <- select(aTibble, {firstForAvg}:{lastForAvg})
   if (traceThisRoutine) {
     nDigits = getOption("digits")
     options(digits = 1)
     cat(file = stderr(), myPrepend, "Data for moving average computation = ", as_vector(Avgs[2,]), "\n")
     options(digits = nDigits)
   }
-  last_i <- max(0, min((nDayAvg - 1), ((firstForAvg - nFirstCols) - 1)))
+  last_i <- max(0, min((nDayAvg - 1), ((firstForAvg - nBeforeDates) - 1)))
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "last_i =", last_i, "\n")
   }
@@ -174,7 +165,7 @@ movingAverageData <- function(aTibble, aDate, mAvgs, nDayAvg, nFirstCols=4,
     options(digits = nDigits)
   }
   
-  theFirstCols  <- select(aTibble, 1:all_of(nFirstCols))
+  theFirstCols  <- select(aTibble, 1:all_of(nBeforeDates))
   Averages      <- bind_cols(theFirstCols, as_tibble(Avgs))
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving movingAverageData\n")
@@ -189,32 +180,37 @@ movingAverageData <- function(aTibble, aDate, mAvgs, nDayAvg, nFirstCols=4,
 # and m columns each of which has n-day moving
 # average of the daily changes of the input tibble,
 # computed as 1/n th of the difference between day j and day (j + n)
-movingAverageGrowth <- function(aTibble, aDate, mAvgs, nDayAvg, nFirstCols=4,
+movingAverageGrowth <- function(aTibble, aDate, mAvgs, nDayAvg,
                                 tibbleName = "TIBBLE NAME??",
                               traceThisRoutine = TRUE, prepend = "CALLER??") {
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered movingAverageGrowth\n")
   }
+  nBeforeDates <- nColumnsBeforeDates(aTibble)
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "nBeforeDates computed as", nBeforeDates, "\n")
+  }
+
   dims = dim(aTibble)
-  theRange  <- findColumnRangeForDate(aTibble, aDate, mAvgs + nDayAvg, nFirstCols=nFirstCols,
+  theRange  <- findColumnRangeForDate(aTibble, aDate, mAvgs + nDayAvg,
                                       tibbleName=tibbleName,
                                       traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "theRange:", theRange$startColumn, theRange$endColumn, "\n")
   }
-  theData   <- as.data.frame(aTibble)[, c(1:nFirstCols, theRange$startColumn:theRange$endColumn)]
-  NewerData <- theData[,(nFirstCols + 1 + nDayAvg):(nFirstCols + nDayAvg + mAvgs)]
-  OlderData <- theData[,(nFirstCols + 1):(nFirstCols + mAvgs)]
+  theData   <- as.data.frame(aTibble)[, c(1:nBeforeDates, theRange$startColumn:theRange$endColumn)]
+  NewerData <- theData[,(nBeforeDates + 1 + nDayAvg):(nBeforeDates + nDayAvg + mAvgs)]
+  OlderData <- theData[,(nBeforeDates + 1):(nBeforeDates + mAvgs)]
   Avgs      <- (NewerData - OlderData) / nDayAvg
   if (traceThisRoutine) {
     nDigits = getOption("digits")
     options(digits = 1)
-    cat(file = stderr(), myPrepend, "Data for moving average computation = ", as_vector(Avgs[2,]), "\n")
+    cat(file = stderr(), myPrepend, "Data for moving average computation = ", as_vector(Avgs[1,]), "\n")
     options(digits = nDigits)
   }
   
-  theFirstCols  <- select(as_tibble(theData), 1:all_of(nFirstCols))
+  theFirstCols  <- select(as_tibble(theData), 1:all_of(nBeforeDates))
   Averages      <- bind_cols(theFirstCols, as_tibble(Avgs))
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving movingAverageGrowth\n")

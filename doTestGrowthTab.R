@@ -48,7 +48,6 @@ plotTestGrowthBoxplots <- function(chooseCounty, movingAvg, countyChoices,
   } else {
     title <- "COVID Testing Growth Distribution"
   }
-  
   assembleGrowthBoxPlot(theData,
                         chooseCounty,
                         countyChoices,

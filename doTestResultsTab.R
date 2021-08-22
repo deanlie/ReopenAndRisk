@@ -12,21 +12,28 @@ plotTestResultBoxplots <- function(chooseCounty, movingAvg, countyChoices,
                                    stateChoices, timeWindow) {
   prepend <- ""
   traceThisRoutine <- FALSE
-  myPrepend <- paste("  ", prepend, sep = "")
+  # myPrepend <- paste("  ", prepend, sep = "")
+  myPrepend <- "from plotTestResultBoxplots"
 
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered plotTestResultBoxplots\n")
   }
+
+  # browser()
 
   # updateDataForUSTypeIfNeeded("Confirmed")
   if (movingAvg) {
     title <- "Test Positivity Distribution, 7 day moving average"
     theCaseData <- US_State_Confirmed_A7
     theTestData <- US_State_People_Tested_A7 
+    numTibbleName <- "US_State_Confirmed_A7"
+    denomTibbleName <- "US_State_People_Tested_A7"
   } else {
     title <- "Test Positivity Distribution"
     theCaseData <- US_State_Confirmed
     theTestData <- US_State_People_Tested 
+    numTibbleName <- "US_State_Confirmed"
+    denomTibbleName <- "US_State_People_Tested"
   }
   
   result <- assembleRatioDeltaBoxPlot(theCaseData, theTestData, stateChoices,
@@ -35,11 +42,14 @@ plotTestResultBoxplots <- function(chooseCounty, movingAvg, countyChoices,
                             "Test Positivity: percent of tests returning positive",
                             clampFactor = 1,
                             timeWindow = timeWindow,
-                            nFirstNum = 2, nFirstDenom = 2,
+                            numTibbleName = numTibbleName,
+                            denomTibbleName = denomTibbleName,
                             traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving plotTestResultBoxplots\n")
   }
+
   return(result)
 }
 
@@ -81,7 +91,6 @@ plotTestResultTrend <- function(chooseCounty, movingAvg, countyChoices,
                               paste("Last", timeWindow, "days"),
                               "Test Positivity: percent of tests returning positive",
                               timeWindow = timeWindow,
-                              nFirstNum = 2, nFirstDenom = 2,
                               traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving plotTestResultTrend\n")

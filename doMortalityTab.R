@@ -1,4 +1,4 @@
-source("./loadUSDeathsData.R")
+# source("./loadUSDeathsData.R")
 source("./state_abbrev_lookup.R")
 source("./assemblePlotObject.R")
 

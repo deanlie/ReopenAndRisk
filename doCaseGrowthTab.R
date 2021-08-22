@@ -1,4 +1,3 @@
-source("./loadUSConfirmedData.R")
 source("./state_abbrev_lookup.R")
 source("./assemblePlotObject.R")
 

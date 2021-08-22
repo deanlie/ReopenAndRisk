@@ -4,8 +4,6 @@ assembleRatioDeltaBoxPlot <- function(numeratorFrame, denominatorFrame,
                                       stateChoices, theTitle, xlabel, ylabel,
                                       clampFactor = 3,
                                       timeWindow = 14,
-                                      nFirstNum = 4,
-                                      nFirstDenom = 4,
                                       traceThisRoutine = TRUE,
                                       prepend = "CALLER??") {
   if (traceThisRoutine) {
@@ -14,13 +12,12 @@ assembleRatioDeltaBoxPlot <- function(numeratorFrame, denominatorFrame,
   myPrepend <- paste("  ", prepend, sep = "")
   
   myDataFrame <- ratioDeltaFrame(numeratorFrame, denominatorFrame, timeWindow,
-                                 nFirstNum = nFirstNum, nFirstDenom = nFirstDenom,
                                  traceThisRoutine, myPrepend)
   res <- computePlotDataDirectFromCumulative(myDataFrame, 
                                              FALSE, # OUCH chooseCounty,
                                              NULL,  # OUCH countyChoices,
                                              stateChoices,
-                                             timeWindow, nFirst = 1,
+                                             timeWindow,
                                              traceThisRoutine = traceThisRoutine,
                                              prepend = myPrepend)
   
@@ -80,7 +77,6 @@ plotTestResultBoxplotsX <- function(chooseCounty, movingAvg, countyChoices,
                                       "Test Positivity: percent of tests returning positive",
                                       clampFactor = 1,
                                       timeWindow = timeWindow,
-                                      nFirstNum = 2, nFirstDenom = 2,
                                       traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving plotTestResultBoxplots\n")

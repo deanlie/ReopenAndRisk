@@ -23,11 +23,11 @@ source("./computeNewAndGrowth.R")
 # 
 #   US_Vaccinations_A7 <<- movingAverageData(US_Vaccinations,
 #                                            updateToThisDate,
-#                                            28, 7, nFirstCols=2,
+#                                            28, 7,
 #                                            tibbleName="US_Vaccinations")
 #   US_State_Vaccinations_A7 <<- movingAverageData(US_State_Vaccinations,
 #                                                  updateToThisDate,
-#                                                  28, 7, nFirstCols=2,
+#                                                  28, 7,
 #                                                  tibbleName="US_State_Vaccinations")
 #   
 #   US_Vaccination_Pcts_A7 <<- US_Vaccinations_A7
@@ -40,7 +40,7 @@ loadUSVaccinationData <- function() {
   }
 
   traceThisRoutine = FALSE
-  myPrepend = "From loadUSDeathsData"
+  myPrepend = "From loadUSVaccinationData"
 
   updateToThisDate <- today("EST")
   
@@ -99,12 +99,12 @@ loadUSVaccinationData <- function() {
   getNAvgs <- min(28, (updateToThisDate - as.Date('2021-03-23'))) 
   US_Vaccination_Pcts_A7 <<- movingAverageData(US_Vaccination_Pcts,
                                                updateToThisDate,
-                                               getNAvgs, 7, nFirstCols=3,
+                                               getNAvgs, 7,
                                                tibbleName="US_Vaccination_Pcts",
                                                traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   US_State_Vaccination_Pcts_A7 <<- movingAverageData(US_State_Vaccination_Pcts,
                                                      updateToThisDate,
-                                                     getNAvgs, 7, nFirstCols=3,
+                                                     getNAvgs, 7,
                                                      tibbleName="US_State_Vaccination_Pcts",
                                                      traceThisRoutine = traceThisRoutine, prepend = myPrepend)
 }

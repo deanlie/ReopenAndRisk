@@ -101,6 +101,6 @@ plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
                           title,
                           paste("Last", timeWindow, "days"),
                           "Daily vaccination percentages",
-                          timeWindow = timeWindow, nFirst = 3,
+                          timeWindow = timeWindow,
                           tibbleName = "from plotVaccTrend")
 }

@@ -106,7 +106,6 @@ computeStatsOfLocale <- function(aCounty, stateAbbrev,
       deathsTotalAvg        <- US_State_Deaths_A7
       
       incidentRateData      <- US_State_Incident_Rate_G7
-      hospNumberNewAvg      <- US_State_People_Hospitalized_G7
       haveStateOrUSData     <- TRUE
     } else {
       confirmedCaseNewAvg   <- US_Confirmed_G7
@@ -115,7 +114,6 @@ computeStatsOfLocale <- function(aCounty, stateAbbrev,
       deathsTotalAvg        <- US_Deaths_A7
       
       incidentRateData      <- US_Incident_Rate_G7
-      hospNumberNewAvg      <- US_People_Hospitalized_G7
       haveStateOrUSData <- TRUE
     }
   }
@@ -161,30 +159,6 @@ computeStatsOfLocale <- function(aCounty, stateAbbrev,
     # Estimate new cases from deaths
     growthRateEst  <- deathStats$lastPer100K * 100
     growthTrendEst <- deathStats$growthPctTrend
-    
-    if (haveStateOrUSData) {
-      # Clipped from USA daily state reports
-      #   (csse_covid_19_daily_reports_us) readme on GitHub:
-      # Hospitalization_Rate - US Hospitalization Rate (%): =
-      #   Total number hospitalized / Number cases.
-      #   The "Total number hospitalized" is the
-      #   "Hospitalized – Cumulative" count from COVID Tracking Project.
-      #   The "hospitalization rate" and "Total number hospitalized"
-      #   is only presented for those states which provide cumulative
-      #   hospital data.
-      
-      hospStats <- statsFromDataAndKey(hospNumberNewAvg,
-                                       hospNumberNewAvg, # RED_FLAG I dunno...
-                                       theLocaleKeys,
-                                       localePopulation)
-      # Get desired statistics from incidentRateData and any
-      #  other data sets not available at  county level
-    } else {
-      # Set corresponding fields NA
-      hospStats <-  list(localeData = NA,
-                         growthPctTrend = NA,
-                         nNow = NA)
-    }
   } else {
     localePopulation <- NA
     confirmedGrowth  <- list(localeData     = NA,
@@ -199,20 +173,6 @@ computeStatsOfLocale <- function(aCounty, stateAbbrev,
                               nPrevWk    = NA)
     growthRateEst     <- NA
     growthTrendEst    <- NA
-    hospStats         <- list(localeData     = NA,
-                              growthPctTrend = NA,
-                              nNow           = NA)
-  }
-  
-  if (doTrace) {
-    print(paste("  Hosp: total",
-                format(hospStats$nNow, digits=4)))
-    print(paste("  new",
-                format(confirmedGrowth$nNow,
-                                digits=4)))
-    print(paste("  quotient as pct",
-                format(100*hospStats$nNow/confirmedGrowth$nNow,
-                       digits=4)))
   }
 
   list(popRecord    = localePopulationRecord,
@@ -230,11 +190,8 @@ computeStatsOfLocale <- function(aCounty, stateAbbrev,
        estGroNow    = deathStats$nNow,
        estGroWkD    = (deathStats$nNow - deathStats$nPrevWk),
 
-       HaveMore     = haveStateOrUSData,
-
-       hospDat      = hospStats$localeData,
-       hospRate     = 100 * hospStats$nNow / confirmedGrowth$nNow,
-       hospGroTrend = hospStats$growthPctTrend)
+       HaveMore     = haveStateOrUSData
+       )
 }
 
 ratingFromStatistic <- function(theStat, cutoffs, whatStat, doTrace = FALSE) {
@@ -331,18 +288,7 @@ evaluationOfLocale <- function(aCounty, stateAbbrev, doTrace = FALSE) {
         overall <- max(overall, aRating)
       }
     }
-    
-    if (! is.na(incData$hospRate)) {
-      newHospTxt <- paste("Hospitalization growth: ",
-                          format(incData$hospRate, digits=3),
-                          "% of case growth",
-                          sep = "")
-      hospTrendTxt <- validTrendString(incData$hospGroTrend, "hospitalizations")
-    } else {
-      newHospTxt = NA
-      hospTrendTxt = NA
-    }
-    
+
     caseIncLI   <- as.character(tags$li(caseIncidenceTxt, class=classes[CIC]))
     caseTrendLI <- as.character(tags$li(caseTrendTxt,     class=classes[CIT]))
     estIncLI    <- as.character(tags$li(estIncidenceTxt,  class=classes[EIC]))
@@ -363,19 +309,9 @@ evaluationOfLocale <- function(aCounty, stateAbbrev, doTrace = FALSE) {
                                                "are not very reliable."),
                                          class=classes[5]))
     }
-    
-    if (!is.na(newHospTxt)) {
-      hospPart <- paste(as.character(tags$li(newHospTxt, class=classes[5])),
-                        as.character(tags$li(hospTrendTxt, class=classes[5])),
-                        sep="")
-    } else {
-      hospPart <- as.character(tags$li("Hospitalization data not available",
-                                       class=classes[5]))
-    }
-    
+
     as.character(tags$div(tags$h4(incData$popRecord$CountyName),
                           tags$ul(HTML(paste(commonPart,
-                                             hospPart,
                                              lowPopPart,
                                              sep=""))),
                           class=classes[overall]))
