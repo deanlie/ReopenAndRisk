@@ -32,22 +32,40 @@ leastSquaresTrendParams <- function(x0, y0)  {
 }
 
 processAreaChoices <- function(chooseCounty, countyChoices, stateChoices) {
+  browser()
+
   if (length(stateChoices) == 0) {
     areasOfInterest <- c("US")
-  } else if (length(countyChoices) == 0) {
-    if (length(stateChoices) > 6) {
-      stateChoices <- stateChoices[1:6]
-    }
-    sort(stateChoices)
-    areasOfInterest <- paste(unname(stateLookup[stateChoices]), ", US", sep="")
-  } else {
+  } else if (chooseCounty & (length(countyChoices) > 0)) {
     if (length(countyChoices) > 6) {
       countyChoices <- countyChoices[1:6]
     }
     sort(countyChoices)
     theState <- unname(stateLookup[stateChoices[1]])
     areasOfInterest <- paste(countyChoices, ", ", theState, ", US", sep="")
+  } else {
+    if (length(stateChoices) > 6) {
+      stateChoices <- stateChoices[1:6]
+    }
+    sort(stateChoices)
+    areasOfInterest <- paste(unname(stateLookup[stateChoices]), ", US", sep="")
   }
+  # 
+  # 
+  # } else if ((!chooseCounty) | length(countyChoices) == 0 | (countyChoices == "")) {
+  #   if (length(stateChoices) > 6) {
+  #     stateChoices <- stateChoices[1:6]
+  #   }
+  #   sort(stateChoices)
+  #   areasOfInterest <- paste(unname(stateLookup[stateChoices]), ", US", sep="")
+  # } else {
+  #   if (length(countyChoices) > 6) {
+  #     countyChoices <- countyChoices[1:6]
+  #   }
+  #   sort(countyChoices)
+  #   theState <- unname(stateLookup[stateChoices[1]])
+  #   areasOfInterest <- paste(countyChoices, ", ", theState, ", US", sep="")
+  # }
   areasOfInterest
 }
 
@@ -87,7 +105,10 @@ computePlotDataFromFrame <- function(aFrame,
   areasOfInterest <- processAreaChoices(chooseCounty,
                                         countyChoices,
                                         stateChoices)
-
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "processAreaChoices returns", paste(areasOfInterest), "\n")
+  }
+  
   # Compute trend line data for selected states
   trendFrame <- aFrame
   
@@ -153,6 +174,7 @@ computePlotDataFromFrame <- function(aFrame,
                          nums = yCol, trends = trendCol, region = stateCol)
 
   if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "areasOfInterest = ", paste(areasOfInterest), "\n")
     cat(file = stderr(), prepend, "Leaving computePlotDataFromFrame\n")
   }
 
@@ -169,6 +191,11 @@ computePlotDataDirectFromCumulative <- function(aFrame, chooseCounty,
     cat(file = stderr(), prepend, "Entered computePlotDataDirectFromCumulative\n")
     cat(file = stderr(), myPrepend, "dim(aFrame) = (", paste(dim(aFrame)), ")\n")
   }
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "stateChoices = ", paste(stateChoices), "\n")
+  }
+
   result = computePlotDataFromFrame(computeNewOnDayAndGrowthRate(aFrame,
                                                                  today("EST"),
                                                                  timeWindow,
@@ -180,6 +207,7 @@ computePlotDataDirectFromCumulative <- function(aFrame, chooseCounty,
                                     stateChoices, traceThisRoutine = traceThisRoutine,
                                     prepend = myPrepend)
   if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "result$AreasOfInterest = ", paste(result$AreasOfInterest), "\n")
     cat(file = stderr(), prepend, "Leaving computePlotDataDirectFromCumulative\n")
   }
 
