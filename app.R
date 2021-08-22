@@ -115,17 +115,17 @@ plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
   
   theData <- makeFullyVaccDataIfNeeded(tooMuchData, vaccChoice)
   
-  timeWindow = min(timeWindow, dim(theData)[2] - 4)
+  timeWindow <- min(timeWindow, dim(theData)[2] - 4)
   
   vaccTrendData <<- list(full=tooMuchData, filtered=theData)
   
-  assembleDirectBoxPlot(theData, FALSE,
-                        c(""),
+  assembleDirectBoxPlot(theData, FALSE, NULL,
                         stateChoices,
                         title,
                         paste("Last", timeWindow, "days"),
                         "Daily vaccination growth",
-                        clampFactor = 3, timeWindow = timeWindow)
+                        clampFactor = 3, timeWindow = timeWindow,
+                        nFirst = 3)
 }
 
 plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {

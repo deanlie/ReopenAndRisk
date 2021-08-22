@@ -74,7 +74,7 @@ updateDataForUSTimeSeriesType <- function(aType) {
   lcType <- stri_trans_tolower(aType)
 
   if (traceThisRoutine) {
-    print(paste("rawDataURL = ", TS_URL(lcType, "US"), sep=""))
+    cat(file=stderr(),"rawDataURL = ", TS_URL(lcType, "US"),"\n")
   }
 
   if (aType %in% c("Confirmed", "Deaths", "Recovered")) {  
@@ -137,7 +137,13 @@ updateDataFilesForUSTimeSeriesTypeIfNeeded <- function(aType) {
 }
 
 getVaccDataByGeography <- function(traceThisRoutine = FALSE) {
+  if (traceThisRoutine) {
+    cat(file=stderr(), "Entered 'getVaccDataByGeography'", "\n")
+  }
   if (url.exists(Vacc_URL())) {
+    if (traceThisRoutine) {
+      cat(file=stderr(), "   Vacc_URL() exists", "\n")
+    }
     rawData <- try(read_csv(Vacc_URL(),
                             col_types = cols(.default = col_double(),
                                              Province_State = col_character(),
@@ -147,23 +153,30 @@ getVaccDataByGeography <- function(traceThisRoutine = FALSE) {
                                              Combined_Key = col_character())))
     
     if (class(rawData)[1] == "try-error") {
+      if (traceThisRoutine) {
+        cat(file=stderr(), "   read of Vacc_URL() failed, returning error:", "\n")
+        cat(file=stderr(), rawData, "\n")
+      }
       dataByGeography <- rawData
     } else {
+      if (traceThisRoutine) {
+        cat(file=stderr(), "   read of Vacc_URL() succeeded", "\n")
+      }
+      
       justStateData <- rawData %>%
         as_tibble() %>%
         filter(!is.na(FIPS )) %>%
         arrange(FIPS) %>%
         filter(Vaccine_Type == "All") %>%
-        select(FIPS, Province_State, Combined_Key,
+        select(FIPS, Province_State, Combined_Key, Date,
                Doses_alloc, Doses_shipped, Doses_admin,
                Stage_One_Doses, Stage_Two_Doses)
       
-      if (traceThisRoutine) {
-        print("in getVaccDataByGeography")
-      }
-      
       US_to_prepend <- summarise(justStateData,
-                                 FIPS = 0, Province_State = "US", Combined_Key = "US",
+                                 FIPS = 0,
+                                 Province_State = "US",
+                                 Combined_Key = "US",
+                                 Date = first(Date),
                                  Doses_alloc = sum(Doses_alloc, na.rm = TRUE),
                                  Doses_shipped = sum(Doses_shipped, na.rm = TRUE),
                                  Doses_admin = sum(Doses_admin, na.rm = TRUE),
@@ -173,19 +186,32 @@ getVaccDataByGeography <- function(traceThisRoutine = FALSE) {
       dataByGeography <- bind_rows(US_to_prepend, justStateData)
     }
   }
+  if (traceThisRoutine) {
+    dDBG = dim(dataByGeography)
+    cat(file=stderr(), "   Dims of dataByGeography:", dDBG[1], "x", dDBG[2], "\n")
+    cat(file=stderr(), "    dataByGeography$Doses_admin[1]:", dataByGeography$Doses_admin[1], "\n")
+    cat(file=stderr(), "    dataByGeography$Province_State[2]:", dataByGeography$Province_State[2], "\n")
+    cat(file=stderr(), "    dataByGeography$Doses_admin[2]:", dataByGeography$Doses_admin[2], "\n")
+    cat(file=stderr(), "    US_to_prepend$Province_State[1]:", US_to_prepend$Province_State[1], "\n")
+    cat(file=stderr(), "    US_to_prepend$Doses_admin[1]:", US_to_prepend$Doses_admin[1], "\n")
+    cat(file=stderr(), "Leaving 'getVaccDataByGeography'", "\n")
+  }
   dataByGeography
 }
 
 gatheredVaccDataByGeography <- function(traceThisRoutine = FALSE) {
   if (traceThisRoutine) {
-    print("in gatheredVaccDataByGeography")
+    cat(file=stderr(), "entered gatheredVaccDataByGeography", "\n")
   }
   theDate <- today("EST")
   columnDate <- paste(month(theDate),
                       day(theDate),
                       (year(theDate) - 2000), sep="/")
+  if (traceThisRoutine) {
+    cat(file=stderr(), "columnDate =", columnDate, "\n")
+  }
   allData <- getVaccDataByGeography(traceThisRoutine) %>%
-    gather("Datum", "latest", 4:8) %>%
+    gather("Datum", "latest", 5:9) %>%
     mutate(Combined_Key = Combined_Key,
            Datum = Datum,
            Loc_Datum = paste(Province_State, Datum, sep="_"),
@@ -193,13 +219,13 @@ gatheredVaccDataByGeography <- function(traceThisRoutine = FALSE) {
            .keep = "none")
   
   if (traceThisRoutine) {
-    print("in gatheredVaccDataByGeography (2)")
+    cat(file=stderr(), "leaving gatheredVaccDataByGeography", "\n")
   }
   
-  return(allData)  
+  allData 
 }
 
-saveTwoVaccinationDataFiles <- function(theData, directory, suffix, traceThisRoutine = FALSE) {
+saveTwoVaccinationDataFiles <- function(theData, traceThisRoutine = FALSE) {
   # Local function! Haven't seen those since Pascal!
   tryWrite <- function(aTibble, aPath) {
     w1 <- try(write_csv(aTibble, aPath))
@@ -210,19 +236,20 @@ saveTwoVaccinationDataFiles <- function(theData, directory, suffix, traceThisRou
   }
   
   if (traceThisRoutine) {
-    print("In 'saveTwoVaccinationDataFiles'")
+    cat(file=stderr(), "In 'saveTwoVaccinationDataFiles'", "\n")
   }
   US_Data <- theData %>%
     filter(Combined_Key == "US")
   State_Data <- theData %>%
     filter(Combined_Key != "US")
-  
-  US_file_name <- paste("./", directory, "/US_Vaccinations", suffix, ".csv", sep = "")
-  US_State_file_name <- paste("./", directory, "/US_State_Vaccinations", suffix, ".csv", sep = "")
+
+  theDataDir <- "./DATA/"
+  US_file_name <- paste(theDataDir, "US_Vaccinations.csv", sep = "")
+  US_State_file_name <- paste(theDataDir, "US_State_Vaccinations.csv", sep = "")
   
   if (traceThisRoutine) {
-    print(paste("save2VFs:    US file", US_file_name))
-    print(paste("          State file", US_State_file_name))
+    cat(file=stderr(), "save2VFs:    US file", US_file_name, "\n")
+    cat(file=stderr(), "          State file", US_State_file_name, "\n")
   }
   
   tryWrite(US_Data, US_file_name)
@@ -233,14 +260,14 @@ saveVaccinationTimeSeriesData <- function(theData, traceThisRoutine = FALSE) {
   # Save gathered data as ./DATA/US_Vaccinations.csv
   #                   and ./DATA/US_State_Vaccinations.csv
   if (traceThisRoutine) {
-    print("In 'saveVaccinationTimeSeriesData'")
+    cat(file=stderr(), "In 'saveVaccinationTimeSeriesData'", "\n")
   }
-  saveTwoVaccinationDataFiles(theData, "DATA", "", traceThisRoutine)
+  saveTwoVaccinationDataFiles(theData, traceThisRoutine)
 }
 
 makeInitialVaccDataFiles <- function(traceThisRoutine = FALSE) {
   if (traceThisRoutine) {
-    print("In 'makeInitialVaccDataFiles'")
+    cat(file=stderr(), "In 'makeInitialVaccDataFiles'","\n")
   }
   BuildingData <- gatheredVaccDataByGeography()
   saveVaccinationTimeSeriesData(BuildingData, traceThisRoutine)
@@ -250,7 +277,7 @@ updateDataForUSVaccTimeSeries <- function(traceThisRoutine = FALSE) {
   options(show.error.messages = traceThisRoutine)
   
   if (traceThisRoutine) {
-    print("In 'updateDataForUSVaccTimeSeries'")
+    cat(file=stderr(), "Entered 'updateDataForUSVaccTimeSeries'", "\n")
   }
   
   US_data_path <- paste("./DATA/", "US_Vaccinations.csv", sep="")
@@ -261,11 +288,11 @@ updateDataForUSVaccTimeSeries <- function(traceThisRoutine = FALSE) {
                                          Loc_Datum = col_character())))
   if (class(US_data)[1] == "try-error") {
     if (traceThisRoutine) {
-      print("./DATA/US_Vaccinations.csv not read")
+      cat(file=stderr(), "./DATA/US_Vaccinations.csv not read", "\n")
     }
   } else {
     if (traceThisRoutine) {
-      print("./DATA/US_Vaccinations.csv was read")
+      cat(file=stderr(), "./DATA/US_Vaccinations.csv was read", "\n")
     }
     US_State_data_path <- paste("./DATA/", "US_State_Vaccinations.csv", sep="")
     US_State_data <- try(read_csv(US_State_data_path,
@@ -275,25 +302,33 @@ updateDataForUSVaccTimeSeries <- function(traceThisRoutine = FALSE) {
                                                  Loc_Datum = col_character())))
     if (class(US_data)[1] == "try-error") {
       if (traceThisRoutine) {
-        print("./DATA/US_State_Vaccinations.csv not read")
+        cat(file=stderr(), "./DATA/US_State_Vaccinations.csv not read", "\n")
       }
     } else {
       if (traceThisRoutine) {
-        print("./DATA/US_State_Vaccinations.csv was read")
+        cat(file=stderr(), "./DATA/US_State_Vaccinations.csv was read", "\n")
       }
     }
     baseData <- bind_rows(US_data, US_State_data)
   }
-  newData <- gatheredVaccDataByGeography() %>%
+  newData <- gatheredVaccDataByGeography(traceThisRoutine = traceThisRoutine) %>%
     select(-Combined_Key) %>%
     select(-Datum)
   allData <- left_join(baseData, newData, by="Loc_Datum")
+  if (traceThisRoutine) {
+    dAD <- dim(allData)
+    cat(file=stderr(), "last date in allData:", names(allData)[dAD[2]], "\n")
+  }
   saveVaccinationTimeSeriesData(allData, traceThisRoutine)
+
+  if (traceThisRoutine) {
+    cat(file=stderr(), "Leaving 'updateDataForUSVaccTimeSeries'", "\n")
+  }
 }
 
 updateDataFilesForUSVaccTimeSeriesIfNeeded <- function(traceThisRoutine = FALSE) {
   if (traceThisRoutine) {
-    print("In 'updateDataForUSVaccTimeSeriesIfNeeded'")
+    cat(file=stderr(), "In 'updateDataForUSVaccTimeSeriesIfNeeded'", "\n")
   }
   todayDate <- today("EST")
   desiredLatestDateSlashes <- paste(month(todayDate),
@@ -306,23 +341,34 @@ updateDataFilesForUSVaccTimeSeriesIfNeeded <- function(traceThisRoutine = FALSE)
                                          Datum = col_character(),
                                          Loc_Datum = col_character())))
   if (class(US_data)[1] == "try-error") {
-    if (traceThisRoutine) {
-      print("./DATA/US_Vaccinations.csv not read")
-    }
+    print("./DATA/US_Vaccinations.csv was not read")
+    cat(file=stderr(), "./DATA/US_Vaccinations.csv was not read", "\n")
     # We couldn't read the file! Creating it gets us all the data we can find.
-    makeInitialVaccDataFiles()
+    makeInitialVaccDataFiles(traceThisRoutine = traceThisRoutine)
   } else {
     if (traceThisRoutine) {
-      print("./DATA/US_Vaccinations.csv was read")
+      cat(file=stderr(), "./DATA/US_Vaccinations.csv was read", "\n")
     }
     # The file exists. is it up to date?
-    if (names(US_data[dim(US_data)[2]]) != desiredLatestDateSlashes) {
+    if (names(US_data)[dim(US_data)[2]] == desiredLatestDateSlashes) {
+      if (traceThisRoutine) {
+        cat(file=stderr(), "US_Vaccinations.csv is up to date", "\n")
+      }
+    } else {
+      if (traceThisRoutine) {
+        cat(file=stderr(), "last date in US_Vaccinations.csv:",
+            names(US_data)[dim(US_data)[2]], "\n")
+        cat(file=stderr(), "desiredLatestDateSlashes:", desiredLatestDateSlashes, "\n")
+      }
       # It's not up to date. Is newer data available?
       if (url.exists(Vacc_URL())) {
         # Better create all data files!
         updateDataForUSVaccTimeSeries(traceThisRoutine = traceThisRoutine)
       } else {
-        print(paste("Vaccination data for", desiredLatestDateSlashes, "is not available", sep = " "))
+        if (traceThisRoutine) {
+          cat(file=stderr(), "Vaccination data for",
+              desiredLatestDateSlashes, "is not available", "\n")
+        }
       }
     }
   }
@@ -332,5 +378,6 @@ updateTimeSeriesDataFilesAsNecessary <- function(traceThisRoutine = FALSE) {
   for (aType in c("Confirmed", "Deaths")) {
     updateDataFilesForUSTimeSeriesTypeIfNeeded(aType)
   }
-  updateDataFilesForUSVaccTimeSeriesIfNeeded(traceThisRoutine = traceThisRoutine)
+  # OUCH Set the argument to TRUE for debugging, normally = traceThisRoutine
+  updateDataFilesForUSVaccTimeSeriesIfNeeded(traceThisRoutine = TRUE)
 }
