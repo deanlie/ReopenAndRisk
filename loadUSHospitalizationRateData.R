@@ -3,6 +3,8 @@ source("./updateStateLevelSerializedDataFiles.R")
 source("./computeNewAndGrowth.R")
 
 loadUSHospitalizationRateData <- function() {
+  traceThisRoutine = FALSE
+  myPrepend = "From loadUSHospitalizationRateData"
   updateToThisDate <- expectedLatestUpdateDataDate()
   updateStateLevelSerializedDataFilesAsNecessary()
   
@@ -17,9 +19,11 @@ loadUSHospitalizationRateData <- function() {
   US_Hospitalization_Rate_G7 <<- movingAverageGrowth(US_Hospitalization_Rate,
                                                      updateToThisDate,
                                                      28, 7, nFirstCols=3,
-                                                     tibbleName="US_Hospitalization_Rate")
+                                                     tibbleName="US_Hospitalization_Rate",
+                                                     traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   US_State_Hospitalization_Rate_G7 <<- movingAverageGrowth(US_State_Hospitalization_Rate,
                                                            updateToThisDate,
                                                            28, 7, nFirstCols=3,
-                                                           tibbleName="US_State_Hospitalization_Rate")
+                                                           tibbleName="US_State_Hospitalization_Rate",
+                                                           traceThisRoutine = traceThisRoutine, prepend = myPrepend)
 }

@@ -10,6 +10,14 @@ testResultsHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
 
 plotTestResultBoxplots <- function(chooseCounty, movingAvg, countyChoices,
                                    stateChoices, timeWindow) {
+  prepend <- ""
+  traceThisRoutine <- FALSE
+  myPrepend <- paste("  ", prepend, sep = "")
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered plotTestResultBoxplots\n")
+  }
+
   # updateDataForUSTypeIfNeeded("Confirmed")
   if (movingAvg) {
     title <- "Test Positivity Distribution, 7 day moving average"
@@ -21,17 +29,30 @@ plotTestResultBoxplots <- function(chooseCounty, movingAvg, countyChoices,
     theTestData <- US_State_People_Tested 
   }
   
-  assembleRatioDeltaBoxPlot(theCaseData, theTestData, stateChoices,
+  result <- assembleRatioDeltaBoxPlot(theCaseData, theTestData, stateChoices,
                             title,
                             paste("Last", timeWindow, "days"),
                             "Test Positivity: percent of tests returning positive",
                             clampFactor = 1,
                             timeWindow = timeWindow,
-                            nFirstNum = 2, nFirstDenom = 2)
+                            nFirstNum = 2, nFirstDenom = 2,
+                            traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving plotTestResultBoxplots\n")
+  }
+  return(result)
 }
 
 plotTestResultTrend <- function(chooseCounty, movingAvg, countyChoices,
                                 stateChoices, timeWindow) {
+  prepend <- ""
+  traceThisRoutine <- FALSE
+  myPrepend <- paste("  ", prepend, sep = "")
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered plotTestResultTrend\n")
+  }
+
   # updateDataForUSTypeIfNeeded("Confirmed")
   if (is.null(stateChoices)) {
     if (movingAvg) {
@@ -55,10 +76,16 @@ plotTestResultTrend <- function(chooseCounty, movingAvg, countyChoices,
     }
   }
   
-  assembleRatioDeltaTrendPlot(theCaseData, theTestData, stateChoices,
+  result <- assembleRatioDeltaTrendPlot(theCaseData, theTestData, stateChoices,
                               title,
                               paste("Last", timeWindow, "days"),
                               "Test Positivity: percent of tests returning positive",
                               timeWindow = timeWindow,
-                              nFirstNum = 2, nFirstDenom = 2)
+                              nFirstNum = 2, nFirstDenom = 2,
+                              traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving plotTestResultTrend\n")
+  }
+  
+  return(result)
 }

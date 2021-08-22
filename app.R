@@ -55,7 +55,7 @@ defaultStateChoices <- function() {
 
 defaultSelectedTab <- function() {
   if (currentlyTesting()) {
-    "New Deaths"
+    "Test Results"
   } else {
     NULL
   }

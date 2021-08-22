@@ -20,14 +20,14 @@ nColumnsBeforeDates <- function(aTibble) {
 }
 
 findColumnRangeForDate <- function(aTibble, aDate, nDays, tibbleName = "TIBBLE NAME??", nFirstCols = 3,
-                                   traceThisRoutine = TRUE, prepend = "CALLER??") {
+                                   traceThisRoutine = FALSE, prepend = "CALLER??") {
   myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered findColumnRangeForDate\n")
+
+    browser()
   }
   
-  browser()
-
   theNames <- names(aTibble)
   nCols <- length(theNames)
   nFirstCols = nColumnsBeforeDates(aTibble)
