@@ -19,9 +19,22 @@ formatJHUDateForColumnName <- function(aString) {
   res
 }
 
+formatJHUDateForVaccColumnName <- function(aString) {
+  res <- NA
+  matches <- str_match(aString, "^0?([1-9][0-9]?)-0?([1-9][0-9]?)-20([2-9][0-9])")
+  if (length(matches) == 4) {
+    res <- paste(matches[2], "/", matches[3], "/", matches[4], sep="")
+  }
+  res
+}
+
 # Accepts date as type date
 formatDateForColumnName <- function(aDate) {
   formatJHUDateForColumnName(jhuFileDateString(aDate))
+}
+
+formatDateForVaccColumnName <- function(aDate) {
+  formatJHUDateForVaccColumnName(jhuFileDateString(aDate))
 }
 
 cleanXmmddyyVector <- function(aVector) {

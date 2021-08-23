@@ -147,42 +147,25 @@ findMissingDates <- function(aTibble, nFirst, nDates, lastDate,
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered findMissingDates\n")
   }
-  
+
+  missingDates <- c()  
   firstDate <- lastDate - (nDates - 1)
+  aDate <- firstDate
   colNames <- names(aTibble)
-  potentialDateCols <- (nFirst + 1):length(colNames)
-  missingDates <- c()
-  for (i in potentialDateCols) {
-    colAsDate <- mdy(colNames[i])
-    if (is.na(colAsDate)) {
-      cat(file = stderr(), myPrepend, "Not a date:", colNames[i], "\n")
-    } else {
-      cat(file = stderr(), myPrepend, "OK:", colNames[i], "\n")
-      if (colAsDate == firstDate) {
-        cat(file = stderr(), "Matched firstDate at col", i, as.character.Date(colAsDate), "\n")
-        break
-      }
-      if (colAsDate > firstDate) {
-        cat(file = stderr(), "Past firstDate at col", i, as.character.Date(colAsDate), "\n")
-        aDate <- firstDate
-        while((aDate < colAsDate) & (aDate < lastDate)) {
-          missingDates <- c(missingDates, as.character.Date(aDate))
-          aDate = aDate + 1
-         }
-        cat(file = stderr(), "Early missing dates:", paste(missingDates), "\n")
-        break
-      }
+  while (aDate <= lastDate) {
+    formattedDate <- formatDateForVaccColumnName(aDate)
+    if (! (formattedDate %in% colNames)) {
+      missingDates <- c(missingDates, formattedDate)
     }
+    aDate <- aDate + 1
   }
-  
-  i <- i + 1
-  while (i <= length(colNames)) {
-    i <- i + 1
-  }
-  
+  cat(file = stderr(), myPrepend, "Missing dates:", paste(missingDates), "\n")
+
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving findMissingDates\n")
   }
+  
+  return(missingDates)
 }
 
 testFMD <- function()
@@ -198,6 +181,9 @@ testFMD <- function()
   D3 <- "8/22/21"
   
   filteredData <- select(rawData, Combined_Key, Datum, Loc_Datum, {D1}, {D2}, {D3})
-  findMissingDates(filteredData, 3, 14, Sys.Date(), 
-                   traceThisRoutine = TRUE, prepend = "testFMD")
+  M1 <- findMissingDates(filteredData, 3, 14, Sys.Date(), 
+                   traceThisRoutine = TRUE, prepend = "Filtered")
+  M2 <- findMissingDates(rawData, 3, 14, Sys.Date(), 
+                         traceThisRoutine = TRUE, prepend = "Raw     ")
+  list(M1 = M1, M2 = M2)
 }
