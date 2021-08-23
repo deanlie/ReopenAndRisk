@@ -133,43 +133,39 @@ updateDataFilesForUSTimeSeriesTypeIfNeeded <- function(aType,
 }
 
 getVaccDataByGeography <- function(traceThisRoutine = FALSE) {
-  if (url.exists(Vacc_URL())) {
-    rawData <- try(read_csv(Vacc_URL(),
-                            col_types = cols(.default = col_double(),
-                                             Province_State = col_character(),
-                                             Country_Region = col_character(),
-                                             Date = col_date(format = ""),
-                                             Vaccine_Type = col_character(),
-                                             Combined_Key = col_character())))
+  # rawData <- getURLOrStop(Vacc_URL(),
+  #                         col_types = cols(.default = col_double(),
+  #                                          Province_State = col_character(),
+  #                                          Country_Region = col_character(),
+  #                                          Date = col_date(format = ""),
+  #                                          Vaccine_Type = col_character(),
+  #                                          Combined_Key = col_character()))
+  rawData <- downloadVaccDailyUpdateData()
     
-    if (class(rawData)[1] == "try-error") {
-      dataByGeography <- rawData
-    } else {
-      justStateData <- rawData %>%
-        as_tibble() %>%
-        filter(!is.na(FIPS )) %>%
-        arrange(FIPS) %>%
-        filter(Vaccine_Type == "All") %>%
-        select(FIPS, Province_State, Combined_Key,
-               Doses_alloc, Doses_shipped, Doses_admin,
-               Stage_One_Doses, Stage_Two_Doses)
-      
-      if (traceThisRoutine) {
-        print("in getVaccDataByGeography")
-      }
-      
-      US_to_prepend <- summarise(justStateData,
-                                 FIPS = 0, Province_State = "US", Combined_Key = "US",
-                                 Doses_alloc = sum(Doses_alloc, na.rm = TRUE),
-                                 Doses_shipped = sum(Doses_shipped, na.rm = TRUE),
-                                 Doses_admin = sum(Doses_admin, na.rm = TRUE),
-                                 Stage_One_Doses = sum(Stage_One_Doses, na.rm = TRUE),
-                                 Stage_Two_Doses = sum(Stage_Two_Doses, na.rm = TRUE))
-      
-      dataByGeography <- bind_rows(US_to_prepend, justStateData)
-    }
+  justStateData <- rawData %>%
+    as_tibble() %>%
+    filter(!is.na(FIPS )) %>%
+    arrange(FIPS) %>%
+    filter(Vaccine_Type == "All") %>%
+    select(FIPS, Province_State, Combined_Key,
+           Doses_alloc, Doses_shipped, Doses_admin,
+           Stage_One_Doses, Stage_Two_Doses)
+
+  if (traceThisRoutine) {
+    print("in getVaccDataByGeography")
   }
-  dataByGeography
+      
+  US_to_prepend <- summarise(justStateData,
+                             FIPS = 0, Province_State = "US", Combined_Key = "US",
+                             Doses_alloc = sum(Doses_alloc, na.rm = TRUE),
+                             Doses_shipped = sum(Doses_shipped, na.rm = TRUE),
+                             Doses_admin = sum(Doses_admin, na.rm = TRUE),
+                             Stage_One_Doses = sum(Stage_One_Doses, na.rm = TRUE),
+                             Stage_Two_Doses = sum(Stage_Two_Doses, na.rm = TRUE))
+
+  dataByGeography <- bind_rows(US_to_prepend, justStateData)
+
+  return(dataByGeography)
 }
 
 gatheredVaccDataByGeography <- function(traceThisRoutine = FALSE) {

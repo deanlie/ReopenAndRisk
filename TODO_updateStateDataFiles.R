@@ -1,3 +1,28 @@
+discardTooNewDataFromATibble <- function(aTibble,
+                                         firstDateToDelete,
+                                         traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered discardTooNewDataFromATibble\n")
+  }
+
+  theNames <- names(aTibble)
+  newNames <- c("Combined_Key")
+  for (aName in theNames) {
+    if (aName != "Combined_Key") {
+      if (mdy(aName) < firstDateToDelete) {
+        newNames <- c(newNames, aName)
+      }
+    }
+  }
+  resultTibble <- aTibble %>%
+    select(any_of({newNames}))
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving discardTooNewDataFromATibble\n")
+  }
+}
+
 discardTooNewDataFromStateTibbles <- function(existingStateTibbles,
                                               firstDateToDelete,
                                               traceThisRoutine = FALSE, prepend = "") {
@@ -7,17 +32,18 @@ discardTooNewDataFromStateTibbles <- function(existingStateTibbles,
   }
 
   for (aType in c("Total_Test_Results", "Case_Fatality_Ratio", "Incident_Rate", "Testing_Rate")) {
-    theNames <- names(existingStateTibbles[[aType]])
-    newNames <- c("Combined_Key")
-    for (aName in theNames) {
-      if (aName != "Combined_Key") {
-        if (mdy(aName) < firstDateToDelete) {
-          newNames <- c(newNames, aName)
-        }
-      }
+    if(traceThisRoutine) {
+      cat(file = stderr(), myPrepend, "Processing type", aType, "\n")
     }
-    existingStateTibbles[[aType]] <- existingStateTibbles[[aType]] %>%
-      select(any_of({newNames}))
+    
+    aTibble <- existingStateTibbles[[aType]]
+    
+    resultTibble <- discardTooNewDataFromATibble(aTibble,
+                                                 firstDateToDelete,
+                                                 traceThisRoutine = traceThisRoutine,
+                                                 prepend = myPrepend)
+    
+    existingStateTibbles[[aType]] <- resultTibble
   }
   
   if (traceThisRoutine) {

@@ -6,18 +6,55 @@
 # "CSSEGISandData/COVID-19/master/"
 # "csse_covid_19_data/"
 
-# https://github.com/CSSEGISandData/COVID-19/blob/master/
-#   csse_covid_19_data/csse_covid_19_daily_reports/
-#   07-15-2021.csv
-
+#*************************************************************
+#*
+#* Data for first date for major reconstruction
+#* repositoryPathForDate(<2021-04-01 as date>)
+#* 
+#*************************************************************
 # https://raw.githubusercontent.com/
 # CSSEGISandData/COVID-19/master/
 # csse_covid_19_data/
 # csse_covid_19_daily_reports/04-01-2021.csv
 
+#*************************************************************
+#*
+#* Most recent vaccination data (typically updated earlier today)
+#* Vacc_URL()
+#* 
+#*************************************************************
 # https://raw.githubusercontent.com/"
 # "govex/COVID-19/master/"
 # "data_tables/vaccine_data/us_data/hourly/vaccine_data_us.csv
+
+#*************************************************************
+#*
+#* Where to find state data, and when each one updates
+#* 
+#************************************************************* 
+# https://raw.githubusercontent.com/
+# govex/COVID-19/master/
+# data_tables/US_reporting_frequency.csv
+
+#*************************************************************
+#*
+#* Fields of vaccine_data archive file
+#* 
+#************************************************************* 
+# https://raw.githubusercontent.com/
+# govex/COVID-19/master/
+# data_tables/vaccine_data/archive/data_dictionary.csv
+
+#*************************************************************
+#*
+#* US vaccine time series data. Vacc_TS_URL()
+#* It's huge but has all data from 2020-12-10 thru present
+#*  (checked 2021-08-19; was )
+#* 
+#************************************************************* 
+# https://raw.githubusercontent.com/
+# govex/COVID-19/master/
+# data_tables/vaccine_data/us_data/time_series/vaccine_data_us_timeline.csv
 
 library(tidyverse)
 # library(lubridate)
@@ -106,6 +143,85 @@ Vacc_TS_URL <- function() {
                  sep = "")
 }
 
+getURLOrStop <- function(aURL, col_types, traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend)
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered getURLOrStop\n")
+  }
+  if (url.exists(aURL)) {
+    rawData <- try(read_csv(aURL,
+                            col_types = col_types))
+    if (class(rawData)[1] == "try-error") {
+      if (traceThisRoutine) {
+        cat(file = stderr(), "try(read_csv()) failed for ", aURL, "\n")
+      }
+      stop(paste("FATAL ERROR -- Unable to download:", aURL))
+    } 
+  } else {
+    if (traceThisRoutine) {
+      cat(file = stderr(), "url.exists returned FALSE for ", aURL, "\n")
+    }
+    stop(paste("FATAL ERROR -- No such URL: ", aURL))
+  }
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving getURLOrStop\n")
+  }
+  return(rawData)
+}
+
+vaccDailyUpdateDataSpecs <- function() {
+  list(URL = paste(GithubUserContent(),
+                   GovexMaster(),
+                   GxTablesUSData(),
+                   "hourly/vaccine_data_us.csv",
+                   sep = ""),
+       COLS = cols(.default = col_double(),
+                   Province_State = col_character(),
+                   Country_Region = col_character(),
+                   Date = col_date(format = ""),
+                   Vaccine_Type = col_character(),
+                   Combined_Key = col_character()),
+       PATH = paste("DATA/VaccUpdate_",
+                    jhuFileDateString(Sys.Date()),
+                    sep = ""))
+}
+
+downloadVaccDailyUpdateData <- function(traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered downloadVaccDailyUpdateData\n")
+  }
+  
+  specs <- vaccDailyUpdateDataSpecs()
+  rawData <- getURLOrStop(specs$URL, col_types = specs$COLS,
+                          traceThisRoutine = traceThisRoutine,
+                          prepend = myPrepend)
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving downloadVaccDailyUpdateData\n")
+  }
+
+  return(rawData)
+}
+
+downloadAndSaveVaccDailyUpdateData <- function(traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered downloadAndSaveVaccDailyUpdateData\n")
+  }
+
+  specs <- vaccDailyUpdateDataSpecs()
+  rawData <- getURLOrStop(specs$URL, col_types = specs$COLS,
+                          traceThisRoutine = traceThisRoutine,
+                          prepend = myPrepend)
+  
+  write_csv(updateTibble, specs$PATH)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving downloadAndSaveVaccDailyUpdateData\n")
+  }
+  return(rawData)
+}
+
 # saveJHUHereForDate <- function(aDate) {
 #   paste("F:/DeanDocuments/COVID_DATA/JHU/",
 #         jhuFileDateString(aDate), ".csv",
@@ -118,51 +234,26 @@ downloadAndSaveStateLevelUpdateData <- function(aDate,
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered downloadAndSaveStateLevelUpdateData\n")
   }
+  
+  updateTibble <- getURLOrStop(updateStateLevelDataForDate_URL(aDate),
+                               col_types = cols(.default = col_double(),
+                                                Province_State = col_character(),
+                                                Country_Region = col_character(),
+                                                Last_Update = col_datetime(format = ""),
+                                                People_Hospitalized = col_logical(),
+                                                ISO3 = col_character(),
+                                                Hospitalization_Rate = col_logical()))
 
-  if (url.exists(updateStateLevelDataForDate_URL(aDate))) {
-    if (traceThisRoutine) {
-      cat(file = stderr(), myPrepend, "Remote file", JHU_repository(), "\n")
-      cat(file = stderr(), myPrepend, "           ",
-          paste("csse_covid_19_daily_reports_us/",
-                filenameOfStateLevelDataForDate(aDate),
-                "\n", sep = "")) 
-      cat(file = stderr(), myPrepend, "     exists, will try to download\n")
-    }
-    # Get the first file
-    updateTibble <- try(read_csv(updateStateLevelDataForDate_URL(aDate),
-                                 col_types = cols(.default = col_double(),
-                                                  Province_State = col_character(),
-                                                  Country_Region = col_character(),
-                                                  Last_Update = col_datetime(format = ""),
-                                                  People_Hospitalized = col_logical(),
-                                                  ISO3 = col_character(),
-                                                  Hospitalization_Rate = col_logical())))
-    if (class(updateTibble)[1] == "try-error") {
-      if (traceThisRoutine) {
-        cat(file = stderr(), myPrepend,
-          "download of", updateStateLevelDataForDate_URL(aDate), "failed\n")
-      }
-      cat(file = stderr(), myPrepend, "FATAL ERROR -- UNABLE TO DOWNLOAD UPDATE DATA\n")
-      stop()
-    }
-
-    updateTibble <- updateTibble %>%
-      filter(!str_detect(Province_State, "Princess"))
+  updateTibble <- updateTibble %>%
+    filter(!str_detect(Province_State, "Princess"))
       
-    write_csv(updateTibble, pathnameOfStateLevelUpdateDataForDate(aDate))
+  write_csv(updateTibble, pathnameOfStateLevelUpdateDataForDate(aDate))
 
-    if (traceThisRoutine) {
-      cat(file = stderr(), myPrepend,
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend,
         "Downloaded and wrote", pathnameOfStateLevelUpdateDataForDate(aDate), "\n")
-    }
-  } else {
-    if (traceThisRoutine) {
-      cat(file = stderr(), myPrepend,
-        "url.exists returns FALSE:", updateStateLevelDataForDate_URL(aDate), "\n")
-    }
-    cat(file = stderr(), myPrepend, "FATAL ERROR -- NO UPDATE DATA AVAILABLE\n")
-    stop()
   }
+
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving downloadAndSaveStateLevelUpdateData\n")
   }

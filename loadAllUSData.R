@@ -14,7 +14,9 @@ loadATypeOfData <- function(theType, computeCounty,
                             computeNew, computeAvg,
                             hasProvState = TRUE,
                             traceThisRoutine = FALSE, prepend = "CALLER??") {
-  # Functions local to this routine
+  #####################################
+  #  Functions local to this routine  #
+  #####################################
   readLeaf <- function(aLeaf, theScope) {
     aPath <- paste("./DATA/", aLeaf, sep = "")
     if (theScope == "County") {
@@ -63,9 +65,9 @@ loadATypeOfData <- function(theType, computeCounty,
   }
   
   # This routine for debugging only
-  dumpMAData <- function(aTibble, aMessage) {
-    print(paste("MA", aMessage))
-    theData <- filter(aTibble, Combined_Key == "Massachusetts, US")
+  dumpLocaleData <- function(aTibble, aMessage, CombinedKeyValue = "Massachusetts, US") {
+    print(paste(CombinedKeyValue, aMessage))
+    theData <- filter(aTibble, Combined_Key == {CombinedKeyValue})
     theLength <- dim(theData)[2]
     print(paste("  Length:", theLength))
     print(paste("  First cols:", paste(names(theData)[1:3])))
@@ -83,7 +85,11 @@ loadATypeOfData <- function(theType, computeCounty,
                             as.integer(theData[1,theLength])))
     
   }  
-  # Mainline of  this routine
+
+  ######################################
+  #      Mainline of  this routine     #
+  ######################################
+
   myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered loadATypeOfData\n")
@@ -121,7 +127,7 @@ loadATypeOfData <- function(theType, computeCounty,
                                    traceThisRoutine = traceThisRoutine,
                                    prepend = myPrepend)
     
-    # dumpMAData(State_New, "State_New")
+    # dumpLocaleData(State_New, "State_New")
     
     if (computeCounty) {
       County_New <- newFromCumulative(County_Cumulative, updateToThisDate,
@@ -151,7 +157,7 @@ loadATypeOfData <- function(theType, computeCounty,
                                              traceThisRoutine = traceThisRoutine,
                                              prepend = myPrepend)
     
-    # dumpMAData(State_Cumulative_A7, "State_Cumulative_A7")
+    # dumpLocaleData(State_Cumulative_A7, "State_Cumulative_A7")
     
     if (computeCounty) {
       County_Cumulative_A7 <- movingAverageData(County_Cumulative, updateToThisDate, 28, 7,
@@ -177,7 +183,7 @@ loadATypeOfData <- function(theType, computeCounty,
                                       traceThisRoutine = traceThisRoutine,
                                       prepend = myPrepend)
       
-      # dumpMAData(State_G7, "State_G7")
+      # dumpLocaleData(State_G7, "State_G7")
       
       if (computeCounty) {
         County_G7 <- movingAverageGrowth(County_Cumulative, updateToThisDate, 28, 7,
@@ -239,9 +245,6 @@ loadUSConfirmedData <- function(traceThisRoutine = FALSE, prepend = "") {
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered loadUSConfirmedData\n")
   }
-  
-  updateToThisDate <- expectedLatestUpdateDataDate()
-  updateTimeSeriesDataFilesAsNecessary()
   
   allConfirmedData <- loadATypeOfData("Confirmed", TRUE,
                               TRUE, TRUE,
@@ -350,6 +353,10 @@ loadAllUSData <- function(traceThisRoutine = FALSE, prepend = "") {
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "after read US_State_Population_Est\n")
   }
+  
+  updateTimeSeriesDataFilesAsNecessary()
+  updateStateLevelSerializedDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
+                                                 prepend = myPrepend)
   
   loadUSVaccinationData()
 

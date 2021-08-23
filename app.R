@@ -29,8 +29,6 @@ currentlyTesting <- function() {
   TRUE
 }
 
-updateTimeSeriesDataFilesAsNecessary(traceThisRoutine = currentlyTesting(), prepend = "")
-updateStateLevelSerializedDataFilesAsNecessary(traceThisRoutine = currentlyTesting(), prepend = "")
 loadAllUSData(traceThisRoutine = currentlyTesting(), prepend = "")
 
 currentlyTestingCounties <- function() {
