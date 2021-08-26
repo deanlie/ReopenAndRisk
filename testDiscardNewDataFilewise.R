@@ -17,9 +17,16 @@ discardTooNewDataFromAFile <- function(thePath,
   charNames <- names(originalData)[is.na(dateColMatch)]
   dateNames <- names(originalData)[!is.na(dateColMatch)]
   
+  dateColMatch2 <- as.vector(mdy(names(originalData)))
+  charNames2 <- names(originalData)[is.na(dateColMatch2)]
+  dateNames2 <- names(originalData)[!is.na(dateColMatch2)]
+  
   if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "Number of Columns", length(names(originalData)), "\n")
     cat(file = stderr(), myPrepend, "Number of charNames", length(charNames), "\n")
     cat(file = stderr(), myPrepend, "Number of dateNames", length(dateNames), "\n")
+    cat(file = stderr(), myPrepend, "Number of charNames2", length(charNames2), "\n")
+    cat(file = stderr(), myPrepend, "Number of dateNames2", length(dateNames2), "\n")
   }
 
   dataCols <- originalData %>%
