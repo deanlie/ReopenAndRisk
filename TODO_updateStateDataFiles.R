@@ -1,27 +1,3 @@
-discardTooNewDataFromATibble <- function(aTibble,
-                                         firstDateToDelete,
-                                         traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend, sep = "")  
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered discardTooNewDataFromATibble\n")
-  }
-
-  theNames <- names(aTibble)
-  newNames <- c("Combined_Key")
-  for (aName in theNames) {
-    if (aName != "Combined_Key") {
-      if (mdy(aName) < firstDateToDelete) {
-        newNames <- c(newNames, aName)
-      }
-    }
-  }
-  resultTibble <- aTibble %>%
-    select(any_of({newNames}))
-  
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving discardTooNewDataFromATibble\n")
-  }
-}
 
 # discardTooNewDataFromStateTibbles <- function(existingStateTibbles,
 #                                               firstDateToDelete,
@@ -167,53 +143,78 @@ findFirstMissingDate <- function(aTibble, nFirst, nDates, lastDate,
   return(formattedDate)
 }
 
-findMissingDates <- function(aTibble, nFirst, nDates, lastDate,
-                             traceThisRoutine = FALSE,
-                             prepend = "") 
-{
+# findMissingDates <- function(aTibble, nFirst, nDates, lastDate,
+#                              traceThisRoutine = FALSE,
+#                              prepend = "") 
+# {
+#   myPrepend = paste("  ", prepend, sep = "")  
+#   if (traceThisRoutine) {
+#     cat(file = stderr(), prepend, "Entered findMissingDates\n")
+#   }
+# 
+#   missingDates <- c()  
+#   firstDate <- lastDate - (nDates - 1)
+#   aDate <- firstDate
+#   colNames <- names(aTibble)
+#   while (aDate <= lastDate) {
+#     formattedDate <- formatDateForVaccColumnName(aDate)
+#     if (! (formattedDate %in% colNames)) {
+#       missingDates <- c(missingDates, formattedDate)
+#     }
+#     aDate <- aDate + 1
+#   }
+#   cat(file = stderr(), myPrepend, "Missing dates:", paste(missingDates), "\n")
+# 
+#   if (traceThisRoutine) {
+#     cat(file = stderr(), prepend, "Leaving findMissingDates\n")
+#   }
+#   
+#   return(missingDates)
+# }
+
+# testFMD <- function()
+# {
+#   rawData <- read_csv("DATA/US_Vaccinations.csv",
+#                       col_types = cols(.default = col_double(),
+#                                        Combined_Key = col_character(),
+#                                        Datum = col_character(),
+#                                        Loc_Datum = col_character()))
+#   
+#   D1 <- "8/13/21"
+#   D2 <- "8/19/21"
+#   D3 <- "8/22/21"
+#   
+#   filteredData <- select(rawData, Combined_Key, Datum, Loc_Datum, {D1}, {D2}, {D3})
+#   M1 <- findMissingDates(filteredData, 3, 14, Sys.Date(), 
+#                    traceThisRoutine = TRUE, prepend = "Filtered")
+#   M2 <- findMissingDates(rawData, 3, 14, Sys.Date(), 
+#                          traceThisRoutine = TRUE, prepend = "Raw     ")
+#   list(M1 = M1, M2 = M2)
+# }
+
+discardTooNewDataFromATibble <- function(aTibble,
+                                         firstDateToDelete,
+                                         traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered findMissingDates\n")
+    cat(file = stderr(), prepend, "Entered discardTooNewDataFromATibble\n")
   }
-
-  missingDates <- c()  
-  firstDate <- lastDate - (nDates - 1)
-  aDate <- firstDate
-  colNames <- names(aTibble)
-  while (aDate <= lastDate) {
-    formattedDate <- formatDateForVaccColumnName(aDate)
-    if (! (formattedDate %in% colNames)) {
-      missingDates <- c(missingDates, formattedDate)
+  
+  theNames <- names(aTibble)
+  newNames <- c("Combined_Key")
+  for (aName in theNames) {
+    if (aName != "Combined_Key") {
+      if (mdy(aName) < firstDateToDelete) {
+        newNames <- c(newNames, aName)
+      }
     }
-    aDate <- aDate + 1
   }
-  cat(file = stderr(), myPrepend, "Missing dates:", paste(missingDates), "\n")
-
+  resultTibble <- aTibble %>%
+    select(any_of({newNames}))
+  
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving findMissingDates\n")
+    cat(file = stderr(), prepend, "Leaving discardTooNewDataFromATibble\n")
   }
-  
-  return(missingDates)
-}
-
-testFMD <- function()
-{
-  rawData <- read_csv("DATA/US_Vaccinations.csv",
-                      col_types = cols(.default = col_double(),
-                                       Combined_Key = col_character(),
-                                       Datum = col_character(),
-                                       Loc_Datum = col_character()))
-  
-  D1 <- "8/13/21"
-  D2 <- "8/19/21"
-  D3 <- "8/22/21"
-  
-  filteredData <- select(rawData, Combined_Key, Datum, Loc_Datum, {D1}, {D2}, {D3})
-  M1 <- findMissingDates(filteredData, 3, 14, Sys.Date(), 
-                   traceThisRoutine = TRUE, prepend = "Filtered")
-  M2 <- findMissingDates(rawData, 3, 14, Sys.Date(), 
-                         traceThisRoutine = TRUE, prepend = "Raw     ")
-  list(M1 = M1, M2 = M2)
 }
 
 testFFMD <- function()
@@ -234,4 +235,10 @@ testFFMD <- function()
   M2 <- findFirstMissingDate(rawData, 3, 14, Sys.Date(), 
                          traceThisRoutine = TRUE, prepend = "Raw     ")
   list(M1 = M1, M2 = M2)
+}
+
+testAddNewerDataToVaccTibble <- function()
+{
+  # Get current 
+  return("Did Nothing")
 }
