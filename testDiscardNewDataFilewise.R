@@ -63,7 +63,7 @@ discardTooNewData2FromAFile <- function(thePath,
 
   return_me <- discardDataOutsideDateRangeFromAFile(thePath,
                                               theTypes,
-                                              NULL,
+                                              0,
                                               firstDateToDelete - 1,
                                               traceThisRoutine, myPrepend)
   if (traceThisRoutine) {
@@ -108,23 +108,27 @@ discardDataOutsideDateRangeFromAFile <- function(thePath,
   newNames <- charNames
   for (aName in dateNames) {
     aDate <- mdy(aName)
-    if (is.null(firstDateToKeep)) {
-      if (!is.null(lastDateToKeep)) {
-        if (aDate <= lastDateToKeep) {
+    # if (is.null(firstDateToKeep)) {
+    #   if (!is.null(lastDateToKeep)) {
+    #     if (aDate <= lastDateToKeep) {
+    #       newNames <- c(newNames, aName)
+    #     }
+    #   }
+    # } else {
+    #   if (aDate >= firstDateToKeep) {
+    #     if (is.null(lastDateToKeep)) {
+    #       newNames <- c(newNames, aName)
+    #     } else {
+    #       if (aDate <= lastDateToKeep) {
+    #         newNames <- c(newNames, aName)
+    #       }
+    #     }
+    #   }
+    # }
+    if (((firstDateToKeep == 0) | (aDate >= firstDateToKeep)) &
+        ((lastDateToKeep > Sys.Date()) | (aDate <= lastDateToKeep))) {
           newNames <- c(newNames, aName)
         }
-      }
-    } else {
-      if (aDate >= firstDateToKeep) {
-        if (is.null(lastDateToKeep)) {
-          newNames <- c(newNames, aName)
-        } else {
-          if (aDate <= lastDateToKeep) {
-            newNames <- c(newNames, aName)
-          }
-        }
-      }
-    }
   }
   
   truncatedTibble <- originalData %>%
