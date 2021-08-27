@@ -4,8 +4,8 @@ library(lubridate)
 discardTooNewDataFromAFile <- function(thePath,
                                        theTypes,
                                        firstDateToDelete,
-                                       traceThisRoutine = FALSE, prepend = "",
-                                       theFileName = "UNKNOWN") {
+                                       theFileName,
+                                       traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered discardTooNewDataFromAFile", theFileName, "\n")
@@ -15,8 +15,8 @@ discardTooNewDataFromAFile <- function(thePath,
                                               theTypes,
                                               0,
                                               firstDateToDelete - 1,
-                                              traceThisRoutine, myPrepend,
-                                              theFileName = theFileName)
+                                              theFileName,
+                                              traceThisRoutine, myPrepend)
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving discardTooNewDataFromAFile", theFileName, "\n")
   }
@@ -28,8 +28,8 @@ discardDataOutsideDateRangeFromAFile <- function(thePath,
                                                  theTypes,
                                                  firstDateToKeep,
                                                  lastDateToKeep,
-                                                 traceThisRoutine = FALSE, prepend = "",
-                                                 theFileName = "UNKNOWN") {
+                                                 theFileName,
+                                                 traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered discardDataOutsideDateRangeFromFile", theFileName, "\n")
@@ -77,8 +77,9 @@ discardDataOutsideDateRangeFromAFile <- function(thePath,
   return(list(T0 = originalData, T1 = truncatedTibble))
 }
 
-reinitTestDataFile <- function(traceThisRoutine = FALSE, prepend = "",
-                               theFileName = "UNKNOWN") {
+reinitTestDataFile <- function(theFileName,
+                               traceThisRoutine = FALSE,
+                               prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered reinitTestDataFile", theFileName, "\n")
@@ -91,52 +92,53 @@ reinitTestDataFile <- function(traceThisRoutine = FALSE, prepend = "",
   }
 }
 
-reinitVaccTestData <- function(traceThisRoutine = FALSE, prepend = "",
-                               theFileName = "UNKNOWN") {
-  myPrepend = paste("  ", prepend, sep = "")  
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered reinitVaccTestData", theFileName, "\n")
-  }
-  reinitTestDataFile(traceThisRoutine = traceThisRoutine, prepend = myPrepend,
-                     theFileName = "US_Vaccinations.csv")
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving reinitVaccTestData", theFileName, "\n")
-  }
-  # system("cp DATA/CACHE/US_Vaccinations.csv DATA/")
-}
+# reinitVaccTestData <- function(theFileName, traceThisRoutine = FALSE, prepend = "") {
+#   myPrepend = paste("  ", prepend, sep = "")  
+#   if (traceThisRoutine) {
+#     cat(file = stderr(), prepend, "Entered reinitVaccTestData", theFileName, "\n")
+#   }
+#   reinitTestDataFile(theFileName,
+#                      traceThisRoutine = traceThisRoutine,
+#                      prepend = myPrepend)
+#   if (traceThisRoutine) {
+#     cat(file = stderr(), prepend, "Leaving reinitVaccTestData", theFileName, "\n")
+#   }
+# }
 
-reinitIRTestData <- function(traceThisRoutine = FALSE, prepend = "",
-                             theFileName = "UNKNOWN") {
-  myPrepend = paste("  ", prepend, sep = "")  
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered reinitIRTestData", theFileName, "\n")
-  }
-  reinitTestDataFile(traceThisRoutine = traceThisRoutine, prepend = myPrepend,
-                     theFileName = "US_Incident_Rate.csv")
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving reinitIRTestData", theFileName, "\n")
-  }
-  #  system("cp DATA/CACHE/US_Incident_Rate.csv DATA/")
-}
+# reinitIRTestData <- function(theFileName, traceThisRoutine = FALSE, prepend = "") {
+#   myPrepend = paste("  ", prepend, sep = "")  
+#   if (traceThisRoutine) {
+#     cat(file = stderr(), prepend, "Entered reinitIRTestData", theFileName, "\n")
+#   }
+#   reinitTestDataFile(theFileName,
+#                      traceThisRoutine = traceThisRoutine,
+#                      prepend = myPrepend)
+#   if (traceThisRoutine) {
+#     cat(file = stderr(), prepend, "Leaving reinitIRTestData", theFileName, "\n")
+#   }
+# }
 
-testDiscardTooNew_US_vacc <- function(traceThisRoutine = FALSE, prepend = "",
-                                      theFileName = "UNKNOWN") {
+testDiscardTooNew_US_vacc <- function(theFileName,
+                                      traceThisRoutine = FALSE,
+                                      prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered testDiscardTooNew_US_vacc", theFileName, "\n")
   }
   
-  reinitVaccTestData(traceThisRoutine = traceThisRoutine, prepend = myPrepend,
-                     theFileName = "US_Vaccinations.csv")
+  reinitTestDataFile(theFileName,
+                     traceThisRoutine = traceThisRoutine,
+                     prepend = myPrepend)
+
   foo1 <- discardTooNewDataFromAFile("./DATA/US_Vaccinations.csv",
                                      cols(.default = col_double(),
                                           Combined_Key = col_character(),
                                           Datum = col_character(),
                                           Loc_Datum = col_character()), 
                                      mdy("08-13-2021"),
+                                     theFileName,
                                      traceThisRoutine = traceThisRoutine,
-                                     prepend = myPrepend,
-                                     theFileName = "US_Vaccinations.csv")
+                                     prepend = myPrepend)
 
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving testDiscardTooNew_US_vacc", theFileName, "\n")
@@ -145,22 +147,25 @@ testDiscardTooNew_US_vacc <- function(traceThisRoutine = FALSE, prepend = "",
   return(foo1)
 }
 
-testDiscardTooNew_US_I_R <- function(traceThisRoutine = FALSE, prepend = "",
-                                     theFileName = "UNKNOWN") {
+testDiscardTooNew_US_I_R <- function(theFileName,
+                                     traceThisRoutine = FALSE,
+                                     prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered testDiscardTooNew_US_I_R", theFileName, "\n")
   }
   
-  reinitIRTestData(traceThisRoutine = traceThisRoutine, prepend = myPrepend,
-                   theFileName = theFileName)
+  reinitTestDataFile(theFileName,
+                   traceThisRoutine = traceThisRoutine,
+                   prepend = myPrepend)
+
   foo1 <- discardTooNewDataFromAFile(paste("./DATA/", theFileName, sep = ""),
                                      cols(.default = col_double(),
                                           Province_State = col_character(),
                                           Combined_Key = col_character()), 
                                      mdy("07-15-2021"),
-                                     traceThisRoutine = traceThisRoutine, prepend = myPrepend,
-                                     theFileName = theFileName)
+                                     theFileName,
+                                     traceThisRoutine = traceThisRoutine, prepend = myPrepend)
 
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving testDiscardTooNew_US_I_R", theFileName, "\n")
@@ -169,15 +174,18 @@ testDiscardTooNew_US_I_R <- function(traceThisRoutine = FALSE, prepend = "",
   return(foo1)
 }
 
-testDiscardDataOutsideDateRange_US_vacc <- function(traceThisRoutine = FALSE, prepend = "",
-                                                    theFileName = "UNKNOWN") {
+testDiscardDataOutsideDateRange_US_vacc <- function(theFileName,
+                                                    traceThisRoutine = FALSE,
+                                                    prepend = "") {
   myPrepend <- paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered testDiscardDataOutsideDateRange_US_vacc", theFileName, "\n")
   }
   
-  reinitVaccTestData(traceThisRoutine = traceThisRoutine, prepend = myPrepend,
-                     theFileName = theFileName)
+  reinitTestDataFile(theFileName,
+                     traceThisRoutine = traceThisRoutine,
+                     prepend = myPrepend)
+
   foo1 <- discardDataOutsideDateRangeFromAFile(paste("./DATA/", theFileName, sep = ""),
                                      cols(.default = col_double(),
                                           Combined_Key = col_character(),
@@ -185,8 +193,8 @@ testDiscardDataOutsideDateRange_US_vacc <- function(traceThisRoutine = FALSE, pr
                                           Loc_Datum = col_character()),
                                      mdy("06-01-2021"),
                                      mdy("08-12-2021"),
-                                     traceThisRoutine = traceThisRoutine, prepend = myPrepend,
-                                     theFileName = theFileName)
+                                     theFileName,
+                                     traceThisRoutine = traceThisRoutine, prepend = myPrepend)
 
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving testDiscardDataOutsideDateRange_US_vacc", theFileName, "\n")
@@ -195,23 +203,26 @@ testDiscardDataOutsideDateRange_US_vacc <- function(traceThisRoutine = FALSE, pr
   return(foo1)
 }
 
-testDiscardDataOutsideDateRange_US_I_R <- function(traceThisRoutine = FALSE, prepend = "",
-                                                   theFileName = "UNKNOWN") {
+testDiscardDataOutsideDateRange_US_I_R <- function(theFileName,
+                                                   traceThisRoutine = FALSE,
+                                                   prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered testDiscardDataOutsideDateRange_US_I_R", theFileName, "\n")
   }
   
-  reinitIRTestData(traceThisRoutine = traceThisRoutine, prepend = myPrepend,
-                   theFileName = theFileName)
+  reinitTestDataFile(theFileName,
+                   traceThisRoutine = traceThisRoutine,
+                   prepend = myPrepend)
+
   foo1 <- discardDataOutsideDateRangeFromAFile(paste("./DATA/", theFileName, sep = ""),
                                      cols(.default = col_double(),
                                           Province_State = col_character(),
                                           Combined_Key = col_character()),
                                      mdy("06-03-2021"),
                                      mdy("07-14-2021"),
-                                     traceThisRoutine = traceThisRoutine, prepend = myPrepend,
-                                     theFileName = theFileName)
+                                     theFileName,
+                                     traceThisRoutine = traceThisRoutine, prepend = myPrepend)
 
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving testDiscardDataOutsideDateRange_US_I_R", theFileName, "\n")
@@ -225,18 +236,18 @@ testSuite <- function(traceThisRoutine = FALSE, prepend = "") {
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered testSuite\n")
   }
-  foo1 <- testDiscardDataOutsideDateRange_US_vacc(traceThisRoutine = traceThisRoutine,
-                                                  prepend = myPrepend,
-                                                  theFileName = "US_Vaccinations.csv")
-  foo2 <- testDiscardTooNew_US_vacc(traceThisRoutine = traceThisRoutine,
-                                    prepend = myPrepend,
-                                    theFileName = "US_Vaccinations.csv")
-  foo4 <- testDiscardDataOutsideDateRange_US_I_R(traceThisRoutine = traceThisRoutine,
-                                                 prepend = myPrepend,
-                                                 theFileName = "US_Incident_Rate.csv")
-  foo5 <- testDiscardTooNew_US_I_R(traceThisRoutine = traceThisRoutine,
-                                   prepend = myPrepend,
-                                   theFileName = "US_Incident_Rate.csv")
+  foo1 <- testDiscardDataOutsideDateRange_US_vacc("US_Vaccinations.csv",
+                                                  traceThisRoutine = traceThisRoutine,
+                                                  prepend = myPrepend)
+  foo2 <- testDiscardTooNew_US_vacc("US_Vaccinations.csv",
+                                    traceThisRoutine = traceThisRoutine,
+                                    prepend = myPrepend)
+  foo4 <- testDiscardDataOutsideDateRange_US_I_R("US_Incident_Rate.csv",
+                                                 traceThisRoutine = traceThisRoutine,
+                                                 prepend = myPrepend)
+  foo5 <- testDiscardTooNew_US_I_R("US_Incident_Rate.csv",
+                                   traceThisRoutine = traceThisRoutine,
+                                   prepend = myPrepend)
   
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving testSuite\n")
