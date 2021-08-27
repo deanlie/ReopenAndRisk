@@ -24,6 +24,29 @@ discardTooNewDataFromAFile <- function(thePath,
   return(return_me)
 }
 
+discardTooOldDataFromAFile <- function(thePath,
+                                       theTypes,
+                                       firstDateToKeep,
+                                       theFileName,
+                                       traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered discardTooOldDataFromAFile", theFileName, "\n")
+  }
+  
+  return_me <- discardDataOutsideDateRangeFromAFile(thePath,
+                                                    theTypes,
+                                                    firstDateToKeep,
+                                                    Sys.Date() + 2,
+                                                    theFileName,
+                                                    traceThisRoutine, myPrepend)
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving discardTooOldDataFromAFile", theFileName, "\n")
+  }
+  
+  return(return_me)
+}
+
 discardDataOutsideDateRangeFromAFile <- function(thePath,
                                                  theTypes,
                                                  firstDateToKeep,
@@ -64,6 +87,13 @@ discardDataOutsideDateRangeFromAFile <- function(thePath,
       newNames <- c(newNames, aName)
     }
   }
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "Number of columns to retain", length(newNames), "\n")
+    cat(file = stderr(), myPrepend, "Retaining cols",
+        newNames[4], "...",
+        newNames[length(newNames)], "\n")
+  }
   
   truncatedTibble <- originalData %>%
     select(any_of({newNames}))
@@ -94,6 +124,7 @@ reinitTestDataFile <- function(theFileName,
 
 testDiscardTooNew <- function(theFileName,
                               theTypes,
+                              firstDateToDelete,
                               traceThisRoutine = FALSE,
                               prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")  
@@ -107,7 +138,7 @@ testDiscardTooNew <- function(theFileName,
   
   foo1 <- discardTooNewDataFromAFile(paste("./DATA/", theFileName, sep=""),
                                      theTypes,
-                                     mdy("08-13-2021"),
+                                     firstDateToDelete,
                                      theFileName,
                                      traceThisRoutine = traceThisRoutine,
                                      prepend = myPrepend)
@@ -119,8 +150,38 @@ testDiscardTooNew <- function(theFileName,
   return(foo1)
 }
 
+testDiscardTooOld <- function(theFileName,
+                              theTypes,
+                              firstDateToKeep,
+                              traceThisRoutine = FALSE,
+                              prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered testDiscardTooOld", theFileName, "\n")
+  }
+  
+  reinitTestDataFile(theFileName,
+                     traceThisRoutine = traceThisRoutine,
+                     prepend = myPrepend)
+  
+  foo1 <- discardTooOldDataFromAFile(paste("./DATA/", theFileName, sep=""),
+                                     theTypes,
+                                     firstDateToKeep,
+                                     theFileName,
+                                     traceThisRoutine = traceThisRoutine,
+                                     prepend = myPrepend)
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving testDiscardTooOld", theFileName, "\n")
+  }
+  
+  return(foo1)
+}
+
 testDiscardDataOutsideDateRange <- function(theFileName,
                                             theTypes,
+                                            firstDateToKeep,
+                                            lastDateToKeep,
                                             traceThisRoutine = FALSE,
                                             prepend = "") {
   myPrepend <- paste("  ", prepend, sep = "")  
@@ -134,8 +195,8 @@ testDiscardDataOutsideDateRange <- function(theFileName,
   
   foo1 <- discardDataOutsideDateRangeFromAFile(paste("./DATA/", theFileName, sep = ""),
                                                theTypes,
-                                               mdy("06-01-2021"),
-                                               mdy("08-12-2021"),
+                                               firstDateToKeep,
+                                               lastDateToKeep,
                                                theFileName,
                                                traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   
@@ -145,131 +206,6 @@ testDiscardDataOutsideDateRange <- function(theFileName,
   
   return(foo1)
 }
-
-# testDiscardTooNew_US_vacc <- function(theFileName,
-#                                       # OUCH needs cols stuff and then don't use
-#                                       #  "./DATA/US_Vaccinations.csv" in call under test
-#                                       #  and refactor, too
-#                                       traceThisRoutine = FALSE,
-#                                       prepend = "") {
-#   myPrepend = paste("  ", prepend, sep = "")  
-#   if (traceThisRoutine) {
-#     cat(file = stderr(), prepend, "Entered testDiscardTooNew_US_vacc", theFileName, "\n")
-#   }
-#   
-#   reinitTestDataFile(theFileName,
-#                      traceThisRoutine = traceThisRoutine,
-#                      prepend = myPrepend)
-# 
-#   foo1 <- discardTooNewDataFromAFile("./DATA/US_Vaccinations.csv",
-#                                      cols(.default = col_double(),
-#                                           Combined_Key = col_character(),
-#                                           Datum = col_character(),
-#                                           Loc_Datum = col_character()), 
-#                                      mdy("08-13-2021"),
-#                                      theFileName,
-#                                      traceThisRoutine = traceThisRoutine,
-#                                      prepend = myPrepend)
-# 
-#   if (traceThisRoutine) {
-#     cat(file = stderr(), prepend, "Leaving testDiscardTooNew_US_vacc", theFileName, "\n")
-#   }
-#   
-#   return(foo1)
-# }
-
-# testDiscardTooNew_US_I_R <- function(theFileName,
-#                                      # OUCH needs cols stuff and then don't use
-#                                      #  "./DATA/US_Vaccinations.csv" in call under test
-#                                      #  and refactor, too
-#                                      traceThisRoutine = FALSE,
-#                                      prepend = "") {
-#   myPrepend = paste("  ", prepend, sep = "")  
-#   if (traceThisRoutine) {
-#     cat(file = stderr(), prepend, "Entered testDiscardTooNew_US_I_R", theFileName, "\n")
-#   }
-#   
-#   reinitTestDataFile(theFileName,
-#                    traceThisRoutine = traceThisRoutine,
-#                    prepend = myPrepend)
-# 
-#   foo1 <- discardTooNewDataFromAFile(paste("./DATA/", theFileName, sep = ""),
-#                                      cols(.default = col_double(),
-#                                           Province_State = col_character(),
-#                                           Combined_Key = col_character()), 
-#                                      mdy("07-15-2021"),
-#                                      theFileName,
-#                                      traceThisRoutine = traceThisRoutine, prepend = myPrepend)
-# 
-#   if (traceThisRoutine) {
-#     cat(file = stderr(), prepend, "Leaving testDiscardTooNew_US_I_R", theFileName, "\n")
-#   }
-#   
-#   return(foo1)
-# }
-
-# testDiscardDataOutsideDateRange_US_vacc <- function(theFileName,
-#                                                     # OUCH needs cols stuff and then don't use
-#                                                     #  "./DATA/US_Vaccinations.csv" in call under test
-#                                                     #  and refactor, too
-#                                                     traceThisRoutine = FALSE,
-#                                                     prepend = "") {
-#   myPrepend <- paste("  ", prepend, sep = "")  
-#   if (traceThisRoutine) {
-#     cat(file = stderr(), prepend, "Entered testDiscardDataOutsideDateRange_US_vacc", theFileName, "\n")
-#   }
-#   
-#   reinitTestDataFile(theFileName,
-#                      traceThisRoutine = traceThisRoutine,
-#                      prepend = myPrepend)
-# 
-#   foo1 <- discardDataOutsideDateRangeFromAFile(paste("./DATA/", theFileName, sep = ""),
-#                                      cols(.default = col_double(),
-#                                           Combined_Key = col_character(),
-#                                           Datum = col_character(),
-#                                           Loc_Datum = col_character()),
-#                                      mdy("06-01-2021"),
-#                                      mdy("08-12-2021"),
-#                                      theFileName,
-#                                      traceThisRoutine = traceThisRoutine, prepend = myPrepend)
-# 
-#   if (traceThisRoutine) {
-#     cat(file = stderr(), prepend, "Leaving testDiscardDataOutsideDateRange_US_vacc", theFileName, "\n")
-#   }
-#   
-#   return(foo1)
-# }
-
-# testDiscardDataOutsideDateRange_US_I_R <- function(theFileName,
-#                                                    # OUCH needs cols stuff and then don't use
-#                                                    #  "./DATA/US_Vaccinations.csv" in call under test
-#                                                    #  and refactor, too
-#                                                    traceThisRoutine = FALSE,
-#                                                    prepend = "") {
-#   myPrepend = paste("  ", prepend, sep = "")  
-#   if (traceThisRoutine) {
-#     cat(file = stderr(), prepend, "Entered testDiscardDataOutsideDateRange_US_I_R", theFileName, "\n")
-#   }
-#   
-#   reinitTestDataFile(theFileName,
-#                    traceThisRoutine = traceThisRoutine,
-#                    prepend = myPrepend)
-# 
-#   foo1 <- discardDataOutsideDateRangeFromAFile(paste("./DATA/", theFileName, sep = ""),
-#                                      cols(.default = col_double(),
-#                                           Province_State = col_character(),
-#                                           Combined_Key = col_character()),
-#                                      mdy("06-03-2021"),
-#                                      mdy("07-14-2021"),
-#                                      theFileName,
-#                                      traceThisRoutine = traceThisRoutine, prepend = myPrepend)
-# 
-#   if (traceThisRoutine) {
-#     cat(file = stderr(), prepend, "Leaving testDiscardDataOutsideDateRange_US_I_R", theFileName, "\n")
-#   }
-#   
-#   return(foo1)
-# }
 
 testSuite <- function(traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")  
@@ -281,25 +217,42 @@ testSuite <- function(traceThisRoutine = FALSE, prepend = "") {
                        Combined_Key = col_character(),
                        Datum = col_character(),
                        Loc_Datum = col_character())
-  foo1 <- testDiscardDataOutsideDateRange("US_Vaccinations.csv",
-                                          vaccColTypes,
-                                          traceThisRoutine = traceThisRoutine,
-                                          prepend = myPrepend)
-  foo2 <- testDiscardTooNew("US_Vaccinations.csv",
-                            vaccColTypes, 
+  foo1 <- testDiscardTooNew("US_V_TEST.csv",
+                            vaccColTypes,
+                            mdy("08-12-2021"), 
                             traceThisRoutine = traceThisRoutine,
                             prepend = myPrepend)
+  foo2 <- testDiscardTooOld("US_V_TEST.csv",
+                            vaccColTypes,
+                            mdy("08-01-2021"), 
+                            traceThisRoutine = traceThisRoutine,
+                            prepend = myPrepend)
+  foo3 <- testDiscardDataOutsideDateRange("US_V_TEST.csv",
+                                          vaccColTypes,
+                                          mdy("08-01-2021"),
+                                          mdy("08-11-2021"),
+                                          traceThisRoutine = traceThisRoutine,
+                                          prepend = myPrepend)
+
   incRateColTypes <- cols(.default = col_double(),
                           Province_State = col_character(),
                           Combined_Key = col_character())
-  foo4 <- testDiscardDataOutsideDateRange("US_Incident_Rate.csv",
-                                          incRateColTypes,
-                                          traceThisRoutine = traceThisRoutine,
-                                          prepend = myPrepend)
-  foo5 <- testDiscardTooNew("US_Incident_Rate.csv",
+  foo4 <- testDiscardTooNew("US_IR_TEST.csv",
                             incRateColTypes,
+                            mdy("5-31-2021"),
                             traceThisRoutine = traceThisRoutine,
                             prepend = myPrepend)
+  foo5 <- testDiscardTooOld("US_IR_TEST.csv",
+                            incRateColTypes,
+                            mdy("5-02-2021"),
+                            traceThisRoutine = traceThisRoutine,
+                            prepend = myPrepend)
+  foo4 <- testDiscardDataOutsideDateRange("US_IR_TEST.csv",
+                                          incRateColTypes,
+                                          mdy("05-02-2021"),
+                                          mdy("05-30-2021"),
+                                          traceThisRoutine = traceThisRoutine,
+                                          prepend = myPrepend)
   
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving testSuite\n")
