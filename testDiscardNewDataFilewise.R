@@ -1,52 +1,6 @@
 library(tidyverse)
 library(lubridate)
 
-discardTooNewDataFromAFile <- function(thePath,
-                                       theTypes,
-                                       firstDateToDelete,
-                                       theFileName,
-                                       traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend, sep = "")  
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered discardTooNewDataFromAFile", theFileName, "\n")
-  }
-
-  return_me <- discardDataOutsideDateRangeFromAFile(thePath,
-                                              theTypes,
-                                              0,
-                                              firstDateToDelete - 1,
-                                              theFileName,
-                                              traceThisRoutine, myPrepend)
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving discardTooNewDataFromAFile", theFileName, "\n")
-  }
-  
-  return(return_me)
-}
-
-discardTooOldDataFromAFile <- function(thePath,
-                                       theTypes,
-                                       firstDateToKeep,
-                                       theFileName,
-                                       traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend, sep = "")  
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered discardTooOldDataFromAFile", theFileName, "\n")
-  }
-  
-  return_me <- discardDataOutsideDateRangeFromAFile(thePath,
-                                                    theTypes,
-                                                    firstDateToKeep,
-                                                    Sys.Date() + 2,
-                                                    theFileName,
-                                                    traceThisRoutine, myPrepend)
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving discardTooOldDataFromAFile", theFileName, "\n")
-  }
-  
-  return(return_me)
-}
-
 discardDataOutsideDateRangeFromAFile <- function(thePath,
                                                  theTypes,
                                                  firstDateToKeep,
@@ -107,6 +61,63 @@ discardDataOutsideDateRangeFromAFile <- function(thePath,
   return(list(T0 = originalData, T1 = truncatedTibble))
 }
 
+# Convenience routines for the above
+discardTooNewDataFromAFile <- function(thePath,
+                                       theTypes,
+                                       firstDateToDelete,
+                                       theFileName,
+                                       traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered discardTooNewDataFromAFile", theFileName, "\n")
+  }
+  
+  return_me <- discardDataOutsideDateRangeFromAFile(thePath,
+                                                    theTypes,
+                                                    0,
+                                                    firstDateToDelete - 1,
+                                                    theFileName,
+                                                    traceThisRoutine, myPrepend)
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving discardTooNewDataFromAFile", theFileName, "\n")
+  }
+  
+  return(return_me)
+}
+
+discardTooOldDataFromAFile <- function(thePath,
+                                       theTypes,
+                                       firstDateToKeep,
+                                       theFileName,
+                                       traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered discardTooOldDataFromAFile", theFileName, "\n")
+  }
+  
+  return_me <- discardDataOutsideDateRangeFromAFile(thePath,
+                                                    theTypes,
+                                                    firstDateToKeep,
+                                                    Sys.Date() + 2,
+                                                    theFileName,
+                                                    traceThisRoutine, myPrepend)
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving discardTooOldDataFromAFile", theFileName, "\n")
+  }
+  
+  return(return_me)
+}
+
+#####################################################
+# For FillVaccDates:
+# source downloadJHUData.R
+# Read in the big data file, Vacc_TS_URL():
+# raw_data <- getURLOrStop(Vacc_TS_URL(), col_types = cols(.default = col_guess()))
+#####################################################
+
+#####################################################
+# TESTS below this point
+#####################################################
 reinitTestDataFile <- function(theFileName,
                                traceThisRoutine = FALSE,
                                prepend = "") {
