@@ -93,6 +93,9 @@ reinitTestDataFile <- function(theFileName,
 }
 
 testDiscardTooNew_US_vacc <- function(theFileName,
+                                      # OUCH needs cols stuff and then don't use
+                                      #  "./DATA/US_Vaccinations.csv" in call under test
+                                      #  and refactor, too
                                       traceThisRoutine = FALSE,
                                       prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")  
