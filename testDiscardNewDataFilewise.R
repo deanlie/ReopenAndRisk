@@ -247,7 +247,7 @@ testSuite <- function(traceThisRoutine = FALSE, prepend = "") {
                             mdy("5-02-2021"),
                             traceThisRoutine = traceThisRoutine,
                             prepend = myPrepend)
-  foo4 <- testDiscardDataOutsideDateRange("US_IR_TEST.csv",
+  foo6 <- testDiscardDataOutsideDateRange("US_IR_TEST.csv",
                                           incRateColTypes,
                                           mdy("05-02-2021"),
                                           mdy("05-30-2021"),
@@ -261,8 +261,10 @@ testSuite <- function(traceThisRoutine = FALSE, prepend = "") {
   return(list(ORIG_123 = foo1$T0
               , RES1 = foo1$T1
               , RES2 = foo2$T1
+              , RES3 = foo3$T1
               , ORIG_456 = foo4$T0
               , RES4 = foo4$T1
               , RES5 = foo5$T1
+              , RES6 = foo6$T1
               ))
 }
