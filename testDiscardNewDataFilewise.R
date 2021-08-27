@@ -92,32 +92,6 @@ reinitTestDataFile <- function(theFileName,
   }
 }
 
-# reinitVaccTestData <- function(theFileName, traceThisRoutine = FALSE, prepend = "") {
-#   myPrepend = paste("  ", prepend, sep = "")  
-#   if (traceThisRoutine) {
-#     cat(file = stderr(), prepend, "Entered reinitVaccTestData", theFileName, "\n")
-#   }
-#   reinitTestDataFile(theFileName,
-#                      traceThisRoutine = traceThisRoutine,
-#                      prepend = myPrepend)
-#   if (traceThisRoutine) {
-#     cat(file = stderr(), prepend, "Leaving reinitVaccTestData", theFileName, "\n")
-#   }
-# }
-
-# reinitIRTestData <- function(theFileName, traceThisRoutine = FALSE, prepend = "") {
-#   myPrepend = paste("  ", prepend, sep = "")  
-#   if (traceThisRoutine) {
-#     cat(file = stderr(), prepend, "Entered reinitIRTestData", theFileName, "\n")
-#   }
-#   reinitTestDataFile(theFileName,
-#                      traceThisRoutine = traceThisRoutine,
-#                      prepend = myPrepend)
-#   if (traceThisRoutine) {
-#     cat(file = stderr(), prepend, "Leaving reinitIRTestData", theFileName, "\n")
-#   }
-# }
-
 testDiscardTooNew_US_vacc <- function(theFileName,
                                       traceThisRoutine = FALSE,
                                       prepend = "") {
