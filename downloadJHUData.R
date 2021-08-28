@@ -209,6 +209,23 @@ getURLOrStop <- function(aURL, col_types, traceThisRoutine = FALSE, prepend = ""
   return(rawData)
 }
 
+getURLFromSpecsOrStop <- function(theSpecs, traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend)
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered getURLFromSpecsOrStop\n")
+  }
+  
+  theData <- getURLOrStop(theSpecs$URL, theSpecs$COLS,
+                          traceThisRoutine = traceThisRoutine,
+                          prepend = myPrepend)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving getURLFromSpecsOrStop\n")
+  }
+  
+  return(theData)
+}
+
 vaccDailyUpdateDataSpecs <- function() {
   list(URL = Vacc_URL(),
        COLS = Vacc_Cols(),
