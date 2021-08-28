@@ -20,44 +20,26 @@ developGetVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = ""
 }
 
 getAndSaveVaccDailyData <- function(traceThisRoutine = FALSE) {
-   foo <- getURLFromSpecsOrStop(vaccDailyUpdateDataSpecs(),
+   rawData <- getURLFromSpecsOrStop(vaccDailyUpdateDataSpecs(),
                                 traceThisRoutine = traceThisRoutine,
-                                prepend = myPrepend)
+                                prepend = "VaccDailyUpdate")
    
-   write_csv(foo,  "./DATA/CACHE/VACC_DAILY.csv")
+   write_csv(rawData, vaccDailyUpdateDataSpecs()$PATH)
    
-   return(foo)
+   return(rawData)
 }
 
 getAndSaveVaccTimelineData <- function(traceThisRoutine = FALSE) {
-  foo <- getURLFromSpecsOrStop(vaccTimeSeriesDataSpecs(),
+  rawData <- getURLFromSpecsOrStop(vaccTimeSeriesDataSpecs(),
                                traceThisRoutine = traceThisRoutine,
-                               prepend = "TEST")
+                               prepend = "VaccTimeline")
   
-  write_csv(foo,  "./DATA/CACHE/VACC_TIMELINE.csv")
+  write_csv(rawData, vaccTimeSeriesDataSpecs()$PATH)
   
-  return(foo)
+  return(rawData)
 }
 
-testSuite <- function() {
-  ss <- vaccDailyUpdateDataSpecs()
-  cat(file=stderr(), "vaccDailyUpdateDataSpecs() ->", ss$PATH, "\n")
-  ss <- vaccDailyUpdateDataSpecs(NULL)
-  cat(file=stderr(), "vaccDailyUpdateDataSpecs(NULL) ->", ss$PATH, "\n")
-  ss <- vaccDailyUpdateDataSpecs(mdy("08-05-2021"))
-  cat(file=stderr(), "vaccDailyUpdateDataSpecs(mdy('08-05-2021')) ->", ss$PATH, "\n")
-  
-  ss <- vaccTimeSeriesDataSpecs()
-  cat(file=stderr(), "vaccTimeSeriesDataSpecs() ->", ss$PATH, "\n")
-  ss <- vaccTimeSeriesDataSpecs(NULL)
-  cat(file=stderr(), "vaccTimeSeriesDataSpecs(NULL) ->", ss$PATH, "\n")
-  ss <- vaccTimeSeriesDataSpecs(mdy("08-05-2021"))
-  cat(file=stderr(), "vaccTimeSeriesDataSpecs(mdy('08-05-2021')) ->", ss$PATH, "\n")
-  
-  ss <- pVaccTimeSeriesDataSpecs()
-  cat(file=stderr(), "pVaccTimeSeriesDataSpecs() ->", ss$PATH, "\n")
-  ss <- pVaccTimeSeriesDataSpecs(NULL)
-  cat(file=stderr(), "pVaccTimeSeriesDataSpecs(NULL) ->", ss$PATH, "\n")
-  ss <- pVaccTimeSeriesDataSpecs(mdy("08-05-2021"))
-  cat(file=stderr(), "pVaccTimeSeriesDataSpecs(mdy('08-05-2021')) ->", ss$PATH, "\n")
+testSuite <- function(traceThisRoutine = FALSE) {
+  getAndSaveVaccDailyData(traceThisRoutine = traceThisRoutine)
+  getAndSaveVaccTimelineData(traceThisRoutine = traceThisRoutine)
 }
