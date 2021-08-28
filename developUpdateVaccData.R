@@ -15,13 +15,13 @@ developGetVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = ""
     cat(file = stderr(), prepend, "Leaving developGetVaccDataByGeography\n")
   }
   
-  return(list(DD = dailyData))
+  return(dailyData)
 }
 
 getAndSaveVaccDailyData <- function(traceThisRoutine = FALSE) {
    foo <- developGetVaccDataByGeography(traceThisRoutine)
    
-   write_csv(foo,  "./DATA/CACHE/VACC_DAILY.csv")
+   # write_csv(foo,  "./DATA/CACHE/VACC_DAILY.csv")
    
    return(foo)
 } 

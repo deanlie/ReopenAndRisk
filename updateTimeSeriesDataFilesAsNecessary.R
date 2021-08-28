@@ -133,14 +133,7 @@ updateDataFilesForUSTimeSeriesTypeIfNeeded <- function(aType,
 }
 
 getVaccDataByGeography <- function(traceThisRoutine = FALSE) {
-  # rawData <- getURLOrStop(Vacc_URL(),
-  #                         col_types = cols(.default = col_double(),
-  #                                          Province_State = col_character(),
-  #                                          Country_Region = col_character(),
-  #                                          Date = col_date(format = ""),
-  #                                          Vaccine_Type = col_character(),
-  #                                          Combined_Key = col_character()))
-  rawData <- downloadVaccDailyUpdateData()
+  rawData <- downloadVaccDailyUpdateData()$RD
     
   justStateData <- rawData %>%
     as_tibble() %>%

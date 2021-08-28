@@ -256,16 +256,20 @@ downloadVaccDailyUpdateData <- function(traceThisRoutine = FALSE, prepend = "") 
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered downloadVaccDailyUpdateData\n")
   }
-  
+
+  rawData <- getURLFromSpecsOrStop(vaccDailyUpdateDataSpecs(),
+                                   traceThisRoutine = traceThisRoutine,
+                                   prepend = myPrepend)
+
   specs <- vaccDailyUpdateDataSpecs()
-  rawData <- getURLOrStop(specs$URL, col_types = specs$COLS,
+  rawData1 <- getURLOrStop(specs$URL, col_types = specs$COLS,
                           traceThisRoutine = traceThisRoutine,
                           prepend = myPrepend)
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving downloadVaccDailyUpdateData\n")
   }
 
-  return(rawData)
+  return(list(RD = rawData, RD1 = rawData1))
 }
 
 downloadAndSaveVaccDailyUpdateData <- function(traceThisRoutine = FALSE, prepend = "") {
