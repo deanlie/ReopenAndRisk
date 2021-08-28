@@ -56,6 +56,13 @@
 # govex/COVID-19/master/
 # data_tables/vaccine_data/us_data/time_series/vaccine_data_us_timeline.csv
 
+#************************************************************* 
+#*
+#* US People vacinated time series data. PVacc_TS_URL()
+# https://raw.githubusercontent.com/
+# govex/COVID-19/master/
+# data_tables/vaccine_data/us_data/time_series/people_vaccinated_us_timeline.csv
+
 library(tidyverse)
 # library(lubridate)
 # library(stringi)
@@ -134,12 +141,45 @@ Vacc_URL <- function() {
                  sep = "")
 }
 
+Vacc_Cols <- function() {
+  C_out <- cols(.default = col_double(),
+                Province_State = col_character(),
+                Country_Region = col_character(),
+                Date = col_date(format = ""),
+                Vaccine_Type = col_character(),
+                Combined_Key = col_character())
+}
+
 # Whole time series, megabytes to crunch but good for major reconstruction
 Vacc_TS_URL <- function() {
   U_out <- paste(GithubUserContent(),
                  GovexMaster(),
                  GxTablesUSData(),
                  "/time_series/vaccine_data_us_timeline.csv",
+                 sep = "")
+}
+
+Vacc_TS_Cols <- function() {
+  C_out <- cols(.default = col_double(),
+                Province_State = col_character(),
+                Country_Region = col_character(),
+                Date = col_date(format = ""),
+                Vaccine_Type = col_character(),
+                Combined_Key = col_character())
+}
+
+Vacc_TS_Path <- function() {
+  P_out <- paste("DATA/VaccUpdate_",
+                 jhuFileDateString(Sys.Date()),
+                 sep = "")
+}
+
+#* US People vacinated time series data. Big but not so big as above
+PVacc_TS_URL <- function() {
+  U_out <- paste(GithubUserContent(),
+                 GovexMaster(),
+                 GxTablesUSData(),
+                 "/time_series/people_vaccinated_data_us_timeline.csv",
                  sep = "")
 }
 
@@ -170,18 +210,26 @@ getURLOrStop <- function(aURL, col_types, traceThisRoutine = FALSE, prepend = ""
 }
 
 vaccDailyUpdateDataSpecs <- function() {
-  list(URL = paste(GithubUserContent(),
-                   GovexMaster(),
-                   GxTablesUSData(),
-                   "hourly/vaccine_data_us.csv",
-                   sep = ""),
-       COLS = cols(.default = col_double(),
-                   Province_State = col_character(),
-                   Country_Region = col_character(),
-                   Date = col_date(format = ""),
-                   Vaccine_Type = col_character(),
-                   Combined_Key = col_character()),
+  list(URL = Vacc_URL(),
+       COLS = Vacc_Cols(),
        PATH = paste("DATA/VaccUpdate_",
+                    jhuFileDateString(Sys.Date()),
+                    sep = ""))
+}
+
+vaccTimeSeriesDataSpecs <- function() {
+  list(URL = Vacc_TS_URL(),
+       COLS = Vacc_TS_Cols(),
+       PATH = paste("DATA/VaccTS_",
+                    jhuFileDateString(Sys.Date()),
+                    sep = ""))
+}
+
+#* US People vacinated time series data.
+pVaccTimeSeriesDataSpecs <- function() {
+  list(URL = PVacc_TS_URL(),
+       COLS = Vacc_TS_Cols(),
+       PATH = paste("DATA/pVaccUpdate_",
                     jhuFileDateString(Sys.Date()),
                     sep = ""))
 }

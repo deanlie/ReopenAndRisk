@@ -34,13 +34,17 @@ source("./computeNewAndGrowth.R")
 #   US_State_Vaccination_Pcts_A7 <<- US_State_Vaccinations_A7
 # }
 
-loadUSVaccinationData <- function() {
+loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
+  # Local function
   rem1000 <- function(n) {
     as.integer(n - 1000 * floor(n / 1000))
   }
 
-  traceThisRoutine = FALSE
-  myPrepend = "From loadUSVaccinationData"
+  # Mainline of this routine
+  myPrepend = paste("  ", prepend, sep = "")  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered loadUSVaccinationData\n")
+  }
 
   updateToThisDate <- today("EST")
   
@@ -107,4 +111,7 @@ loadUSVaccinationData <- function() {
                                                      getNAvgs, 7,
                                                      tibbleName="US_State_Vaccination_Pcts",
                                                      traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving loadUSVaccinationData\n")
+  }
 }
