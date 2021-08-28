@@ -20,9 +20,21 @@ developGetVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = ""
 }
 
 getAndSaveVaccDailyData <- function(traceThisRoutine = FALSE) {
-   foo <- developGetVaccDataByGeography(traceThisRoutine)
+   foo <- getURLFromSpecsOrStop(vaccDailyUpdateDataSpecs(),
+                                traceThisRoutine = traceThisRoutine,
+                                prepend = myPrepend)
    
    write_csv(foo,  "./DATA/CACHE/VACC_DAILY.csv")
    
    return(foo)
-} 
+}
+
+getAndSaveVaccTimelineData <- function(traceThisRoutine = FALSE) {
+  foo <- getURLFromSpecsOrStop(vaccTimeSeriesDataSpecs(),
+                               traceThisRoutine = traceThisRoutine,
+                               prepend = "TEST")
+  
+  write_csv(foo,  "./DATA/CACHE/VACC_TIMELINE.csv")
+  
+  return(foo)
+}

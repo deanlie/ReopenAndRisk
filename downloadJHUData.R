@@ -226,6 +226,35 @@ getURLFromSpecsOrStop <- function(theSpecs, traceThisRoutine = FALSE, prepend = 
   return(theData)
 }
 
+getFileFromSpecsOrStop <- function(theSpecs, traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend)
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered getFileFromSpecsOrStop\n")
+  }
+  
+  if (file.exists(theSpecs$PATH)) {
+    rawData <- try(read_csv(theSpecs$PATH,
+                            col_types = theSpecs$COLS))
+    if (class(rawData)[1] == "try-error") {
+      if (traceThisRoutine) {
+        cat(file = stderr(), "try(read_csv()) failed for ", theSpecs$PATH, "\n")
+      }
+      stop(paste("FATAL ERROR -- Unable to read:", theSpecs$PATH))
+    } 
+  } else {
+    if (traceThisRoutine) {
+      cat(file = stderr(), "file.exists returned FALSE for ", theSpecs$PATH, "\n")
+    }
+    stop(paste("FATAL ERROR -- No such path: ", theSpecs$PATH))
+  }
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving getFileFromSpecsOrStop\n")
+  }
+  
+  return(rawData)
+}
+
 vaccDailyUpdateDataSpecs <- function() {
   list(URL = Vacc_URL(),
        COLS = Vacc_Cols(),
@@ -268,24 +297,24 @@ pVaccTimeSeriesDataSpecs <- function() {
 #   return(rawData)
 # }
 
-downloadAndSaveVaccDailyUpdateData <- function(traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend, sep = "")  
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered downloadAndSaveVaccDailyUpdateData\n")
-  }
-
-  specs <- vaccDailyUpdateDataSpecs()
-  rawData <- getURLOrStop(specs$URL, col_types = specs$COLS,
-                          traceThisRoutine = traceThisRoutine,
-                          prepend = myPrepend)
-  
-  write_csv(updateTibble, specs$PATH)
-
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving downloadAndSaveVaccDailyUpdateData\n")
-  }
-  return(rawData)
-}
+# downloadAndSaveVaccDailyUpdateData <- function(traceThisRoutine = FALSE, prepend = "") {
+#   myPrepend = paste("  ", prepend, sep = "")  
+#   if (traceThisRoutine) {
+#     cat(file = stderr(), prepend, "Entered downloadAndSaveVaccDailyUpdateData\n")
+#   }
+# 
+#   specs <- vaccDailyUpdateDataSpecs()
+#   rawData <- getURLOrStop(specs$URL, col_types = specs$COLS,
+#                           traceThisRoutine = traceThisRoutine,
+#                           prepend = myPrepend)
+#   
+#   write_csv(updateTibble, specs$PATH)
+# 
+#   if (traceThisRoutine) {
+#     cat(file = stderr(), prepend, "Leaving downloadAndSaveVaccDailyUpdateData\n")
+#   }
+#   return(rawData)
+# }
 
 # saveJHUHereForDate <- function(aDate) {
 #   paste("F:/DeanDocuments/COVID_DATA/JHU/",
