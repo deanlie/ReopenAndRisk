@@ -218,64 +218,64 @@ testDiscardDataOutsideDateRange <- function(theFileName,
   return(foo1)
 }
 
-testSuite <- function(traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend, sep = "")  
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered testSuite\n")
-  }
-  
-  vaccColTypes <- cols(.default = col_double(),
-                       Combined_Key = col_character(),
-                       Datum = col_character(),
-                       Loc_Datum = col_character())
-  foo1 <- testDiscardTooNew("US_V_TEST.csv",
-                            vaccColTypes,
-                            mdy("08-12-2021"), 
-                            traceThisRoutine = traceThisRoutine,
-                            prepend = myPrepend)
-  foo2 <- testDiscardTooOld("US_V_TEST.csv",
-                            vaccColTypes,
-                            mdy("08-01-2021"), 
-                            traceThisRoutine = traceThisRoutine,
-                            prepend = myPrepend)
-  foo3 <- testDiscardDataOutsideDateRange("US_V_TEST.csv",
-                                          vaccColTypes,
-                                          mdy("08-01-2021"),
-                                          mdy("08-11-2021"),
-                                          traceThisRoutine = traceThisRoutine,
-                                          prepend = myPrepend)
-
-  incRateColTypes <- cols(.default = col_double(),
-                          Province_State = col_character(),
-                          Combined_Key = col_character())
-  foo4 <- testDiscardTooNew("US_IR_TEST.csv",
-                            incRateColTypes,
-                            mdy("5-31-2021"),
-                            traceThisRoutine = traceThisRoutine,
-                            prepend = myPrepend)
-  foo5 <- testDiscardTooOld("US_IR_TEST.csv",
-                            incRateColTypes,
-                            mdy("5-02-2021"),
-                            traceThisRoutine = traceThisRoutine,
-                            prepend = myPrepend)
-  foo6 <- testDiscardDataOutsideDateRange("US_IR_TEST.csv",
-                                          incRateColTypes,
-                                          mdy("05-02-2021"),
-                                          mdy("05-30-2021"),
-                                          traceThisRoutine = traceThisRoutine,
-                                          prepend = myPrepend)
-  
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving testSuite\n")
-  }
-
-  return(list(ORIG_123 = foo1$T0
-              , RES1 = foo1$T1
-              , RES2 = foo2$T1
-              , RES3 = foo3$T1
-              , ORIG_456 = foo4$T0
-              , RES4 = foo4$T1
-              , RES5 = foo5$T1
-              , RES6 = foo6$T1
-              ))
-}
+# testSuite <- function(traceThisRoutine = FALSE, prepend = "") {
+#   myPrepend = paste("  ", prepend, sep = "")  
+#   if (traceThisRoutine) {
+#     cat(file = stderr(), prepend, "Entered testSuite\n")
+#   }
+#   
+#   vaccColTypes <- cols(.default = col_double(),
+#                        Combined_Key = col_character(),
+#                        Datum = col_character(),
+#                        Loc_Datum = col_character())
+#   foo1 <- testDiscardTooNew("US_V_TEST.csv",
+#                             vaccColTypes,
+#                             mdy("08-12-2021"), 
+#                             traceThisRoutine = traceThisRoutine,
+#                             prepend = myPrepend)
+#   foo2 <- testDiscardTooOld("US_V_TEST.csv",
+#                             vaccColTypes,
+#                             mdy("08-01-2021"), 
+#                             traceThisRoutine = traceThisRoutine,
+#                             prepend = myPrepend)
+#   foo3 <- testDiscardDataOutsideDateRange("US_V_TEST.csv",
+#                                           vaccColTypes,
+#                                           mdy("08-01-2021"),
+#                                           mdy("08-11-2021"),
+#                                           traceThisRoutine = traceThisRoutine,
+#                                           prepend = myPrepend)
+# 
+#   incRateColTypes <- cols(.default = col_double(),
+#                           Province_State = col_character(),
+#                           Combined_Key = col_character())
+#   foo4 <- testDiscardTooNew("US_IR_TEST.csv",
+#                             incRateColTypes,
+#                             mdy("5-31-2021"),
+#                             traceThisRoutine = traceThisRoutine,
+#                             prepend = myPrepend)
+#   foo5 <- testDiscardTooOld("US_IR_TEST.csv",
+#                             incRateColTypes,
+#                             mdy("5-02-2021"),
+#                             traceThisRoutine = traceThisRoutine,
+#                             prepend = myPrepend)
+#   foo6 <- testDiscardDataOutsideDateRange("US_IR_TEST.csv",
+#                                           incRateColTypes,
+#                                           mdy("05-02-2021"),
+#                                           mdy("05-30-2021"),
+#                                           traceThisRoutine = traceThisRoutine,
+#                                           prepend = myPrepend)
+#   
+#   if (traceThisRoutine) {
+#     cat(file = stderr(), prepend, "Leaving testSuite\n")
+#   }
+# 
+#   return(list(ORIG_123 = foo1$T0
+#               , RES1 = foo1$T1
+#               , RES2 = foo2$T1
+#               , RES3 = foo3$T1
+#               , ORIG_456 = foo4$T0
+#               , RES4 = foo4$T1
+#               , RES5 = foo5$T1
+#               , RES6 = foo6$T1
+#               ))
+# }
