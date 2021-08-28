@@ -255,66 +255,39 @@ getFileFromSpecsOrStop <- function(theSpecs, traceThisRoutine = FALSE, prepend =
   return(rawData)
 }
 
-vaccDailyUpdateDataSpecs <- function() {
+vaccDailyUpdateDataSpecs <- function(aDate = NULL) {
+  if (is.null(aDate)) {
+    aDate = Sys.Date()
+  }
   list(URL = Vacc_URL(),
        COLS = Vacc_Cols(),
        PATH = paste("DATA/VaccUpdate_",
-                    jhuFileDateString(Sys.Date()),
+                    jhuFileDateString(aDate),
                     sep = ""))
 }
 
-vaccTimeSeriesDataSpecs <- function() {
+vaccTimeSeriesDataSpecs <- function(aDate = NULL) {
+  if (is.null(aDate)) {
+    aDate = Sys.Date()
+  }
   list(URL = Vacc_TS_URL(),
        COLS = Vacc_TS_Cols(),
        PATH = paste("DATA/VaccTS_",
-                    jhuFileDateString(Sys.Date()),
+                    jhuFileDateString(aDate),
                     sep = ""))
 }
 
 #* US People vacinated time series data.
-pVaccTimeSeriesDataSpecs <- function() {
+pVaccTimeSeriesDataSpecs <- function(aDate = NULL) {
+  if (is.null(aDate)) {
+    aDate = Sys.Date()
+  }
   list(URL = PVacc_TS_URL(),
        COLS = Vacc_TS_Cols(),
        PATH = paste("DATA/pVaccUpdate_",
-                    jhuFileDateString(Sys.Date()),
+                    jhuFileDateString(aDate),
                     sep = ""))
 }
-
-# downloadVaccDailyUpdateData <- function(traceThisRoutine = FALSE, prepend = "") {
-#   myPrepend = paste("  ", prepend, sep = "")  
-#   if (traceThisRoutine) {
-#     cat(file = stderr(), prepend, "Entered downloadVaccDailyUpdateData\n")
-#   }
-# 
-#   rawData <- getURLFromSpecsOrStop(vaccDailyUpdateDataSpecs(),
-#                                    traceThisRoutine = traceThisRoutine,
-#                                    prepend = myPrepend)
-# 
-#   if (traceThisRoutine) {
-#     cat(file = stderr(), prepend, "Leaving downloadVaccDailyUpdateData\n")
-#   }
-# 
-#   return(rawData)
-# }
-
-# downloadAndSaveVaccDailyUpdateData <- function(traceThisRoutine = FALSE, prepend = "") {
-#   myPrepend = paste("  ", prepend, sep = "")  
-#   if (traceThisRoutine) {
-#     cat(file = stderr(), prepend, "Entered downloadAndSaveVaccDailyUpdateData\n")
-#   }
-# 
-#   specs <- vaccDailyUpdateDataSpecs()
-#   rawData <- getURLOrStop(specs$URL, col_types = specs$COLS,
-#                           traceThisRoutine = traceThisRoutine,
-#                           prepend = myPrepend)
-#   
-#   write_csv(updateTibble, specs$PATH)
-# 
-#   if (traceThisRoutine) {
-#     cat(file = stderr(), prepend, "Leaving downloadAndSaveVaccDailyUpdateData\n")
-#   }
-#   return(rawData)
-# }
 
 # saveJHUHereForDate <- function(aDate) {
 #   paste("F:/DeanDocuments/COVID_DATA/JHU/",
