@@ -8,8 +8,9 @@ developGetVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = ""
     cat(file = stderr(), prepend, "Entered developGetVaccDataByGeography\n")
   }
 
-  dailyData <- downloadVaccDailyUpdateData(traceThisRoutine = traceThisRoutine,
-                                            prepend = myPrepend)
+  dailyData <- getURLFromSpecsOrStop(vaccDailyUpdateDataSpecs(),
+                                     traceThisRoutine = traceThisRoutine,
+                                     prepend = myPrepend)
 
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving developGetVaccDataByGeography\n")
@@ -21,7 +22,7 @@ developGetVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = ""
 getAndSaveVaccDailyData <- function(traceThisRoutine = FALSE) {
    foo <- developGetVaccDataByGeography(traceThisRoutine)
    
-   # write_csv(foo,  "./DATA/CACHE/VACC_DAILY.csv")
+   write_csv(foo,  "./DATA/CACHE/VACC_DAILY.csv")
    
    return(foo)
 } 

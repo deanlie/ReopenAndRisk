@@ -132,8 +132,15 @@ updateDataFilesForUSTimeSeriesTypeIfNeeded <- function(aType,
   }
 }
 
-getVaccDataByGeography <- function(traceThisRoutine = FALSE) {
-  rawData <- downloadVaccDailyUpdateData()$RD
+getVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered getVaccDataByGeography\n")
+  }
+
+  rawData <- getURLFromSpecsOrStop(vaccDailyUpdateDataSpecs(),
+                                   traceThisRoutine = traceThisRoutine,
+                                   prepend = myPrepend)
     
   justStateData <- rawData %>%
     as_tibble() %>%
@@ -144,10 +151,6 @@ getVaccDataByGeography <- function(traceThisRoutine = FALSE) {
            Doses_alloc, Doses_shipped, Doses_admin,
            Stage_One_Doses, Stage_Two_Doses)
 
-  if (traceThisRoutine) {
-    print("in getVaccDataByGeography")
-  }
-      
   US_to_prepend <- summarise(justStateData,
                              FIPS = 0, Province_State = "US", Combined_Key = "US",
                              Doses_alloc = sum(Doses_alloc, na.rm = TRUE),
@@ -157,6 +160,10 @@ getVaccDataByGeography <- function(traceThisRoutine = FALSE) {
                              Stage_Two_Doses = sum(Stage_Two_Doses, na.rm = TRUE))
 
   dataByGeography <- bind_rows(US_to_prepend, justStateData)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving getVaccDataByGeography\n")
+  }
 
   return(dataByGeography)
 }

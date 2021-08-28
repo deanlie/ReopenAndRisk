@@ -251,26 +251,22 @@ pVaccTimeSeriesDataSpecs <- function() {
                     sep = ""))
 }
 
-downloadVaccDailyUpdateData <- function(traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend, sep = "")  
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered downloadVaccDailyUpdateData\n")
-  }
-
-  rawData <- getURLFromSpecsOrStop(vaccDailyUpdateDataSpecs(),
-                                   traceThisRoutine = traceThisRoutine,
-                                   prepend = myPrepend)
-
-  specs <- vaccDailyUpdateDataSpecs()
-  rawData1 <- getURLOrStop(specs$URL, col_types = specs$COLS,
-                          traceThisRoutine = traceThisRoutine,
-                          prepend = myPrepend)
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving downloadVaccDailyUpdateData\n")
-  }
-
-  return(list(RD = rawData, RD1 = rawData1))
-}
+# downloadVaccDailyUpdateData <- function(traceThisRoutine = FALSE, prepend = "") {
+#   myPrepend = paste("  ", prepend, sep = "")  
+#   if (traceThisRoutine) {
+#     cat(file = stderr(), prepend, "Entered downloadVaccDailyUpdateData\n")
+#   }
+# 
+#   rawData <- getURLFromSpecsOrStop(vaccDailyUpdateDataSpecs(),
+#                                    traceThisRoutine = traceThisRoutine,
+#                                    prepend = myPrepend)
+# 
+#   if (traceThisRoutine) {
+#     cat(file = stderr(), prepend, "Leaving downloadVaccDailyUpdateData\n")
+#   }
+# 
+#   return(rawData)
+# }
 
 downloadAndSaveVaccDailyUpdateData <- function(traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")  
