@@ -22,7 +22,7 @@ developGetVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = ""
   US_Vaccinations_As_Filed <- read_csv("./DATA/CACHE/US_Vacc_Test.csv", #"./DATA/US_Vaccinations.csv",
                                        col_types = vaccColTypes())
   
-  US_State_Vaccinations_As_Filed <- read_csv("./DATA/CACHE/US_Vacc_Test.csv", #"./DATA/US_State_Vaccinations.csv",
+  US_State_Vaccinations_As_Filed <- read_csv("./DATA/CACHE/US_State_Vacc_Test.csv", #"./DATA/US_State_Vaccinations.csv",
                                              col_types = vaccColTypes())
 
   # If latest date of US tibble is yesterday
@@ -73,10 +73,14 @@ developGetVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = ""
     for (aDate in firstDateWeNeed:lastDateWeNeed) {
       theDateString <- format(as_date(aDate), "20%y-%m-%d")
       
-      # Filter that date data out of vacc timeline tibble
       if (traceThisRoutine) {
         cat(file = stderr(), prepend, "Filter for 'Date =", theDateString, "\n")
       }
+      # Filter that date data out of vacc timeline tibble
+      filteredUpdateData <- updateDataSource %>%
+        filter(Date == theDateString)
+
+      # OUCH Swap in code from "developUpdateStateVaccFileFromTimeline()"
       # Add it onto state vacc data tibble, you have code
       if (traceThisRoutine) {
         cat(file = stderr(), prepend, "Append that data to the file\n")
@@ -89,7 +93,34 @@ developGetVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = ""
   }
   
   return(list(STATE = US_State_Vaccinations_As_Filed,
-              US = US_Vaccinations_As_Filed))
+              US = US_Vaccinations_As_Filed,
+              UDD = updateDataSource))
+}
+
+developUpdateStateVaccFileFromTimeline <- function(oldStateTibble,
+                                                   timelineTibble,
+                                                   dateString,
+                                                   traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend)
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered developUpdateStateVaccFileFromTimeline\n")
+  }
+  
+  filteredUpdateData <- timelineTibble %>%
+    filter(Date == dateString)
+  
+  if (traceThisRoutine) {
+    bigDim <- dim(timelineTibble)
+    smlDim <- dim(filteredUpdateData)
+    cat(file = stderr(), myPrepend, "dim timelineTibble = ", bigDim[1], bigDim[2], "\n")
+    cat(file = stderr(), myPrepend, "dim filteredUpdateData = ", smlDim[1], smlDim[2], "\n")
+  }
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving developUpdateStateVaccFileFromTimeline\n")
+  }
+  
+  return(filteredUpdateData)
 }
 
 getAndSaveVaccDailyData <- function(traceThisRoutine = FALSE) {
@@ -128,6 +159,33 @@ setupTestFiles <- function() {
 }
 
 testSuite <- function(traceThisRoutine = FALSE) {
-  dataList <- developGetVaccDataByGeography(traceThisRoutine = traceThisRoutine,
-                                            prepend = "TEST")
+  myPrepend <- "TEST"
+  # dataList <- developGetVaccDataByGeography(traceThisRoutine = traceThisRoutine,
+  #                                           prepend = "TEST")
+  
+  # Get old state tibble
+  oldStateTibble <- read_csv("./DATA/CACHE/US_State_Vacc_Test.csv", #"./DATA/US_State_Vaccinations.csv",
+                             col_types = vaccColTypes())
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "returned with oldStateTibble\n")
+  }
+
+  # Get timeline tibble
+  timelineTibble <- read_csv(vaccTimeSeriesDataSpecs(mdy("08-28-2021"))$PATH,
+                             col_types = vaccTimeSeriesDataSpecs()$COLS)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "returned with timelineTibble\n")
+  }
+
+  # date string is in old tracing output
+  dateString <- "2021-08-11"
+  
+  updatedStateTibble <- developUpdateStateVaccFileFromTimeline(oldStateTibble,
+                                                               timelineTibble,
+                                                               dateString,
+                                                               traceThisRoutine = traceThisRoutine,
+                                                               prepend = myPrepend)
+  return(updatedStateTibble)
 }
