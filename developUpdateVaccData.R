@@ -57,7 +57,7 @@ developGetVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = ""
       }
       updateDataSource <- getURLFromSpecsOrStop(vaccTimeSeriesDataSpecs(),
                                        traceThisRoutine = traceThisRoutine,
-                                       prepend = "VaccTimeline")
+                                       prepend = myPrepend)
       
     }
     #
@@ -69,34 +69,51 @@ developGetVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = ""
     }
     
     firstDateWeNeed <- mdy(lastDateWeHave) + 1
-    lastDateWeNeed <- Sys.Date() - 1
+    lastDateWeNeed <- firstDateWeNeed # OUCH Sys.Date() - 1
+    
+    buildUSData <- US_Vaccinations_As_Filed
+    buildStateData <- US_State_Vaccinations_As_Filed
+
     # For (that date until yesterday)
-    for (aDate in firstDateWeNeed:lastDateWeNeed) {
-      theDateString <- format(as_date(aDate), "20%y-%m-%d")
+    for (aDateInt in firstDateWeNeed:lastDateWeNeed) {
+      aDate <- as_date(aDateInt)
+      theDateString <- format(aDate, "20%y-%m-%d")
       
       if (traceThisRoutine) {
-        cat(file = stderr(), prepend, "Filter for 'Date =", theDateString, "\n")
+        cat(file = stderr(), myPrepend, "Filter for 'Date =", theDateString, "\n")
       }
       # Filter that date data out of vacc timeline tibble
       filteredStateUpdateData <- updateDataSource %>%
-        filter(Date == theDateString) %>%
-        filter(!is.na(FIPS )) %>%
-        arrange(FIPS) %>%
-        filter(Vaccine_Type == "All") %>%
-        select(FIPS, Province_State, Combined_Key,
-               Doses_alloc, Doses_shipped, Doses_admin,
-               Stage_One_Doses, Stage_Two_Doses)
+        filter(Date == theDateString)
 
-      US_to_prepend <- summarise(filteredUpdateData,
-                                 FIPS = 0, Province_State = "US", Combined_Key = "US",
-                                 Doses_alloc = sum(Doses_alloc, na.rm = TRUE),
-                                 Doses_shipped = sum(Doses_shipped, na.rm = TRUE),
-                                 Doses_admin = sum(Doses_admin, na.rm = TRUE),
-                                 Stage_One_Doses = sum(Stage_One_Doses, na.rm = TRUE),
-                                 Stage_Two_Doses = sum(Stage_Two_Doses, na.rm = TRUE))
+      dataByGeography <- allGeogVaccDataFromOneDay(filteredStateUpdateData,
+                                traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+
+      columnDate <- paste(month(aDate),
+                          day(aDate),
+                          (year(aDate) - 2000), sep="/")
       
-      # OUCH Swap in code from "developUpdateStateVaccFileFromTimeline()"
-      # Add it onto state vacc data tibble, you have code
+      if (traceThisRoutine) {
+        cat(file = stderr(), myPrepend, "columnDate is", columnDate, "\n")
+      }
+
+      # Gather, then join on combined_key to both
+      # US and state files.
+      allData <- dataByGeography %>%
+        gather("Datum", "latest", 4:8) %>%
+        mutate(Combined_Key = Combined_Key,
+               Datum = Datum,
+               Loc_Datum = paste(Province_State, Datum, sep="_"),
+               "{columnDate}" := latest,
+               .keep = "none")
+      
+      newData <- gatheredVaccDataByGeography() %>%
+        select(-Combined_Key) %>%
+        select(-Datum)
+
+      buildUSData <- left_join(buildUSData, newData, by="Loc_Datum")
+      buildStateData <- left_join(buildStateData, newData, by="Loc_Datum")
+
       if (traceThisRoutine) {
         cat(file = stderr(), prepend, "Append that data to the file\n")
       }
@@ -107,8 +124,10 @@ developGetVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = ""
     cat(file = stderr(), prepend, "Leaving developGetVaccDataByGeography\n")
   }
   
-  return(list(STATE = US_State_Vaccinations_As_Filed,
-              US = US_Vaccinations_As_Filed,
+  return(list(STATE = buildStateData,
+              US = buildUSData,
+              OLD_STATE = US_State_Vaccinations_As_Filed,
+              OLD_US = US_Vaccinations_As_Filed,
               UDD = updateDataSource))
 }
 
@@ -221,10 +240,9 @@ testSuite <- function(traceThisRoutine = FALSE) {
   # return(filteredUpdateData)
   
   # Test refactor of getVaccDataByGeography
-  res0 <- getVaccDataByGeography0(traceThisRoutine = traceThisRoutine, prepend = "TEST")
-  res1 <- getVaccDataByGeography(traceThisRoutine = traceThisRoutine, prepend = "TEST")
+  res <- developGetVaccDataByGeography(traceThisRoutine = traceThisRoutine, prepend = "TEST")
   
-  return(list(R0 = res0, R1 = res1))
+  return(list(R1 = res))
 }
 
   
