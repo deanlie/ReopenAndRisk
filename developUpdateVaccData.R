@@ -27,9 +27,10 @@ developGetVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = ""
 
   # If latest date of US tibble is yesterday
   stateDataColNames <- names(US_State_Vaccinations_As_Filed)
+  lastStateDataDateString <- stateDataColNames[length(stateDataColNames)]
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "Last state data col is",
-        stateDataColNames[length(stateDataColNames)], "\n")
+        lastStateDataDateString, "\n")
   }
   if (mdy(stateDataColNames[length(stateDataColNames)]) == (Sys.Date() - 1)) {
     # vacc data is up to date
@@ -42,11 +43,46 @@ developGetVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = ""
       cat(file = stderr(), myPrepend, "Must update!\n")
     }
     #   Get vacc timeline tibble (from URL if need be)
+    #     Get the file version
+    if (file.exists(vaccTimeSeriesDataSpecs()$PATH)) {
+      if (traceThisRoutine) {
+        cat(file = stderr(), myPrepend, "We have the data locally!\n")
+      }
+      updateDataSource <- read_csv(vaccTimeSeriesDataSpecs()$PATH,
+                                   col_types = vaccTimeSeriesDataSpecs()$COLS)
+    } else {
+      if (traceThisRoutine) {
+        cat(file = stderr(), myPrepend, "Must go to the internet for update data!\n")
+      }
+      updateDataSource <- getURLFromSpecsOrStop(vaccTimeSeriesDataSpecs(),
+                                       traceThisRoutine = traceThisRoutine,
+                                       prepend = "VaccTimeline")
+      
+    }
     #
     #   Get latest date of state vacc data file
-    #   For (that date until yesterday)
-    #     Filter that date data out of vacc timeline tibble
-    #     Add it onto state vacc data tibble, you have code
+    lastDateWeHave = lastStateDataDateString
+    if (traceThisRoutine) {
+      cat(file = stderr(), myPrepend, "To be clear, last date we have is",
+          lastDateWeHave, "\n")
+    }
+    
+    firstDateWeNeed <- mdy(lastDateWeHave) + 1
+    lastDateWeNeed <- Sys.Date() - 1
+    # For (that date until yesterday)
+    for (aDate in firstDateWeNeed:lastDateWeNeed) {
+      theDateString <- format(as_date(aDate), "20%y-%m-%d")
+      
+      # Filter that date data out of vacc timeline tibble
+      if (traceThisRoutine) {
+        cat(file = stderr(), prepend, "Filter for 'Date =", theDateString, "\n")
+      }
+      # Add it onto state vacc data tibble, you have code
+      if (traceThisRoutine) {
+        cat(file = stderr(), prepend, "Append that data to the file\n")
+      }
+      
+    }
   }
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving developGetVaccDataByGeography\n")
