@@ -10,7 +10,14 @@ source("./mostRecentDataDate.R")
 source("./dataIsCurrent.R")
 
 # Get (at maximum) latest 60 columns available in data download
-deriveRecentUSDataFromCountyLevelData <- function(rawData) {
+deriveRecentUSDataFromCountyLevelData <- function(rawData,
+                                                  traceThisRoutine = FALSE,
+                                                  prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered deriveRecentUSDataFromCountyLevelData\n")
+  }
+
   aDay <- today("EST") - 60
   aDateString <- paste(month(aDay), day(aDay), (year(aDay) - 2000), sep="/")
   # indexVector is all FALSE except TRUE for i such that names(rawData)[i] == aDateString
@@ -40,7 +47,7 @@ deriveRecentUSDataFromCountyLevelData <- function(rawData) {
   list(Counties = countyData, States = stateData, US = USData)
 }
 
-updateDataForUSTimeSeriesType <- function(aType) {
+updateDataForUSTimeSeriesType <- function(aType, traceThisRoutine = FALSE, prepend = "") {
     
   # Local function! Haven't seen those since Pascal!
   tryWrite <- function(aTibble, aPath) {
@@ -51,13 +58,16 @@ updateDataForUSTimeSeriesType <- function(aType) {
     }
   }
   
-  traceThisRoutine <- FALSE
+  myPrepend = paste("  ", prepend, sep = "")  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered updateDataFilesForUSTimeSeriesType\n")
+  }
   options(show.error.messages = traceThisRoutine)
   
   lcType <- stri_trans_tolower(aType)
 
   if (traceThisRoutine) {
-    print(paste("rawDataURL = ", TS_URL(lcType, "US"), sep=""))
+    cat(file = stderr(), paste("rawDataURL = ", TS_URL(lcType, "US"), sep=""), "\n")
   }
 
   if (aType %in% c("Confirmed", "Deaths", "Recovered")) {  
@@ -88,6 +98,9 @@ updateDataForUSTimeSeriesType <- function(aType) {
       print(paste("No write access to ", theDataDir, sep=""))
     }
   }
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving updateDataFilesForUSTimeSeriesType\n")
+  }
   options(show.error.messages = TRUE)
 }
 
@@ -105,21 +118,30 @@ updateDataFilesForUSTimeSeriesTypeIfNeeded <- function(aType,
   #    it (and therefore presumably all the data) has been updated
   
   US_data_path <- paste("./DATA/", "US_", aType, ".csv", sep="")
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "US_data_path was", US_data_path, "\n")
+  }
   # OUCH refactor read_csv calls with error handling, if (file.exists()) instead of try
   US_data <- try(read_csv(US_data_path,
                           col_types=cols(.default = col_double(),
                                          Province_State = col_logical(),
                                          Combined_Key = col_character())))
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "class of return from read_csv was",
+        class(US_data)[1], "\n") 
+  }
   if (class(US_data)[1] == "try-error") {
     # We couldn't read the file! Better create all data files!
-    updateDataForUSTimeSeriesType(aType)
+    updateDataForUSTimeSeriesType(aType, traceThisRoutine = traceThisRoutine,
+                                  prepend = myPrepend)
   } else {
     # The file exists. is it up to date?
     if (names(US_data[dim(US_data)[2]]) != desiredLatestDateSlashes) {
       # It's not up to date. Is newer data available?
       if (url.exists(updateData_URL())) {
         # Better create all data files!
-        updateDataForUSTimeSeriesType(aType)
+        updateDataForUSTimeSeriesType(aType, traceThisRoutine = traceThisRoutine,
+                                      prepend = myPrepend)
       } else {
         cat(file = stderr(), myPrepend,
             paste("Time series data for", desiredLatestDateSlashes, "is not available\n", sep = " "))
@@ -382,7 +404,7 @@ updateTimeSeriesDataFilesAsNecessary <- function(traceThisRoutine = FALSE, prepe
   }
 
   for (aType in c("Confirmed", "Deaths")) {
-    updateDataFilesForUSTimeSeriesTypeIfNeeded(aType)
+    updateDataFilesForUSTimeSeriesTypeIfNeeded(aType, traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   }
 
   updateDataFilesForUSVaccTimeSeriesIfNeeded(traceThisRoutine = traceThisRoutine, prepend = myPrepend)

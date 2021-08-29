@@ -107,7 +107,7 @@ developGetVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = ""
                "{columnDate}" := latest,
                .keep = "none")
       
-      newData <- gatheredVaccDataByGeography() %>%
+      newData <- allData %>%
         select(-Combined_Key) %>%
         select(-Datum)
 
@@ -128,7 +128,7 @@ developGetVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = ""
               US = buildUSData,
               OLD_STATE = US_State_Vaccinations_As_Filed,
               OLD_US = US_Vaccinations_As_Filed,
-              UDD = updateDataSource))
+              FUDD = filteredStateUpdateData))
 }
 
 developUpdateStateVaccFileFromTimeline <- function(oldStateTibble,
@@ -242,7 +242,7 @@ testSuite <- function(traceThisRoutine = FALSE) {
   # Test refactor of getVaccDataByGeography
   res <- developGetVaccDataByGeography(traceThisRoutine = traceThisRoutine, prepend = "TEST")
   
-  return(list(R1 = res))
+  return(res)
 }
 
   

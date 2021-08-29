@@ -354,7 +354,8 @@ loadAllUSData <- function(traceThisRoutine = FALSE, prepend = "") {
     cat(file = stderr(), myPrepend, "after read US_State_Population_Est\n")
   }
   
-  updateTimeSeriesDataFilesAsNecessary()
+  updateTimeSeriesDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
+                                       prepend = myPrepend)
   updateStateLevelSerializedDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
                                                  prepend = myPrepend)
   
