@@ -193,13 +193,16 @@ getURLOrStop <- function(aURL, col_types, traceThisRoutine = FALSE, prepend = ""
                             col_types = col_types))
     if (class(rawData)[1] == "try-error") {
       if (traceThisRoutine) {
-        cat(file = stderr(), "try(read_csv()) failed for ", aURL, "\n")
+        cat(file = stderr(), myPrepend, "try(read_csv()) failed for ", aURL, "\n")
       }
       stop(paste("FATAL ERROR -- Unable to download:", aURL))
     } 
   } else {
     if (traceThisRoutine) {
-      cat(file = stderr(), "url.exists returned FALSE for ", aURL, "\n")
+      cat(file = stderr(), myPrepend, "url does not exist\n")
+    }
+    if (traceThisRoutine) {
+      cat(file = stderr(), myPrepend, "url.exists returned FALSE for ", aURL, "\n")
     }
     stop(paste("FATAL ERROR -- No such URL: ", aURL))
   }

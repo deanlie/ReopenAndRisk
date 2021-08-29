@@ -132,24 +132,25 @@ updateDataFilesForUSTimeSeriesTypeIfNeeded <- function(aType,
   }
 }
 
-getVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend, sep = "")  
+allGeogVaccDataFromOneDay <- function(rawData,
+                                      traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend)
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered getVaccDataByGeography\n")
+    cat(file = stderr(), prepend, "Entered allGeogVaccDataFromOneDay\n")
   }
-
-  rawData <- getURLFromSpecsOrStop(vaccDailyUpdateDataSpecs(),
-                                   traceThisRoutine = traceThisRoutine,
-                                   prepend = myPrepend)
-    
+  
   justStateData <- rawData %>%
-    as_tibble() %>%
-    filter(!is.na(FIPS )) %>%
-    arrange(FIPS) %>%
-    filter(Vaccine_Type == "All") %>%
-    select(FIPS, Province_State, Combined_Key,
-           Doses_alloc, Doses_shipped, Doses_admin,
-           Stage_One_Doses, Stage_Two_Doses)
+  as_tibble() %>%
+  filter(!is.na(FIPS )) %>%
+  arrange(FIPS) %>%
+  filter(Vaccine_Type == "All") %>%
+  select(FIPS, Province_State, Combined_Key,
+         Doses_alloc, Doses_shipped, Doses_admin,
+         Stage_One_Doses, Stage_Two_Doses)
+  
+  if(traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "Back from justStateData pipeline\n")
+  }
 
   US_to_prepend <- summarise(justStateData,
                              FIPS = 0, Province_State = "US", Combined_Key = "US",
@@ -158,14 +159,39 @@ getVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = "") {
                              Doses_admin = sum(Doses_admin, na.rm = TRUE),
                              Stage_One_Doses = sum(Stage_One_Doses, na.rm = TRUE),
                              Stage_Two_Doses = sum(Stage_Two_Doses, na.rm = TRUE))
-
+  
   dataByGeography <- bind_rows(US_to_prepend, justStateData)
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving allGeogVaccDataFromOneDay\n")
+  }
+  
+  return(dataByGeography)
+}
+
+getVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered getVaccDataByGeography\n")
+  }
+  
+  rawData <- getURLFromSpecsOrStop(vaccDailyUpdateDataSpecs(),
+                                   traceThisRoutine = traceThisRoutine,
+                                   prepend = myPrepend)
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "Back from getURLFromSpecsOrStop\n")
+    cat(file = stderr(), myPrepend, "dim rawData =", dim(rawData)[1], dim(rawData)[2], "\n")
+  }
+  
+  preparedData <- allGeogVaccDataFromOneDay(rawData,
+                                            traceThisRoutine = traceThisRoutine,
+                                            prepend = myPrepend)
 
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving getVaccDataByGeography\n")
   }
-
-  return(dataByGeography)
+  
+  return(preparedData)
 }
 
 gatheredVaccDataByGeography <- function(traceThisRoutine = FALSE) {
