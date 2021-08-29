@@ -78,8 +78,22 @@ developGetVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = ""
       }
       # Filter that date data out of vacc timeline tibble
       filteredUpdateData <- updateDataSource %>%
-        filter(Date == theDateString)
+        filter(Date == theDateString) %>%
+        filter(!is.na(FIPS )) %>%
+        arrange(FIPS) %>%
+        filter(Vaccine_Type == "All") %>%
+        select(FIPS, Province_State, Combined_Key,
+               Doses_alloc, Doses_shipped, Doses_admin,
+               Stage_One_Doses, Stage_Two_Doses)
 
+      US_to_prepend <- summarise(filteredUpdateData,
+                                 FIPS = 0, Province_State = "US", Combined_Key = "US",
+                                 Doses_alloc = sum(Doses_alloc, na.rm = TRUE),
+                                 Doses_shipped = sum(Doses_shipped, na.rm = TRUE),
+                                 Doses_admin = sum(Doses_admin, na.rm = TRUE),
+                                 Stage_One_Doses = sum(Stage_One_Doses, na.rm = TRUE),
+                                 Stage_Two_Doses = sum(Stage_Two_Doses, na.rm = TRUE))
+      
       # OUCH Swap in code from "developUpdateStateVaccFileFromTimeline()"
       # Add it onto state vacc data tibble, you have code
       if (traceThisRoutine) {
@@ -108,6 +122,15 @@ developUpdateStateVaccFileFromTimeline <- function(oldStateTibble,
   
   filteredUpdateData <- timelineTibble %>%
     filter(Date == dateString)
+
+  filteredUpdateData <- timelineTibble %>%
+    filter(Date == theDateString) %>%
+    filter(!is.na(FIPS )) %>%
+    arrange(FIPS) %>%
+    filter(Vaccine_Type == "All") %>%
+    select(FIPS, Province_State, Combined_Key,
+           Doses_alloc, Doses_shipped, Doses_admin,
+           Stage_One_Doses, Stage_Two_Doses)
   
   if (traceThisRoutine) {
     bigDim <- dim(timelineTibble)
@@ -181,11 +204,21 @@ testSuite <- function(traceThisRoutine = FALSE) {
 
   # date string is in old tracing output
   dateString <- "2021-08-11"
+  filteredUpdateData <- timelineTibble %>%
+    filter(Date == dateString) %>%
+    filter(!is.na(FIPS )) %>%
+    arrange(FIPS) %>%
+    filter(Vaccine_Type == "All") %>%
+    select(FIPS, Province_State, Combined_Key,
+           Doses_alloc, Doses_shipped, Doses_admin,
+           Stage_One_Doses, Stage_Two_Doses)
   
-  updatedStateTibble <- developUpdateStateVaccFileFromTimeline(oldStateTibble,
-                                                               timelineTibble,
-                                                               dateString,
-                                                               traceThisRoutine = traceThisRoutine,
-                                                               prepend = myPrepend)
-  return(updatedStateTibble)
+  # updatedStateTibble <- developUpdateStateVaccFileFromTimeline(oldStateTibble,
+  #                                                              timelineTibble,
+  #                                                              dateString,
+  #                                                              traceThisRoutine = traceThisRoutine,
+  #                                                              prepend = myPrepend)
+  # return(updatedStateTibble)
+  
+  return(filteredUpdateData)
 }
