@@ -397,7 +397,7 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
       } else {
         if (traceThisRoutine) {
           cat(file = stderr(), myPrepend, "We were able to read",
-              pathnameOfStateLevelUpdateDataForDate(firstDate),
+              pathnameOfStateLevelUpdateDataForDate(updateDate),
               "from local disk/SSD\n")
         }
       }
