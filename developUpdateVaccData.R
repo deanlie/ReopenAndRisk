@@ -20,10 +20,10 @@ developGetVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = ""
   # Get US vacc data tibble
   # Get State vacc data tibble
   # See loadUSVaccinationData.R  
-  US_Vaccinations_As_Filed <- read_csv("./DATA/CACHE/US_Vacc_Test.csv", #"./DATA/US_Vaccinations.csv",
+  US_Vaccinations_As_Filed <- read_csv("./DATA/US_Vaccinations.csv",
                                        col_types = vaccColTypes())
   
-  US_State_Vaccinations_As_Filed <- read_csv("./DATA/CACHE/US_State_Vacc_Test.csv", #"./DATA/US_State_Vaccinations.csv",
+  US_State_Vaccinations_As_Filed <- read_csv("./DATA/US_State_Vaccinations.csv",
                                              col_types = vaccColTypes())
 
   # If latest date of US tibble is yesterday
@@ -111,13 +111,21 @@ developGetVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = ""
         select(-Combined_Key) %>%
         select(-Datum)
 
+      if (traceThisRoutine) {
+        cat(file = stderr(), myPrepend, "Will append that data to the file\n")
+      }
+
       buildUSData <- left_join(buildUSData, newData, by="Loc_Datum")
       buildStateData <- left_join(buildStateData, newData, by="Loc_Datum")
 
       if (traceThisRoutine) {
-        cat(file = stderr(), prepend, "Append that data to the file\n")
+        lnUS <- length(names(buildUSData))
+        cat(file = stderr(), myPrepend, "Last column (there are", lnUS, ") of US data is now",
+            names(buildUSData)[lnUS],"\n")
+        lnState <- length(names(buildStateData))
+        cat(file = stderr(), myPrepend, "Last column (there are", lnState, ") of State data is now",
+            names(buildStateData)[lnState],"\n")
       }
-      
     }
   }
   if (traceThisRoutine) {
@@ -128,7 +136,7 @@ developGetVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = ""
               US = buildUSData,
               OLD_STATE = US_State_Vaccinations_As_Filed,
               OLD_US = US_Vaccinations_As_Filed,
-              FUDD = filteredStateUpdateData))
+              FUDD = updateDataSource))
 }
 
 developUpdateStateVaccFileFromTimeline <- function(oldStateTibble,
@@ -183,25 +191,47 @@ getAndSaveVaccTimelineData <- function(traceThisRoutine = FALSE) {
   return(rawData)
 }
 
-setupTestFiles <- function() {
-  system("cp ./DATA/CACHE/US_Vaccinations.csv ./DATA/CACHE/US_Vacc_Test.csv")
-  system("cp ./DATA/CACHE/US_State_Vaccinations.csv ./DATA/CACHE/US_State_Vacc_Test.csv")
-  discardDataOutsideDateRangeFromAFile("./DATA/CACHE/US_Vacc_Test.csv",
-                                       vaccColTypes(),
-                                       mdy("08-01-2021"),
-                                       mdy("08-10-2021"),
-                                       "CACHE/US_Vacc_Test.csv")
-  discardDataOutsideDateRangeFromAFile("./DATA/CACHE/US_Vacc_Test.csv",
-                                       vaccColTypes(),
-                                       mdy("08-01-2021"),
-                                       mdy("08-10-2021"),
-                                       "CACHE/US_Vacc_Test.csv")
+setupTestFiles <- function(traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend)
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered setupTestFiles\n")
+  }
+  
+  system("cp ./DATA/US_Vaccinations.csv ./DATA/CACHE/US_V_Test.csv")
+  system("cp ./DATA/US_State_Vaccinations.csv ./DATA/CACHE/US_S_V_Test.csv")
+
+  US_Res <- discardDataOutsideDateRangeFromAFile("./DATA/CACHE/US_V_Test.csv",
+                                                 vaccColTypes(),
+                                                 mdy("08-01-2021"),
+                                                 mdy("08-10-2021"),
+                                                 "CACHE/US_V_Test.csv",
+                                                 traceThisRoutine = traceThisRoutine,
+                                                 prepend = myPrepend)
+  # US_Res$T0 = originalData, US_Res$T1 = truncatedTibble))
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "\n")    
+  }
+  State_Res <- discardDataOutsideDateRangeFromAFile("./DATA/CACHE/US_S_V_Test.csv",
+                                                    vaccColTypes(),
+                                                    mdy("08-01-2021"),
+                                                    mdy("08-10-2021"),
+                                                    "CACHE/US_S_V_Test.csv",
+                                                    traceThisRoutine = traceThisRoutine,
+                                                    prepend = myPrepend)
+  # US_Res$T0 = originalData, US_Res$T1 = truncatedTibble))
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving ROUTINE_NAME\n")
+  }
 }
 
 testSuite <- function(traceThisRoutine = FALSE) {
   myPrepend <- "TEST"
 
   # Test refactor of getVaccDataByGeography
+  # set up test
+  system("cp ./DATA/CACHE/US_S_V_Test.csv ./DATA/US_State_Vaccinations.csv")
+  system("cp ./DATA/CACHE/US_V_Test.csv ./DATA/US_Vaccinations.csv")
+
   dataList <- developGetVaccDataByGeography(traceThisRoutine = traceThisRoutine,
                                             prepend = myPrepend)
  
