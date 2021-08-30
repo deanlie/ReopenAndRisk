@@ -41,7 +41,8 @@ developGetVaccDataByGeography <- function(writeResults = FALSE,
       cat(file = stderr(), myPrepend, "Up to date!\n")
     }
   } else {
-    # Else
+    # OUCH can save a little work here
+    # If the only missing data is yesterday, we just need the small data file
     if (traceThisRoutine) {
       cat(file = stderr(), myPrepend, "Must update!\n")
     }
@@ -57,7 +58,7 @@ developGetVaccDataByGeography <- function(writeResults = FALSE,
     }
     
     firstDateWeNeed <- mdy(lastDateWeHave) + 1
-    lastDateWeNeed <- firstDateWeNeed + 1 # OUCH Sys.Date() - 1
+    lastDateWeNeed <- Sys.Date() - 1
     
     buildUSData <- US_Vaccinations_As_Filed
     buildStateData <- US_State_Vaccinations_As_Filed
@@ -105,17 +106,18 @@ developGetVaccDataByGeography <- function(writeResults = FALSE,
 
       buildUSData <- left_join(buildUSData, newData, by="Loc_Datum")
       buildStateData <- left_join(buildStateData, newData, by="Loc_Datum")
-
-      if (traceThisRoutine) {
-        lnUS <- length(names(buildUSData))
-        cat(file = stderr(), myPrepend, "Last column (there are", lnUS, ") of US data is now",
-            names(buildUSData)[lnUS],"\n")
-        lnState <- length(names(buildStateData))
-        cat(file = stderr(), myPrepend, "Last column (there are", lnState, ") of State data is now",
-            names(buildStateData)[lnState],"\n")
-      }
     }
   }
+  
+  if (traceThisRoutine) {
+    lnUS <- length(names(buildUSData))
+    cat(file = stderr(), myPrepend, "Last column (there are", lnUS, ") of US data is now",
+        names(buildUSData)[lnUS],"\n")
+    lnState <- length(names(buildStateData))
+    cat(file = stderr(), myPrepend, "Last column (there are", lnState, ") of State data is now",
+        names(buildStateData)[lnState],"\n")
+  }
+
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving developGetVaccDataByGeography\n")
   }
