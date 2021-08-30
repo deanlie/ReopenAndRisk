@@ -305,7 +305,7 @@ assembleSomeBoxPlot <- function(res, theTitle, xlabel, ylabel,
     clampedList <- clampDataIfRequested(finitizedPlotData, clampFactor)
     plotData    <- clampedList$plotData
   
-    palette("ggplot2")
+    palette("default")
   
     p <- ggplot(data = plotData)
     p <- p + geom_boxplot(mapping = aes(x = date, y = nums), na.rm = TRUE)
@@ -403,7 +403,7 @@ assembleSomeTrendPlot <- function(res, theTitle, xlabel, ylabel,
   if (!is.na(res)["plotData"]) {
     dateLabels <- res$dateLabels
     
-    palette("ggplot2")
+    palette("default")
     
     p <- ggplot(data = res$plotData)
     
@@ -590,7 +590,7 @@ assembleRatioDeltaBoxPlot <- function(numeratorFrame, denominatorFrame,
   clampedList <- clampDataIfRequested(res$plotData, clampFactor)
   plotData    <- clampedList$plotData
   
-  palette("ggplot2")
+  palette("default")
   
   p <- ggplot(data = plotData)
   p <- p + geom_boxplot(mapping = aes(x = date, y = nums), na.rm = TRUE)
@@ -638,7 +638,7 @@ assembleRatioDeltaTrendPlot <- function(numeratorFrame, denominatorFrame,
   dateLabels <- res$dateLabels
   dateLabels <- res$plotData$date
   
-  palette("ggplot2")
+  palette("default")
   
   p <- ggplot(data = res$plotData)
   
