@@ -45,24 +45,10 @@ developGetVaccDataByGeography <- function(writeResults = FALSE,
     if (traceThisRoutine) {
       cat(file = stderr(), myPrepend, "Must update!\n")
     }
-    #   Get vacc timeline tibble (from URL if need be)
-    #     Get the file version
-    if (file.exists(vaccTimeSeriesDataSpecs()$PATH)) {
-      if (traceThisRoutine) {
-        cat(file = stderr(), myPrepend, "We have the data locally!\n")
-      }
-      updateDataSource <- read_csv(vaccTimeSeriesDataSpecs()$PATH,
-                                   col_types = vaccTimeSeriesDataSpecs()$COLS)
-    } else {
-      if (traceThisRoutine) {
-        cat(file = stderr(), myPrepend, "Must go to the internet for update data!\n")
-      }
-      updateDataSource <- getURLFromSpecsOrStop(vaccTimeSeriesDataSpecs(),
-                                       traceThisRoutine = traceThisRoutine,
-                                       prepend = myPrepend)
-      
-    }
-    #
+    updateDataSource <- getDataFromSpecsMaybeSave(vaccTimeSeriesDataSpecs(),
+                                                  traceThisRoutine = traceThisRoutine,
+                                                  prepend = myPrepend)
+
     #   Get latest date of state vacc data file
     lastDateWeHave = lastStateDataDateString
     if (traceThisRoutine) {

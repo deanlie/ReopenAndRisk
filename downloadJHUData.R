@@ -258,6 +258,42 @@ getFileFromSpecsOrStop <- function(theSpecs, traceThisRoutine = FALSE, prepend =
   return(rawData)
 }
 
+getDataFromSpecsMaybeSave  <- function(theSpecs,
+                                       traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend)
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered getDataFromSpecsMaybeSave\n")
+  }
+  
+  if (traceThisRoutine) {
+    # cat(file = stderr(), myPrepend, "\n")    
+  }
+  if (file.exists(theSpecs$PATH)) {
+    rawData <- try(read_csv(theSpecs$PATH,
+                            col_types = theSpecs$COLS))
+    if (class(rawData)[1] == "try-error") {
+      if (traceThisRoutine) {
+        cat(file = stderr(), myPrepend, "try(read_csv()) failed for ", theSpecs$PATH, "\n")
+      }
+      stop(paste("FATAL ERROR -- Unable to read:", theSpecs$PATH))
+    } 
+  } else {
+    if (traceThisRoutine) {
+      cat(file = stderr(), "will try to download", theSpecs$URL, "\n")
+    }
+    rawData <- getURLFromSpecsOrStop(theSpecs,
+                                     traceThisRoutine = traceThisRoutine,
+                                     prepend = myPrepend)
+    write_csv(rawData, theSpecs$PATH)
+
+  }
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving getDataFromSpecsMaybeSave\n")
+  }
+  return(rawData)
+}
+
 vaccDailyUpdateDataSpecs <- function(aDate = NULL) {
   if (is.null(aDate)) {
     aDate = Sys.Date()
@@ -266,6 +302,7 @@ vaccDailyUpdateDataSpecs <- function(aDate = NULL) {
        COLS = Vacc_Cols(),
        PATH = paste("DATA/VaccUpdate_",
                     jhuFileDateString(aDate),
+                    ".csv",
                     sep = ""))
 }
 
@@ -277,6 +314,7 @@ vaccTimeSeriesDataSpecs <- function(aDate = NULL) {
        COLS = Vacc_TS_Cols(),
        PATH = paste("DATA/VaccTS_",
                     jhuFileDateString(aDate),
+                    ".csv",
                     sep = ""))
 }
 
