@@ -11,7 +11,9 @@ vaccColTypes <- function() {
               Loc_Datum = col_character()))
 }
 
-developGetVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = "") {
+developGetVaccDataByGeography <- function(writeResults = FALSE,
+                                          traceThisRoutine = FALSE,
+                                          prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered developGetVaccDataByGeography\n")
@@ -69,7 +71,7 @@ developGetVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = ""
     }
     
     firstDateWeNeed <- mdy(lastDateWeHave) + 1
-    lastDateWeNeed <- firstDateWeNeed # OUCH Sys.Date() - 1
+    lastDateWeNeed <- firstDateWeNeed + 1 # OUCH Sys.Date() - 1
     
     buildUSData <- US_Vaccinations_As_Filed
     buildStateData <- US_State_Vaccinations_As_Filed
@@ -131,7 +133,15 @@ developGetVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = ""
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving developGetVaccDataByGeography\n")
   }
-  
+
+  if (writeResults) {
+    if (traceThisRoutine) {
+      cat(file = stderr(), prepend, "Writing updated files!\n")
+    }
+    write_csv(buildUSData, "./DATA/US_Vaccinations.csv")
+    write_csv(buildStateData, "./DATA/US_State_Vaccinations.csv")
+  }
+
   return(list(STATE = buildStateData,
               US = buildUSData,
               OLD_STATE = US_State_Vaccinations_As_Filed,
@@ -229,10 +239,11 @@ testSuite <- function(traceThisRoutine = FALSE) {
 
   # Test refactor of getVaccDataByGeography
   # set up test
-  system("cp ./DATA/CACHE/US_S_V_Test.csv ./DATA/US_State_Vaccinations.csv")
-  system("cp ./DATA/CACHE/US_V_Test.csv ./DATA/US_Vaccinations.csv")
+  # system("cp ./DATA/CACHE/US_S_V_Test.csv ./DATA/US_State_Vaccinations.csv")
+  # system("cp ./DATA/CACHE/US_V_Test.csv ./DATA/US_Vaccinations.csv")
 
-  dataList <- developGetVaccDataByGeography(traceThisRoutine = traceThisRoutine,
+  dataList <- developGetVaccDataByGeography(writeResults = TRUE,
+                                            traceThisRoutine = traceThisRoutine,
                                             prepend = myPrepend)
  
   # # Get old state tibble
