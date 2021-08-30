@@ -200,9 +200,11 @@ setupTestFiles <- function() {
 
 testSuite <- function(traceThisRoutine = FALSE) {
   myPrepend <- "TEST"
-  # # dataList <- developGetVaccDataByGeography(traceThisRoutine = traceThisRoutine,
-  # #                                           prepend = "TEST")
-  # 
+
+  # Test refactor of getVaccDataByGeography
+  dataList <- developGetVaccDataByGeography(traceThisRoutine = traceThisRoutine,
+                                            prepend = myPrepend)
+ 
   # # Get old state tibble
   # oldStateTibble <- read_csv("./DATA/CACHE/US_State_Vacc_Test.csv", #"./DATA/US_State_Vaccinations.csv",
   #                            col_types = vaccColTypes())
@@ -238,11 +240,8 @@ testSuite <- function(traceThisRoutine = FALSE) {
   #   return(updatedStateTibble)
   #   
   # return(filteredUpdateData)
-  
-  # Test refactor of getVaccDataByGeography
-  res <- developGetVaccDataByGeography(traceThisRoutine = traceThisRoutine, prepend = "TEST")
-  
-  return(res)
+
+  return(dataList)
 }
 
   
