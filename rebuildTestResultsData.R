@@ -6,7 +6,8 @@
 library(tidyverse)
 library(RCurl)
 
-source("./dateFormatRoutines.R")
+source("dateFormatRoutines.R")
+source("columnUtilities.R")
 
 localDataDirectory <- function() {
   "./DATA/"
@@ -76,19 +77,6 @@ sumIgnoreNA <- function(x) {
 
 #   Basic data:
 #     Recovered,Active,Total_Test_Results
-
-# We're going to need this to read a data file without
-#  getting warnings
-dataFileColSpec <- function() {
-  cols(.default = col_double(),
-       Province_State = col_character(),
-       Country_Region = col_character(),
-       Last_Update = col_datetime(format = ""),
-       Recovered = col_logical(),
-       Active = col_logical(),
-       People_Hospitalized = col_logical(),
-       ISO3 = col_character())
-}
 
 # Hypothesis: People_Hospitalized and Hospitalization_Rate are not being reported
 checkDateForHospitalData <- function(fileDate) {
@@ -181,9 +169,7 @@ collectConstantColumnsForState <- function(stateName) {
 checkComputableForDate <- function(fileDate, MaxError = 0.01) {
   popFileName <- "US_Population.csv"
   buildingStateTibble <- read_csv(paste(localDataDirectory(), popFileName, sep = ""),
-                                  col_types = cols(.default = col_character(),
-                                                   FIPS = col_integer(),
-                                                   Population = col_integer())) %>%
+                                  col_types = populationColTypes()) %>%
     filter(Province_State == CountyName) %>%
     filter(Combined_Key != "US") %>%
     select(Combined_Key, Population) %>%
@@ -251,29 +237,18 @@ checkComputableForDateRange <- function(startDateString, stopDateString, MaxErro
   
 
 rebuildTotalTestResultsFile <- function() {
-  # dataFileColSpec <- cols(.default = col_double(),
-  #                         Province_State = col_character(),
-  #                         Country_Region = col_character(),
-  #                         Last_Update = col_datetime(format = ""),
-  #                         Recovered = col_logical(),
-  #                         Active = col_logical(),
-  #                         People_Hospitalized = col_logical(),
-  #                         ISO3 = col_character())
-  
   # First, let's be sure we have the dates in the format we need
   nDates = 90
   firstDate <- Sys.Date() - nDates
   
   buildingStateTibble <- read_csv(paste(localDataDirectory(), "US_State_Total_Test_Results.csv", sep = ""),
-                                  col_types = cols(.default = col_double(),
-                                                   Combined_Key = col_character())) %>%
+                                  col_types = myTSColTypes()) %>%
     select(Combined_Key, Population) %>%
     filter(!str_detect(Combined_Key, "Princess")) %>%
     filter(!str_detect(Combined_Key, "Recovered"))
   
   buildingUSTibble <- read_csv(paste(localDataDirectory(), "US_Total_Test_Results.csv", sep = ""),
-                               col_types = cols(.default = col_double(),
-                                                Combined_Key = col_character())) %>%
+                               col_types = myTSColTypes()) %>%
     select(Combined_Key, Population)
     
   for (i in 0:(nDates - 1)) { # 0:89
@@ -288,7 +263,7 @@ rebuildTotalTestResultsFile <- function() {
     columnName <- cleanmmdd2021Vector(jhuFileDateString(columnDate))
     
     newStateDataTibble <- read_csv(dataFilePath,
-                              col_types = dataFileColSpec()) %>%
+                              col_types = dataFileColTypes()) %>%
       select(Province_State, Total_Test_Results) %>%
       filter(!str_detect(Province_State, "Princess")) %>%
       mutate(Combined_Key = paste(Province_State, ", US", sep = ""),

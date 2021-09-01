@@ -115,6 +115,8 @@
 #   return(newStateTibbles)
 # }
 
+source("columnUtilities.R")
+
 findFirstMissingDate <- function(aTibble, nFirst, nDates, lastDate,
                              traceThisRoutine = FALSE,
                              prepend = "") 
@@ -175,10 +177,7 @@ findFirstMissingDate <- function(aTibble, nFirst, nDates, lastDate,
 # testFMD <- function()
 # {
 #   rawData <- read_csv("DATA/US_Vaccinations.csv",
-#                       col_types = cols(.default = col_double(),
-#                                        Combined_Key = col_character(),
-#                                        Datum = col_character(),
-#                                        Loc_Datum = col_character()))
+#                       col_types = vaccColTypes())
 #   
 #   D1 <- "8/13/21"
 #   D2 <- "8/19/21"
@@ -220,10 +219,7 @@ discardTooNewDataFromATibble <- function(aTibble,
 testFFMD <- function()
 {
   rawData <- read_csv("DATA/US_Vaccinations.csv",
-                      col_types = cols(.default = col_double(),
-                                       Combined_Key = col_character(),
-                                       Datum = col_character(),
-                                       Loc_Datum = col_character()))
+                      col_types = vaccColTypes())
   
   D1 <- "8/13/21"
   D2 <- "8/19/21"

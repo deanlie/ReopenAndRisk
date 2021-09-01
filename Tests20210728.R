@@ -1,3 +1,5 @@
+source("columnUtilities.R")
+
 # existingST <- rebuildStateDataFilesForTypes(nDates = 10, stopNDaysBeforePresent = 5)
 # 
 # limitedST <- discardOutdatedDataFromStateTibbles(existingST, keepUpToNDaysBeforePresent = 12)
@@ -20,37 +22,19 @@
 
 test_Drops <- function(traceThisRoutine = FALSE) {
   US_CD <- list(Confirmed = read_csv("./DATA/US_Confirmed.csv",
-                                     col_types = cols(
-                                       .default = col_double(),
-                                       Province_State = col_logical(),
-                                       Combined_Key = col_character()
-                                     )),
+                                     col_types = myTSColTypes()),
                 Deaths = read_csv("./DATA/US_Deaths.csv",
-                                  col_types = cols(
-                                    .default = col_double(),
-                                    Province_State = col_logical(),
-                                    Combined_Key = col_character())))
+                                  col_types = myTSColTypes()))
   US_TICR <- list(Total_Test_Results = read_csv("../ReopenAndRisk/DATA/US_Total_Test_Results.csv",
-                                                col_types = cols(
-                                                  .default = col_double(),
-                                                  Combined_Key = col_character()
-                                                ))
+                                                col_types = justCKTypes())
   )
-                  # ,
-                  # Testing_Rate = read_csv("../ReopenAndRisk/DATA/US_Testing_Rate.csv",
-                  #                               col_types = cols(
-                  #                                 .default = col_double(),
-                  #                                 Combined_Key = col_character()
-                  #                               )),
-                  # Incident_Rate = read_csv("../ReopenAndRisk/DATA/US_Incident_Rate.csv",
-                  #                               col_types = cols(
-                  #                                 .default = col_double(),
-                  #                                 Combined_Key = col_character()
-                  #                               )),
-                  # Case_Fatality_Ratio = read_csv("../ReopenAndRisk/DATA/US_Case_Fatality_Ratio.csv",
-                  #                               col_types = cols(
-                  #                                 .default = col_double(),
-                  #                                 Combined_Key = col_character())))
+
+  # Testing_Rate = read_csv("../ReopenAndRisk/DATA/US_Testing_Rate.csv",
+  #                               col_types = justCKTypes())
+  # Incident_Rate = read_csv("../ReopenAndRisk/DATA/US_Incident_Rate.csv",
+  #                               col_types = justCKTypes())
+  # Case_Fatality_Ratio = read_csv("../ReopenAndRisk/DATA/US_Case_Fatality_Ratio.csv",
+  #                               col_types = justCKTypes())
   
   foo <- discardOlderDataFromListOfTibbles(US_CD,
                                            keepFromNDaysBeforePresent = 18,
@@ -114,11 +98,9 @@ testTRvsTR0 <- function(traceThisRoutine = FALSE, prepend = "") {
   #   table, computed daily, is cleaner
 
   US_Total_Test_Results <- read_csv("./DATA/US_Total_Test_Results.csv",
-                                    col_types = cols(.default = col_double(),
-                                                     Combined_Key = col_character()))
+                                    col_types = justCKTypes())
   US_State_Testing_Rate <- read_csv("./DATA/US_State_Testing_Rate.csv",
-                                    col_types = cols(.default = col_double(),
-                                                     Combined_Key = col_character()))
+                                    col_types = justCKTypes())
   
   US_Testing_Rate_0 <- rebuildUSDataFileForTypeAsWeightedAvg(US_State_Testing_Rate,
                                                              "Testing_Rate",

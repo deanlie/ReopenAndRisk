@@ -1,6 +1,7 @@
-source("./mostRecentDataDate.R")
-source("./updateStateLevelSerializedDataFiles.R")
-source("./computeNewAndGrowth.R")
+source("mostRecentDataDate.R")
+source("updateStateLevelSerializedDataFiles.R")
+source("computeNewAndGrowth.R")
+source("columnUtilities.R")
 
 loadUSIncidentRateData <- function() {
   traceThisRoutine = FALSE
@@ -9,12 +10,9 @@ loadUSIncidentRateData <- function() {
   updateStateLevelSerializedDataFilesAsNecessary()
   
   US_Incident_Rate <<- read_csv("./DATA/US_Incident_Rate.csv",
-                                col_types = cols(.default = col_double(),
-                                                 Province_State = col_logical(),
-                                                 Combined_Key = col_character()))
+                                col_types = myTSColTypes())
   US_State_Incident_Rate <<- read_csv("./DATA/US_State_Incident_Rate.csv",
-                                      col_types = cols(.default = col_double(),
-                                                       Combined_Key = col_character()))
+                                      col_types = justCKTypes())
   US_Incident_Rate_G7 <<- movingAverageGrowth(US_Incident_Rate,
                                               updateToThisDate, 28, 7,
                                               tibbleName="US_Incident_Rate",

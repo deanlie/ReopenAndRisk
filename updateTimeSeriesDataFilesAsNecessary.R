@@ -5,9 +5,10 @@ library(lubridate)
 library(stringi)
 library(RCurl)
 
-source("./dateFormatRoutines.R")
-source("./mostRecentDataDate.R")
-source("./dataIsCurrent.R")
+source("dateFormatRoutines.R")
+source("mostRecentDataDate.R")
+source("dataIsCurrent.R")
+source("columnUtilities.R")
 
 # Get (at maximum) latest 60 columns available in data download
 deriveRecentUSDataFromCountyLevelData <- function(rawData,
@@ -72,17 +73,8 @@ updateDataForUSTimeSeriesType <- function(aType, traceThisRoutine = FALSE, prepe
 
   if (aType %in% c("Confirmed", "Deaths", "Recovered")) {  
     rawData <- read_csv(TS_URL(lcType, "US"),
-                        col_types = cols(.default = col_double(),
-                                         iso2 = col_character(),
-                                         iso3 = col_character(),
-                                         Admin2 = col_character(),
-                                         Province_State = col_character(),
-                                         Country_Region = col_character(),
-                                         Combined_Key = col_character()))
-    # ,
-    # col_types = cols(.default = col_double(),
-    #                  Province_State = col_logical(),
-    #                  Combined_Key = col_character())
+                        col_types = TSColTypes())
+
     threeTibbles <- deriveRecentUSDataFromCountyLevelData(rawData)
 
     theDataDir <- "./DATA/"
@@ -123,9 +115,7 @@ updateDataFilesForUSTimeSeriesTypeIfNeeded <- function(aType,
   }
   # OUCH refactor read_csv calls with error handling, if (file.exists()) instead of try
   US_data <- try(read_csv(US_data_path,
-                          col_types=cols(.default = col_double(),
-                                         Province_State = col_logical(),
-                                         Combined_Key = col_character())))
+                          col_types = myTSColTypes()))
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "class of return from read_csv was",
         class(US_data)[1], "\n") 
@@ -291,18 +281,24 @@ saveVaccinationTimeSeriesData <- function(theData, traceThisRoutine = FALSE, pre
   }
 }
 
-makeInitialVaccDataFiles <- function(traceThisRoutine = FALSE) {
+makeInitialVaccDataFiles <- function(traceThisRoutine = FALSE, prepend = "") {
+  myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
-    print("In 'makeInitialVaccDataFiles'")
+    cat(file=stderr(), prepend, "Entered makeInitialVaccDataFiles'","\n")
   }
-  BuildingData <- gatheredVaccDataByGeography()
-  saveVaccinationTimeSeriesData(BuildingData, traceThisRoutine)
+  BuildingData <- gatheredVaccDataByGeography(traceThisRoutine = traceThisRoutine,
+                                              prepend = myPrepend)
+  saveVaccinationTimeSeriesData(BuildingData, traceThisRoutine = traceThisRoutine,
+                                prepend = myPrepend)
+  if (traceThisRoutine) {
+    cat(file=stderr(), prepend, "Leaving makeInitialVaccDataFiles","\n")
+  }
 }
 
-updateDataForUSVaccTimeSeries <- function(traceThisRoutine = FALSE, prepend = "") {
+updateDataForUSVaccTimeSeries_0 <- function(traceThisRoutine = FALSE, prepend = "") {
   # OUCH more tracing here, please!!!
   
-  myPrepend <- paste("  ", prepend)
+  myPrepend <- paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered updateDataForUSVaccTimeSeries\n")
   }
@@ -310,10 +306,7 @@ updateDataForUSVaccTimeSeries <- function(traceThisRoutine = FALSE, prepend = ""
   US_data_path <- paste("./DATA/", "US_Vaccinations.csv", sep="")
   # OUCH refactor all read_csv calls out
   US_data <- try(read_csv(US_data_path,
-                          col_types=cols(.default = col_double(),
-                                         Combined_Key = col_character(),
-                                         Datum = col_character(),
-                                         Loc_Datum = col_character())))
+                          col_types = vaccColTypes()))
   if (class(US_data)[1] == "try-error") {
     if (traceThisRoutine) {
       cat(file = stderr(), myPrepend, "./DATA/US_Vaccinations.csv not read\n")
@@ -324,10 +317,7 @@ updateDataForUSVaccTimeSeries <- function(traceThisRoutine = FALSE, prepend = ""
     }
     US_State_data_path <- paste("./DATA/", "US_State_Vaccinations.csv", sep="")
     US_State_data <- try(read_csv(US_State_data_path,
-                                  col_types=cols(.default = col_double(),
-                                                 Combined_Key = col_character(),
-                                                 Datum = col_character(),
-                                                 Loc_Datum = col_character())))
+                                  col_types = vaccColTypes()))
     if (class(US_data)[1] == "try-error") {
       if (traceThisRoutine) {
         cat(file = stderr(), myPrepend, "./DATA/US_State_Vaccinations.csv not read\n")
@@ -351,6 +341,134 @@ updateDataForUSVaccTimeSeries <- function(traceThisRoutine = FALSE, prepend = ""
   }
 }
 
+updateDataForUSVaccTimeSeries <- function(traceThisRoutine = FALSE,
+                                          prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered updateDataForUSVaccTimeSeries\n")
+  }
+  
+  # Get US vacc data tibble
+  # Get State vacc data tibble
+  # See loadUSVaccinationData.R  
+  US_Vaccinations_As_Filed <- read_csv("./DATA/US_Vaccinations.csv",
+                                       col_types = vaccColTypes())
+  
+  US_State_Vaccinations_As_Filed <- read_csv("./DATA/US_State_Vaccinations.csv",
+                                             col_types = vaccColTypes())
+  
+  # If latest date of US tibble is yesterday
+  stateDataColNames <- names(US_State_Vaccinations_As_Filed)
+  lastStateDataDateString <- stateDataColNames[length(stateDataColNames)]
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "Last state data col is",
+        lastStateDataDateString, "\n")
+  }
+  lastDateInVaccFiles <- mdy(stateDataColNames[length(stateDataColNames)])
+  
+  buildUSData <- US_Vaccinations_As_Filed
+  buildStateData <- US_State_Vaccinations_As_Filed
+  
+  lastDateWeNeed <- expectedLatestUpdateDataDate(UT_UpdateHour = 13)
+  
+  if (lastDateInVaccFiles >= lastDateWeNeed) { # It won't be greater
+    # vacc data is up to date
+    if (traceThisRoutine) {
+      cat(file = stderr(), myPrepend, "Up to date!\n")
+    }
+    updateDataSource = NULL
+  } else {
+    # If the only missing data is yesterday's, only download the small data file
+    if (lastDateInVaccFiles == (lastDateWeNeed - 1)) {
+      if (traceThisRoutine) {
+        cat(file = stderr(), myPrepend, "We will look for daily update data!\n")
+      }
+      specsToUse <- vaccDailyUpdateDataSpecs()
+    } else {
+      if (traceThisRoutine) {
+        cat(file = stderr(), myPrepend, "We need the big update data timeline!\n")
+      }
+      specsToUse <- vaccTimeSeriesDataSpecs()
+    }
+    updateDataSource <- getDataFromSpecsMaybeSave(specsToUse,
+                                                  traceThisRoutine = FALSE,
+                                                  prepend = myPrepend)
+    
+    #   Get latest date of state vacc data file
+    lastDateWeHave = lastStateDataDateString
+    if (traceThisRoutine) {
+      cat(file = stderr(), myPrepend, "To be clear, last date we have is",
+          lastDateWeHave, "\n")
+    }
+    
+    firstDateWeNeed <- mdy(lastDateWeHave) + 1
+
+    # For (that date until yesterday)
+    for (aDateInt in firstDateWeNeed:lastDateWeNeed) {
+      aDate <- as_date(aDateInt)
+      theDateString <- format(aDate, "20%y-%m-%d")
+      
+      if (FALSE) {
+        cat(file = stderr(), myPrepend, "Filter for 'Date =", theDateString, "\n")
+      }
+      # Filter that date data out of vacc timeline tibble
+      filteredStateUpdateData <- updateDataSource %>%
+        filter(Date == theDateString)
+      
+      dataByGeography <- allGeogVaccDataFromOneDay(filteredStateUpdateData,
+                                                   traceThisRoutine = FALSE, prepend = myPrepend)
+      
+      columnDate <- paste(month(aDate),
+                          day(aDate),
+                          (year(aDate) - 2000), sep="/")
+      
+      if (FALSE) {
+        cat(file = stderr(), myPrepend, "columnDate is", columnDate, "\n")
+      }
+      
+      # Gather, then join on combined_key to both
+      # US and state files.
+      allData <- dataByGeography %>%
+        gather("Datum", "latest", 4:8) %>%
+        mutate(Combined_Key = Combined_Key,
+               Datum = Datum,
+               Loc_Datum = paste(Province_State, Datum, sep="_"),
+               "{columnDate}" := latest,
+               .keep = "none")
+      
+      newData <- allData %>%
+        select(-Combined_Key) %>%
+        select(-Datum)
+      
+      if (FALSE) {
+        cat(file = stderr(), myPrepend, "Will append that data to the file\n")
+      }
+      
+      buildUSData <- left_join(buildUSData, newData, by="Loc_Datum")
+      buildStateData <- left_join(buildStateData, newData, by="Loc_Datum")
+    }
+  }
+  
+  if (traceThisRoutine) {
+    lnUS <- length(names(buildUSData))
+    cat(file = stderr(), myPrepend, "Last column (there are", lnUS, ") of US data is now",
+        names(buildUSData)[lnUS],"\n")
+    lnState <- length(names(buildStateData))
+    cat(file = stderr(), myPrepend, "Last column (there are", lnState, ") of State data is now",
+        names(buildStateData)[lnState],"\n")
+  }
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "Writing updated files!\n")
+  }
+  write_csv(buildUSData, "./DATA/US_Vaccinations.csv")
+  write_csv(buildStateData, "./DATA/US_State_Vaccinations.csv")
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving updateDataForUSVaccTimeSeries\n")
+  }
+}
+
 updateDataFilesForUSVaccTimeSeriesIfNeeded <- function(traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend)
   if (traceThisRoutine) {
@@ -363,10 +481,7 @@ updateDataFilesForUSVaccTimeSeriesIfNeeded <- function(traceThisRoutine = FALSE,
                                     (year(todayDate) - 2000), sep="/")
   US_data_path <- paste("./DATA/", "US_Vaccinations.csv", sep="")
   US_data <- try(read_csv(US_data_path,
-                          col_types=cols(.default = col_double(),
-                                         Combined_Key = col_character(),
-                                         Datum = col_character(),
-                                         Loc_Datum = col_character())))
+                          col_types = vaccColTypes()))
   if (class(US_data)[1] == "try-error") {
     if (traceThisRoutine) {
       cat(file = stderr(), myPrepend, "./DATA/US_Vaccinations.csv not read\n")

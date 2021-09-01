@@ -9,7 +9,8 @@ library(tidyverse)
 library(RCurl)
 library(glue)
 
-source("./dateFormatRoutines.R")
+source("dateFormatRoutines.R")
+source("columnUtilities.R")
 
 theDataDirectory <- function() {
   "../ReopenAndRisk/DATA/"
@@ -46,23 +47,10 @@ dumpTibbleStart <- function(aTibble, itsName, prepend = "") {
       "\n\n")
 }
 
-# We're going to need this to read a data file without
-#  getting warnings
-dataFileColSpec <- function() {
-  cols(.default = col_double(),
-       Province_State = col_character(),
-       Country_Region = col_character(),
-       Last_Update = col_datetime(format = ""),
-       Recovered = col_logical(),           # all NAs so "double" doesn't work
-       Active = col_logical(),              # ditto
-       People_Hospitalized = col_logical(), # ditto
-       ISO3 = col_character())
-}
-
 collectDateConstantColumns <- function(stateName, fileDate) {
   dataFilePath <- dataPathForDate(fileDate)
   newStateDataTibble <- read_csv(dataFilePath,
-                                 col_types = dataFileColSpec()) %>% 
+                                 col_types = dataFileColTypes()) %>% 
     select(Province_State, Country_Region, Lat, Long_, FIPS, UID, ISO3) %>%
     filter(Province_State == !!stateName)
 }
@@ -104,8 +92,7 @@ openExistingStateTibbles <- function(traceThisRoutine = FALSE, prepend = "") {
       cat(file = stderr(), myPrepend, "aType =", aType, "path =", newStateDataPathForType(aType), "\n")
     }
     existingStateTibbles[[aType]] <- read_csv(newStateDataPathForType(aType),
-                                              col_types = cols(.default = col_double(),
-                                                               Combined_Key = col_character()))
+                                              col_types = justCKTypes())
     if (traceThisRoutine) {
       cat(file = stderr(), myPrepend, "read", newStateDataPathForType(aType), "\n")
     }
@@ -237,7 +224,7 @@ addDateToStateDataFilesForTypes <- function(newST, columnDate,
   dataFilePath <- dataPathForDate(columnDate)
   columnName <- formatJHUDateForColumnName(jhuFileDateString(columnDate))
   
-  newStateDataTibble <- read_csv(dataFilePath, col_types = dataFileColSpec())
+  newStateDataTibble <- read_csv(dataFilePath, col_types = dataFileColTypes())
 
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "adding data for", columnName, "\n")
@@ -288,15 +275,6 @@ addDateRangeToStateDataFilesForTypes <- function(newST, firstDate, lastDate,
 
 rebuildStateDataFilesForTypes <- function(nDates = 60, stopNDaysBeforePresent = 1,
                                           traceThisRoutine = FALSE, prepend = "") {
-  # dataFileColSpec <- cols(.default = col_double(),
-  #                         Province_State = col_character(),
-  #                         Country_Region = col_character(),
-  #                         Last_Update = col_datetime(format = ""),
-  #                         Recovered = col_logical(),
-  #                         Active = col_logical(),
-  #                         People_Hospitalized = col_logical(),
-  #                         ISO3 = col_character())
-
   myPrepend = paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered rebuildStateDataFilesForTypes\n")
@@ -308,9 +286,7 @@ rebuildStateDataFilesForTypes <- function(nDates = 60, stopNDaysBeforePresent = 
   
   popFileName <- "US_Population.csv"
   commonColumns <- read_csv(paste(theDataDirectory(), popFileName, sep = ""),
-                            col_types = cols(.default = col_character(),
-                                             FIPS = col_integer(),
-                                             Population = col_integer())) %>%
+                            col_types = populationColTypes()) %>%
     filter(Province_State == CountyName) %>%
     filter(Combined_Key != "US") %>%
     select(Combined_Key, Population) %>%
@@ -342,7 +318,7 @@ rebuildStateDataFilesForTypes <- function(nDates = 60, stopNDaysBeforePresent = 
   #   # dataFilePath <- dataPathForDate(columnDate)
   #   # columnName <- formatJHUDateForColumnName(jhuFileDateString(columnDate))
   #   # 
-  #   # newStateDataTibble <- read_csv(dataFilePath, col_types = dataFileColSpec())
+  #   # newStateDataTibble <- read_csv(dataFilePath, col_types = dataFileColTypes())
   #   # 
   #   # for (aType in c("Total_Test_Results", "Case_Fatality_Ratio", "Incident_Rate", "Testing_Rate")) {
   #   #   joinMe <- newStateDataTibble %>%
@@ -377,22 +353,11 @@ rebuildUSDataFileForTypeAsSummary <- function(stateDataTibble, aType,
     cat(file = stderr(), prepend, "Entered rebuildUSDataFileForTypeAsSummary\n")
   }
 
-  # dataFileColSpec <- cols(.default = col_double(),
-  #                         Province_State = col_character(),
-  #                         Country_Region = col_character(),
-  #                         Last_Update = col_datetime(format = ""),
-  #                         Recovered = col_logical(),
-  #                         Active = col_logical(),
-  #                         People_Hospitalized = col_logical(),
-  #                         ISO3 = col_character())
-
   USDataFileName = newUSDataPathForType(aType)
   popFileName <- paste(theDataDirectory(), "US_Population.csv", sep="")
   
   buildingUSTibble <- read_csv(popFileName,
-                                  col_types = cols(.default = col_character(),
-                                                   FIPS = col_integer(),
-                                                   Population = col_integer())) %>%
+                                  col_types = populationColTypes()) %>%
     filter(Combined_Key == "US") %>%
     select(Combined_Key, Population)
   
@@ -547,13 +512,9 @@ rebuildUSDataFilesForTypes <- function(stateTibbles, traceThisRoutine = FALSE, p
                                                              prepend = myPrepend)
   
   US_Deaths <- read_csv("./DATA/US_Deaths.csv",
-                        col_types = cols(.default = col_double(),
-                                         Province_State = col_character(),
-                                         Combined_Key = col_character()))
+                        col_types = myTSColTypes())
   US_Confirmed <- read_csv("./DATA/US_Confirmed.csv",
-                           col_types = cols(.default = col_double(),
-                                            Province_State = col_character(),
-                                            Combined_Key = col_character()))
+                           col_types = myTSColTypes())
   
   # Hypothesis: Case_Fatality_Ratio <- Deaths / Confirmed
   US_Case_Fatality_Ratio_0 <- rebuildUSDataFileForTypeAsWeightedAvg(stateTibbles$Case_Fatality_Ratio,
@@ -624,13 +585,9 @@ rebuildFourTypes <-  function(traceThisRoutine = FALSE, prepend = "") {
   #                                                            prepend = myPrepend)
   # 
   # US_Deaths <- read_csv("./DATA/US_Deaths.csv",
-  #                       col_types = cols(.default = col_double(),
-  #                                        Province_State = col_character(),
-  #                                        Combined_Key = col_character()))
+  #                       col_types = myTSColTypes())
   # US_Confirmed <- read_csv("./DATA/US_Confirmed.csv",
-  #                          col_types = cols(.default = col_double(),
-  #                                           Province_State = col_character(),
-  #                                           Combined_Key = col_character()))
+  #                          col_types = myTSColTypes())
   # 
   # # Hypothesis: Case_Fatality_Ratio <- Deaths / Confirmed
   # US_Case_Fatality_Ratio_0 <- rebuildUSDataFileForTypeAsWeightedAvg(newStateTibbles$Case_Fatality_Ratio,

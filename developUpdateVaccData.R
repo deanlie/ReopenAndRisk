@@ -3,20 +3,13 @@ library(tidyverse)
 source("downloadJHUData.R")
 source("testDiscardNewDataFilewise.R")
 source("updateTimeSeriesDataFilesAsNecessary.R")
+source("columnUtilities.R")
 
-vaccColTypes <- function() {
-  return(cols(.default = col_double(),
-              Combined_Key = col_character(),
-              Datum = col_character(),
-              Loc_Datum = col_character()))
-}
-
-updateVaccDataFiles <- function(writeResults = FALSE,
-                                traceThisRoutine = FALSE,
-                                prepend = "") {
+developUpdateDataForUSVaccTimeSeries <- function(traceThisRoutine = FALSE,
+                                          prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered updateVaccDataFiles\n")
+    cat(file = stderr(), prepend, "Entered updateDataForUSVaccTimeSeries\n")
   }
   
   # Get US vacc data tibble
@@ -137,14 +130,8 @@ updateVaccDataFiles <- function(writeResults = FALSE,
   }
 
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving updateVaccDataFiles\n")
+    cat(file = stderr(), prepend, "Leaving updateDataForUSVaccTimeSeries\n")
   }
-
-  return(list(STATE = buildStateData,
-              US = buildUSData,
-              OLD_STATE = US_State_Vaccinations_As_Filed,
-              OLD_US = US_Vaccinations_As_Filed,
-              FUDD = updateDataSource))
 }
 
 developUpdateStateVaccFileFromTimeline <- function(oldStateTibble,
@@ -208,12 +195,11 @@ recreateVaccFilesFor829And830 <- function(traceThisRoutine = FALSE, prepend = ""
     cat(file = stderr(), myPrepend, "after first copies\n")
   }
 
-  updateVaccDataFiles(writeResults = TRUE,
-                      traceThisRoutine = traceThisRoutine,
-                      prepend = myPrepend)
+  updateDataForUSVaccTimeSeries(traceThisRoutine = traceThisRoutine,
+                                prepend = myPrepend)
   
   if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "after first updateVaccDataFiles\n")
+    cat(file = stderr(), myPrepend, "after first updateDataForUSVaccTimeSeries\n")
   }
   
   discardDataOutsideDateRangeFromAFile("./DATA/US_Vaccinations.csv",
@@ -301,9 +287,8 @@ testSuite <- function(traceThisRoutine = FALSE) {
   system("cp ./DATA/CACHE/US_Vaccinations_28.csv ./DATA/US_Vaccinations.csv")
   system("cp ./DATA/CACHE/US_State_Vaccinations_28.csv ./DATA/US_State_Vaccinations.csv")
 
-  dataList <- updateVaccDataFiles(writeResults = TRUE,
-                                  traceThisRoutine = traceThisRoutine,
-                                  prepend = myPrepend)
+  updateDataForUSVaccTimeSeries(traceThisRoutine = traceThisRoutine,
+                                            prepend = myPrepend)
   
   system("cp ./DATA/US_Vaccinations.csv ./DATA/CACHE/US_Vaccinations_From28.csv")
   system("cp ./DATA/US_State_Vaccinations.csv ./DATA/CACHE/US_State_Vaccinations_From28.csv")
@@ -313,9 +298,8 @@ testSuite <- function(traceThisRoutine = FALSE) {
   system("cp ./DATA/CACHE/US_Vaccinations_29.csv ./DATA/US_Vaccinations.csv")
   system("cp ./DATA/CACHE/US_State_Vaccinations_29.csv ./DATA/US_State_Vaccinations.csv")
   
-  dataList <- updateVaccDataFiles(writeResults = TRUE,
-                                  traceThisRoutine = traceThisRoutine,
-                                  prepend = myPrepend)
+  updateDataForUSVaccTimeSeries(traceThisRoutine = traceThisRoutine,
+                                            prepend = myPrepend)
   
   system("cp ./DATA/US_Vaccinations.csv ./DATA/CACHE/US_Vaccinations_From29.csv")
   system("cp ./DATA/US_State_Vaccinations.csv ./DATA/CACHE/US_State_Vaccinations_From29.csv")
@@ -325,9 +309,8 @@ testSuite <- function(traceThisRoutine = FALSE) {
   system("cp ./DATA/CACHE/US_Vaccinations_30.csv ./DATA/US_Vaccinations.csv")
   system("cp ./DATA/CACHE/US_State_Vaccinations_30.csv ./DATA/US_State_Vaccinations.csv")
   
-  dataList <- updateVaccDataFiles(writeResults = TRUE,
-                                  traceThisRoutine = traceThisRoutine,
-                                  prepend = myPrepend)
+  updateDataForUSVaccTimeSeries(traceThisRoutine = traceThisRoutine,
+                                            prepend = myPrepend)
   
   system("cp ./DATA/US_Vaccinations.csv ./DATA/CACHE/US_Vaccinations_From30.csv")
   system("cp ./DATA/US_State_Vaccinations.csv ./DATA/CACHE/US_State_Vaccinations_From30.csv")

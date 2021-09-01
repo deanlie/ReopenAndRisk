@@ -4,9 +4,10 @@ library(lubridate)
 library(stringi)
 library(RCurl)
 
-source("./dateFormatRoutines.R")
-source("./dataIsCurrent.R")
-source("./downloadJHUData.R")
+source("dateFormatRoutines.R")
+source("dataIsCurrent.R")
+source("downloadJHUData.R")
+source("columnUtilities.R")
 
 typesStateLevelData <- function(aDate) {
   newTypes <- c("Incident_Rate", "Case_Fatality_Ratio",
@@ -238,13 +239,7 @@ makeInitialStateLevelData <- function(nDates = 90,
     #   }
     #   # Get the first file
     #   updateTibble <- try(read_csv(updateStateLevelDataForDate_URL(firstDate),
-    #                                col_types = cols(.default = col_double(),
-    #                                                 Province_State = col_character(),
-    #                                                 Country_Region = col_character(),
-    #                                                 Last_Update = col_datetime(format = ""),
-    #                                                 People_Hospitalized = col_logical(),
-    #                                                 ISO3 = col_character(),
-    #                                                 Hospitalization_Rate = col_logical())))
+    #                                col_types = dataFileColTypes()))
     #   if (class(updateTibble)[1] == "try-error") {
     #     cat(file = stderr(), myPrepend,
     #         "download of", updateStateLevelDataForDate_URL(firstDate), "failed\n")
@@ -324,8 +319,7 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
   if (!dataIsCurrent("./DATA/US_Testing_Rate.csv")) {
     options(show.error.messages = traceThisRoutine)
     US_Testing_Rate <- try(read_csv("./DATA/US_Testing_Rate.csv",
-                                    col_types = cols(.default = col_double(),
-                                                     Combined_Key = col_character())))
+                                    col_types = justCKTypes()))
     options(show.error.messages = TRUE)
     # Update is required
     if (class(US_Testing_Rate)[1] == "try-error") {
@@ -334,8 +328,7 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
       # Now we should be able to get some data
       options(show.error.messages = TRUE)
       US_Testing_Rate <- try(read_csv("./DATA/US_Testing_Rate.csv",
-                                      col_types = cols(.default = col_double(),
-                                                       Combined_Key = col_character())))
+                                      col_types = justCKTypes()))
     } 
     # We have US_Testing_Rate for that type -- but it may not be up-to-date
     if (traceThisRoutine) {
@@ -375,13 +368,7 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
             paste("before try(read_csv(", pathnameOfStateLevelUpdateDataForDate(updateDate), "))\n", sep = ""))
       }
       updateTibble <- try(read_csv(pathnameOfStateLevelUpdateDataForDate(updateDate),
-                                   col_types = cols(.default = col_double(),
-                                                    Province_State = col_character(),
-                                                    Country_Region = col_character(),
-                                                    Last_Update = col_datetime(format = ""),
-                                                    People_Hospitalized = col_logical(),
-                                                    ISO3 = col_character(),
-                                                    Hospitalization_Rate = col_logical())))
+                                   col_types = dataFileColTypes()))
       if (traceThisRoutine) {
         cat(file = stderr(), myPrepend, paste("after try(read_csv(",
                                               pathnameOfStateLevelUpdateDataForDate(updateDate),
@@ -410,13 +397,7 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
         #   }
         #   # Get the first file
         #   updateTibble <- read_csv(updateStateLevelDataForDate_URL(updateDate),
-        #                            col_types = cols(.default = col_double(),
-        #                                             Province_State = col_character(),
-        #                                             Country_Region = col_character(),
-        #                                             Last_Update = col_datetime(format = ""),
-        #                                             People_Hospitalized = col_logical(),
-        #                                             ISO3 = col_character(),
-        #                                             Hospitalization_Rate = col_logical()))
+        #                            col_types = dataFileColTypes())
         #   if (traceThisRoutine) {
         #     cat(file = stderr(), myPrepend, "OK, we downloaded",
         #       updateStateLevelDataForDate_URL(updateDate), "\n")
@@ -454,8 +435,7 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
           }
           options(show.error.messages = traceThisRoutine)
           oldData <- try(read_csv(oldLocalDataPath,
-                                  col_types = cols(.default = col_double(),
-                                                   Combined_Key = col_character())))
+                                  col_types = justCKTypes()))
           if (traceThisRoutine) {
             cat(file = stderr(), myPrepend,
                 paste("after try(read_csv(", oldLocalDataPath, "))\n", sep=""))

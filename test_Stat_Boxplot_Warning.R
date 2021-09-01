@@ -1,5 +1,7 @@
 # Stand-alone test for stat_boxplot warning
 
+source("columnUtilities.R")
+
 assembleRatioDeltaBoxPlot <- function(numeratorFrame, denominatorFrame,
                                       stateChoices, theTitle, xlabel, ylabel,
                                       clampFactor = 3,
@@ -86,16 +88,9 @@ plotTestResultBoxplotsX <- function(chooseCounty, movingAvg, countyChoices,
 
 runTest <- function() {
   US_State_Confirmed_A7 <<- read_csv("./FOO/US_State_Conf_A7.csv",
-                                     col_types = cols(
-                                       .default = col_double(),
-                                       Province_State = col_character(),
-                                       Combined_Key = col_character()
-                                     ))
+                                     col_types = myTSColTypes())
   US_State_People_Tested_A7 <<- read_csv("./FOO/US_State_PT_A7.csv",
-                                         col_types = cols(
-                                           .default = col_double(),
-                                           Combined_Key = col_character()
-                                         ))
+                                         col_types = justCKTYpes())
 
   result <- plotTestResultBoxplotsX(FALSE, TRUE, NULL, c("MA", "ME"), 14)
   print(result$thePlot)
