@@ -82,7 +82,7 @@ sumIgnoreNA <- function(x) {
 checkDateForHospitalData <- function(fileDate) {
   dataFilePath <- dataPathForDate(fileDate)
   newStateDataTibble <- read_csv(dataFilePath,
-                                 col_types = dataFileColSpec()) %>% 
+                                 col_types = dataFileColTypes()) %>% 
     select(Province_State, Last_Update, People_Hospitalized, Hospitalization_Rate) %>%
     filter(!str_detect(Province_State, "Princess")) %>%
     filter(!(is.na(People_Hospitalized) && is.na(Hospitalization_Rate)))
@@ -112,7 +112,7 @@ checkForHospitalData <- function() {
 collectDateConstantColumns <- function(stateName, fileDate) {
   dataFilePath <- dataPathForDate(fileDate)
   newStateDataTibble <- read_csv(dataFilePath,
-                                 col_types = dataFileColSpec()) %>% 
+                                 col_types = dataFileColTypes()) %>% 
     select(Province_State, Country_Region, Lat, Long_, FIPS, UID, ISO3) %>%
     filter(Province_State == !!stateName)
 }
@@ -179,7 +179,7 @@ checkComputableForDate <- function(fileDate, MaxError = 0.01) {
 
   dataFilePath <- dataPathForDate(fileDate)
   newStateDataTibble <- read_csv(dataFilePath,
-                                 col_types = dataFileColSpec()) %>% 
+                                 col_types = dataFileColTypes()) %>% 
     select(Province_State, Confirmed, Deaths, Total_Test_Results,
            Incident_Rate, Case_Fatality_Ratio, Testing_Rate) %>%
     mutate(Combined_Key = paste(Province_State, ", US", sep = ""), .before = Province_State, .keep = "unused")

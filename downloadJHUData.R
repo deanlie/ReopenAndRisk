@@ -9,7 +9,7 @@
 #*************************************************************
 #*
 #* Data for first date for major reconstruction
-#* repositoryPathForDate(<2021-04-01 as date>)
+#* JHUDailyStateDataURLForDate(<2021-04-01 as date>)
 #* 
 #*************************************************************
 # https://raw.githubusercontent.com/
@@ -68,7 +68,8 @@ library(tidyverse)
 # library(stringi)
 library(RCurl)
 
-source("./dateFormatRoutines.R")
+source("dateFormatRoutines.R")
+source("columnUtilities.R")
 
 GithubUserContent <- function() {
   return("https://raw.githubusercontent.com/")
@@ -112,11 +113,11 @@ updateData_URL <- function() {
   updateStateLevelDataForDate_URL(expectedLatestUpdateDataDate())
 }
 
-repositoryPathForDate <- function(aDate) {
-  paste(JHU_repository(),
-        "csse_covid_19_daily_reports/",
-        filenameOfStateLevelDataForDate(aDate),
-        sep = "")
+JHUDailyStateDataURLForDate <- function(aDate) {
+  U_out <- paste(JHU_repository(),
+                 "csse_covid_19_daily_reports/",
+                 filenameOfStateLevelDataForDate(aDate),
+                 sep = "")
 }
 
 # Synthesize the URL of the Johns Hopkins time series data file
@@ -141,15 +142,6 @@ Vacc_URL <- function() {
                  sep = "")
 }
 
-Vacc_Cols <- function() {
-  C_out <- cols(.default = col_double(),
-                Province_State = col_character(),
-                Country_Region = col_character(),
-                Date = col_date(format = ""),
-                Vaccine_Type = col_character(),
-                Combined_Key = col_character())
-}
-
 # Whole time series, megabytes to crunch but good for major reconstruction
 Vacc_TS_URL <- function() {
   U_out <- paste(GithubUserContent(),
@@ -157,15 +149,6 @@ Vacc_TS_URL <- function() {
                  GxTablesUSData(),
                  "/time_series/vaccine_data_us_timeline.csv",
                  sep = "")
-}
-
-Vacc_TS_Cols <- function() {
-  C_out <- cols(.default = col_double(),
-                Province_State = col_character(),
-                Country_Region = col_character(),
-                Date = col_date(format = ""),
-                Vaccine_Type = col_character(),
-                Combined_Key = col_character())
 }
 
 Vacc_TS_Path <- function() {
@@ -299,7 +282,7 @@ vaccDailyUpdateDataSpecs <- function(aDate = NULL) {
     aDate = Sys.Date()
   }
   list(URL = Vacc_URL(),
-       COLS = Vacc_Cols(),
+       COLS = govexVaccColTypes(),
        PATH = paste("DATA/VaccUpdate_",
                     jhuFileDateString(aDate),
                     ".csv",
@@ -311,7 +294,7 @@ vaccTimeSeriesDataSpecs <- function(aDate = NULL) {
     aDate = Sys.Date()
   }
   list(URL = Vacc_TS_URL(),
-       COLS = Vacc_TS_Cols(),
+       COLS = govexVaccColTypes(),
        PATH = paste("DATA/VaccTS_",
                     jhuFileDateString(aDate),
                     ".csv",
@@ -324,7 +307,7 @@ pVaccTimeSeriesDataSpecs <- function(aDate = NULL) {
     aDate = Sys.Date()
   }
   list(URL = PVacc_TS_URL(),
-       COLS = Vacc_TS_Cols(),
+       COLS = govexVaccColTypes(),
        PATH = paste("DATA/pVaccUpdate_",
                     jhuFileDateString(aDate),
                     sep = ""))
@@ -344,13 +327,7 @@ downloadAndSaveStateLevelUpdateData <- function(aDate,
   }
   
   updateTibble <- getURLOrStop(updateStateLevelDataForDate_URL(aDate),
-                               col_types = cols(.default = col_double(),
-                                                Province_State = col_character(),
-                                                Country_Region = col_character(),
-                                                Last_Update = col_datetime(format = ""),
-                                                People_Hospitalized = col_logical(),
-                                                ISO3 = col_character(),
-                                                Hospitalization_Rate = col_logical()))
+                               col_types = dailyFileColTypes())
 
   updateTibble <- updateTibble %>%
     filter(!str_detect(Province_State, "Princess"))
@@ -370,16 +347,11 @@ downloadAndSaveStateLevelUpdateData <- function(aDate,
 processFileForDate <- function(aDate, traceThisRoutine = FALSE, prepend = "") {
   # Download the data
    
-  desiredURL <- repositoryPathForDate(aDate)
+  desiredURL <- JHUDailyStateDataURLForDate(aDate)
 
   # Get the data
-  theColTypes <- cols(.default = col_double(),
-                      Combined_Key = col_character(),
-                      Province_State = col_character(),
-                      Country_Region = col_character(),
-                      Last_Update = col_datetime(format = ""))
   fullDaysData <- read_csv(desiredURL,
-                           col_types = theColTypes)
+                           col_types = dailyJHUFileColTypes())
   
   # Select and filter to get only desired data
   requiredData <- fullDaysData %>%

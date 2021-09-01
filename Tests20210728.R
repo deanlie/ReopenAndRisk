@@ -129,7 +129,7 @@ testPopEstimate <- function(traceThisRoutine = FALSE, prepend = "") {
   }
   aDate <- Sys.Date() - 1
   dailyStateData <- read_csv(dataPathForDate(aDate),
-                             col_types = dataFileColSpec())
+                             col_types = dataFileColTypes())
   foo <- updatePopulationEstimateData(aDate, dailyStateData,
                                            traceThisRoutine = TRUE, prepend = myPrepend)
   if (traceThisRoutine) {

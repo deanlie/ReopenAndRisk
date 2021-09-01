@@ -10,16 +10,10 @@ source("./computeNewAndGrowth.R")
 #   updateToThisDate <- today("EST")
 # 
 #   US_Vaccinations_As_Filed <- read_csv("./DATA/US_Vaccinations.csv",
-#                                 col_types=cols(.default = col_double(),
-#                                                Combined_Key = col_character(),
-#                                                Datum = col_character(),
-#                                                Loc_Datum = col_character()))
+#                                 col_types = vaccColTypes())
 # 
 #   US_State_Vaccinations_As_Filed <- read_csv("./DATA/US_State_Vaccinations.csv",
-#                                      col_types=cols(.default = col_double(),
-#                                                     Combined_Key = col_character(),
-#                                                     Datum = col_character(),
-#                                                     Loc_Datum = col_character()))
+#                                      col_types = vaccColTypes())
 # 
 #   US_Vaccinations_A7 <<- movingAverageData(US_Vaccinations,
 #                                            updateToThisDate,
@@ -49,23 +43,12 @@ loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
   updateToThisDate <- today("EST")
   
   US_Vaccinations_As_Filed <- read_csv("./DATA/US_Vaccinations.csv",
-                                       col_types=cols(.default = col_double(),
-                                                      Combined_Key = col_character(),
-                                                      Datum = col_character(),
-                                                      Loc_Datum = col_character()))
-  
+                                       col_types = vaccColTypes())
   US_State_Vaccinations_As_Filed <- read_csv("./DATA/US_State_Vaccinations.csv",
-                                             col_types=cols(.default = col_double(),
-                                                            Combined_Key = col_character(),
-                                                            Datum = col_character(),
-                                                            Loc_Datum = col_character()))
+                                             col_types = vaccColTypes())
   
   pop_Data <- read_csv("./DATA/US_Population.csv",
-                       col_types=cols(FIPS = col_double(),
-                                      Province_State = col_character(),
-                                      Combined_Key = col_character(),
-                                      CountyName = col_character(),
-                                      Population = col_double())) %>%
+                       col_types = populationColTypes()) %>%
     mutate(FIPSREM = rem1000(FIPS), .keep = "all") %>% # New column is remainder of FIPS / 1000
     filter(FIPSREM == 0) %>%                           # This selects US & States
     select(-FIPSREM) %>%                               # Discard that column

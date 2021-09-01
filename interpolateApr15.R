@@ -1,5 +1,7 @@
 # Interpolate in Apr 15 version of US_Vaccinations.csv and US_State_Vaccinations.csv
 
+source("columnUtilities.R")
+
 # Read in the data file
 # Interpolate in the resulting tibble
 # Write the data file
@@ -37,25 +39,29 @@ fixDataThruApr15 <- function(aTibble) {
     replaceOneColWithInterpolation("4/13/21", "4/14/21", "4/15/21")
 }
 
-# Change this assignment as necessary! Keep the routine "fixDataThruApr15"
-#   as an example
-mungeData <- fixDataThruApr15
+getTheTransform <- function() {
+  # Change this value as necessary! Keep the routine "fixDataThruApr15"
+  #   as an example
+  return(fixDataThruApr15)
+}
 
-readMungeWrite <- function(pathIn, pathOut) {
-  read_csv(pathIn,
-           col_types = cols(.default = col_double(),
-                            Combined_Key = col_character(),
-                            Datum = col_character(),
-                            Loc_Datum = col_character())) %>%
-    mungeData() %>%
+readMungeWrite <- function(pathIn, theColTypes, pathOut, theTransform) {
+  read_csv(pathIn, col_types = theColTypes) %>%
+    theTransform() %>%
     write_csv(pathOut)
 }
 
 
 # ################
 
-readMungeWrite("DATA/US_Vaccinations.csv", "DATA/US_Vaccinations_MG.csv")
+readMungeWrite("DATA/US_Vaccinations.csv",
+               vaccColTypes(),
+               "DATA/US_Vaccinations_MG.csv",
+               getTheTransform())
 
-readMungeWrite("DATA/US_State_Vaccinations.csv", "DATA/US_State_Vaccinations_MG.csv")
+readMungeWrite("DATA/US_State_Vaccinations.csv",
+               vaccColTypes(),
+               "DATA/US_State_Vaccinations_MG.csv",
+               getTheTransform())
 
 

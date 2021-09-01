@@ -20,21 +20,15 @@ loadATypeOfData <- function(theType, computeCounty,
   readLeaf <- function(aLeaf, theScope) {
     aPath <- paste("./DATA/", aLeaf, sep = "")
     if (theScope == "County") {
-      colTypes <- cols(.default = col_double(),
-                       Province_State = col_character(),
-                       Combined_Key = col_character(),
-                       Admin2 = col_character())
+      colTypes <- myCountyTSColTypes()
     } else {
       if (hasProvState) {
-        colTypes <- cols(.default = col_double(),
-                         Province_State = col_character(),
-                         Combined_Key = col_character())
+        colTypes <- myTSColTypes()
       } else {
-        colTypes <- cols(.default = col_double(),
-                         Combined_Key = col_character())
+        colTypes <- justCKTypes()
       }
     }
-    aTibble <- read_csv(aPath, col_types=colTypes) %>%
+    aTibble <- read_csv(aPath, col_types = colTypes) %>%
       filter(!str_detect(Combined_Key, "Princess"))
   }
   
@@ -343,12 +337,9 @@ loadAllUSData <- function(traceThisRoutine = FALSE, prepend = "") {
   aDate = today("EST")
 
   US_Population <<- read_csv("./DATA/US_Population.csv",
-                            col_types=cols(.default = col_character(),
-                                           FIPS = col_double(),
-                                           Population = col_double()))
+                            col_types = populationColTypes())
   US_State_Population_Est <<- read_csv("./DATA/US_State_Population_Est.csv",
-                                       col_types=cols(.default = col_character(),
-                                                      Population = col_double()))
+                                       col_types = populationColTypes())
 
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "after read US_State_Population_Est\n")
