@@ -1,7 +1,7 @@
 
 ROUTINE_NAME <- function(ARGS,
                          traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend)
+  myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered ROUTINE_NAME\n")
   }

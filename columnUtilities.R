@@ -79,6 +79,12 @@ populationColTypes <- function() {
               Population = col_integer()))
 }
 
+# US_State_Population_Est.csv
+estPopulationColTypes <- function() {
+  return(cols(.default = col_character(),
+              Population = col_integer()))
+}
+
 nColumnsBeforeDates <- function(aTibble) {
   theNames <- names(aTibble)
   nCols <- length(theNames)

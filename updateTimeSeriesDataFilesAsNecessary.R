@@ -146,7 +146,7 @@ updateDataFilesForUSTimeSeriesTypeIfNeeded <- function(aType,
 
 allGeogVaccDataFromOneDay <- function(rawData,
                                       traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend)
+  myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered allGeogVaccDataFromOneDay\n")
   }
@@ -295,52 +295,6 @@ makeInitialVaccDataFiles <- function(traceThisRoutine = FALSE, prepend = "") {
   }
 }
 
-updateDataForUSVaccTimeSeries_0 <- function(traceThisRoutine = FALSE, prepend = "") {
-  # OUCH more tracing here, please!!!
-  
-  myPrepend <- paste("  ", prepend, sep = "")
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered updateDataForUSVaccTimeSeries\n")
-  }
-  
-  US_data_path <- paste("./DATA/", "US_Vaccinations.csv", sep="")
-  # OUCH refactor all read_csv calls out
-  US_data <- try(read_csv(US_data_path,
-                          col_types = vaccColTypes()))
-  if (class(US_data)[1] == "try-error") {
-    if (traceThisRoutine) {
-      cat(file = stderr(), myPrepend, "./DATA/US_Vaccinations.csv not read\n")
-    }
-  } else {
-    if (traceThisRoutine) {
-      cat(file = stderr(), myPrepend, "./DATA/US_Vaccinations.csv was read\n")
-    }
-    US_State_data_path <- paste("./DATA/", "US_State_Vaccinations.csv", sep="")
-    US_State_data <- try(read_csv(US_State_data_path,
-                                  col_types = vaccColTypes()))
-    if (class(US_data)[1] == "try-error") {
-      if (traceThisRoutine) {
-        cat(file = stderr(), myPrepend, "./DATA/US_State_Vaccinations.csv not read\n")
-      }
-    } else {
-      if (traceThisRoutine) {
-        cat(file = stderr(), myPrepend, "./DATA/US_State_Vaccinations.csv was read\n")
-      }
-    }
-    baseData <- bind_rows(US_data, US_State_data)
-  }
-  newData <- gatheredVaccDataByGeography() %>%
-    select(-Combined_Key) %>%
-    select(-Datum)
-  allData <- left_join(baseData, newData, by="Loc_Datum")
-
-  saveVaccinationTimeSeriesData(allData, traceThisRoutine, myPrepend)
-
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving updateDataForUSVaccTimeSeries\n")
-  }
-}
-
 updateDataForUSVaccTimeSeries <- function(traceThisRoutine = FALSE,
                                           prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")  
@@ -378,19 +332,11 @@ updateDataForUSVaccTimeSeries <- function(traceThisRoutine = FALSE,
     }
     updateDataSource = NULL
   } else {
-    # If the only missing data is yesterday's, only download the small data file
-    if (lastDateInVaccFiles == (lastDateWeNeed - 1)) {
-      if (traceThisRoutine) {
-        cat(file = stderr(), myPrepend, "We will look for daily update data!\n")
-      }
-      specsToUse <- vaccDailyUpdateDataSpecs()
-    } else {
-      if (traceThisRoutine) {
-        cat(file = stderr(), myPrepend, "We need the big update data timeline!\n")
-      }
-      specsToUse <- vaccTimeSeriesDataSpecs()
-    }
-    updateDataSource <- getDataFromSpecsMaybeSave(specsToUse,
+    # I thought I could save some trouble by using the daily vaccination data URL,
+    #  but it is updated multiple times a day and has empty data before all states
+    #  have reported. To get a full days data, I have to use the big data timeline URL.
+
+    updateDataSource <- getDataFromSpecsMaybeSave(vaccTimeSeriesDataSpecs(),
                                                   traceThisRoutine = FALSE,
                                                   prepend = myPrepend)
     
@@ -470,7 +416,7 @@ updateDataForUSVaccTimeSeries <- function(traceThisRoutine = FALSE,
 }
 
 updateDataFilesForUSVaccTimeSeriesIfNeeded <- function(traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend)
+  myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered updateDataFilesForUSVaccTimeSeriesIfNeeded\n")
   }
@@ -513,7 +459,7 @@ updateDataFilesForUSVaccTimeSeriesIfNeeded <- function(traceThisRoutine = FALSE,
 }
 
 updateTimeSeriesDataFilesAsNecessary <- function(traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend)
+  myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered updateTimeSeriesDataFilesAsNecessary\n")
   }

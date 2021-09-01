@@ -1,6 +1,0 @@
-downloadJHUData.R:                            col_types = col_types))
-downloadJHUData.R:                            col_types = theSpecs$COLS))
-downloadJHUData.R:                            col_types = theSpecs$COLS))
-loadAllUSData.R:    aTibble <- read_csv(aPath, col_types = colTypes) %>%
-testDiscardNewDataFilewise.R:  originalData <- read_csv(thePath, col_types = theTypes)
-testDiscardNewDataFilewise.R:# raw_data <- getURLOrStop(Vacc_TS_URL(), col_types = cols(.default = col_guess()))

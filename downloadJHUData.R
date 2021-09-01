@@ -166,11 +166,13 @@ PVacc_TS_URL <- function() {
                  sep = "")
 }
 
-getURLOrStop <- function(aURL, col_types, traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend)
+tryToReadURL <- function(aURL, col_types,
+                         traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered getURLOrStop\n")
+    cat(file = stderr(), prepend, "Entered tryToReadURL\n")
   }
+  
   if (url.exists(aURL)) {
     rawData <- try(read_csv(aURL,
                             col_types = col_types))
@@ -178,16 +180,37 @@ getURLOrStop <- function(aURL, col_types, traceThisRoutine = FALSE, prepend = ""
       if (traceThisRoutine) {
         cat(file = stderr(), myPrepend, "try(read_csv()) failed for ", aURL, "\n")
       }
-      stop(paste("FATAL ERROR -- Unable to download:", aURL))
+      if (traceThisRoutine) {
+        cat(file = stderr(), prepend, "Early return from tryToReadURL\n")
+      }
+      return(simpleError(paste("Unable to read_csv:", aURL)))
     } 
   } else {
     if (traceThisRoutine) {
-      cat(file = stderr(), myPrepend, "url does not exist\n")
+      cat(file = stderr(), prepend, "Early return from tryToReadURL\n")
     }
+    return(simpleError(paste("No such URL:", aURL)))
+  }
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving tryToReadURL\n")
+  }
+  
+  return(rawData)
+}
+
+getURLOrStop <- function(aURL, col_types, traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend)
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered getURLOrStop\n")
+  }
+  rawData <- tryToReadURL(aURL, col_types, traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+  
+  if ("error" %in% class(rawData)) {
     if (traceThisRoutine) {
-      cat(file = stderr(), myPrepend, "url.exists returned FALSE for ", aURL, "\n")
+      cat(file = stderr(), myPrepend, "Error returned from tryToReadURL\n")
     }
-    stop(paste("FATAL ERROR -- No such URL: ", aURL))
+    stop(conditionMessage(rawData))
   }
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving getURLOrStop\n")

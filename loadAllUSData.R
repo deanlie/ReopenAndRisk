@@ -339,7 +339,7 @@ loadAllUSData <- function(traceThisRoutine = FALSE, prepend = "") {
   US_Population <<- read_csv("./DATA/US_Population.csv",
                             col_types = populationColTypes())
   US_State_Population_Est <<- read_csv("./DATA/US_State_Population_Est.csv",
-                                       col_types = populationColTypes())
+                                       col_types = estPopulationColTypes())
 
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "after read US_State_Population_Est\n")
