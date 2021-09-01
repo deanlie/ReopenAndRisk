@@ -30,17 +30,48 @@ source("./computeNewAndGrowth.R")
 
 loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
   # Local function
+  #####################################
+  #  Functions local to this routine  #
+  #####################################
+  readLeaf <- function(aLeaf, colTypes) {
+    aPath <- paste("./DATA/", aLeaf, sep = "")
+    aTibble <- read_csv(aPath, col_types = colTypes) %>%
+      filter(!str_detect(Combined_Key, "Princess"))
+  }
+
   rem1000 <- function(n) {
     as.integer(n - 1000 * floor(n / 1000))
   }
 
-  # Mainline of this routine
+  ######################################
+  #      Mainline of  this routine     #
+  ######################################
+ 
   myPrepend = paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered loadUSVaccinationData\n")
   }
 
-  updateToThisDate <- today("EST")
+  ######################################
+  #  Variables per "loadATypeOfData"   #
+  ######################################
+  theType <- "Vaccinations"
+  computeCounty <- FALSE
+
+  ######################################
+  #      Back to Mainline              #
+  ######################################
+  updateToThisDate <- expectedLatestUpdateDataDate()
+  
+  US_leaf <- paste("US_", theType, ".csv", sep = "")
+  State_leaf <- paste("US_State_", theType, ".csv", sep = "")
+  if (computeCounty) {
+    County_leaf <- paste("US_County_", theType, ".csv", sep = "")
+  } else {
+    County_leaf <- NA
+  }
+  
+  colTypes <- vaccColTypes()
   
   US_Vaccinations_As_Filed <- read_csv("./DATA/US_Vaccinations.csv",
                                        col_types = vaccColTypes())

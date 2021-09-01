@@ -13,21 +13,12 @@ source("./loadUSVaccinationData.R")
 loadATypeOfData <- function(theType, computeCounty,
                             computeNew, computeAvg,
                             hasProvState = TRUE,
-                            traceThisRoutine = FALSE, prepend = "CALLER??") {
+                            traceThisRoutine = FALSE, prepend = "") {
   #####################################
   #  Functions local to this routine  #
   #####################################
-  readLeaf <- function(aLeaf, theScope) {
+  readLeaf <- function(aLeaf, theScope, colTypes) {
     aPath <- paste("./DATA/", aLeaf, sep = "")
-    if (theScope == "County") {
-      colTypes <- myCountyTSColTypes()
-    } else {
-      if (hasProvState) {
-        colTypes <- myTSColTypes()
-      } else {
-        colTypes <- justCKTypes()
-      }
-    }
     aTibble <- read_csv(aPath, col_types = colTypes) %>%
       filter(!str_detect(Combined_Key, "Princess"))
   }
@@ -98,11 +89,18 @@ loadATypeOfData <- function(theType, computeCounty,
     County_leaf <- paste("US_County_", theType, ".csv", sep = "")
   } else {
     County_leaf <- NA
-  }  
-  US_Cumulative     <- readLeaf(US_leaf, "US")
-  State_Cumulative  <- readLeaf(State_leaf, "State")
+  }
+
+  if (hasProvState) {
+    colTypes <- myTSColTypes()
+  } else {
+    colTypes <- justCKColTypes()
+  }
+  
+  US_Cumulative     <- readLeaf(US_leaf, "US", colTypes)
+  State_Cumulative  <- readLeaf(State_leaf, "State", colTypes)
   if (computeCounty) {
-    County_Cumulative <- readLeaf(County_leaf, "County")
+    County_Cumulative <- readLeaf(County_leaf, "County", myCountyTSColTypes())
     if (traceThisRoutine) {
       names_p <- paste(names(County_Cumulative)[1:5])
       cat(file = stderr(), myPrepend, "County_Cumulative names:", names_p, "...\n")
@@ -350,7 +348,7 @@ loadAllUSData <- function(traceThisRoutine = FALSE, prepend = "") {
   updateStateLevelSerializedDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
                                                  prepend = myPrepend)
   
-  loadUSVaccinationData()
+  loadUSVaccinationData(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
 
   loadUSConfirmedData(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
 
