@@ -35,7 +35,7 @@ myCountyTSColTypes <- function() {
 }
 
 # Numeric and Combined_Key
-justCKTypes <- function() {
+justCKColTypes <- function() {
   return(cols(.default = col_double(),
               Combined_Key = col_character()))
 }

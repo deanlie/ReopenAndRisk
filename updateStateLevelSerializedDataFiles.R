@@ -319,7 +319,7 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
   if (!dataIsCurrent("./DATA/US_Testing_Rate.csv")) {
     options(show.error.messages = traceThisRoutine)
     US_Testing_Rate <- try(read_csv("./DATA/US_Testing_Rate.csv",
-                                    col_types = justCKTypes()))
+                                    col_types = justCKColTypes()))
     options(show.error.messages = TRUE)
     # Update is required
     if (class(US_Testing_Rate)[1] == "try-error") {
@@ -328,7 +328,7 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
       # Now we should be able to get some data
       options(show.error.messages = TRUE)
       US_Testing_Rate <- try(read_csv("./DATA/US_Testing_Rate.csv",
-                                      col_types = justCKTypes()))
+                                      col_types = justCKColTypes()))
     } 
     # We have US_Testing_Rate for that type -- but it may not be up-to-date
     if (traceThisRoutine) {
@@ -435,7 +435,7 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
           }
           options(show.error.messages = traceThisRoutine)
           oldData <- try(read_csv(oldLocalDataPath,
-                                  col_types = justCKTypes()))
+                                  col_types = justCKColTypes()))
           if (traceThisRoutine) {
             cat(file = stderr(), myPrepend,
                 paste("after try(read_csv(", oldLocalDataPath, "))\n", sep=""))

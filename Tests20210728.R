@@ -26,15 +26,15 @@ test_Drops <- function(traceThisRoutine = FALSE) {
                 Deaths = read_csv("./DATA/US_Deaths.csv",
                                   col_types = myTSColTypes()))
   US_TICR <- list(Total_Test_Results = read_csv("../ReopenAndRisk/DATA/US_Total_Test_Results.csv",
-                                                col_types = justCKTypes())
+                                                col_types = justCKColTypes())
   )
 
   # Testing_Rate = read_csv("../ReopenAndRisk/DATA/US_Testing_Rate.csv",
-  #                               col_types = justCKTypes())
+  #                               col_types = justCKColTypes())
   # Incident_Rate = read_csv("../ReopenAndRisk/DATA/US_Incident_Rate.csv",
-  #                               col_types = justCKTypes())
+  #                               col_types = justCKColTypes())
   # Case_Fatality_Ratio = read_csv("../ReopenAndRisk/DATA/US_Case_Fatality_Ratio.csv",
-  #                               col_types = justCKTypes())
+  #                               col_types = justCKColTypes())
   
   foo <- discardOlderDataFromListOfTibbles(US_CD,
                                            keepFromNDaysBeforePresent = 18,
@@ -98,9 +98,9 @@ testTRvsTR0 <- function(traceThisRoutine = FALSE, prepend = "") {
   #   table, computed daily, is cleaner
 
   US_Total_Test_Results <- read_csv("./DATA/US_Total_Test_Results.csv",
-                                    col_types = justCKTypes())
+                                    col_types = justCKColTypes())
   US_State_Testing_Rate <- read_csv("./DATA/US_State_Testing_Rate.csv",
-                                    col_types = justCKTypes())
+                                    col_types = justCKColTypes())
   
   US_Testing_Rate_0 <- rebuildUSDataFileForTypeAsWeightedAvg(US_State_Testing_Rate,
                                                              "Testing_Rate",

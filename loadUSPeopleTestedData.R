@@ -17,7 +17,7 @@ loadUSPeopleTestedData <- function(traceThisRoutine = FALSE, prepend = "CALLER??
   US_People_Tested <<- read_csv("./DATA/US_Total_Test_Results.csv",
                                 col_types = myTSColTypes())
   US_State_People_Tested <<- read_csv("./DATA/US_State_Total_Test_Results.csv",
-                                      col_types = justCKTypes())
+                                      col_types = justCKColTypes())
   
   US_People_Tested_G7 <<- movingAverageGrowth(US_People_Tested,
                                               updateToThisDate, 28, 7,

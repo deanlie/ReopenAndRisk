@@ -12,7 +12,7 @@ loadUSIncidentRateData <- function() {
   US_Incident_Rate <<- read_csv("./DATA/US_Incident_Rate.csv",
                                 col_types = myTSColTypes())
   US_State_Incident_Rate <<- read_csv("./DATA/US_State_Incident_Rate.csv",
-                                      col_types = justCKTypes())
+                                      col_types = justCKColTypes())
   US_Incident_Rate_G7 <<- movingAverageGrowth(US_Incident_Rate,
                                               updateToThisDate, 28, 7,
                                               tibbleName="US_Incident_Rate",

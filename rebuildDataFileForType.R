@@ -92,7 +92,7 @@ openExistingStateTibbles <- function(traceThisRoutine = FALSE, prepend = "") {
       cat(file = stderr(), myPrepend, "aType =", aType, "path =", newStateDataPathForType(aType), "\n")
     }
     existingStateTibbles[[aType]] <- read_csv(newStateDataPathForType(aType),
-                                              col_types = justCKTypes())
+                                              col_types = justCKColTypes())
     if (traceThisRoutine) {
       cat(file = stderr(), myPrepend, "read", newStateDataPathForType(aType), "\n")
     }
