@@ -41,21 +41,24 @@ justCKColTypes <- function() {
 }
 
 # JHU -- csse_covid_19_daily_reports_us/mm-dd-yyyy.csv (NOTE: "...reports_us")
-# OUCH rename to "dailyJHUStateFileColTypes"
-dataFileColTypes <- function() {
+dailyJHUStateFileColTypes <- function() {
   return(cols(.default = col_double(),
-                         Province_State = col_character(),
-                         Country_Region = col_character(),
-                         Last_Update = col_datetime(format = ""),
-                         Recovered = col_logical(),
-                         Active = col_logical(),
-                         People_Hospitalized = col_logical(),
-                         ISO3 = col_character()))
+              Province_State = col_character(),
+              Country_Region = col_character(),
+              Last_Update = col_datetime(format = ""),
+              Recovered = col_logical(),
+              Active = col_logical(),
+              People_Hospitalized = col_logical(),
+              ISO3 = col_character()))
+}
+
+# OUCH call "dailyJHUStateFileColTypes" instead of this
+dataFileColTypes <- function() {
+  return(dailyJHUStateFileColTypes())
 }
 
 # JHU -- in csse_covid_19_daily_reports/mm-dd-yyyy.csv (NOTE: NOT "...reports_us")
-# OUCH rename to "dailyJHUWorldFileColTypes"
-dailyJHUFileColTypes <- function() {
+dailyJHUWorldFileColTypes <- function() {
   return(cols(.default = col_double(),
               Admin2 = col_character(),
               Province_State = col_character(),
@@ -64,6 +67,10 @@ dailyJHUFileColTypes <- function() {
               Combined_Key = col_character()))
 }
 
+# OUCH call "dailyJHUWorldFileColTypes" instead of this
+dailyJHUFileColTypes <- function() {
+  return(dailyJHUWorldFileColTypes())
+}
 # GOVEX Vaccine data
 govexVaccColTypes <- function() {
   return(cols(.default = col_double(),

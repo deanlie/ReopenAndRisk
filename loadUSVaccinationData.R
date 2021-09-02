@@ -28,9 +28,8 @@ source("./computeNewAndGrowth.R")
 #   US_State_Vaccination_Pcts_A7 <<- US_State_Vaccinations_A7
 # }
 
-loadATypeOfDataX <- function(theType, computeCounty,
-                            computeNew, computeAvg,
-                            hasProvState = TRUE,
+loadATypeOfDataX <- function(theType, colTypes, computeCounty,
+                            computeNew, computeAvg, computePercent,
                             traceThisRoutine = FALSE, prepend = "") {
   #####################################
   #  Functions local to this routine  #
@@ -45,25 +44,63 @@ loadATypeOfDataX <- function(theType, computeCounty,
     as.integer(n - 1000 * floor(n / 1000))
   }
 
-  ######################################
-  #  Variables per "loadATypeOfData"   #
-  ######################################
-  theType <- "Vaccinations"
-  computeCounty <- FALSE
-  computeNew <- FALSE
-  computeAvg <- TRUE
-  computePercent <- TRUE
-  
-  colTypes <- vaccColTypes()
+  newFromCumulative <- function(inputTibble, updateToThisDate,
+                                theScope, theType,
+                                nDays = 35,
+                                traceThisRoutine = FALSE, prepend = "") {
+    myPrepend <- paste(prepend, "  ", sep = "")
+    if (traceThisRoutine) {
+      cat(file = stderr(), prepend, "Entered newFromCumulative\n")
+    }
+    outputList <- computeNewOnDayAndGrowthRate(inputTibble,
+                                               updateToThisDate,
+                                               nDays,
+                                               getGrowthRate = FALSE,
+                                               nonzeroOnly = FALSE,
+                                               tibbleName = paste(theScope,
+                                                                  theType,
+                                                                  "Cumulative",
+                                                                  sep = ""),
+                                               traceThisRoutine = traceThisRoutine,
+                                               prepend = myPrepend)
+    myPrepend <- paste(prepend, "  ", sep = "")
+    if (traceThisRoutine) {
+      cat(file = stderr(), prepend, "Leaving newFromCumulative\n")
+    }
+    outputTibble <- outputList$new
+  }
+
+  # This routine for debugging only
+  dumpLocaleData <- function(aTibble, aMessage, CombinedKeyValue = "Massachusetts, US") {
+    print(paste(CombinedKeyValue, aMessage))
+    theData <- filter(aTibble, Combined_Key == {CombinedKeyValue})
+    theLength <- dim(theData)[2]
+    print(paste("  Length:", theLength))
+    print(paste("  First cols:", paste(names(theData)[1:3])))
+    print(paste("  First data:", theData[1,1], theData[1,2], theData[1,3]))
+    print(paste("  Last cols:", paste(names(theData)[(theLength - 2):theLength])))
+    print(digits = 1, paste("  Last data:", as.integer(theData[1,theLength - 9]),
+                            as.integer(theData[1,theLength - 8]),
+                            as.integer(theData[1,theLength - 7]),
+                            as.integer(theData[1,theLength - 6]),
+                            as.integer(theData[1,theLength - 5]),
+                            as.integer(theData[1,theLength - 4]),
+                            as.integer(theData[1,theLength - 3]),
+                            as.integer(theData[1,theLength - 2]),
+                            as.integer(theData[1,theLength - 1]),
+                            as.integer(theData[1,theLength])))
+    
+  }
 
   ######################################
   #      Mainline of  this routine     #
   ######################################
- 
-  myPrepend = paste("  ", prepend, sep = "")  
+
+  myPrepend <- paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered loadATypeOfDataX\n")
   }
+
   updateToThisDate <- expectedLatestUpdateDataDate()
   updateTimeSeriesDataFilesAsNecessary()
   
@@ -75,10 +112,10 @@ loadATypeOfDataX <- function(theType, computeCounty,
     County_leaf <- NA
   }
   
-  US_Cumulative <- readLeaf(US_leaf, colTypes)
+  US_Cumulative    <- readLeaf(US_leaf, colTypes)
   State_Cumulative <- readLeaf(State_leaf, colTypes)
   if (computeCounty) {
-    County_Cumulative <- readLeaf(County_leaf, "County", myCountyTSColTypes())
+    County_Cumulative <- readLeaf(County_leaf, myCountyTSColTypes())
     if (traceThisRoutine) {
       names_p <- paste(names(County_Cumulative)[1:5])
       cat(file = stderr(), myPrepend, "County_Cumulative names:", names_p, "...\n")
@@ -90,7 +127,7 @@ loadATypeOfDataX <- function(theType, computeCounty,
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "Before if(computeNew) block\n")
   }
-  
+
   if (computeNew) {
     US_New <- newFromCumulative(US_Cumulative, updateToThisDate,
                                 "US", theType,
@@ -100,9 +137,9 @@ loadATypeOfDataX <- function(theType, computeCounty,
                                    "State", theType,
                                    traceThisRoutine = traceThisRoutine,
                                    prepend = myPrepend)
-    
+
     # dumpLocaleData(State_New, "State_New")
-    
+
     if (computeCounty) {
       County_New <- newFromCumulative(County_Cumulative, updateToThisDate,
                                       "County", theType,
@@ -124,7 +161,7 @@ loadATypeOfDataX <- function(theType, computeCounty,
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "Before if(computeAvg) block\n")
   }
-  
+
   if (computeAvg) {
     US_Cumulative_A7 <- movingAverageData(US_Cumulative, updateToThisDate, 28, 7,
                                           tibbleName = paste("US", theType, "Cumulative", sep=""),
@@ -135,9 +172,9 @@ loadATypeOfDataX <- function(theType, computeCounty,
                                              tibbleName = paste("State", theType, "Cumulative", sep=""),
                                              traceThisRoutine = traceThisRoutine,
                                              prepend = myPrepend)
-    
+
     # dumpLocaleData(State_Cumulative_A7, "State_Cumulative_A7")
-    
+
     if (computeCounty) {
       County_Cumulative_A7 <- movingAverageData(County_Cumulative, updateToThisDate, 28, 7,
                                                 tibbleName = paste("County", theType, "Cumulative", sep=""),
@@ -150,7 +187,7 @@ loadATypeOfDataX <- function(theType, computeCounty,
     } else {
       County_Cumulative_A7 <- NULL
     }
-    
+
     if (computeNew) {
       US_G7 <- movingAverageGrowth(US_Cumulative, updateToThisDate, 28, 7,
                                    tibbleName = paste("US", theType, "Cumulative", sep = ""),
@@ -256,8 +293,15 @@ loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered loadUSVaccinationData\n")
   }
-    
-  loadATypeOfDataX(traceThisRoutine = FALSE, prepend = myPrepend)
+
+  computeCounty <- FALSE
+  computeNew <- FALSE
+  computeAvg <- TRUE
+  computePercent <- TRUE
+
+  loadATypeOfDataX("Vaccinations", vaccColTypes(), computeCounty,
+                   computeNew, computeAvg, computePercent,
+                   traceThisRoutine = FALSE, prepend = myPrepend)
    
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving loadUSVaccinationData\n")
