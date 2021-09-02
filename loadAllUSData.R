@@ -17,10 +17,14 @@ loadATypeOfData <- function(theType, computeCounty,
   #####################################
   #  Functions local to this routine  #
   #####################################
-  readLeaf <- function(aLeaf, theScope, colTypes) {
+  readLeaf <- function(aLeaf, colTypes) {
     aPath <- paste("./DATA/", aLeaf, sep = "")
     aTibble <- read_csv(aPath, col_types = colTypes) %>%
       filter(!str_detect(Combined_Key, "Princess"))
+  }
+  
+  rem1000 <- function(n) {
+    as.integer(n - 1000 * floor(n / 1000))
   }
   
   newFromCumulative <- function(inputTibble, updateToThisDate,
@@ -70,7 +74,19 @@ loadATypeOfData <- function(theType, computeCounty,
                             as.integer(theData[1,theLength])))
     
   }  
+  
+  ######################################
+  #  Variables per "load Vaccination"  #
+  ######################################
 
+  computePercent <- FALSE
+
+  if (hasProvState) {
+    colTypes <- myTSColTypes()
+  } else {
+    colTypes <- justCKColTypes()
+  }
+  
   ######################################
   #      Mainline of  this routine     #
   ######################################
@@ -90,17 +106,11 @@ loadATypeOfData <- function(theType, computeCounty,
   } else {
     County_leaf <- NA
   }
-
-  if (hasProvState) {
-    colTypes <- myTSColTypes()
-  } else {
-    colTypes <- justCKColTypes()
-  }
   
-  US_Cumulative     <- readLeaf(US_leaf, "US", colTypes)
-  State_Cumulative  <- readLeaf(State_leaf, "State", colTypes)
+  US_Cumulative     <- readLeaf(US_leaf, colTypes)
+  State_Cumulative  <- readLeaf(State_leaf, colTypes)
   if (computeCounty) {
-    County_Cumulative <- readLeaf(County_leaf, "County", myCountyTSColTypes())
+    County_Cumulative <- readLeaf(County_leaf, myCountyTSColTypes())
     if (traceThisRoutine) {
       names_p <- paste(names(County_Cumulative)[1:5])
       cat(file = stderr(), myPrepend, "County_Cumulative names:", names_p, "...\n")
@@ -206,6 +216,44 @@ loadATypeOfData <- function(theType, computeCounty,
     County_G7 <- NULL
   }
   
+  if (computePercent) {
+    pop_Data <- US_Population %>%
+      mutate(FIPSREM = rem1000(FIPS), .keep = "all") %>% # New column is remainder of FIPS / 1000
+      filter(FIPSREM == 0) %>%                           # This selects US & States
+      select(-FIPSREM) %>%                               # Discard that column
+      select(Combined_Key, Population)
+    
+    US_PopCumulative <- inner_join(pop_Data, US_Cumulative, by = "Combined_Key")
+    State_PopCumulative <- inner_join(pop_Data, State_Cumulative, by = "Combined_Key")
+    
+    usDims = dim(US_PopCumulative)
+    usStDm = dim(State_PopCumulative)
+    
+    US_CumulativePcts <- US_PopCumulative %>%
+      mutate(across(matches(".*2.$"), ~ 100.0 * .x / Population))
+    State_CumulativePcts <- State_PopCumulative %>%
+      mutate(across(matches(".*2.$"), ~ 100.0 * .x / Population))
+    
+    getNAvgs <- 28 
+    
+    US_CumulativePcts_A7 <- movingAverageData(US_CumulativePcts,
+                                              updateToThisDate,
+                                              getNAvgs, 7,
+                                              tibbleName="US_CumulativePcts",
+                                              traceThisRoutine = traceThisRoutine,
+                                              prepend = myPrepend)
+    State_CumulativePcts_A7 <- movingAverageData(State_CumulativePcts,
+                                                    updateToThisDate,
+                                                    getNAvgs, 7,
+                                                    tibbleName="State_CumulativePcts",
+                                                    traceThisRoutine = traceThisRoutine,
+                                                    prepend = myPrepend)
+  } else {
+    US_CumulativePcts <- NULL
+    State_CumulativePcts <- NULL
+    US_CumulativePcts_A7 <- NULL
+    State_CumulativePcts_A7 <- NULL
+  }
   
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving loadATypeOfData\n")
@@ -216,7 +264,9 @@ loadATypeOfData <- function(theType, computeCounty,
        State_C = State_Cumulative, State_N = State_New,
        State_C_A = State_Cumulative_A7, State_N_A = State_G7, State_G = State_G7,
        County_C = County_Cumulative, County_N = County_New,
-       County_C_A = County_Cumulative_A7, County_N_A = County_G7, County_G = County_G7)
+       County_C_A = County_Cumulative_A7, County_N_A = County_G7, County_G = County_G7,
+       US_P100 = US_CumulativePcts, State_P100 = State_CumulativePcts,
+       US_P100A7 = US_CumulativePcts_A7, State_P100A7 = State_CumulativePcts_A7)
 }
 
 normalizeByPopulation <- function(aTibble) {
