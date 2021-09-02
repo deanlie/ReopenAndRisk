@@ -40,7 +40,8 @@ justCKColTypes <- function() {
               Combined_Key = col_character()))
 }
 
-# JHU -- timeline ?
+# JHU -- csse_covid_19_daily_reports_us/mm-dd-yyyy.csv (NOTE: "...reports_us")
+# OUCH rename to "dailyJHUStateFileColTypes"
 dataFileColTypes <- function() {
   return(cols(.default = col_double(),
                          Province_State = col_character(),
@@ -52,7 +53,8 @@ dataFileColTypes <- function() {
                          ISO3 = col_character()))
 }
 
-# JHU -- in csse_covid_19_daily_reports_us
+# JHU -- in csse_covid_19_daily_reports/mm-dd-yyyy.csv (NOTE: NOT "...reports_us")
+# OUCH rename to "dailyJHUWorldFileColTypes"
 dailyJHUFileColTypes <- function() {
   return(cols(.default = col_double(),
               Admin2 = col_character(),

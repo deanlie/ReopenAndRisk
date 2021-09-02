@@ -28,7 +28,10 @@ source("./computeNewAndGrowth.R")
 #   US_State_Vaccination_Pcts_A7 <<- US_State_Vaccinations_A7
 # }
 
-loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
+loadATypeOfDataX <- function(theType, computeCounty,
+                            computeNew, computeAvg,
+                            hasProvState = TRUE,
+                            traceThisRoutine = FALSE, prepend = "") {
   #####################################
   #  Functions local to this routine  #
   #####################################
@@ -59,7 +62,7 @@ loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
  
   myPrepend = paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered loadUSVaccinationData\n")
+    cat(file = stderr(), prepend, "Entered loadATypeOfDataX\n")
   }
   updateToThisDate <- expectedLatestUpdateDataDate()
   updateTimeSeriesDataFilesAsNecessary()
@@ -230,7 +233,7 @@ loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
   }
   
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving loadUSVaccinationData\n")
+    cat(file = stderr(), prepend, "Leaving loadATypeOfDataX\n")
   }
   
   US_Vaccination_Pcts <<- US_CumulativePcts
@@ -246,4 +249,17 @@ loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
        County_C_A = County_Cumulative_A7, County_N_A = County_G7, County_G = County_G7,
        US_P100 = US_CumulativePcts, State_P100 = State_CumulativePcts,
        US_P100A7 = US_CumulativePcts_A7, State_P100A7 = State_CumulativePcts_A7)
+}
+
+loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered loadUSVaccinationData\n")
+  }
+    
+  loadATypeOfDataX(traceThisRoutine = FALSE, prepend = myPrepend)
+   
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving loadUSVaccinationData\n")
+  }
 }

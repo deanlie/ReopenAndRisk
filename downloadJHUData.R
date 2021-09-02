@@ -350,7 +350,7 @@ downloadAndSaveStateLevelUpdateData <- function(aDate,
   }
   
   updateTibble <- getURLOrStop(updateStateLevelDataForDate_URL(aDate),
-                               col_types = dailyFileColTypes())
+                               col_types = dataFileColTypes())
 
   updateTibble <- updateTibble %>%
     filter(!str_detect(Province_State, "Princess"))
