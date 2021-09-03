@@ -10,7 +10,7 @@ source("./loadUSMortalityRateData.R")
 source("./loadUSTestingRateData.R")
 source("./loadUSVaccinationData.R")
 
-loadATypeOfDataY <- function(theType, colTypes, computeCounty,
+loadATypeOfData <- function(theType, colTypes, computeCounty,
                             computeNew, computeAvg, computePercent,
                             traceThisRoutine = FALSE, prepend = "") {
   #####################################
@@ -80,7 +80,7 @@ loadATypeOfDataY <- function(theType, colTypes, computeCounty,
 
   myPrepend <- paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered loadATypeOfDataY\n")
+    cat(file = stderr(), prepend, "Entered loadATypeOfData\n")
   }
 
   updateToThisDate <- expectedLatestUpdateDataDate()
@@ -251,7 +251,7 @@ loadATypeOfDataY <- function(theType, colTypes, computeCounty,
   }
   
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving loadATypeOfDataY\n")
+    cat(file = stderr(), prepend, "Leaving loadATypeOfData\n")
   }
   
   list(US_C = US_Cumulative, US_C_P = US_CumulativePcts,
@@ -263,32 +263,6 @@ loadATypeOfDataY <- function(theType, colTypes, computeCounty,
        County_C = County_Cumulative,
        County_C_A = County_Cumulative_A7, County_N_A = County_G7, County_G = County_G7,
        County_N = County_New)
-}
-
-loadATypeOfData <- function(theType, computeCounty,
-                            computeNew, computeAvg,
-                            hasProvState = TRUE,
-                            traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend, sep = "")
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered loadATypeOfData\n")
-  }
-  
-  hasPercent = FALSE
-  if (hasProvState) {
-    colTypes <- myTSColTypes()
-  } else {
-    colTypes <- justCKColTypes()
-  }
-
-  result <- loadATypeOfDataY(theType, colTypes, computeCounty,
-                             computeNew, computeAvg, hasPercent,
-                             traceThisRoutine = traceThisRoutine, prepend = myPrepend)
-    
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving loadATypeOfData\n")
-  }
- return(result)
 }
 
 normalizeByPopulation <- function(aTibble) {
@@ -310,8 +284,14 @@ loadUSConfirmedData <- function(traceThisRoutine = FALSE, prepend = "") {
     cat(file = stderr(), prepend, "Entered loadUSConfirmedData\n")
   }
   
-  allConfirmedData <- loadATypeOfData("Confirmed", TRUE,
-                              TRUE, TRUE,
+  computeCounty <- TRUE
+  computeNew <- TRUE
+  computeAvg <- TRUE
+  computePercent <- FALSE
+  
+  allConfirmedData <- loadATypeOfData("Confirmed", myTSColTypes(),
+                                      computeCounty, computeNew,
+                                      computeAvg, computePercent,
                               traceThisRoutine = FALSE,
                               prepend = myPrepend)
   
@@ -337,9 +317,15 @@ loadUSDeathsData <- function(traceThisRoutine = FALSE, prepend = "") {
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered loadUSDeathsData (in loadAllUSData.R)\n")
   }
-
-  AllDeathsData <- loadATypeOfData("Deaths", TRUE,
-                                   TRUE, TRUE,
+  
+  computeCounty <- TRUE
+  computeNew <- TRUE
+  computeAvg <- TRUE
+  computePercent <- FALSE
+  
+  AllDeathsData <- loadATypeOfData("Deaths", myTSColTypes(),
+                                   computeCounty, computeNew,
+                                   computeAvg, computeAvg,
                                    traceThisRoutine = FALSE,
                                    prepend = myPrepend)
   
@@ -380,10 +366,15 @@ loadUSTestResultsData <- function(traceThisRoutine = FALSE, prepend = "") {
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered loadUSTestResultsData\n")
   }
+
+  computeCounty <- FALSE
+  computeNew <- TRUE
+  computeAvg <- TRUE
+  computePercent <- FALSE
   
-  AllTestResultsData <- loadATypeOfData("Total_Test_Results", FALSE,
-                                        TRUE, TRUE,
-                                        hasProvState = FALSE,
+  AllTestResultsData <- loadATypeOfData("Total_Test_Results", justCKColTypes(),
+                                        computeCounty, computeNew,
+                                        computeAvg, computePercent,
                                         traceThisRoutine = FALSE, prepend = myPrepend)
 
   US_People_Tested <<- AllTestResultsData$US_C
