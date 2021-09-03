@@ -157,7 +157,7 @@ loadATypeOfDataX <- function(theType, colTypes, computeCounty,
     State_New <- NULL
     County_New <- NULL
   }
-  
+
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "Before if(computeAvg) block\n")
   }
@@ -167,7 +167,6 @@ loadATypeOfDataX <- function(theType, colTypes, computeCounty,
                                           tibbleName = paste("US", theType, "Cumulative", sep=""),
                                           traceThisRoutine = traceThisRoutine,
                                           prepend = myPrepend)
-
     State_Cumulative_A7 <- movingAverageData(State_Cumulative, updateToThisDate, 28, 7,
                                              tibbleName = paste("State", theType, "Cumulative", sep=""),
                                              traceThisRoutine = traceThisRoutine,
@@ -236,18 +235,18 @@ loadATypeOfDataX <- function(theType, colTypes, computeCounty,
       filter(FIPSREM == 0) %>%                           # This selects US & States
       select(-FIPSREM) %>%                               # Discard that column
       select(Combined_Key, Population)
-  
+
     US_PopCumulative <- inner_join(pop_Data, US_Cumulative, by = "Combined_Key")
     State_PopCumulative <- inner_join(pop_Data, State_Cumulative, by = "Combined_Key")
 
     usDims = dim(US_PopCumulative)
     usStDm = dim(State_PopCumulative)
-  
+
     US_CumulativePcts <- US_PopCumulative %>%
       mutate(across(matches(".*2.$"), ~ 100.0 * .x / Population))
     State_CumulativePcts <- State_PopCumulative %>%
       mutate(across(matches(".*2.$"), ~ 100.0 * .x / Population))
-  
+
     getNAvgs <- 28
 
     US_CumulativePcts_A7 <- movingAverageData(US_CumulativePcts,
@@ -273,19 +272,15 @@ loadATypeOfDataX <- function(theType, colTypes, computeCounty,
     cat(file = stderr(), prepend, "Leaving loadATypeOfDataX\n")
   }
   
-  US_Vaccination_Pcts <<- US_CumulativePcts
-  US_State_Vaccination_Pcts <<- State_CumulativePcts
-  US_Vaccination_Pcts_A7 <<- US_CumulativePcts_A7
-  US_State_Vaccination_Pcts_A7 <<- State_CumulativePcts_A7
-  
-  list(US_C = US_Cumulative, US_N = US_New,
-       US_C_A = US_Cumulative_A7, US_N_A = US_G7, US_G = US_G7,
-       State_C = State_Cumulative, State_N = State_New,
-       State_C_A = State_Cumulative_A7, State_N_A = State_G7, State_G = State_G7,
-       County_C = County_Cumulative, County_N = County_New,
+  list(US_C = US_Cumulative, US_C_P = US_CumulativePcts,
+       US_C_A = US_Cumulative_A7, US_C_PA7 = US_CumulativePcts_A7,
+       US_N = US_New, US_N_A = US_G7, US_G = US_G7,
+       State_C = State_Cumulative, State_C_P = State_CumulativePcts,
+       State_C_A = State_Cumulative_A7, State_C_PA7 = State_CumulativePcts_A7,
+       State_N = State_New, State_N_A = State_G7, State_G = State_G7,
+       County_C = County_Cumulative,
        County_C_A = County_Cumulative_A7, County_N_A = County_G7, County_G = County_G7,
-       US_P100 = US_CumulativePcts, State_P100 = State_CumulativePcts,
-       US_P100A7 = US_CumulativePcts_A7, State_P100A7 = State_CumulativePcts_A7)
+       County_N = County_New)
 }
 
 loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
@@ -299,10 +294,15 @@ loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
   computeAvg <- TRUE
   computePercent <- TRUE
 
-  loadATypeOfDataX("Vaccinations", vaccColTypes(), computeCounty,
-                   computeNew, computeAvg, computePercent,
-                   traceThisRoutine = FALSE, prepend = myPrepend)
-   
+  results <- loadATypeOfDataX("Vaccinations", vaccColTypes(), computeCounty,
+                              computeNew, computeAvg, computePercent,
+                              traceThisRoutine = FALSE, prepend = myPrepend)
+  
+  US_Vaccination_Pcts <<- results$US_C_P
+  US_State_Vaccination_Pcts <<- results$State_C_P
+  US_Vaccination_Pcts_A7 <<- results$US_C_PA7
+  US_State_Vaccination_Pcts_A7 <<- results$State_C_PA7
+  
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving loadUSVaccinationData\n")
   }
