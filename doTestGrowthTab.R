@@ -48,9 +48,11 @@ plotTestGrowthBoxplots <- function(chooseCounty, movingAvg, countyChoices,
   } else {
     title <- "COVID Testing Growth Distribution"
   }
+  # County data is not available, passing data to plot routine just
+  #   results in loss of dots for selected states
   assembleGrowthBoxPlot(theData,
-                        chooseCounty,
-                        countyChoices,
+                        FALSE, # chooseCounty,
+                        NULL, # countyChoices,
                         stateChoices,
                         title,
                         paste("Last", timeWindow, "days"),

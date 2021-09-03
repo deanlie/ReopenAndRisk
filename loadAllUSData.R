@@ -81,6 +81,15 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered loadATypeOfData\n")
   }
+  
+  results <- list(US_C = NULL,      US_C_P = NULL,
+                  US_C_A = NULL,    US_C_PA7 = NULL,
+                  US_N = NULL,      US_N_A = NULL,
+                  State_C = NULL,   State_C_P = NULL,
+                  State_C_A = NULL, State_C_PA7 = NULL,
+                  State_N = NULL,   State_N_A = NULL,
+                  County_C = NULL,  County_C_A = NULL,
+                  County_N = NULL,  County_N_A = NULL)
 
   updateToThisDate <- expectedLatestUpdateDataDate()
   updateTimeSeriesDataFilesAsNecessary()
@@ -93,16 +102,14 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
     County_leaf <- NA
   }
   
-  US_Cumulative    <- readLeaf(US_leaf, colTypes)
-  State_Cumulative <- readLeaf(State_leaf, colTypes)
+  results$US_C  <- readLeaf(US_leaf, colTypes) # US_Cumulative
+  results$State_C <- readLeaf(State_leaf, colTypes)
   if (computeCounty) {
-    County_Cumulative <- readLeaf(County_leaf, myCountyTSColTypes())
+    results$County_C <- readLeaf(County_leaf, myCountyTSColTypes())
     if (traceThisRoutine) {
-      names_p <- paste(names(County_Cumulative)[1:5])
-      cat(file = stderr(), myPrepend, "County_Cumulative names:", names_p, "...\n")
+      names_p <- paste(names(results$County_C)[1:5])
+      cat(file = stderr(), myPrepend, "results$County_C names:", names_p, "...\n")
     }
-  } else {
-    County_Cumulative <- NULL
   }
 
   if (traceThisRoutine) {
@@ -110,33 +117,27 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
   }
 
   if (computeNew) {
-    US_New <- newFromCumulative(US_Cumulative, updateToThisDate,
+    results$US_N <- newFromCumulative(results$US_C, updateToThisDate,
                                 "US", theType,
                                 traceThisRoutine = traceThisRoutine,
                                 prepend = myPrepend)
-    State_New <- newFromCumulative(State_Cumulative, updateToThisDate,
+    results$State_N <- newFromCumulative(results$State_C, updateToThisDate,
                                    "State", theType,
                                    traceThisRoutine = traceThisRoutine,
                                    prepend = myPrepend)
 
-    # dumpEndsOfTibbleRow(State_New, "State_New")
+    # dumpEndsOfTibbleRow(results$State_N, "results$State_N")
 
     if (computeCounty) {
-      County_New <- newFromCumulative(County_Cumulative, updateToThisDate,
+      results$County_N <- newFromCumulative(results$County_C, updateToThisDate,
                                       "County", theType,
                                       traceThisRoutine = traceThisRoutine,
                                       prepend = myPrepend)
       if (traceThisRoutine) {
-        names_p <- paste(names(County_New)[1:5])
-        cat(file = stderr(), myPrepend, "County_New names:", names_p, "...\n")
+        names_p <- paste(names(results$County_N)[1:5])
+        cat(file = stderr(), myPrepend, "results$County_N names:", names_p, "...\n")
       }
-    } else {
-      County_New <- NULL
     }
-  } else {
-    US_New <- NULL
-    State_New <- NULL
-    County_New <- NULL
   }
 
   if (traceThisRoutine) {
@@ -144,70 +145,52 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
   }
 
   if (computeAvg) {
-    US_Cumulative_A7 <- movingAverageData(US_Cumulative, updateToThisDate, 28, 7,
+    results$US_C_A <- movingAverageData(results$US_C, updateToThisDate, 28, 7,
                                           tibbleName = paste("US", theType, "Cumulative", sep=""),
                                           traceThisRoutine = traceThisRoutine,
                                           prepend = myPrepend)
-    State_Cumulative_A7 <- movingAverageData(State_Cumulative, updateToThisDate, 28, 7,
+    results$State_C_A <- movingAverageData(results$State_C, updateToThisDate, 28, 7,
                                              tibbleName = paste("State", theType, "Cumulative", sep=""),
                                              traceThisRoutine = traceThisRoutine,
                                              prepend = myPrepend)
 
-    # dumpEndsOfTibbleRow(State_Cumulative_A7, "State_Cumulative_A7")
+    # dumpEndsOfTibbleRow(results$State_C_A, "State_Cumulative_A7")
 
     if (computeCounty) {
-      County_Cumulative_A7 <- movingAverageData(County_Cumulative, updateToThisDate, 28, 7,
+      results$County_C_A <- movingAverageData(results$County_C, updateToThisDate, 28, 7,
                                                 tibbleName = paste("County", theType, "Cumulative", sep=""),
                                                 traceThisRoutine = traceThisRoutine,
                                                 prepend = myPrepend)
       if (traceThisRoutine) {
-        names_p <- paste(names(County_Cumulative_A7)[1:5])
-        cat(file = stderr(), myPrepend, "County_Cumulative_A7 names:", names_p, "...\n")
+        names_p <- paste(names(results$County_C_A)[1:5])
+        cat(file = stderr(), myPrepend, "results$County_C_A7 names:", names_p, "...\n")
       }
-    } else {
-      County_Cumulative_A7 <- NULL
     }
 
     if (computeNew) {
-      US_G7 <- movingAverageGrowth(US_Cumulative, updateToThisDate, 28, 7,
+      results$US_N_A <- movingAverageGrowth(results$US_C, updateToThisDate, 28, 7,
                                    tibbleName = paste("US", theType, "Cumulative", sep = ""),
                                    traceThisRoutine = traceThisRoutine,
                                    prepend = myPrepend)
       
-      State_G7 <- movingAverageGrowth(State_Cumulative, updateToThisDate, 28, 7,
+      results$State_N_A <- movingAverageGrowth(results$State_C, updateToThisDate, 28, 7,
                                       tibbleName = paste("State", theType, "Cumulative", sep = ""),
                                       traceThisRoutine = traceThisRoutine,
                                       prepend = myPrepend)
       
-      # dumpEndsOfTibbleRow(State_G7, "State_G7")
+      # dumpEndsOfTibbleRow(results$State_N_A, "results$State_N_A")
       
       if (computeCounty) {
-        County_G7 <- movingAverageGrowth(County_Cumulative, updateToThisDate, 28, 7,
+        results$County_N_A <- movingAverageGrowth(results$County_C, updateToThisDate, 28, 7,
                                          tibbleName = paste("County", theType, "Cumulative", sep = ""),
                                          traceThisRoutine = traceThisRoutine,
                                          prepend = myPrepend)
         if (traceThisRoutine) {
-          names_p <- paste(names(County_G7)[1:5])
-          cat(file = stderr(), myPrepend, "County_G7 names:", names_p, "...\n")
+          names_p <- paste(names(results$County_N_A)[1:5])
+          cat(file = stderr(), myPrepend, "results$County_N_A names:", names_p, "...\n")
         }
-      } else {
-        County_G7 <- NULL
       }
-    } else {
-      US_G7 <- NULL
-      State_G7 <- NULL
-      County_G7 <- NULL
     }
-  } else {
-    US_Cumulative_A7 <- NULL
-    State_Cumulative_A7 <- NULL
-    County_Cumulative_A7 <- NULL
-    US_G7 <- NULL
-    State_G7 <- NULL
-    County_G7 <- NULL
-    US_G7 <- NULL
-    State_G7 <- NULL
-    County_G7 <- NULL
   }
   
   if (computePercent) {
@@ -217,51 +200,38 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
       select(-FIPSREM) %>%                               # Discard that column
       select(Combined_Key, Population)
 
-    US_PopCumulative <- inner_join(pop_Data, US_Cumulative, by = "Combined_Key")
-    State_PopCumulative <- inner_join(pop_Data, State_Cumulative, by = "Combined_Key")
+    US_PopCumulative <- inner_join(pop_Data, results$US_C, by = "Combined_Key")
+    State_PopCumulative <- inner_join(pop_Data, results$State_C, by = "Combined_Key")
 
     usDims = dim(US_PopCumulative)
     usStDm = dim(State_PopCumulative)
 
-    US_CumulativePcts <- US_PopCumulative %>%
+    results$US_C_P <- US_PopCumulative %>%
       mutate(across(matches(".*2.$"), ~ 100.0 * .x / Population))
-    State_CumulativePcts <- State_PopCumulative %>%
+    results$State_C_P <- State_PopCumulative %>%
       mutate(across(matches(".*2.$"), ~ 100.0 * .x / Population))
 
     getNAvgs <- 28
 
-    US_CumulativePcts_A7 <- movingAverageData(US_CumulativePcts,
+    results$US_C_PA7 <- movingAverageData(results$US_C_P,
                                               updateToThisDate,
                                               getNAvgs, 7,
-                                              tibbleName="US_CumulativePcts",
+                                              tibbleName="results$US_C_P",
                                               traceThisRoutine = traceThisRoutine,
                                               prepend = myPrepend)
-    State_CumulativePcts_A7 <- movingAverageData(State_CumulativePcts,
+    results$State_C_PA7 <- movingAverageData(results$State_C_P,
                                                     updateToThisDate,
                                                     getNAvgs, 7,
-                                                    tibbleName="State_CumulativePcts",
+                                                    tibbleName="results$State_C_PA7",
                                                     traceThisRoutine = traceThisRoutine,
                                                     prepend = myPrepend)
-  } else {
-    US_CumulativePcts <- NULL
-    State_CumulativePcts <- NULL
-    US_CumulativePcts_A7 <- NULL
-    State_CumulativePcts_A7 <- NULL
   }
   
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving loadATypeOfData\n")
   }
-  
-  list(US_C = US_Cumulative, US_C_P = US_CumulativePcts,
-       US_C_A = US_Cumulative_A7, US_C_PA7 = US_CumulativePcts_A7,
-       US_N = US_New, US_N_A = US_G7, US_G = US_G7,
-       State_C = State_Cumulative, State_C_P = State_CumulativePcts,
-       State_C_A = State_Cumulative_A7, State_C_PA7 = State_CumulativePcts_A7,
-       State_N = State_New, State_N_A = State_G7, State_G = State_G7,
-       County_C = County_Cumulative,
-       County_C_A = County_Cumulative_A7, County_N_A = County_G7, County_G = County_G7,
-       County_N = County_New)
+
+  return(results)
 }
 
 normalizeByPopulation <- function(aTibble) {
