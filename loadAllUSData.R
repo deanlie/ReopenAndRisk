@@ -8,7 +8,28 @@ source("./loadUSPeopleTestedData.R")
 source("./loadUSIncidentRateData.R")
 source("./loadUSMortalityRateData.R")
 source("./loadUSTestingRateData.R")
-source("./loadUSVaccinationData.R")
+
+# This routine for debugging only
+dumpEndsOfTibbleRow <- function(aTibble, aMessage, CombinedKeyValue = "Massachusetts, US") {
+  print(paste(CombinedKeyValue, aMessage))
+  theData <- filter(aTibble, Combined_Key == {CombinedKeyValue})
+  theLength <- dim(theData)[2]
+  print(paste("  Length:", theLength))
+  print(paste("  First cols:", paste(names(theData)[1:3])))
+  print(paste("  First data:", theData[1,1], theData[1,2], theData[1,3]))
+  print(paste("  Last cols:", paste(names(theData)[(theLength - 2):theLength])))
+  print(digits = 1, paste("  Last data:", as.integer(theData[1,theLength - 9]),
+                          as.integer(theData[1,theLength - 8]),
+                          as.integer(theData[1,theLength - 7]),
+                          as.integer(theData[1,theLength - 6]),
+                          as.integer(theData[1,theLength - 5]),
+                          as.integer(theData[1,theLength - 4]),
+                          as.integer(theData[1,theLength - 3]),
+                          as.integer(theData[1,theLength - 2]),
+                          as.integer(theData[1,theLength - 1]),
+                          as.integer(theData[1,theLength])))
+  
+}
 
 loadATypeOfData <- function(theType, colTypes, computeCounty,
                             computeNew, computeAvg, computePercent,
@@ -50,28 +71,6 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
       cat(file = stderr(), prepend, "Leaving newFromCumulative\n")
     }
     outputTibble <- outputList$new
-  }
-
-  # This routine for debugging only
-  dumpLocaleData <- function(aTibble, aMessage, CombinedKeyValue = "Massachusetts, US") {
-    print(paste(CombinedKeyValue, aMessage))
-    theData <- filter(aTibble, Combined_Key == {CombinedKeyValue})
-    theLength <- dim(theData)[2]
-    print(paste("  Length:", theLength))
-    print(paste("  First cols:", paste(names(theData)[1:3])))
-    print(paste("  First data:", theData[1,1], theData[1,2], theData[1,3]))
-    print(paste("  Last cols:", paste(names(theData)[(theLength - 2):theLength])))
-    print(digits = 1, paste("  Last data:", as.integer(theData[1,theLength - 9]),
-                            as.integer(theData[1,theLength - 8]),
-                            as.integer(theData[1,theLength - 7]),
-                            as.integer(theData[1,theLength - 6]),
-                            as.integer(theData[1,theLength - 5]),
-                            as.integer(theData[1,theLength - 4]),
-                            as.integer(theData[1,theLength - 3]),
-                            as.integer(theData[1,theLength - 2]),
-                            as.integer(theData[1,theLength - 1]),
-                            as.integer(theData[1,theLength])))
-    
   }
 
   ######################################
@@ -120,7 +119,7 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
                                    traceThisRoutine = traceThisRoutine,
                                    prepend = myPrepend)
 
-    # dumpLocaleData(State_New, "State_New")
+    # dumpEndsOfTibbleRow(State_New, "State_New")
 
     if (computeCounty) {
       County_New <- newFromCumulative(County_Cumulative, updateToThisDate,
@@ -154,7 +153,7 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
                                              traceThisRoutine = traceThisRoutine,
                                              prepend = myPrepend)
 
-    # dumpLocaleData(State_Cumulative_A7, "State_Cumulative_A7")
+    # dumpEndsOfTibbleRow(State_Cumulative_A7, "State_Cumulative_A7")
 
     if (computeCounty) {
       County_Cumulative_A7 <- movingAverageData(County_Cumulative, updateToThisDate, 28, 7,
@@ -180,7 +179,7 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
                                       traceThisRoutine = traceThisRoutine,
                                       prepend = myPrepend)
       
-      # dumpLocaleData(State_G7, "State_G7")
+      # dumpEndsOfTibbleRow(State_G7, "State_G7")
       
       if (computeCounty) {
         County_G7 <- movingAverageGrowth(County_Cumulative, updateToThisDate, 28, 7,
@@ -386,6 +385,31 @@ loadUSTestResultsData <- function(traceThisRoutine = FALSE, prepend = "") {
 
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving loadUSTestResultsData\n")
+  }
+}
+
+loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered loadUSVaccinationData\n")
+  }
+  
+  computeCounty <- FALSE
+  computeNew <- FALSE
+  computeAvg <- TRUE
+  computePercent <- TRUE
+  
+  results <- loadATypeOfData("Vaccinations", vaccColTypes(), computeCounty,
+                             computeNew, computeAvg, computePercent,
+                             traceThisRoutine = FALSE, prepend = myPrepend)
+  
+  US_Vaccination_Pcts <<- results$US_C_P
+  US_State_Vaccination_Pcts <<- results$State_C_P
+  US_Vaccination_Pcts_A7 <<- results$US_C_PA7
+  US_State_Vaccination_Pcts_A7 <<- results$State_C_PA7
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving loadUSVaccinationData\n")
   }
 }
 
