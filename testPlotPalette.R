@@ -1,5 +1,7 @@
 # Test for plot palette
 
+source("columnUtilities.R")
+
 testPlotPalette <- function(theData, stateChoices, title, xLabels, yLabels, timeWindow,
                             traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend)
@@ -22,10 +24,10 @@ testPlotPalette <- function(theData, stateChoices, title, xLabels, yLabels, time
   return(result)
 }
 
-testSuite <- function(traceThisRoutine = FALSE, prepend = "TEST") {
+testSuite0 <- function(traceThisRoutine = FALSE, prepend = "TEST") {
   myPrepend = paste("  ", prepend)
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered testSuite\n")
+    cat(file = stderr(), prepend, "Entered testSuite0\n")
   }
   
   theData <- read_csv("DATA/CACHE/Test_Vacc_Bx.csv")
@@ -39,7 +41,44 @@ testSuite <- function(traceThisRoutine = FALSE, prepend = "TEST") {
                             timeWindow, traceThisRoutine = traceThisRoutine,
                             prepend = myPrepend)
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving testSuite\n")
+    cat(file = stderr(), prepend, "Leaving testSuite0\n")
   }
   return(result)
 }
+
+###########################################
+#     Routine Under Test                  #
+###########################################
+
+testSuite <- function(traceThisRoutine = FALSE, prepend = "TEST") {
+  myPrepend = paste("  ", prepend)
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered testSuite\n")
+  }
+  
+  theData <- read_csv("DATA/US_State_Confirmed.csv",
+                     col_types = myTSColTypes())
+  result1 <- theData %>%
+    returnEndsOfTibbleRow(itsName = "US_State_Confirmed",
+                          theKey = "Combined_Key",
+                          keyValue = "Massachusetts, US",
+                          nFirst = 2, nLast = 8,
+                          optionalMessage = "",
+                          traceThisRoutine = TRUE,
+                          prepend = "")
+  
+  result2 <- theData %>%
+    returnEndsOfTibbleRow(itsName = "US_State_Confirmed",
+                          theKey = "Province_State",
+                          keyValue = "Arizona",
+                          nFirst = 4, nLast = 3,
+                          optionalMessage = "",
+                          traceThisRoutine = TRUE,
+                          prepend = "")
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving testSuite\n")
+  }
+  return(result1)
+}
+

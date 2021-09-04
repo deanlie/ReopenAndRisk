@@ -9,28 +9,6 @@ source("./loadUSIncidentRateData.R")
 source("./loadUSMortalityRateData.R")
 source("./loadUSTestingRateData.R")
 
-# This routine for debugging only
-dumpEndsOfTibbleRow <- function(aTibble, aMessage, CombinedKeyValue = "Massachusetts, US") {
-  print(paste(CombinedKeyValue, aMessage))
-  theData <- filter(aTibble, Combined_Key == {CombinedKeyValue})
-  theLength <- dim(theData)[2]
-  print(paste("  Length:", theLength))
-  print(paste("  First cols:", paste(names(theData)[1:3])))
-  print(paste("  First data:", theData[1,1], theData[1,2], theData[1,3]))
-  print(paste("  Last cols:", paste(names(theData)[(theLength - 2):theLength])))
-  print(digits = 1, paste("  Last data:", as.integer(theData[1,theLength - 9]),
-                          as.integer(theData[1,theLength - 8]),
-                          as.integer(theData[1,theLength - 7]),
-                          as.integer(theData[1,theLength - 6]),
-                          as.integer(theData[1,theLength - 5]),
-                          as.integer(theData[1,theLength - 4]),
-                          as.integer(theData[1,theLength - 3]),
-                          as.integer(theData[1,theLength - 2]),
-                          as.integer(theData[1,theLength - 1]),
-                          as.integer(theData[1,theLength])))
-  
-}
-
 loadATypeOfData <- function(theType, colTypes, computeCounty,
                             computeNew, computeAvg, computePercent,
                             traceThisRoutine = FALSE, prepend = "") {
@@ -48,8 +26,7 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
   }
 
   newFromCumulative <- function(inputTibble, updateToThisDate,
-                                theScope, theType,
-                                nDays = 35,
+                                theScope, theType, nDays,
                                 traceThisRoutine = FALSE, prepend = "") {
     myPrepend <- paste(prepend, "  ", sep = "")
     if (traceThisRoutine) {
@@ -112,17 +89,21 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
     }
   }
 
+  getNAvgs <- 28
+  nDaysData <- 35
+  averageOverDays <- 7
+
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "Before if(computeNew) block\n")
   }
 
   if (computeNew) {
     results$US_N <- newFromCumulative(results$US_C, updateToThisDate,
-                                "US", theType,
+                                "US", theType, nDaysData,
                                 traceThisRoutine = traceThisRoutine,
                                 prepend = myPrepend)
     results$State_N <- newFromCumulative(results$State_C, updateToThisDate,
-                                   "State", theType,
+                                   "State", theType, nDaysData,
                                    traceThisRoutine = traceThisRoutine,
                                    prepend = myPrepend)
 
@@ -131,6 +112,7 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
     if (computeCounty) {
       results$County_N <- newFromCumulative(results$County_C, updateToThisDate,
                                       "County", theType,
+                                      nDays = nDaysData,
                                       traceThisRoutine = traceThisRoutine,
                                       prepend = myPrepend)
       if (traceThisRoutine) {
@@ -145,11 +127,11 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
   }
 
   if (computeAvg) {
-    results$US_C_A <- movingAverageData(results$US_C, updateToThisDate, 28, 7,
+    results$US_C_A <- movingAverageData(results$US_C, updateToThisDate, getNAvgs, averageOverDays,
                                           tibbleName = paste("US", theType, "Cumulative", sep=""),
                                           traceThisRoutine = traceThisRoutine,
                                           prepend = myPrepend)
-    results$State_C_A <- movingAverageData(results$State_C, updateToThisDate, 28, 7,
+    results$State_C_A <- movingAverageData(results$State_C, updateToThisDate, getNAvgs, averageOverDays,
                                              tibbleName = paste("State", theType, "Cumulative", sep=""),
                                              traceThisRoutine = traceThisRoutine,
                                              prepend = myPrepend)
@@ -157,7 +139,7 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
     # dumpEndsOfTibbleRow(results$State_C_A, "State_Cumulative_A7")
 
     if (computeCounty) {
-      results$County_C_A <- movingAverageData(results$County_C, updateToThisDate, 28, 7,
+      results$County_C_A <- movingAverageData(results$County_C, updateToThisDate, getNAvgs, averageOverDays,
                                                 tibbleName = paste("County", theType, "Cumulative", sep=""),
                                                 traceThisRoutine = traceThisRoutine,
                                                 prepend = myPrepend)
@@ -168,12 +150,12 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
     }
 
     if (computeNew) {
-      results$US_N_A <- movingAverageGrowth(results$US_C, updateToThisDate, 28, 7,
+      results$US_N_A <- movingAverageGrowth(results$US_C, updateToThisDate, getNAvgs, averageOverDays,
                                    tibbleName = paste("US", theType, "Cumulative", sep = ""),
                                    traceThisRoutine = traceThisRoutine,
                                    prepend = myPrepend)
       
-      results$State_N_A <- movingAverageGrowth(results$State_C, updateToThisDate, 28, 7,
+      results$State_N_A <- movingAverageGrowth(results$State_C, updateToThisDate, getNAvgs, averageOverDays,
                                       tibbleName = paste("State", theType, "Cumulative", sep = ""),
                                       traceThisRoutine = traceThisRoutine,
                                       prepend = myPrepend)
@@ -181,7 +163,7 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
       # dumpEndsOfTibbleRow(results$State_N_A, "results$State_N_A")
       
       if (computeCounty) {
-        results$County_N_A <- movingAverageGrowth(results$County_C, updateToThisDate, 28, 7,
+        results$County_N_A <- movingAverageGrowth(results$County_C, updateToThisDate, getNAvgs, averageOverDays,
                                          tibbleName = paste("County", theType, "Cumulative", sep = ""),
                                          traceThisRoutine = traceThisRoutine,
                                          prepend = myPrepend)
@@ -211,17 +193,15 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
     results$State_C_P <- State_PopCumulative %>%
       mutate(across(matches(".*2.$"), ~ 100.0 * .x / Population))
 
-    getNAvgs <- 28
-
     results$US_C_PA7 <- movingAverageData(results$US_C_P,
                                               updateToThisDate,
-                                              getNAvgs, 7,
+                                              getNAvgs, averageOverDays,
                                               tibbleName="results$US_C_P",
                                               traceThisRoutine = traceThisRoutine,
                                               prepend = myPrepend)
     results$State_C_PA7 <- movingAverageData(results$State_C_P,
                                                     updateToThisDate,
-                                                    getNAvgs, 7,
+                                                    getNAvgs, averageOverDays,
                                                     tibbleName="results$State_C_PA7",
                                                     traceThisRoutine = traceThisRoutine,
                                                     prepend = myPrepend)

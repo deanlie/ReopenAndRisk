@@ -1,0 +1,35 @@
+library(tidyverse)
+
+# A Debugging utility
+returnEndsOfTibbleRow <- function(aTibble, itsName = "<?>",
+                                  theKey = "Combined_Key",
+                                  keyValue = "Massachusetts, US",
+                                  nFirst = 3, nLast = 8,
+                                  optionalMessage = "",
+                                  traceThisRoutine = FALSE,
+                                  prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered returnEndsOfTibbleRow\n")
+  }
+
+  theData <- filter(aTibble, .data[[theKey]] == {keyValue})
+  theLength <- dim(theData)[2]
+  preEnd <- (theLength + 1) - nLast
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "Ends of tibble", itsName, "\n")
+    cat(file = stderr(), myPrepend, "key =", theKey, "keyValue =", keyValue, "\n")
+    cat(file = stderr(), myPrepend, "Length:", theLength, "\n")
+    cat(file = stderr(), myPrepend, "First cols:", paste(names(theData)[1:nFirst]), "\n")
+    cat(file = stderr(), myPrepend, "First data:", paste(theData[1,1:nFirst]), "\n")
+    cat(file = stderr(), myPrepend, "Last cols:", paste(names(theData)[preEnd:theLength]), "\n")
+    cat(file = stderr(), myPrepend, "Last data:", paste(as.integer(theData[1,preEnd:theLength])), "\n")
+  }
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving returnEndsOfTibbleRow\n")
+  }
+  
+  return(theData[1, c(1:nFirst, preEnd:theLength)])
+}
