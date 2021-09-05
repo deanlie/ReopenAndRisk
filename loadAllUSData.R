@@ -185,6 +185,24 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
     US_PopCumulative <- inner_join(pop_Data, results$US_C, by = "Combined_Key")
     State_PopCumulative <- inner_join(pop_Data, results$State_C, by = "Combined_Key")
 
+    #OUCH
+    if (traceThisRoutine) {
+        conciseEndsOfTibbleRow(US_PopCumulative,
+                               itsName = "US_PopCumulative",
+                               theKey = "Combined_Key",
+                               keyValue = "US",
+                               nFirst = 4, nLast = 4,
+                               traceThisRoutine = traceThisRoutine,
+                               prepend = myPrepend)
+      conciseEndsOfTibbleRow(State_PopCumulative,
+                             itsName = "State_PopCumulative",
+                             theKey = "Combined_Key",
+                             keyValue = "US",
+                             nFirst = 4, nLast = 4,
+                             traceThisRoutine = traceThisRoutine,
+                             prepend = myPrepend)
+    }
+
     usDims = dim(US_PopCumulative)
     usStDm = dim(State_PopCumulative)
 
@@ -363,6 +381,39 @@ loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
   }
 }
 
+
+loadUSIncidentRateData1 <- function(traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered loadUSIncidentRateData1\n")
+  }
+  
+  computeCounty <- FALSE
+  computeNew <- TRUE
+  computeAvg <- TRUE
+  computePercent <- TRUE
+  
+  results <- loadATypeOfData("Incident_Rate", myTSColTypes(), computeCounty,
+                             computeNew, computeAvg, computePercent,
+                             traceThisRoutine = TRUE, prepend = myPrepend)
+  
+  if (traceThisRoutine) {
+    # cat(file = stderr(), myPrepend, "\n")    
+  }
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving loadUSIncidentRateData1\n")
+  }
+  
+  US_Incident_Rate1 <<- results$US_C
+  US_State_Incident_Rate1 <<- results$State_C
+
+  US_Incident_Rate_A7 <<- results$US_C_A
+  US_State_Incident_Rate_A7 <<- results$State_C_A
+
+  return(results)
+}
+  
 loadAllUSData <- function(traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
@@ -399,6 +450,12 @@ loadAllUSData <- function(traceThisRoutine = FALSE, prepend = "") {
   
   loadUSIncidentRateData()
 
+  # OUCH Fails because file read from disk already has a
+  # "Population" column; joining with US_Population creates
+  # "Population.x" and "Population.y" columns so there is no
+  # "Population" column as needed by loadATypeOfData
+  # loadUSIncidentRateData1()
+  
   loadUSMortalityRateData(aDate)
   
   if (traceThisRoutine) {

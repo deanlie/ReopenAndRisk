@@ -3,9 +3,16 @@ source("updateStateLevelSerializedDataFiles.R")
 source("computeNewAndGrowth.R")
 source("columnUtilities.R")
 
-loadUSIncidentRateData <- function() {
-  traceThisRoutine = FALSE
-  myPrepend = "From loadUSIncidentRateData"
+loadUSIncidentRateData <- function(traceThisRoutine = FALSE, prepend = "") {
+    myPrepend = paste("  ", prepend, sep = "")
+    if (traceThisRoutine) {
+      cat(file = stderr(), prepend, "Entered loadUSIncidentRateData\n")
+    }
+    
+    if (traceThisRoutine) {
+      # cat(file = stderr(), myPrepend, "\n")    
+    }
+    
   updateToThisDate <- expectedLatestUpdateDataDate()
   updateStateLevelSerializedDataFilesAsNecessary()
   
@@ -29,4 +36,7 @@ loadUSIncidentRateData <- function() {
                                                   updateToThisDate, 28, 7,
                                                   tibbleName="US_State_Incident_Rate",
                                                   traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving loadUSIncidentRateData\n")
+  }
 }

@@ -50,10 +50,10 @@ testSuite0 <- function(traceThisRoutine = FALSE, prepend = "TEST") {
 #     Routine Under Test                  #
 ###########################################
 
-testSuite <- function(traceThisRoutine = FALSE, prepend = "TEST") {
+testSuite1 <- function(traceThisRoutine = FALSE, prepend = "TEST") {
   myPrepend = paste("  ", prepend)
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered testSuite\n")
+    cat(file = stderr(), prepend, "Entered testSuite1\n")
   }
   
   theData <- read_csv("DATA/US_State_Confirmed.csv",
@@ -76,6 +76,35 @@ testSuite <- function(traceThisRoutine = FALSE, prepend = "TEST") {
                           traceThisRoutine = TRUE,
                           prepend = "")
 
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving testSuite1\n")
+  }
+  return(result1)
+}
+
+testSuite <- function(traceThisRoutine = FALSE, prepend = "TEST") {
+  myPrepend = paste("  ", prepend)
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered testSuite\n")
+  }
+  
+  loadUSIncidentRateData(traceThisRoutine = TRUE)
+  
+  foo <- conciseEndsOfTibbleRow(US_Incident_Rate, itsName = "US_Incident_Rate",
+                                keyValue = "US", nLast = 3,
+                                traceThisRoutine = TRUE)
+  foo <- conciseEndsOfTibbleRow(US_Incident_Rate_G7, itsName = "US_Incident_Rate_G7",
+                                keyValue = "US", nLast = 3,
+                                traceThisRoutine = TRUE)
+  result1 <- loadUSIncidentRateData1(traceThisRoutine = TRUE)
+  
+  foo <- conciseEndsOfTibbleRow(result1$US_C, itsName = "US_Incident_Rateresult1$US_C",
+                                keyValue = "US", nLast = 3,
+                                traceThisRoutine = TRUE)
+  foo <- conciseEndsOfTibbleRow(result1$US_C_A, itsName = "result1$US_C_A",
+                                keyValue = "Arizona, US", nLast = 3,
+                                traceThisRoutine = TRUE)
+  
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving testSuite\n")
   }
