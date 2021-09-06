@@ -96,9 +96,10 @@ testSuite <- function(traceThisRoutine = FALSE, prepend = "TEST") {
   foo <- conciseEndsOfTibbleRow(US_Incident_Rate_G7, itsName = "US_Incident_Rate_G7",
                                 keyValue = "US", nLast = 3,
                                 traceThisRoutine = TRUE)
+
   result1 <- loadUSIncidentRateData1(traceThisRoutine = TRUE)
   
-  foo <- conciseEndsOfTibbleRow(result1$US_C, itsName = "US_Incident_Rateresult1$US_C",
+  foo <- conciseEndsOfTibbleRow(result1$US_C, itsName = "result1$US_C",
                                 keyValue = "US", nLast = 3,
                                 traceThisRoutine = TRUE)
   foo <- conciseEndsOfTibbleRow(result1$US_C_A, itsName = "result1$US_C_A",

@@ -38,11 +38,11 @@ returnEndsOfTibbleRow <- function(aTibble, itsName = "<?>",
 }
 
 conciseEndsOfTibbleRow <- function(aTibble, itsName = "<?>",
-                                  theKey = "Combined_Key",
-                                  keyValue = "Massachusetts, US",
-                                  nFirst = 2, nLast = 2,
-                                  traceThisRoutine = FALSE,
-                                  prepend = "") {
+                                   theKey = "Combined_Key",
+                                   keyValue = "Massachusetts, US",
+                                   nFirst = 2, nLast = 2,
+                                   traceThisRoutine = FALSE,
+                                   prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered conciseEndsOfTibbleRow\n")
@@ -55,13 +55,13 @@ conciseEndsOfTibbleRow <- function(aTibble, itsName = "<?>",
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "Ends of tibble", itsName, "\n")
     cat(file = stderr(), myPrepend, "Cols:",
-        paste(names(theData)[c(1:nFirst,preEnd:theLength)]),  "\n")
+        paste(names(theData)[c(1:nFirst,preEnd:theLength)]), "\n")
     cat(file = stderr(), myPrepend, "Data:",
         paste(theData[1,c(1:nFirst,preEnd:theLength)]), "\n")
   }
   
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving concise EndsOfTibbleRow\n")
+    cat(file = stderr(), prepend, "Leaving conciseEndsOfTibbleRow\n")
   }
   
   return(theData[1, c(1:nFirst, preEnd:theLength)])
