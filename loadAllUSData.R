@@ -9,7 +9,7 @@ source("./loadUSIncidentRateData.R")
 source("./loadUSMortalityRateData.R")
 source("./loadUSTestingRateData.R")
 
-loadATypeOfData <- function(theType, colTypes, computeCounty,
+loadATypeOfData <- function(theType, colTypes, stateColTypes, computeCounty,
                             computeNew, computeAvg, computePercent,
                             traceThisRoutine = FALSE, prepend = "") {
   #####################################
@@ -79,8 +79,15 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
     County_leaf <- NA
   }
   
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "before readLeaf", US_leaf, "...\n")
+  }
   results$US_C  <- readLeaf(US_leaf, colTypes) # US_Cumulative
-  results$State_C <- readLeaf(State_leaf, colTypes)
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "before readLeaf", State_leaf, "...\n")
+  }
+  results$State_C <- readLeaf(State_leaf, stateColTypes)
   if (computeCounty) {
     results$County_C <- readLeaf(County_leaf, myCountyTSColTypes())
     if (traceThisRoutine) {
@@ -107,7 +114,12 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
                                    traceThisRoutine = traceThisRoutine,
                                    prepend = myPrepend)
 
-    # dumpEndsOfTibbleRow(results$State_N, "results$State_N")
+    if (traceThisRoutine) {
+      conciseEndsOfTibbleRow(results$State_N, "results$State_N",
+                             nFirst = 4, nLast = 4,
+                             traceThisRoutine = traceThisRoutine,
+                             prepend = myPrepend)
+    }
 
     if (computeCounty) {
       results$County_N <- newFromCumulative(results$County_C, updateToThisDate,
@@ -116,8 +128,10 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
                                       traceThisRoutine = traceThisRoutine,
                                       prepend = myPrepend)
       if (traceThisRoutine) {
-        names_p <- paste(names(results$County_N)[1:5])
-        cat(file = stderr(), myPrepend, "results$County_N names:", names_p, "...\n")
+        conciseEndsOfTibbleRow(results$County_N, "results$County_N",
+                               nFirst = 4, nLast = 4,
+                               traceThisRoutine = traceThisRoutine,
+                               prepend = myPrepend)
       }
     }
   }
@@ -136,16 +150,24 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
                                              traceThisRoutine = traceThisRoutine,
                                              prepend = myPrepend)
 
-    # dumpEndsOfTibbleRow(results$State_C_A, "State_Cumulative_A7")
+    if (traceThisRoutine) {
+      conciseEndsOfTibbleRow(results$State_C_A, "State_Cumulative_A7",
+                             nFirst = 4, nLast = 4,
+                             traceThisRoutine = traceThisRoutine,
+                             prepend = myPrepend)
+    }
 
     if (computeCounty) {
       results$County_C_A <- movingAverageData(results$County_C, updateToThisDate, getNAvgs, averageOverDays,
                                                 tibbleName = paste("County", theType, "Cumulative", sep=""),
                                                 traceThisRoutine = traceThisRoutine,
                                                 prepend = myPrepend)
+
       if (traceThisRoutine) {
-        names_p <- paste(names(results$County_C_A)[1:5])
-        cat(file = stderr(), myPrepend, "results$County_C_A7 names:", names_p, "...\n")
+        conciseEndsOfTibbleRow(results$County_C_A, "results$County_C_A",
+                               nFirst = 4, nLast = 4,
+                               traceThisRoutine = traceThisRoutine,
+                               prepend = myPrepend)
       }
     }
 
@@ -160,16 +182,24 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
                                       traceThisRoutine = traceThisRoutine,
                                       prepend = myPrepend)
       
-      # dumpEndsOfTibbleRow(results$State_N_A, "results$State_N_A")
+      if (traceThisRoutine) {
+        conciseEndsOfTibbleRow(results$State_N_A, "results$State_N_A",
+                               nFirst = 4, nLast = 4,
+                               traceThisRoutine = traceThisRoutine,
+                               prepend = myPrepend)
+      }
       
       if (computeCounty) {
         results$County_N_A <- movingAverageGrowth(results$County_C, updateToThisDate, getNAvgs, averageOverDays,
                                          tibbleName = paste("County", theType, "Cumulative", sep = ""),
                                          traceThisRoutine = traceThisRoutine,
                                          prepend = myPrepend)
+
         if (traceThisRoutine) {
-          names_p <- paste(names(results$County_N_A)[1:5])
-          cat(file = stderr(), myPrepend, "results$County_N_A names:", names_p, "...\n")
+          conciseEndsOfTibbleRow(results$County_N_A, "results$County_N_A",
+                                 nFirst = 4, nLast = 4,
+                                 traceThisRoutine = traceThisRoutine,
+                                 prepend = myPrepend)
         }
       }
     }
@@ -182,22 +212,34 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
       select(-FIPSREM) %>%                               # Discard that column
       select(Combined_Key, Population)
 
+    if (traceThisRoutine) {
+      conciseEndsOfTibbleRow(results$US_C, "results$US_C",
+                             nFirst = 4, nLast = 4,
+                             traceThisRoutine = traceThisRoutine,
+                             prepend = myPrepend)
+    }
+      
     US_PopCumulative <- inner_join(pop_Data, results$US_C, by = "Combined_Key")
-    State_PopCumulative <- inner_join(pop_Data, results$State_C, by = "Combined_Key")
 
     #OUCH
     if (traceThisRoutine) {
-        conciseEndsOfTibbleRow(US_PopCumulative,
-                               itsName = "US_PopCumulative",
-                               theKey = "Combined_Key",
-                               keyValue = "US",
+        conciseEndsOfTibbleRow(US_PopCumulative, "US_PopCumulative",
                                nFirst = 4, nLast = 4,
                                traceThisRoutine = traceThisRoutine,
                                prepend = myPrepend)
-      conciseEndsOfTibbleRow(State_PopCumulative,
-                             itsName = "State_PopCumulative",
-                             theKey = "Combined_Key",
-                             keyValue = "US",
+    }
+    
+    if (traceThisRoutine) {
+      conciseEndsOfTibbleRow(results$State_C, "results$State_C",
+                             nFirst = 4, nLast = 4,
+                             traceThisRoutine = traceThisRoutine,
+                             prepend = myPrepend)
+    }
+    
+    State_PopCumulative <- inner_join(pop_Data, results$State_C, by = "Combined_Key")
+
+    if (traceThisRoutine) {
+      conciseEndsOfTibbleRow(State_PopCumulative, "State_PopCumulative",
                              nFirst = 4, nLast = 4,
                              traceThisRoutine = traceThisRoutine,
                              prepend = myPrepend)
@@ -217,12 +259,27 @@ loadATypeOfData <- function(theType, colTypes, computeCounty,
                                               tibbleName="results$US_C_P",
                                               traceThisRoutine = traceThisRoutine,
                                               prepend = myPrepend)
+    
+    if (traceThisRoutine) {
+      conciseEndsOfTibbleRow(results$US_C_PA7, "results$US_C_PA7",
+                             nFirst = 4, nLast = 4,
+                             traceThisRoutine = traceThisRoutine,
+                             prepend = myPrepend)
+    }
+
     results$State_C_PA7 <- movingAverageData(results$State_C_P,
                                                     updateToThisDate,
                                                     getNAvgs, averageOverDays,
                                                     tibbleName="results$State_C_PA7",
                                                     traceThisRoutine = traceThisRoutine,
                                                     prepend = myPrepend)
+    
+    if (traceThisRoutine) {
+      conciseEndsOfTibbleRow(results$State_C_PA7, "results$State_C_PA7",
+                             nFirst = 4, nLast = 4,
+                             traceThisRoutine = traceThisRoutine,
+                             prepend = myPrepend)
+    }
   }
   
   if (traceThisRoutine) {
@@ -256,11 +313,12 @@ loadUSConfirmedData <- function(traceThisRoutine = FALSE, prepend = "") {
   computeAvg <- TRUE
   computePercent <- FALSE
   
-  allConfirmedData <- loadATypeOfData("Confirmed", myTSColTypes(),
+  allConfirmedData <- loadATypeOfData("Confirmed",
+                                      myTSColTypes(), myTSColTypes(),
                                       computeCounty, computeNew,
                                       computeAvg, computePercent,
-                              traceThisRoutine = FALSE,
-                              prepend = myPrepend)
+                                      traceThisRoutine = FALSE,
+                                      prepend = myPrepend)
   
   US_Confirmed <<- allConfirmedData$US_C
   US_State_Confirmed <<- allConfirmedData$State_C
@@ -277,6 +335,8 @@ loadUSConfirmedData <- function(traceThisRoutine = FALSE, prepend = "") {
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving loadUSConfirmedData\n")
   }
+
+  return(allConfirmedData)
 }
 
 loadUSDeathsData <- function(traceThisRoutine = FALSE, prepend = "") {
@@ -290,24 +350,25 @@ loadUSDeathsData <- function(traceThisRoutine = FALSE, prepend = "") {
   computeAvg <- TRUE
   computePercent <- FALSE
   
-  AllDeathsData <- loadATypeOfData("Deaths", myTSColTypes(),
+  allDeathsData <- loadATypeOfData("Deaths",
+                                   myTSColTypes(), myTSColTypes(),
                                    computeCounty, computeNew,
                                    computeAvg, computeAvg,
                                    traceThisRoutine = FALSE,
                                    prepend = myPrepend)
   
-  US_Deaths <<- AllDeathsData$US_C
-  US_Deaths_A7 <<- AllDeathsData$US_C_A
-  US_State_Deaths <<- AllDeathsData$State_C
-  US_State_Deaths_A7 <<- AllDeathsData$State_C_A
-  US_County_Deaths <<- AllDeathsData$County_C
-  US_County_Deaths_A7 <<- AllDeathsData$County_C_A
-  US_Deaths_New <<- AllDeathsData$US_N
-  US_Deaths_G7 <<- AllDeathsData$US_N_A
-  US_State_Deaths_New <<- AllDeathsData$State_N
-  US_State_Deaths_G7 <<- AllDeathsData$State_N_A
-  US_County_Deaths_New <<- AllDeathsData$County_N
-  US_County_Deaths_G7 <<- AllDeathsData$County_N_A
+  US_Deaths <<- allDeathsData$US_C
+  US_Deaths_A7 <<- allDeathsData$US_C_A
+  US_State_Deaths <<- allDeathsData$State_C
+  US_State_Deaths_A7 <<- allDeathsData$State_C_A
+  US_County_Deaths <<- allDeathsData$County_C
+  US_County_Deaths_A7 <<- allDeathsData$County_C_A
+  US_Deaths_New <<- allDeathsData$US_N
+  US_Deaths_G7 <<- allDeathsData$US_N_A
+  US_State_Deaths_New <<- allDeathsData$State_N
+  US_State_Deaths_G7 <<- allDeathsData$State_N_A
+  US_County_Deaths_New <<- allDeathsData$County_N
+  US_County_Deaths_G7 <<- allDeathsData$County_N_A
   
   US_Deaths_Per100K <<- normalizeByPopulation(US_Deaths)
   US_Deaths_Per100K_A7 <<- normalizeByPopulation(US_Deaths_A7)
@@ -326,6 +387,8 @@ loadUSDeathsData <- function(traceThisRoutine = FALSE, prepend = "") {
     cat(file = stderr(), myPrepend, "...created Per100K files\n")
     cat(file = stderr(), prepend, "Leaving loadUSDeathsData\n")
   }
+  
+  return(allDeathsData)
 }
 
 loadUSTestResultsData <- function(traceThisRoutine = FALSE, prepend = "") {
@@ -339,21 +402,25 @@ loadUSTestResultsData <- function(traceThisRoutine = FALSE, prepend = "") {
   computeAvg <- TRUE
   computePercent <- FALSE
   
-  AllTestResultsData <- loadATypeOfData("Total_Test_Results", justCKColTypes(),
+  allTestResultsData <- loadATypeOfData("Total_Test_Results",
+                                        justCKColTypes(), justCKColTypes(),
                                         computeCounty, computeNew,
                                         computeAvg, computePercent,
-                                        traceThisRoutine = FALSE, prepend = myPrepend)
+                                        traceThisRoutine = FALSE,
+                                        prepend = myPrepend)
 
-  US_People_Tested <<- AllTestResultsData$US_C
-  US_State_People_Tested <<- AllTestResultsData$State_C
-  US_People_Tested_G7 <<- AllTestResultsData$US_N_A
-  US_State_People_Tested_G7 <<- AllTestResultsData$State_N_A
-  US_People_Tested_A7 <<- AllTestResultsData$US_C_A
-  US_State_People_Tested_A7 <<- AllTestResultsData$State_C_A
+  US_People_Tested <<- allTestResultsData$US_C
+  US_State_People_Tested <<- allTestResultsData$State_C
+  US_People_Tested_G7 <<- allTestResultsData$US_N_A
+  US_State_People_Tested_G7 <<- allTestResultsData$State_N_A
+  US_People_Tested_A7 <<- allTestResultsData$US_C_A
+  US_State_People_Tested_A7 <<- allTestResultsData$State_C_A
 
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving loadUSTestResultsData\n")
   }
+  
+  return(allTestResultsData)
 }
 
 loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
@@ -367,22 +434,27 @@ loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
   computeAvg <- TRUE
   computePercent <- TRUE
   
-  results <- loadATypeOfData("Vaccinations", vaccColTypes(), computeCounty,
-                             computeNew, computeAvg, computePercent,
-                             traceThisRoutine = FALSE, prepend = myPrepend)
+  allVaccinationData <- loadATypeOfData("Vaccinations",
+                                        vaccColTypes(), vaccColTypes(),
+                                        computeCounty, computeNew,
+                                        computeAvg, computePercent,
+                                        traceThisRoutine = FALSE,
+                                        prepend = myPrepend)
   
-  US_Vaccination_Pcts <<- results$US_C_P
-  US_State_Vaccination_Pcts <<- results$State_C_P
-  US_Vaccination_Pcts_A7 <<- results$US_C_PA7
-  US_State_Vaccination_Pcts_A7 <<- results$State_C_PA7
+  US_Vaccination_Pcts <<- allVaccinationData$US_C_P
+  US_State_Vaccination_Pcts <<- allVaccinationData$State_C_P
+  US_Vaccination_Pcts_A7 <<- allVaccinationData$US_C_PA7
+  US_State_Vaccination_Pcts_A7 <<- allVaccinationData$State_C_PA7
   
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving loadUSVaccinationData\n")
   }
+  
+  return(allVaccinationData)
 }
 
 
-loadUSIncidentRateData1 <- function(traceThisRoutine = FALSE, prepend = "") {
+loadUSIncidentRateData <- function(traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered loadUSIncidentRateData1\n")
@@ -393,9 +465,12 @@ loadUSIncidentRateData1 <- function(traceThisRoutine = FALSE, prepend = "") {
   computeAvg <- TRUE
   computePercent <- TRUE
   
-  results <- loadATypeOfData("Incident_Rate", myTSColTypes(), computeCounty,
-                             computeNew, computeAvg, computePercent,
-                             traceThisRoutine = TRUE, prepend = myPrepend)
+  allIncidentRateData <- loadATypeOfData("Incident_Rate",
+                                         myTSColTypes(), justCKColTypes(),
+                                         computeCounty, computeNew,
+                                         computeAvg, computePercent,
+                                         traceThisRoutine = TRUE,
+                                         prepend = myPrepend)
   
   if (traceThisRoutine) {
     # cat(file = stderr(), myPrepend, "\n")    
@@ -405,13 +480,16 @@ loadUSIncidentRateData1 <- function(traceThisRoutine = FALSE, prepend = "") {
     cat(file = stderr(), prepend, "Leaving loadUSIncidentRateData1\n")
   }
   
-  US_Incident_Rate1 <<- results$US_C
-  US_State_Incident_Rate1 <<- results$State_C
+  US_Incident_Rate <<- allIncidentRateData$US_C
+  US_State_Incident_Rate <<- allIncidentRateData$State_C
 
-  US_Incident_Rate_A7 <<- results$US_C_A
-  US_State_Incident_Rate_A7 <<- results$State_C_A
+  US_Incident_Rate_A7 <<- allIncidentRateData$US_C_A
+  US_State_Incident_Rate_A7 <<- allIncidentRateData$State_C_A
+  
+  US_Incident_Rate_G7 <<- allIncidentRateData$US_N_A
+  US_State_Incident_Rate_G7 <<- allIncidentRateData$State_N_A
 
-  return(results)
+  return(allIncidentRateData)
 }
   
 loadAllUSData <- function(traceThisRoutine = FALSE, prepend = "") {
@@ -419,6 +497,10 @@ loadAllUSData <- function(traceThisRoutine = FALSE, prepend = "") {
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered loadAllUSData (in loadAllUSData.R)\n")
   }
+
+  #OUCH  
+  traceFlagOnEntry <- traceThisRoutine
+  traceThisRoutine <- FALSE
 
   aDate = today("EST")
 
@@ -436,34 +518,50 @@ loadAllUSData <- function(traceThisRoutine = FALSE, prepend = "") {
   updateStateLevelSerializedDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
                                                  prepend = myPrepend)
   
-  loadUSVaccinationData(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+  loadUSVaccinationData(traceThisRoutine = traceThisRoutine,
+                        prepend = myPrepend)
 
-  loadUSConfirmedData(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+  loadUSConfirmedData(traceThisRoutine = traceThisRoutine,
+                      prepend = myPrepend)
 
-  loadUSDeathsData(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+  loadUSDeathsData(traceThisRoutine = traceThisRoutine,
+                   prepend = myPrepend)
   
-  loadUSTestResultsData(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+  loadUSTestResultsData(traceThisRoutine = traceThisRoutine,
+                        prepend = myPrepend)
   
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "after loadUSTestResultsData\n")
   }
   
-  loadUSIncidentRateData()
+  #OUCH
+  traceThisRoutine <- traceFlagOnEntry
+  
+  res_LIR0 <- loadUSIncidentRateData0(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
 
-  # OUCH Fails because file read from disk already has a
-  # "Population" column; joining with US_Population creates
-  # "Population.x" and "Population.y" columns so there is no
-  # "Population" column as needed by loadATypeOfData
-  # loadUSIncidentRateData1()
-  
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "after loadUSIncidentRateData1\n")
+  }
+
+  res_LIR1 <- loadUSIncidentRateData(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+  browser()
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "after loadUSIncidentRateData1\n")
+  }
+
   loadUSMortalityRateData(aDate)
-  
+
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "after loadUSMortalityRateData\n")
   }
-  
-  loadUSTestingRateData()
 
+  loadUSTestingRateData()
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "after loadUSTestingRateData\n")
+  }
+  
   CountiesByState <<- US_County_Confirmed %>%
     mutate(State = Province_State, County = Admin2, .keep="none") %>%
     filter(str_detect(County, "Out of", negate=TRUE)) %>%

@@ -9,8 +9,6 @@ loadUSPeopleTestedData <- function(traceThisRoutine = FALSE, prepend = "CALLER??
     cat(file = stderr(), prepend, "Entered loadUSPeopleTestedData\n")
   }
   updateToThisDate <- expectedLatestUpdateDataDate()
-  
-  # browser()
 
   updateStateLevelSerializedDataFilesAsNecessary(traceThisRoutine = FALSE)
   

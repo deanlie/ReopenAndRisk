@@ -150,7 +150,7 @@ allGeogVaccDataFromOneDay <- function(rawData,
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered allGeogVaccDataFromOneDay\n")
   }
-  
+
   justStateData <- rawData %>%
   as_tibble() %>%
   filter(!is.na(FIPS )) %>%
@@ -349,12 +349,17 @@ updateDataForUSVaccTimeSeries <- function(traceThisRoutine = FALSE,
     
     firstDateWeNeed <- mdy(lastDateWeHave) + 1
 
+    if (traceThisRoutine) {
+      cat(file = stderr(), myPrepend, "Dates needed:",
+          format(firstDateWeNeed, "20%y-%m-%d"), "-", format(lastDateWeNeed), "\n")
+    }
+    
     # For (that date until yesterday)
     for (aDateInt in firstDateWeNeed:lastDateWeNeed) {
       aDate <- as_date(aDateInt)
       theDateString <- format(aDate, "20%y-%m-%d")
       
-      if (FALSE) {
+      if (traceThisRoutine) {
         cat(file = stderr(), myPrepend, "Filter for 'Date =", theDateString, "\n")
       }
       # Filter that date data out of vacc timeline tibble
@@ -362,16 +367,17 @@ updateDataForUSVaccTimeSeries <- function(traceThisRoutine = FALSE,
         filter(Date == theDateString)
       
       dataByGeography <- allGeogVaccDataFromOneDay(filteredStateUpdateData,
-                                                   traceThisRoutine = FALSE, prepend = myPrepend)
-      
+                                                   traceThisRoutine = traceThisRoutine,
+                                                   prepend = myPrepend)
+
       columnDate <- paste(month(aDate),
                           day(aDate),
                           (year(aDate) - 2000), sep="/")
-      
-      if (FALSE) {
+
+      if (traceThisRoutine) {
         cat(file = stderr(), myPrepend, "columnDate is", columnDate, "\n")
       }
-      
+
       # Gather, then join on combined_key to both
       # US and state files.
       allData <- dataByGeography %>%
@@ -386,7 +392,7 @@ updateDataForUSVaccTimeSeries <- function(traceThisRoutine = FALSE,
         select(-Combined_Key) %>%
         select(-Datum)
       
-      if (FALSE) {
+      if (traceThisRoutine) {
         cat(file = stderr(), myPrepend, "Will append that data to the file\n")
       }
       
@@ -448,7 +454,6 @@ updateDataFilesForUSVaccTimeSeriesIfNeeded <- function(traceThisRoutine = FALSE,
       } else {
         cat(file = stderr(), myPrepend, "Remote file", Vacc_URL(), "doesn't exist??\n")
         cat(file = stderr(), myPrepend, paste("Vaccination data for", desiredLatestDateSlashes, "is not available\n", sep = " "))
-        browser()
       }
     }
   }

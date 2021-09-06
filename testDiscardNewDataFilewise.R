@@ -2,6 +2,59 @@ library(tidyverse)
 library(lubridate)
 
 # source("columnUtilities.R") (for vaccColTypes())
+discardDataOutsideDateRangeFromATibble <- function(originalData,
+                                                   firstDateToKeep,
+                                                   lastDateToKeep,
+                                                   traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered discardDataOutsideDateRangeFromATibble\n")
+  }
+
+  # We are expecting mdy parse failures, don't tell us about them.
+  warnOption <- getOption("warn")
+  options(warn = -1) 
+  dateColMatch <- as.vector(mdy(names(originalData)))
+  options(warn = warnOption)
+  # OK, now report warnings as before
+  
+  charNames <- names(originalData)[is.na(dateColMatch)]
+  dateNames <- names(originalData)[!is.na(dateColMatch)]
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "Number of Columns", length(names(originalData)), "\n")
+    cat(file = stderr(), myPrepend, "Number of charNames", length(charNames), "\n")
+    cat(file = stderr(), myPrepend, "Number of dateNames", length(dateNames), "\n")
+  }
+  
+  dataCols <- originalData %>%
+    select(any_of(dateNames))
+  
+  newNames <- charNames
+  for (aName in dateNames) {
+    aDate <- mdy(aName)
+    if (((firstDateToKeep == 0) | (aDate >= firstDateToKeep)) &
+        ((lastDateToKeep > Sys.Date()) | (aDate <= lastDateToKeep))) {
+      newNames <- c(newNames, aName)
+    }
+  }
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "Number of columns to retain", length(newNames), "\n")
+    cat(file = stderr(), myPrepend, "Retaining cols",
+        newNames[4], "...",
+        newNames[length(newNames)], "\n")
+  }
+  
+  truncatedTibble <- originalData %>%
+    select(any_of({newNames}))
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving discardDataOutsideDateRangeFromATibble\n")
+  }
+  
+  return(truncatedTibble)
+}
 
 discardDataOutsideDateRangeFromAFile <- function(thePath,
                                                  theTypes,
@@ -274,3 +327,89 @@ testDiscardDataOutsideDateRange <- function(theFileName,
 #               , RES6 = foo6$T1
 #               ))
 # }
+
+zapFiles <- function(traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered zapFiles\n")
+  }
+  
+  # for (aName in c("US_County_Confirmed.csv", "US_County_Deaths.csv",
+  #                 "US_Deaths.csv",
+  #                 "US_State_Case_Fatality_Ratio.csv", "US_State_Confirmed.csv",
+  #                 "US_State_Deaths.csv", "US_State_Incident_Rate.csv",
+  #                 "US_State_Testing_Rate.csv",
+  #                 "US_State_Total_Test_Results.csv", "US_State_Vaccinations.csv",
+  #                 "US_Testing_Rate.csv", "US_Total_Test_Results.csv",
+  #                 "US_Vaccinations.csv")) {
+  for (aName in c("US_State_Vaccinations.csv",
+                  "US_Vaccinations.csv")) {
+    
+    if (traceThisRoutine) {
+      cat(file = stderr(), myPrepend, "Trying to remove Population column from", aName, "\n")
+    }
+    
+    # traceNow <- traceThisRoutine & (aName %in% c("US_Case_Fatality_Ratio.csv",
+    #                                              "US_Confirmed.csv",
+    #                                              "US_Incident_Rate.csv"))
+    maybePopData <- read_csv(paste("DATA/", aName, sep = ""), col_types = vaccColTypes())
+    
+    # if (traceNow) {
+    #   conciseEndsOfTibbleRow(maybePopData, paste("maybePopData for", aName),
+    #                          theKey = "Combined_Key",
+    #                          keyValue = "US",
+    #                          nFirst = 4, nLast = 2,
+    #                          traceThisRoutine = traceNow, prepend = myPrepend)
+    # }
+    
+    colNames <- names(maybePopData)
+    if ("Population" %in% colNames) {
+      noPopData <-  maybePopData %>%
+        select(!Population)
+
+      if (traceThisRoutine) {
+        cat(file = stderr(), myPrepend, "Removed population column\n")
+      }
+      
+      # if (traceNow) {
+      #   conciseEndsOfTibbleRow(noPopData, paste("noPopData for", aName),
+      #                          theKey = "Combined_Key",
+      #                          keyValue = "US",
+      #                          nFirst = 4, nLast = 2,
+      #                          traceThisRoutine = traceNow, prepend = myPrepend)
+      # }
+    } else {
+      noPopData <- maybePopData
+      if (traceThisRoutine) {
+        cat(file = stderr(), myPrepend, "No population column found\n")
+      }
+    }
+
+    noLastDateData <- noPopData %>%
+      discardDataOutsideDateRangeFromATibble(mdy("06/02/2021"),
+                                             mdy("09/03/2021"),
+                                             traceThisRoutine = FALSE, prepend = "")
+    
+    # if (traceNow) {
+    #   conciseEndsOfTibbleRow(noLastDateData, paste("noLastDateData for", aName),
+    #                          theKey = "Combined_Key",
+    #                          keyValue = "US",
+    #                          nFirst = 4, nLast = 2,
+    #                          traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+    # }
+    
+    write_csv(noLastDateData, paste("DATA/", aName, sep = ""))
+
+    if (traceThisRoutine) {
+      cat(file = stderr(), myPrepend, "Wrote modified", aName, "\n")
+    }
+  }
+  
+  if (traceThisRoutine) {
+    # cat(file = stderr(), myPrepend, "\n")    
+  }
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving zapFiles\n")
+  }
+}

@@ -53,7 +53,7 @@ conciseEndsOfTibbleRow <- function(aTibble, itsName = "<?>",
   preEnd <- (theLength + 1) - nLast
   
   if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "Ends of tibble", itsName, "\n")
+    cat(file = stderr(), myPrepend, "Tibble", itsName, "has", theLength, "cols\n")
     cat(file = stderr(), myPrepend, "Cols:",
         paste(names(theData)[c(1:nFirst,preEnd:theLength)]), "\n")
     cat(file = stderr(), myPrepend, "Data:",

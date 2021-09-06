@@ -19,8 +19,6 @@ plotTestResultBoxplots <- function(chooseCounty, movingAvg, countyChoices,
     cat(file = stderr(), prepend, "Entered plotTestResultBoxplots\n")
   }
 
-  # browser()
-
   # updateDataForUSTypeIfNeeded("Confirmed")
   if (movingAvg) {
     title <- "Test Positivity Distribution, 7 day moving average"

@@ -3,7 +3,7 @@ source("updateStateLevelSerializedDataFiles.R")
 source("computeNewAndGrowth.R")
 source("columnUtilities.R")
 
-loadUSIncidentRateData <- function(traceThisRoutine = FALSE, prepend = "") {
+loadUSIncidentRateData0 <- function(traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered loadUSIncidentRateData\n")
@@ -40,4 +40,8 @@ loadUSIncidentRateData <- function(traceThisRoutine = FALSE, prepend = "") {
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving loadUSIncidentRateData\n")
   }
+
+  return(list(US_C   = US_Incident_Rate,      State_C   = US_State_Incident_Rate,
+              US_C_A = US_Incident_Rate_A7, State_C_A = US_State_Incident_Rate_A7,
+              US_N_A = US_Incident_Rate_G7, State_N_A = US_State_Incident_Rate_G7))
 }
