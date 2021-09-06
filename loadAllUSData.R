@@ -4,8 +4,6 @@ library(lubridate)
 source("./computeNewAndGrowth.R")
 source("./mostRecentDataDate.R")
 source("./updateTimeSeriesDataFilesAsNecessary.R")
-source("./loadUSPeopleTestedData.R")
-source("./loadUSIncidentRateData.R")
 source("./loadUSMortalityRateData.R")
 source("./loadUSTestingRateData.R")
 
@@ -457,7 +455,7 @@ loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
 loadUSIncidentRateData <- function(traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered loadUSIncidentRateData1\n")
+    cat(file = stderr(), prepend, "Entered loadUSIncidentRateData\n")
   }
   
   computeCounty <- FALSE
@@ -469,23 +467,19 @@ loadUSIncidentRateData <- function(traceThisRoutine = FALSE, prepend = "") {
                                          myTSColTypes(), justCKColTypes(),
                                          computeCounty, computeNew,
                                          computeAvg, computePercent,
-                                         traceThisRoutine = TRUE,
+                                         traceThisRoutine = traceThisRoutine,
                                          prepend = myPrepend)
-  
+
   if (traceThisRoutine) {
-    # cat(file = stderr(), myPrepend, "\n")    
+    cat(file = stderr(), prepend, "Leaving loadUSIncidentRateData\n")
   }
-  
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving loadUSIncidentRateData1\n")
-  }
-  
+
   US_Incident_Rate <<- allIncidentRateData$US_C
   US_State_Incident_Rate <<- allIncidentRateData$State_C
 
   US_Incident_Rate_A7 <<- allIncidentRateData$US_C_A
   US_State_Incident_Rate_A7 <<- allIncidentRateData$State_C_A
-  
+
   US_Incident_Rate_G7 <<- allIncidentRateData$US_N_A
   US_State_Incident_Rate_G7 <<- allIncidentRateData$State_N_A
 
@@ -534,20 +528,19 @@ loadAllUSData <- function(traceThisRoutine = FALSE, prepend = "") {
     cat(file = stderr(), myPrepend, "after loadUSTestResultsData\n")
   }
   
+  # res_LIR0 <- loadUSIncidentRateData0(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+  # 
+  # if (traceThisRoutine) {
+  #   cat(file = stderr(), myPrepend, "after loadUSIncidentRateData0\n")
+  # }
+  
+  loadUSIncidentRateData(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+  
   #OUCH
   traceThisRoutine <- traceFlagOnEntry
-  
-  res_LIR0 <- loadUSIncidentRateData0(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
 
   if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "after loadUSIncidentRateData1\n")
-  }
-
-  res_LIR1 <- loadUSIncidentRateData(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
-  browser()
-
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "after loadUSIncidentRateData1\n")
+    cat(file = stderr(), myPrepend, "after loadUSIncidentRateData\n")
   }
 
   loadUSMortalityRateData(aDate)
