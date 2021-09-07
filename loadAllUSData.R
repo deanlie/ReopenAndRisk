@@ -451,7 +451,6 @@ loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
   return(allVaccinationData)
 }
 
-
 loadUSIncidentRateData <- function(traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
