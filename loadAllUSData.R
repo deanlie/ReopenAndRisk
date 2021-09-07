@@ -527,16 +527,9 @@ loadAllUSData <- function(traceThisRoutine = FALSE, prepend = "") {
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "after loadUSTestResultsData\n")
   }
-  
-  # res_LIR0 <- loadUSIncidentRateData0(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
-  # 
-  # if (traceThisRoutine) {
-  #   cat(file = stderr(), myPrepend, "after loadUSIncidentRateData0\n")
-  # }
-  
+
   loadUSIncidentRateData(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   
-  #OUCH
   traceThisRoutine <- traceFlagOnEntry
 
   if (traceThisRoutine) {
