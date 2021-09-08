@@ -1,4 +1,3 @@
-source("./loadUSConfirmedData.R")
 source("./assemblePlotObject.R")
 
 dataForCaseGrowthPlots <- function(forBoxplots, countyChoices, movingAvg, stateChoices) {
