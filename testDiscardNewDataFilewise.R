@@ -1,7 +1,8 @@
 library(tidyverse)
 library(lubridate)
 
-# source("columnUtilities.R") (for vaccColTypes())
+source("columnUtilities.R") # for vaccColTypes(), myTSColTypes()
+
 discardDataOutsideDateRangeFromATibble <- function(originalData,
                                                    firstDateToKeep,
                                                    lastDateToKeep,
@@ -273,48 +274,48 @@ testDiscardDataOutsideDateRange <- function(theFileName,
   return(foo1)
 }
 
-# testSuite <- function(traceThisRoutine = FALSE, prepend = "") {
+# testDiscards <- function(traceThisRoutine = FALSE, prepend = "") {
 #   myPrepend = paste("  ", prepend, sep = "")  
 #   if (traceThisRoutine) {
-#     cat(file = stderr(), prepend, "Entered testSuite\n")
+#     cat(file = stderr(), prepend, "Entered testDiscards\n")
 #   }
 #   
 #   foo1 <- testDiscardTooNew("US_V_TEST.csv",
-#                             vaccColTypesç,
+#                             vaccColTypes(),
 #                             mdy("08-12-2021"), 
 #                             traceThisRoutine = traceThisRoutine,
 #                             prepend = myPrepend)
 #   foo2 <- testDiscardTooOld("US_V_TEST.csv",
-#                             vaccColTypes√,
+#                             vaccColTypes(),
 #                             mdy("08-01-2021"), 
 #                             traceThisRoutine = traceThisRoutine,
 #                             prepend = myPrepend)
 #   foo3 <- testDiscardDataOutsideDateRange("US_V_TEST.csv",
-#                                           vaccColTypes√,
+#                                           vaccColTypes(),
 #                                           mdy("08-01-2021"),
 #                                           mdy("08-11-2021"),
 #                                           traceThisRoutine = traceThisRoutine,
 #                                           prepend = myPrepend)
 # 
 #   foo4 <- testDiscardTooNew("US_IR_TEST.csv",
-#                             myTSColTypes,
+#                             myTSColTypes(),
 #                             mdy("5-31-2021"),
 #                             traceThisRoutine = traceThisRoutine,
 #                             prepend = myPrepend)
 #   foo5 <- testDiscardTooOld("US_IR_TEST.csv",
-#                             myTSColTypes,
+#                             myTSColTypes(),
 #                             mdy("5-02-2021"),
 #                             traceThisRoutine = traceThisRoutine,
 #                             prepend = myPrepend)
 #   foo6 <- testDiscardDataOutsideDateRange("US_IR_TEST.csv",
-#                                           myTSColTypes,
+#                                           myTSColTypes(),
 #                                           mdy("05-02-2021"),
 #                                           mdy("05-30-2021"),
 #                                           traceThisRoutine = traceThisRoutine,
 #                                           prepend = myPrepend)
 #   
 #   if (traceThisRoutine) {
-#     cat(file = stderr(), prepend, "Leaving testSuite\n")
+#     cat(file = stderr(), prepend, "Leaving testDiscards\n")
 #   }
 # 
 #   return(list(ORIG_123 = foo1$T0

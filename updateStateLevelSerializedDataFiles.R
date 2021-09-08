@@ -126,7 +126,7 @@ updateExistingStateDataFilesForTypes <- function(existingST,
   }
   
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered updateExistingStateDataFilesForTypes\n")
+    cat(file = stderr(), prepend, "Leaving updateExistingStateDataFilesForTypes\n")
   }
   
   return(newST)
@@ -226,37 +226,7 @@ makeInitialStateLevelData <- function(nDates = 90,
   if (!file.exists(pathnameOfStateLevelUpdateDataForDate(firstDate))) {
     # No local file! Let's see if we can download it...
     downloadAndSaveStateLevelUpdateData(firstDate)
-    # # START
-    # # OUCH Put downloads in a download module with all the error handling
-    # oldShowError <- getOption(show.error.messages)
-    # options(show.error.messages) = TRUE
-    # # No local file! Let's see if we can download it...
-    # if (url.exists(updateStateLevelDataForDate_URL(firstDate))) {
-    #   if (traceThisRoutine) {
-    #     cat(file = stderr(), myPrepend, "Remote file",
-    #         updateStateLevelDataForDate_URL(firstDate),
-    #         "exists, will try to download\n")
-    #   }
-    #   # Get the first file
-    #   updateTibble <- try(read_csv(updateStateLevelDataForDate_URL(firstDate),
-    #                                col_types = dataFileColTypes()))
-    #   if (class(updateTibble)[1] == "try-error") {
-    #     cat(file = stderr(), myPrepend,
-    #         "download of", updateStateLevelDataForDate_URL(firstDate), "failed\n")
-    #     cat(file = stderr(), myPrepend, "FATAL ERROR\n")
-    #     stop()
-    #   }
-    #   write_csv(updateTibble, pathnameOfStateLevelUpdateDataForDate(firstDate))
-    #   cat(file = stderr(), myPrepend,
-    #       "Downloaded and wrote", pathnameOfStateLevelUpdateDataForDate(firstDate), "\n")
-    # } else {
-    #   cat(file = stderr(), myPrepend,
-    #       "url.exists returns FALSE:", updateStateLevelDataForDate_URL(firstDate), "\n")
-    #   cat(file = stderr(), myPrepend, "FATAL ERROR\n")
-    #   stop()
-    # }
-    # #STOP
-  }
+   }
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend,
         paste("before try(read_csv(", pathnameOfStateLevelUpdateDataForDate(firstDate), "))\n", sep = ""))
@@ -388,33 +358,7 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
               "from local disk/SSD\n")
         }
       }
-        # #START
-        # if (url.exists(updateStateLevelDataForDate_URL(updateDate))) {
-        #   if (traceThisRoutine) {
-        #     cat(file = stderr(), myPrepend, "Remote file ",
-        #         updateStateLevelDataForDate_URL(updateDate),
-        #         "exists, will try to download\n")
-        #   }
-        #   # Get the first file
-        #   updateTibble <- read_csv(updateStateLevelDataForDate_URL(updateDate),
-        #                            col_types = dataFileColTypes())
-        #   if (traceThisRoutine) {
-        #     cat(file = stderr(), myPrepend, "OK, we downloaded",
-        #       updateStateLevelDataForDate_URL(updateDate), "\n")
-        #   }
-        #   write_csv(updateTibble, pathnameOfStateLevelUpdateDataForDate(updateDate))
-        #   if (traceThisRoutine) {
-        #     cat(file = stderr(), myPrepend, "... and wrote",
-        #         pathnameOfStateLevelUpdateDataForDate(updateDate), "\n")
-        #   }
-        # } else {
-        #   if (traceThisRoutine) {
-        #     cat(file = stderr(), myPrepend, "Remote file ",
-        #         updateStateLevelDataForDate_URL(updateDate),
-        #         "not accessible or does not exist","\n")
-        #   }
-        # }
-        # #STOP
+
       if ("tbl" %in% class(updateTibble)) {
         popEstimate <- updatePopulationEstimateData(updateDate, updateTibble,
                                                     traceThisRoutine = traceThisRoutine,
