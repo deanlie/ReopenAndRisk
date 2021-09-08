@@ -1,9 +1,10 @@
+.DS_Store
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
-.DS_Store
+*.Rproj
 BackupScripts*
 DATA/
-RefactorAndRisk.Rproj
+DEVELOPMENT/
 UNDER\ LOCAL\ GIT\ CONTROL/

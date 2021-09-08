@@ -46,7 +46,6 @@ sumIgnoreNA <- function(x) {
 }
 
 makeInitialSansCountyDataFrom0412 <- function(traceMe = FALSE) {
-  stop("Per request!")
   traceThisRoutine <- traceMe
   if (traceThisRoutine) {
     print("Entered 'makeInitialSansCountyDataFrom0412'")
