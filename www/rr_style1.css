@@ -1,0 +1,39 @@
+p {
+	font-family: sans-serif;
+	font-size: 12px;
+	width: 100%;
+}
+.col-sm-4 {
+	width:25%;
+}
+.col-sm-8 {
+	width:75%;
+}
+
+.hghi_green, .hghi_yellow, .hghi_orange, .hghi_red, .hghi_unused {
+  padding: 5px 10px 5px 10px;
+}
+
+.hghi_green {
+  background-color: #11a67c;
+}
+
+.hghi_yellow {
+  background-color: #f1bb13;
+}
+
+.hghi_orange {
+  background-color: #f18e14;
+}
+
+.hghi_red {
+  background-color: #d84710;
+}
+
+.hghi_unused {
+  background-color: #ccccaa;
+}
+
+li.hghi_green, li.hghi_yellow, li.hghi_orange, li.hghi_red, li.hghi_unused {
+  padding: 3px 10px 3px 10px;
+}
