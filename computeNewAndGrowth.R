@@ -58,7 +58,7 @@ computeNewOnDayAndGrowthRate <- function(aTibble, aDate,
                                          nDays = 10,
                                          getGrowthRate = TRUE, nonzeroOnly = FALSE,
                                          tibbleName = "from computeNewOnDayAndGrowthRate",
-                                         traceThisRoutine = TRUE, prepend = "CALLER??") {
+                                         traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered computeNewOnDayAndGrowthRate\n")
@@ -119,7 +119,7 @@ computeNewOnDayAndGrowthRate <- function(aTibble, aDate,
 # Make an n-day moving average of a time series
 movingAverageData <- function(aTibble, aDate, mAvgs, nDayAvg,
                               tibbleName="TIBBLE NAME??",
-                              traceThisRoutine = TRUE, prepend = "CALLER??") {
+                              traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered movingAverageData for", tibbleName, "\n")

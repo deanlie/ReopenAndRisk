@@ -1,11 +1,13 @@
 library(tidyverse)
 library(lubridate)
 
-source("./computeNewAndGrowth.R")
-source("./mostRecentDataDate.R")
-source("./updateTimeSeriesDataFilesAsNecessary.R")
-source("./loadUSMortalityRateData.R")
-source("./loadUSTestingRateData.R")
+source("computeNewAndGrowth.R")
+source("mostRecentDataDate.R")
+source("updateTimeSeriesDataFilesAsNecessary.R")
+source("loadUSMortalityRateData.R")
+source("loadUSTestingRateData.R")
+source("columnUtilities.R")
+source("diagnosticRoutines.R")
 
 loadATypeOfData <- function(theType, colTypes, stateColTypes, computeCounty,
                             computeNew, computeAvg, computePercent,
