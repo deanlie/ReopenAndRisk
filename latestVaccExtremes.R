@@ -72,7 +72,3 @@ latestVaccExtremes <- function(aTibble, vaccChoice, nTop, nBot) {
        top = topStuff,
        bot = bottomStuff)
 }
-# 
-# foo <- latestVaccExtremes(US_State_Vaccination_Pcts, "Second Doses", 5, 5)
-# View(foo$top)
-# View(foo$bot)
