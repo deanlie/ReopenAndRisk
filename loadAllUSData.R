@@ -428,28 +428,28 @@ loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered loadUSVaccinationData\n")
   }
-  
+
   computeCounty <- FALSE
   computeNew <- FALSE
   computeAvg <- TRUE
   computePercent <- TRUE
-  
+
   allVaccinationData <- loadATypeOfData("Vaccinations",
                                         vaccColTypes(), vaccColTypes(),
                                         computeCounty, computeNew,
                                         computeAvg, computePercent,
                                         traceThisRoutine = FALSE,
                                         prepend = myPrepend)
-  
+
   US_Vaccination_Pcts <<- allVaccinationData$US_C_P
   US_State_Vaccination_Pcts <<- allVaccinationData$State_C_P
   US_Vaccination_Pcts_A7 <<- allVaccinationData$US_C_PA7
   US_State_Vaccination_Pcts_A7 <<- allVaccinationData$State_C_PA7
-  
+
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving loadUSVaccinationData\n")
   }
-  
+
   return(allVaccinationData)
 }
 
@@ -507,12 +507,12 @@ loadAllUSData <- function(traceThisRoutine = FALSE, prepend = "") {
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "after read US_State_Population_Est\n")
   }
-  
+
   updateTimeSeriesDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
                                        prepend = myPrepend)
   updateStateLevelSerializedDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
                                                  prepend = myPrepend)
-  
+
   loadUSVaccinationData(traceThisRoutine = traceThisRoutine,
                         prepend = myPrepend)
 
@@ -521,16 +521,16 @@ loadAllUSData <- function(traceThisRoutine = FALSE, prepend = "") {
 
   loadUSDeathsData(traceThisRoutine = traceThisRoutine,
                    prepend = myPrepend)
-  
+
   loadUSTestResultsData(traceThisRoutine = traceThisRoutine,
                         prepend = myPrepend)
-  
+
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "after loadUSTestResultsData\n")
   }
 
   loadUSIncidentRateData(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
-  
+
   traceThisRoutine <- traceFlagOnEntry
 
   if (traceThisRoutine) {
@@ -544,11 +544,11 @@ loadAllUSData <- function(traceThisRoutine = FALSE, prepend = "") {
   }
 
   loadUSTestingRateData()
-  
+
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "after loadUSTestingRateData\n")
   }
-  
+
   CountiesByState <<- US_County_Confirmed %>%
     mutate(State = Province_State, County = Admin2, .keep="none") %>%
     filter(str_detect(County, "Out of", negate=TRUE)) %>%
