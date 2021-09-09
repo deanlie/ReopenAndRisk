@@ -1,4 +1,6 @@
-source("./assemblePlotObject.R")
+source("state_abbrev_lookup.R")
+source("assemblePlotObject.R")
+source("reopenPlotUtilities.R")
 
 dataForCaseGrowthPlots <- function(forBoxplots, countyChoices, movingAvg, stateChoices) {
   if ((!forBoxplots) && is.null(stateChoices)) {

@@ -124,8 +124,7 @@ plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
                         title,
                         paste("Last", timeWindow, "days"),
                         "Vaccinations, percent of population",
-                        clampFactor = 3, timeWindow = timeWindow,
-                        nFirst = 3)
+                        clampFactor = 3, timeWindow = timeWindow)
 }
 
 plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
@@ -159,7 +158,7 @@ plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
                           title,
                           paste("Last", timeWindow, "days"),
                           "Vaccinations, percent of population",
-                          timeWindow = timeWindow, nFirst = 3,
+                          timeWindow = timeWindow,
                           tibbleName = "from plotVaccTrend")
 }
 

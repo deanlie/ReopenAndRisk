@@ -5,6 +5,7 @@ library(lubridate)
 source("state_abbrev_lookup.R")
 source("dateFormatRoutines.R")
 source("computeNewAndGrowth.R")
+source("columnUtilities.R")
 
 leastSquaresTrendParams <- function(x0, y0)  {
   n = length(x0); n2 = length(y0)
@@ -33,19 +34,19 @@ leastSquaresTrendParams <- function(x0, y0)  {
 processAreaChoices <- function(chooseCounty, countyChoices, stateChoices) {
   if (length(stateChoices) == 0) {
     areasOfInterest <- c("US")
-  } else if (length(countyChoices) == 0) {
-    if (length(stateChoices) > 6) {
-      stateChoices <- stateChoices[1:6]
-    }
-    sort(stateChoices)
-    areasOfInterest <- paste(unname(stateLookup[stateChoices]), ", US", sep="")
-  } else {
+  } else if (chooseCounty & (length(countyChoices) > 0)) {
     if (length(countyChoices) > 6) {
       countyChoices <- countyChoices[1:6]
     }
     sort(countyChoices)
     theState <- unname(stateLookup[stateChoices[1]])
     areasOfInterest <- paste(countyChoices, ", ", theState, ", US", sep="")
+  } else {
+    if (length(stateChoices) > 6) {
+      stateChoices <- stateChoices[1:6]
+    }
+    sort(stateChoices)
+    areasOfInterest <- paste(unname(stateLookup[stateChoices]), ", US", sep="")
   }
   areasOfInterest
 }
@@ -72,22 +73,47 @@ processStateChoices <- function(stateChoices) {
 computePlotDataFromFrame <- function(aFrame,
                                      chooseCounty,
                                      countyChoices,
-                                     stateChoices) {
+                                     stateChoices,
+                                     traceThisRoutine = FALSE,
+                                     prepend = "") {
+  myPrepend <- paste(prepend, "  ", sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered computePlotDataFromFrame\n")
+  }
+
   # "US" is default if stateChoices came in as Null,
   #    list is clamped to 6 states max
-  
+
   areasOfInterest <- processAreaChoices(chooseCounty,
                                         countyChoices,
                                         stateChoices)
-
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "processAreaChoices returns", paste(areasOfInterest), "\n")
+  }
+  
   # Compute trend line data for selected states
   trendFrame <- aFrame
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "trendFrame names[1:5] = ", paste(names(trendFrame)[1:5]), "\n")
+    cat(file = stderr(), myPrepend, "dim(trendFrame) = (", paste(dim(aFrame)), ")\n")
+  }
+  
+  if (dim(trendFrame)[1] < 1) {
+    return(list(plotData = NA, dateLabels = NA,
+                AreasOfInterest = areasOfInterest))
+  }
 
   for (i in 1:dim(trendFrame)[1]) {
     if (trendFrame[i, "Combined_Key"] %in% areasOfInterest) {
       aVec <- as_vector(select(aFrame, 2:last_col())[i,])
       attributes(aVec)$names <- NULL
       pars <- leastSquaresTrendParams(2:(length(aVec)+1), aVec)
+      if (traceThisRoutine) {
+        cat(file = stderr(), myPrepend, "i = ", i,
+            "pars$slope = ", pars$slope,
+            "pars$intercept", pars$intercept, "\n")
+      }
       trendFrame[i,2:(length(aVec)+1)] <- as.list(pars$slope * 2:(length(aVec)+1) + pars$intercept)
     } else {
       trendFrame[i,2:(dim(aFrame)[2] - 1)] <- NA
@@ -120,7 +146,7 @@ computePlotDataFromFrame <- function(aFrame,
     yCol       <- c(yCol,    forYCol)
     trendCol   <- c(trendCol, forTrendCol)
   }
-  
+
   stateColOnce <- as_vector(trendFrame[,"Combined_Key"])
   attributes(stateColOnce)$names <- NULL
   
@@ -128,7 +154,12 @@ computePlotDataFromFrame <- function(aFrame,
 
   plotData <- data.frame(date = dateCol, index = indexCol,
                          nums = yCol, trends = trendCol, region = stateCol)
-  
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "areasOfInterest = ", paste(areasOfInterest), "\n")
+    cat(file = stderr(), prepend, "Leaving computePlotDataFromFrame\n")
+  }
+
   list(plotData = plotData, dateLabels = dateLabels, AreasOfInterest = areasOfInterest)
 }
 
@@ -139,7 +170,6 @@ computePlotDataDirectFromCumulative <- function(aFrame, chooseCounty,
   computePlotDataFromFrame(computeNewOnDayAndGrowthRate(aFrame,
                                                         today("EST"),
                                                         timeWindow,
-                                                        nFirst,
                                                         tibbleName = tibbleName)$d2,
                            chooseCounty,
                            countyChoices,
@@ -150,13 +180,16 @@ computeEvenZeroPlotDataDirect <- function(aFrame, chooseCounty,
                                           countyChoices, stateChoices,
                                           timeWindow, nFirst,
                                           tibbleName = "from computeEvenZeroPlotDataDirect") {
+  traceThisRoutine = FALSE
+  myPrepend  <- "From computeEvenZeroPlotDataDirect"
   computePlotDataFromFrame(computeNewOnDayAndGrowthRate(aFrame,
                                                         today("EST"),
                                                         timeWindow,
-                                                        nFirst,
                                                         getGrowthRate = FALSE,
                                                         nonzeroOnly = FALSE,
-                                                        tibbleName = tibbleName)$d2,
+                                                        tibbleName = tibbleName,
+                                                        traceThisRoutine = traceThisRoutine,
+                                                        prepend = myPrepend)$d2,
                            chooseCounty,
                            countyChoices,
                            stateChoices)
@@ -171,7 +204,6 @@ computeGrowthPlotDataFromCumulative <- function(aFrame, chooseCounty,
   newAndGrowthList <- computeNewOnDayAndGrowthRate(aFrame,
                                                    today("EST"),
                                                    timeWindow,
-                                                   nFirst,
                                                    tibbleName = tibbleName)
   computePlotDataFromFrame(newAndGrowthList$growth,
                            chooseCounty,
@@ -179,13 +211,18 @@ computeGrowthPlotDataFromCumulative <- function(aFrame, chooseCounty,
                            ofInterest)
 }
 
-clampDataIfRequested <- function(plotData, clampFactor) {
-  traceThisRoutine = FALSE
+clampDataIfRequested <- function(plotData, clampFactor,
+                                 traceThisRoutine = FALSE, prepend = "") {
+  myPrepend  <- paste("  ", prepend)
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered clampDataIfRequested\n")
+  }
+
   # boxplot.stats gives the upper bound for non-outliers and a
   #  vector of outliers (among other things) so we can clamp the
   #  outliers to a reasonable scale
   bps <- boxplot.stats(plotData$nums, coef = 1.5 * clampFactor)
-  
+
   # Pass bps back to the caller so we can display a list of
   # where outliers come from, if we so choose.
   
@@ -193,8 +230,8 @@ clampDataIfRequested <- function(plotData, clampFactor) {
   # Two calls to mutate() will clamp them within a scale which
   # allows study of the bulk of the data.
   if (traceThisRoutine) {
-    print(paste("clampFactor is ", format(clampFactor, digits=3)))
-    print(paste("Boxplot outlier threshold is", format(bps$stats[5], digits=3)))
+    cat(file = stderr(), myPrepend, "clampFactor is ", format(clampFactor, digits=3), "\n")
+    cat(file = stderr(), myPrepend, "Boxplot outlier threshold is", format(bps$stats[5], digits=3), "\n")
   }
   
   newData <- plotData %>%
@@ -204,6 +241,10 @@ clampDataIfRequested <- function(plotData, clampFactor) {
            .keep="unused")
   
   clampedN <-  length(bps$out)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving clampDataIfRequested\n")
+  }
 
   list(plotData=newData, diags=list(bps=bps, clampedN=clampedN))
 }
@@ -246,8 +287,13 @@ assembleDirectBoxPlot <- function(aFrame, chooseCounty,
                                   countyChoices, stateChoices,
                                   theTitle, xlabel, ylabel,
                                   clampFactor = 3, timeWindow = 14,
-                                  nFirst = 4,
-                                  tibbleName = "from assembleGrowthBoxPlot") {
+                                  tibbleName = "from assembleGrowthBoxPlot",
+                                  traceThisRoutine = FALSE, prepend = "") {
+  myPrepend <- paste(prepend, "  ", sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered assembleDirectBoxPlot\n")
+    cat(file = stderr(), myPrepend, "dim(aFrame) = (", paste(dim(aFrame)), ")\n")
+  }
   res <- computePlotDataDirectFromCumulative(aFrame, chooseCounty,
                                              countyChoices, stateChoices,
                                              timeWindow, nFirst,
@@ -273,14 +319,14 @@ assembleSomeTrendPlot <- function(res, theTitle, xlabel, ylabel) {
     dateLabels <- res$dateLabels
     dateLabels <- res$dateLabels
     
-    palette("ggplot2")
+    palette("default")
     
     p <- ggplot(data = res$plotData)
     
     p <- p + geom_point(data = filter(res$plotData, region %in% res$AreasOfInterest),
-                        mapping = aes(x = (index - 1), y = nums, color = region))
+                        mapping = aes(x = (index - 1), y = nums, color = region), na.rm = TRUE)
     p <- p + geom_line(data = filter(res$plotData, region %in% res$AreasOfInterest),
-                       mapping = aes(x = (index - 1), y = trends, color = region))
+                       mapping = aes(x = (index - 1), y = trends, color = region), na.rm = TRUE)
     p <- p + labs(title = theTitle)
     p <- p + xlab(xlabel)
     p <- p + ylab(ylabel)
@@ -353,17 +399,26 @@ ratioDeltaFrame <- function(numeratorFrame, denominatorFrame,
                             timeWindow,
                             nFirstNum = 4, nFirstDenom = 4,
                             numTibbleName = "from ratioDeltaFrame numerator",
-                            denomTibbleName = "from ratioDeltaFrame denominator") {
+                            denomTibbleName = "from ratioDeltaFrame denominator",
+                            traceThisRoutine = FALSE, prepend = "CALLER??") {
+  myPrepend <- paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered ratioDeltaFrame")
+  }
   # Ratio of changes, e.g. positive test rate <- (new cases today) / (people tested today) ==
   #    (growth in cases, today) / (growth in people tested, today)
   denominatorNew <- computeNewOnDayAndGrowthRate(denominatorFrame, today("EST"),
-                                                 timeWindow, nFirstDenom,
+                                                 timeWindow,
                                                  FALSE, TRUE,
-                                                 tibbleName = denomTibbleFrame)$new
+                                                 tibbleName = denomTibbleName,
+                                                 traceThisRoutine = traceThisRoutine,
+                                                 prepend = myPrepend)$new
   numeratorNew   <- computeNewOnDayAndGrowthRate(numeratorFrame, today("EST"),
-                                                 timeWindow, nFirstNum,
+                                                 timeWindow,
                                                  FALSE, FALSE,
-                                                 tibbleName = numTibbleFrame)$new
+                                                 tibbleName = numTibbleName,
+                                                 traceThisRoutine = traceThisRoutine,
+                                                 prepend = myPrepend)$new
   
   keyTibND <- select(numeratorNew,   Combined_Key)
   keyTibDD <- select(denominatorNew, Combined_Key)
@@ -376,11 +431,18 @@ ratioDeltaFrame <- function(numeratorFrame, denominatorFrame,
   dimDD <- dim(denominatorUsable)
   newPosTests      <- numeratorUsable[, 2:dimND[2]]
   newRelevantTests <- denominatorUsable[, 2:dimDD[2]]
-  
+
   # Do the division:
   pctPosTests <- as_tibble((100.0 * newPosTests) / newRelevantTests)
+
   # Put the "Combined_Key" column back in front (bind_cols)
-  bind_cols(keyTib, pctPosTests)
+  result <- bind_cols(keyTib, pctPosTests)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving ratioDeltaFrame")
+  }
+
+  return(result)
 }
 
 # OUCH needs chooseCounty, countyChoices
@@ -404,13 +466,12 @@ assembleRatioDeltaBoxPlot <- function(numeratorFrame, denominatorFrame,
   clampedList <- clampDataIfRequested(res$plotData, clampFactor)
   plotData    <- clampedList$plotData
   
-  palette("ggplot2")
+  palette("default")
   
   p <- ggplot(data = plotData)
-  
-  p <- p + geom_boxplot(mapping = aes(x = date, y = nums))  
+  p <- p + geom_boxplot(mapping = aes(x = date, y = nums), na.rm = TRUE)
   p <- p + geom_point(data = filter(plotData, region %in% res$AreasOfInterest),
-                      mapping = aes(x = date, y = nums, color = region))
+                      mapping = aes(x = date, y = nums, color = region), na.rm = TRUE)
   p <- p + labs(title = theTitle)
   p <- p + xlab(xlabel)
   p <- p + ylab(ylabel)
