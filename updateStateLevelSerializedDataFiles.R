@@ -4,8 +4,8 @@ library(lubridate)
 library(stringi)
 library(RCurl)
 
-source("dateFormatRoutines.R")
-source("dataIsCurrent.R")
+source("pathnameFunctions.R")
+source("URLFunctions.R")
 source("downloadJHUData.R")
 source("columnUtilities.R")
 
@@ -262,7 +262,7 @@ makeInitialStateLevelData <- function(nDates = 90,
              Population = as.integer(100000 * Confirmed / Incident_Rate),
              "{columnDate}" := .data[[aType]],
              .keep = "none")
-    
+
     # TODO:
     # Test Puerto Rico and DC carefully in all paths of UI interaction
     
@@ -271,7 +271,7 @@ makeInitialStateLevelData <- function(nDates = 90,
     newUSTibble <- newTibble %>%
       summarise(Province_State = "", Combined_Key = "US",
                 across(matches("^Pop|^[1-9]+/"), sumIgnoreNA))
-    
+
     write_csv(newUSTibble, paste("./DATA/US_", aType, ".csv", sep=""))
   }
   if (traceThisRoutine) {

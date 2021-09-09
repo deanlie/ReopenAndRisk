@@ -4,7 +4,8 @@ library(lubridate)
 library(stringi)
 library(RCurl)
 
-source("./dateFormatRoutines.R")
+source("URLFunctions.R")
+source("dateFormatRoutines.R")
 source("./mostRecentDataDate.R")
 
 dataIsCurrent <- function(testDataPath) {
