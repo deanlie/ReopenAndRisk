@@ -9,6 +9,7 @@ source("dateFormatRoutines.R")
 source("mostRecentDataDate.R")
 source("dataIsCurrent.R")
 source("columnUtilities.R")
+source("URLFunctions.R")
 
 # Get (at maximum) latest 60 columns available in data download
 deriveRecentUSDataFromCountyLevelData <- function(rawData,
@@ -98,7 +99,7 @@ updateDataForUSTimeSeriesType <- function(aType, traceThisRoutine = FALSE, prepe
 
 updateDataFilesForUSTimeSeriesTypeIfNeeded <- function(aType,
                                                        traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend, sep = "")  
+  myPrepend <- paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered updateDataFilesForUSTimeSeriesTypeIfNeeded\n")
     cat(file = stderr(), myPrepend, "aType is", aType, "\n")
@@ -229,8 +230,7 @@ gatheredVaccDataByGeography <- function(traceThisRoutine = FALSE) {
   return(allData)  
 }
 
-saveTwoVaccinationDataFiles <- function(theData, directory, suffix,
-                                        traceThisRoutine = FALSE, prepend = "") {
+saveTwoVaccinationDataFiles <- function(theData, traceThisRoutine = FALSE, prepend = "") {
   # Local function! Haven't seen those since Pascal!
   tryWrite <- function(aTibble, aPath) {
     w1 <- try(write_csv(aTibble, aPath))
@@ -249,9 +249,9 @@ saveTwoVaccinationDataFiles <- function(theData, directory, suffix,
     filter(Combined_Key == "US")
   State_Data <- theData %>%
     filter(Combined_Key != "US")
-  
-  US_file_name <- paste("./", directory, "/US_Vaccinations", suffix, ".csv", sep = "")
-  US_State_file_name <- paste("./", directory, "/US_State_Vaccinations", suffix, ".csv", sep = "")
+
+  US_file_name <- "./DATA/US_Vaccinations.csv"
+  US_State_file_name <- "./DATA/US_State_Vaccinations.csv"
   
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "US file   ", US_file_name, "\n")
@@ -269,13 +269,11 @@ saveTwoVaccinationDataFiles <- function(theData, directory, suffix,
 saveVaccinationTimeSeriesData <- function(theData, traceThisRoutine = FALSE, prepend = "") {
   # Save gathered data as ./DATA/US_Vaccinations.csv
   #                   and ./DATA/US_State_Vaccinations.csv
-  myPrepend = paste("  ", prepend, sep = "")  
+  myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered saveVaccinationTimeSeriesData\n")
   }
-
-  saveTwoVaccinationDataFiles(theData, "DATA", "", traceThisRoutine, myPrepend)
-
+  saveTwoVaccinationDataFiles(theData, traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving saveVaccinationTimeSeriesData\n")
   }
@@ -422,15 +420,11 @@ updateDataForUSVaccTimeSeries <- function(traceThisRoutine = FALSE,
 }
 
 updateDataFilesForUSVaccTimeSeriesIfNeeded <- function(traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend, sep = "")
+  myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered updateDataFilesForUSVaccTimeSeriesIfNeeded\n")
   }
-
-  todayDate <- today("EST")
-  desiredLatestDateSlashes <- paste(month(todayDate),
-                                    day(todayDate),
-                                    (year(todayDate) - 2000), sep="/")
+  desiredLatestDateSlashes <- expectedLatestUpdateDataDateSlashes(UT_UpdateHour = 13)
   US_data_path <- paste("./DATA/", "US_Vaccinations.csv", sep="")
   US_data <- try(read_csv(US_data_path,
                           col_types = vaccColTypes()))
@@ -439,21 +433,31 @@ updateDataFilesForUSVaccTimeSeriesIfNeeded <- function(traceThisRoutine = FALSE,
       cat(file = stderr(), myPrepend, "./DATA/US_Vaccinations.csv not read\n")
     }
     # We couldn't read the file! Creating it gets us all the data we can find.
-    makeInitialVaccDataFiles()
+    makeInitialVaccDataFiles(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   } else {
     if (traceThisRoutine) {
       cat(file = stderr(), myPrepend, "./DATA/US_Vaccinations.csv was read\n")
     }
     # The file exists. is it up to date?
-    if (names(US_data[dim(US_data)[2]]) != desiredLatestDateSlashes) {
+    if (names(US_data)[dim(US_data)[2]] == desiredLatestDateSlashes) {
+      if (traceThisRoutine) {
+        cat(file=stderr(), myPrepend, "US_Vaccinations.csv is up to date", "\n")
+      }
+    } else {
+      if (traceThisRoutine) {
+        cat(file=stderr(), myPrepend, "last date in US_Vaccinations.csv:",
+            names(US_data)[dim(US_data)[2]], "\n")
+        cat(file=stderr(), myPrepend, "desiredLatestDateSlashes:", desiredLatestDateSlashes, "\n")
+      }
       # It's not up to date. Is newer data available?
-      if (url.exists(Vacc_URL())) {
-        # OUCH refactor anything that uses URL
+      if (url.exists(VaccTimeline_URL()) && url.exists(peopleVacc_URL())) {
         # Better create all data files!
         updateDataForUSVaccTimeSeries(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
       } else {
-        cat(file = stderr(), myPrepend, "Remote file", Vacc_URL(), "doesn't exist??\n")
-        cat(file = stderr(), myPrepend, paste("Vaccination data for", desiredLatestDateSlashes, "is not available\n", sep = " "))
+        if (traceThisRoutine) {
+          cat(file=stderr(), myPrepend, "Vaccination data for",
+              desiredLatestDateSlashes, "is not available", "\n")
+        }
       }
     }
   }
@@ -464,7 +468,11 @@ updateDataFilesForUSVaccTimeSeriesIfNeeded <- function(traceThisRoutine = FALSE,
 }
 
 updateTimeSeriesDataFilesAsNecessary <- function(traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend, sep = "")
+  myPrepend <- paste(prepend, "  ", sep = "")
+
+  # Key point for tracing vaccination data update!
+  # Set the "traceThisRoutine" to TRUE for debugging
+
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered updateTimeSeriesDataFilesAsNecessary\n")
   }
@@ -472,9 +480,9 @@ updateTimeSeriesDataFilesAsNecessary <- function(traceThisRoutine = FALSE, prepe
   for (aType in c("Confirmed", "Deaths")) {
     updateDataFilesForUSTimeSeriesTypeIfNeeded(aType, traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   }
-
-  updateDataFilesForUSVaccTimeSeriesIfNeeded(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
-
+  
+  updateDataFilesForUSVaccTimeSeriesIfNeeded(traceThisRoutine = traceThisRoutine,
+                                             prepend = myPrepend)
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving updateTimeSeriesDataFilesAsNecessary\n")
   }
