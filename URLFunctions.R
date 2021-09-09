@@ -67,3 +67,27 @@ TS_URL <- function(type, locale) {
                  type, "_", locale, ".csv",
                  sep = "")
 }
+
+Vacc_URL <- function() {
+  U_out <- paste("https://raw.githubusercontent.com/govex/COVID-19/",
+                 "master/data_tables/vaccine_data/",
+                 "us_data/hourly/vaccine_data_us.csv",
+                 sep = "")
+}
+
+VaccTimeline_URL <- function() {
+  U_out <- paste("https://raw.githubusercontent.com/govex/COVID-19/",
+                 "master/data_tables/vaccine_data/",
+                 "us_data/time_series/",
+                 "vaccine_data_us_timeline.csv",
+                 sep = "")
+}
+
+peopleVacc_URL <-  function() {
+  U_out <- paste("https://raw.githubusercontent.com/govex/COVID-19/",
+                 "master/data_tables/vaccine_data/",
+                 "us_data/time_series/",
+                 "people_vaccinated_us_timeline.csv",
+                 sep = "")
+  
+}
