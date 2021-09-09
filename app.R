@@ -12,8 +12,6 @@ library(ggplot2)
 library(tidyverse)
 
 source("mostRecentDataDate.R")
-# source("updateTimeSeriesDataFilesAsNecessary.R")
-# source("updateStateLevelSerializedDataFiles.R")
 source("assemblePlotObject.R")
 source("loadAllUSData.R")
 source("latestVaccExtremes.R")
@@ -23,8 +21,6 @@ source("doMortalityTab.R")
 source("doTestGrowthTab.R")
 source("doSummaryTab.R")
 
-# updateTimeSeriesDataFilesAsNecessary()
-# updateStateLevelSerializedDataFilesAsNecessary()
 loadAllUSData()
 
 vaccHeaderHTML <- function(movingAvg, vaccChoice) {

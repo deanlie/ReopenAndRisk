@@ -6,16 +6,16 @@ library(stringr)
 dataForMortalityPlots <- function(forBoxplots, countyChoices, movingAvg, stateChoices) {
   if ((!forBoxplots) && is.null(stateChoices)) {
     if (movingAvg) {
-      theData <- US_Deaths_Cumulative_A7
+      theData <- US_Deaths_A7
     } else {
-      theData <- US_Deaths_Cumulative
+      theData <- US_Deaths
     }
   } else {
     if (is.null(countyChoices)) {
       if (movingAvg) {
-        theData <- US_State_Deaths_Cumulative_A7
+        theData <- US_State_Deaths_A7
       } else {
-        theData <- US_State_Deaths_Cumulative
+        theData <- US_State_Deaths
       }
     } else {
       detectOutOf <- function(aString) {
@@ -25,9 +25,9 @@ dataForMortalityPlots <- function(forBoxplots, countyChoices, movingAvg, stateCh
         str_detect(aString, "Unassigned", negate = TRUE)
       }
       if (movingAvg) {
-        dataTibble <- US_County_Deaths_Cumulative_A7
+        dataTibble <- US_County_Deaths_A7
       } else {
-        dataTibble <- US_County_Deaths_Cumulative
+        dataTibble <- US_County_Deaths
       }
       theData <- dataTibble %>%
         filter(Province_State == stateLookup[stateChoices[1]]) %>%
