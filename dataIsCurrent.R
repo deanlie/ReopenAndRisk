@@ -8,20 +8,6 @@ source("URLFunctions.R")
 source("dateFormatRoutines.R")
 source("./mostRecentDataDate.R")
 
-# JHU_repository <- function() {
-#   paste("https://raw.githubusercontent.com/",
-#         "CSSEGISandData/COVID-19/master/csse_covid_19_data/",
-#         sep = "")
-# }
-# 
-# updateData_URL <- function() {
-#   paste(JHU_repository(),
-#         "csse_covid_19_daily_reports_us/",
-#         jhuFileDateString(expectedLatestUpdateDataDate()),
-#         ".csv",
-#         sep = "")
-# }
-
 dataIsCurrent <- function(testDataPath) {
   desiredLatestDate <- expectedLatestUpdateDataDate()
   desiredLatestDateSlashes <- paste(month(desiredLatestDate),
