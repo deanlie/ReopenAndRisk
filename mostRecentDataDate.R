@@ -19,8 +19,8 @@ expectedLatestUpdateDataDate <- function(UT_UpdateHour = 5) {
   expectedDate
 }
 
-expectedLatestUpdateDataDateSlashes <- function() {
-  desiredLatestDate <- expectedLatestUpdateDataDate()
+expectedLatestUpdateDataDateSlashes <- function(UT_UpdateHour = 5) {
+  desiredLatestDate <- expectedLatestUpdateDataDate(UT_UpdateHour = UT_UpdateHour)
   desiredLatestDateSlashes <- paste(month(desiredLatestDate),
                                     day(desiredLatestDate),
                                     (year(desiredLatestDate) - 2000), sep="/")
