@@ -265,7 +265,7 @@ assembleSomeBoxPlot <- function(res, theTitle, xlabel, ylabel,
   clampedList <- clampDataIfRequested(finitizedPlotData, clampFactor)
   plotData    <- clampedList$plotData
   
-  palette("ggplot2")
+  palette("default")
   
   p <- ggplot(data = plotData)
   
@@ -501,7 +501,7 @@ assembleRatioDeltaTrendPlot <- function(numeratorFrame, denominatorFrame,
   dateLabels <- res$dateLabels
   dateLabels <- res$plotData$date
   
-  palette("ggplot2")
+  palette("default")
   
   p <- ggplot(data = res$plotData)
   
