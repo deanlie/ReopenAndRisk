@@ -167,7 +167,7 @@ computePlotDataDirectFromCumulative <- function(aFrame, chooseCounty,
                                                 countyChoices, stateChoices,
                                                 timeWindow,
                                                 tibbleName = "from computePlotDataDirectFromCumulative",
-                                                traceThisRoutine = TRUE, prepend = "CALLER??") {
+                                                traceThisRoutine = FALSE, prepend = "CALLER??") {
   myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered computePlotDataDirectFromCumulative\n")
