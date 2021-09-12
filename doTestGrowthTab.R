@@ -1,6 +1,21 @@
-source("./loadUSPeopleTestedData.R")
 source("./state_abbrev_lookup.R")
 source("./assemblePlotObject.R")
+
+testGrowthHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
+  theText <- paste(tags$h4("Changes in Amount of Testing"),
+                   tags$p("The data used for this tab is not updated as regularly as the
+                            data for cases and mortality, and is not always reliable. Uneven updates
+                            can result in numbers which change the scale so much that the resulting
+                            chart is unreadable. To prevent that, these graphs do not display data
+                            which is far outside the range of the bulk of the data. Dots along the
+                            top or bottom of the chart are not real data."),
+                   tags$p("The amount of testing should generally not be decreasing."),
+                   tags$p("A downward sloping trend line is not necessarily a problem. It just means
+                            that the amount of testing is not growing as fast as it used to be.
+                            So long as the growth rate is above 0 the number of tests is increasing."),
+                   sep="")
+  HTML(theText)
+}
 
 dataForTestGrowthPlots <- function(countyChoices, movingAvg, stateChoices) {
   if (is.null(stateChoices)) {
@@ -19,22 +34,6 @@ dataForTestGrowthPlots <- function(countyChoices, movingAvg, stateChoices) {
   theData
 }
 
-testGrowthHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
-  theText <- paste(tags$h4("Changes in Amount of Testing"),
-                   tags$p("The data used for this tab is not updated as regularly as the
-                            data for cases and mortality, and is not always reliable. Uneven updates
-                            can result in numbers which change the scale so much that the resulting
-                            chart is unreadable. To prevent that, these graphs do not display data
-                            which is far outside the range of the bulk of the data. Dots along the
-                            top or bottom of the chart are not real data."),
-                   tags$p("The amount of testing should generally not be decreasing."),
-                   tags$p("A downward sloping trend line is not necessarily a problem. It just means
-                            that the amount of testing is not growing as fast as it used to be.
-                            So long as the growth rate is above 0 the number of tests is increasing."),
-                   sep="")
-  HTML(theText)
-}
-
 plotTestGrowthBoxplots <- function(chooseCounty, movingAvg, countyChoices,
                                    stateChoices, timeWindow) {
   if (is.null(stateChoices)) {
@@ -48,10 +47,11 @@ plotTestGrowthBoxplots <- function(chooseCounty, movingAvg, countyChoices,
   } else {
     title <- "COVID Testing Growth Distribution"
   }
-  
+  # County data is not available, passing data to plot routine just
+  #   results in loss of dots for selected states
   assembleGrowthBoxPlot(theData,
-                        chooseCounty,
-                        countyChoices,
+                        FALSE, # chooseCounty,
+                        NULL, # countyChoices,
                         stateChoices,
                         title,
                         paste("Last", timeWindow, "days"),
