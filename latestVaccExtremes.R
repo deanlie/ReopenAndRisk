@@ -59,9 +59,13 @@ makeFullyVaccDataIfNeeded <- function(tooMuchData, vaccChoice,
 }
 
 latestVaccExtremes <- function(aTibble, vaccChoice, nTop, nBot) {
-  theData <- makeFullyVaccDataIfNeeded(aTibble, vaccChoice)
-  TwoCols <- theData[, c(2, dim(theData)[2])]
-  names(TwoCols) <- c("Combined_Key", "Last")
+  zapCommaUS <- function(aString) {
+    return(str_match(aString, "(.*), US")[,2])
+  }
+  theData <- makeFullyVaccDataIfNeeded(aTibble, vaccChoice) %>%
+    mutate(State = zapCommaUS(Combined_Key), .before = Combined_Key, .keep = "all")
+  TwoCols <- theData[, c(1, dim(theData)[2])]
+  names(TwoCols) <- c("State", "Last")
   arrangedTibble <- as_tibble(TwoCols) %>%
     arrange(Last)
   topStuff <- arrangedTibble %>%
