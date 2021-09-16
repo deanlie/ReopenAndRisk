@@ -4,6 +4,8 @@
 .RData
 .Ruserdata
 *.Rproj
+*.txt
+*.dcf
 BackupScripts*
 DATA/
 DEVELOPMENT/
