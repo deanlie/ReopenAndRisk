@@ -207,10 +207,12 @@ getVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = "") {
   return(preparedData)
 }
 
-gatheredVaccDataByGeography <- function(traceThisRoutine = FALSE) {
+gatheredVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
-    print("in gatheredVaccDataByGeography")
+    cat(file = stderr(), prepend, "Entered gatheredVaccDataByGeography\n")
   }
+
   theDate <- today("EST")
   columnDate <- paste(month(theDate),
                       day(theDate),
@@ -224,7 +226,7 @@ gatheredVaccDataByGeography <- function(traceThisRoutine = FALSE) {
            .keep = "none")
   
   if (traceThisRoutine) {
-    print("in gatheredVaccDataByGeography (2)")
+    cat(file = stderr(), prepend, "Leaving gatheredVaccDataByGeography\n")
   }
   
   return(allData)  

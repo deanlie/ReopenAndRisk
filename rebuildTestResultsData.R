@@ -90,12 +90,12 @@ checkDateForHospitalData <- function(fileDate) {
 
 # OK, this returned an empty tibble after checking all data files
 checkForHospitalData <- function() {
-  nDates = 95
+  nDates = 60
   firstDate <- Sys.Date() - nDates
 
   buildingHospDataTibble <- tibble(Province_State = c(NA), Last_Update = c(NA),
                                    People_Hospitalized = c(NA), Hospitalization_Rate = c(NA))
-  for (i in 0:(nDates - 1)) { # 0:94
+  for (i in 0:(nDates - 1)) { # 0:59
     columnDate <- firstDate + i
     
     if (columnDate >= Sys.Date()) {
@@ -118,14 +118,14 @@ collectDateConstantColumns <- function(stateName, fileDate) {
 }
 
 collectConstantColumnsForState <- function(stateName) {
-  nDates = 95
+  nDates = 60
   firstDate <- Sys.Date() - nDates
 
   buildingConstDataTibble <- tibble(Province_State = NA, Country_Region = NA,
                                     Lat = NA, Long_ = NA, FIPS = NA,
                                     UID = NA, ISO3 = NA)
   
-  for (i in 0:(nDates - 1)) { # 0:94
+  for (i in 0:(nDates - 1)) { # 0:59
     columnDate <- firstDate + i
     
     if (columnDate >= Sys.Date()) {
@@ -235,10 +235,9 @@ checkComputableForDateRange <- function(startDateString, stopDateString, MaxErro
   }
 }
   
-
 rebuildTotalTestResultsFile <- function() {
   # First, let's be sure we have the dates in the format we need
-  nDates = 90
+  nDates = 60
   firstDate <- Sys.Date() - nDates
   
   buildingStateTibble <- read_csv(paste(localDataDirectory(), "US_State_Total_Test_Results.csv", sep = ""),
@@ -251,7 +250,7 @@ rebuildTotalTestResultsFile <- function() {
                                col_types = myTSColTypes()) %>%
     select(Combined_Key, Population)
     
-  for (i in 0:(nDates - 1)) { # 0:89
+  for (i in 0:(nDates - 1)) { # 0:59
     columnDate <- firstDate + i
 
     if (columnDate >= Sys.Date()) {
@@ -274,6 +273,9 @@ rebuildTotalTestResultsFile <- function() {
       summarise(Combined_Key = "US", Total_Test_Results = sum(Total_Test_Results))
     
     # I couldn't figure out how to rename the column with "mutate"
+    # ANS:  columnDate <- <new column name>
+    #       "{columnDate}" := <old column name>,
+
     names(newStateDataTibble)[3] <- columnName
     names(newUSDataTibble)[2] <- columnName
     
