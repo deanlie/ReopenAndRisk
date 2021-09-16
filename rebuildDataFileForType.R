@@ -56,14 +56,14 @@ collectDateConstantColumns <- function(stateName, fileDate) {
 }
 
 collectConstantColumnsForState <- function(stateName) {
-  nDates = 95
+  nDates = 60
   firstDate <- Sys.Date() - nDates
   
   buildingConstDataTibble <- tibble(Province_State = NA, Country_Region = NA,
                                     Lat = NA, Long_ = NA, FIPS = NA,
                                     UID = NA, ISO3 = NA)
   
-  for (i in 0:(nDates - 1)) { # 0:94
+  for (i in 0:(nDates - 1)) { # 0:59
     columnDate <- firstDate + i
     
     if (columnDate >= Sys.Date()) {
