@@ -167,7 +167,7 @@ computePlotDataDirectFromCumulative <- function(aFrame, chooseCounty,
                                                 countyChoices, stateChoices,
                                                 timeWindow,
                                                 tibbleName = "from computePlotDataDirectFromCumulative",
-                                                traceThisRoutine = FALSE, prepend = "CALLER??") {
+                                                traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered computePlotDataDirectFromCumulative\n")
@@ -199,26 +199,36 @@ computePlotDataDirectFromCumulative <- function(aFrame, chooseCounty,
 computeEvenZeroPlotDataDirect <- function(aFrame, chooseCounty,
                                           countyChoices, stateChoices,
                                           timeWindow,
-                                          tibbleName = "from computeEvenZeroPlotDataDirect") {
-  traceThisRoutine = FALSE
-  myPrepend  <- "From computeEvenZeroPlotDataDirect"
-  computePlotDataFromFrame(computeNewOnDayAndGrowthRate(aFrame,
-                                                        today("EST"),
-                                                        timeWindow,
-                                                        getGrowthRate = FALSE,
-                                                        nonzeroOnly = FALSE,
-                                                        tibbleName = tibbleName,
-                                                        traceThisRoutine = traceThisRoutine,
-                                                        prepend = myPrepend)$d2,
-                           chooseCounty,
-                           countyChoices,
-                           stateChoices)
+                                          tibbleName = "<?>",
+                                          traceThisRoutine = FALSE, prepend = "") {
+  myPrepend  <- paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered computeEvenZeroPlotDataDirect\n")
+  }
+
+  result <- computePlotDataFromFrame(computeNewOnDayAndGrowthRate(aFrame,
+                                                                  today("EST"),
+                                                                  timeWindow,
+                                                                  getGrowthRate = FALSE,
+                                                                  nonzeroOnly = FALSE,
+                                                                  tibbleName = tibbleName,
+                                                                  traceThisRoutine = traceThisRoutine,
+                                                                  prepend = myPrepend)$d2,
+                                     chooseCounty,
+                                     countyChoices,
+                                     stateChoices)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving computeEvenZeroPlotDataDirect\n")
+  }
+
+  return(result)
 }
 
 computeGrowthPlotDataFromCumulative <- function(aFrame, chooseCounty,
                                                 countyChoices, stateChoices,
                                                 timeWindow,
-                                                tibbleName = "from computeGrowthPlotDataFromCumulative",
+                                                tibbleName = "<?>",
                                                 traceThisRoutine = FALSE, prepend = "") {
   myPrepend  <- paste("  ", prepend)
   if (traceThisRoutine) {
@@ -338,7 +348,7 @@ assembleDirectBoxPlot <- function(aFrame, chooseCounty,
                                   countyChoices, stateChoices,
                                   theTitle, xlabel, ylabel,
                                   clampFactor = 3, timeWindow = 14,
-                                  tibbleName = "from assembleGrowthBoxPlot",
+                                  tibbleName = "from assembleDirectBoxPlot",
                                   traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
@@ -357,6 +367,7 @@ assembleDirectBoxPlot <- function(aFrame, chooseCounty,
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving assembleDirectBoxPlot\n")
   }
+
   return(result)
 }
 
@@ -364,8 +375,9 @@ assembleGrowthBoxPlot <- function(aFrame, chooseCounty,
                                   countyChoices, stateChoices,
                                   theTitle, xlabel, ylabel,
                                   clampFactor = 3, timeWindow = 14,
-                                  tibbleName = "from assembleGrowthBoxPlot",
-                                  traceThisRoutine = FALSE, prepend = "") {
+                                  tibbleName = "<?>",
+                                  traceThisRoutine = FALSE,
+                                  prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered assembleGrowthBoxPlot\n")
@@ -483,7 +495,7 @@ assembleGrowthTrendPlot <- function(aFrame, chooseCounty,
     if (dim(filter(res$plotData, region %in% res$AreasOfInterest))[1] <= 0) {
       res <- computeEvenZeroPlotDataDirect(aFrame, chooseCounty,
                                            countyChoices, stateChoices,
-                                         timeWindow)
+                                           timeWindow)
 
       theTitle <- str_replace(theTitle, "Growth", "Number")
       # we have:      title <- "COVID Case Growth Trends for Selected States"
@@ -652,10 +664,12 @@ assembleRatioDeltaTrendPlot <- function(numeratorFrame, denominatorFrame,
   p <- p + scale_x_continuous(breaks = 1:length(unique(dateLabels)),
                               labels = res$dateLabels, minor_breaks = NULL)
 
+  result <- list(theData = res$plotData, thePlot = p)
+
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving assembleRatioDeltaTrendPlot\n")
   }
-  
-  list(theData = res$plotData, thePlot = p)
+
+  return(result)
 }
 
