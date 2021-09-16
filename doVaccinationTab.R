@@ -22,7 +22,14 @@ filteredVaccData <- function(forBoxplot, justUS, movingAvg, vaccChoice) {
     filter(Datum == vaccDatumKeyFromChoice(vaccChoice))
 }
 
-vaccHeaderHTML <- function(movingAvg, vaccChoice) {
+vaccHeaderHTML <- function(movingAvg, vaccChoice,
+                           traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered vaccHeaderHTML\n")
+    cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
+  }
+
   theData <- filteredVaccData(TRUE, FALSE, movingAvg, vaccChoice)
   
   nMin <- 3
@@ -54,6 +61,10 @@ vaccHeaderHTML <- function(movingAvg, vaccChoice) {
                    tags$p("Note that 'Total Doses' will be above 100% when close to 50% of the population
                             has had a second dose!"),
                    sep="")
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving vaccHeaderHTML\n")
+  }
   
   HTML(theText)
 }
