@@ -30,15 +30,15 @@ vaccHeaderHTML <- function(movingAvg, vaccChoice,
     cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
   }
 
-  theData <- filteredVaccData(TRUE, FALSE, movingAvg, vaccChoice)
+  tooMuchData <- filteredVaccData(TRUE, FALSE, movingAvg, vaccChoice)
 
   if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "after theData <- \n")
+    cat(file = stderr(), myPrepend, "after tooMuchData <- \n")
   }
   
   nMin <- 3
   nMax <- 3
-  extremaStates <- latestVaccExtremes(theData, vaccChoice, nMin, nMax)
+  extremaStates <- latestVaccExtremes(tooMuchData, vaccChoice, nMin, nMax)
 
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "after extremaStates <- \n")
@@ -77,7 +77,7 @@ vaccHeaderHTML <- function(movingAvg, vaccChoice,
                    tags$p("Note that 'Total Doses' will be above 100% when close to 50% of the population
                             has had a second dose!"),
                    sep="")
-  
+
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving vaccHeaderHTML\n")
   }
