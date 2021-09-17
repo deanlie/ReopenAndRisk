@@ -147,19 +147,14 @@ plotMortalityGrowthBoxplots <- function(chooseCounty,
   } else {
     theData <- dataForMortalityPlots(TRUE, countyChoices, movingAvg, stateChoices)
   }
-  
-  if (movingAvg) {
-    title <- "COVID Mortality Growth Distribution, 7 day moving average"
-  } else{
-    title <- "COVID Mortality Growth Distribution"
-  }
 
   assembleGrowthBoxPlot(theData, chooseCounty,
                         countyChoices,
                         stateChoices,
-                        title,
-                        paste("Last", timeWindow, "days"),
-                        "Daily growth rate: new day's deaths as percent of previous total deaths",
+                        mortalityPlotTitle(TRUE, is.null(stateChoices), movingAvg,
+                                           is.null(countyChoices), stateChoices[1]),
+                        timeWindowXLabel(timeWindow),
+                        mortalityGrowthYLabel(),
                         clampFactor = 3, timeWindow = timeWindow)
 }
 
@@ -168,24 +163,14 @@ plotMortalityGrowthTrend <- function(chooseCounty,
                                      countyChoices,
                                      stateChoices,
                                      timeWindow) {
-  if (is.null(stateChoices)) {
-    title <- "COVID Mortality Growth Trend for US as a whole"
-  } else {
-    if (chooseCounty && !(is.null(countyChoices))) {
-      title <- paste("COVID Mortality Growth Trends for Selected ",
-                     admin1TypeFor(stateChoices[1])$UC_PL,
-                     sep = "")
-    } else {
-      title <- "COVID Mortality Growth Trends for Selected States"
-    }
-  }
   theData <- dataForMortalityPlots(FALSE, countyChoices, movingAvg, stateChoices)
 
   assembleGrowthTrendPlot(theData, chooseCounty,
                           countyChoices,
                           stateChoices,
-                          title,
-                          paste("Last", timeWindow, "days"),
-                          "Daily growth rate: new day's deaths as percent of previous total deaths",
+                          mortalityPlotTitle(FALSE, is.null(stateChoices), movingAvg,
+                                             is.null(countyChoices), stateChoices[1]),
+                          timeWindowXLabel(timeWindow),
+                          mortalityGrowthYLabel(),
                           timeWindow)
 }
