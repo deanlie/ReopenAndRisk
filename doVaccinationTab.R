@@ -154,7 +154,7 @@ plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
                           traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered plotVaccBoxplots\n")
+    cat(file = stderr(), prepend, "Entered plotVaccTrend\n")
     cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
   }
 
@@ -199,11 +199,11 @@ plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
                                     timeWindowXLabel(timeWindow),
                                     vaccYLabel(),
                                     timeWindow = timeWindow,
-                                    tibbleName = "from plotVaccBoxplots",
+                                    tibbleName = "from plotVaccTrend",
                                     traceThisRoutine = traceThisRoutine, prepend = myPrepend)
 
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving plotVaccBoxplots\n")
+    cat(file = stderr(), prepend, "Leaving plotVaccTrend\n")
   }
   
   return(result)
