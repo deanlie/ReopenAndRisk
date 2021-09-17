@@ -35,7 +35,7 @@ vaccHeaderHTML <- function(movingAvg, vaccChoice,
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "after tooMuchData <- \n")
   }
-  
+
   nMin <- 3
   nMax <- 3
   extremaStates <- latestVaccExtremes(tooMuchData, vaccChoice, nMin, nMax)
@@ -103,20 +103,27 @@ vaccYLabel <- function() {
   "Vaccinations, percent of population"
 }
 
-plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
+plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
+                             traceThisRoutine = FALSE, prepend = "") {
+  myPrepend <- paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered plotVaccTrend\n")
+    cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
+  }
+
   theData <- filteredVaccData(TRUE, is.null(stateChoices), movingAvg, vaccChoice)
   
   timeWindow <- min(timeWindow, dim(theData)[2] - 4)
   
-  assembleDirectBoxPlot(theData, FALSE, NULL,
-                        stateChoices,
-                        vaccPlotTitle(vaccChoice,
-                                      TRUE,
-                                      is.null(stateChoices),
-                                      movingAvg),
-                        timeWindowXLabel(timeWindow),
-                        vaccYLabel(),
-                        clampFactor = 3, timeWindow = timeWindow)
+  result <- assembleDirectBoxPlot(theData, FALSE, c(""),
+                                  stateChoices,
+                                  vaccPlotTitle(vaccChoice,
+                                                TRUE,
+                                                is.null(stateChoices),
+                                                movingAvg),
+                                  timeWindowXLabel(timeWindow),
+                                  vaccYLabel(),
+                                  clampFactor = 3, timeWindow = timeWindow)
 }
 
 plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
