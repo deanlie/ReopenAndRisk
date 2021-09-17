@@ -207,13 +207,13 @@ computeEvenZeroPlotDataDirect <- function(aFrame, chooseCounty,
   }
 
   result <- computePlotDataFromFrame(computeNewOnDayAndGrowthRate(aFrame,
-                                                        today("EST"),
-                                                        timeWindow,
-                                                        getGrowthRate = FALSE,
-                                                        nonzeroOnly = FALSE,
-                                                        tibbleName = tibbleName,
-                                                        traceThisRoutine = traceThisRoutine,
-                                                        prepend = myPrepend)$d2,
+                                                                  today("EST"),
+                                                                  timeWindow,
+                                                                  getGrowthRate = FALSE,
+                                                                  nonzeroOnly = FALSE,
+                                                                  tibbleName = tibbleName,
+                                                                  traceThisRoutine = traceThisRoutine,
+                                                                  prepend = myPrepend)$d2,
                                      chooseCounty,
                                      countyChoices,
                                      stateChoices)
@@ -443,25 +443,29 @@ assembleSomeTrendPlot <- function(res, theTitle, xlabel, ylabel,
 assembleDirectTrendPlot <- function(aFrame, chooseCounty,
                                     countyChoices, stateChoices,
                                     theTitle, xlabel, ylabel,
-                                    timeWindow = 14, nFirst = 4,
+                                    timeWindow = 14,
                                     tibbleName = "from assembleDirectTrendPlot",
                                     traceThisRoutine = FALSE,
                                     prepend = "") {
-  myPrepend = paste("  ", prepend, sep = "")
+  myPrepend <- paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered assembleDirectTrendPlot\n")
   }
+
   res <- computePlotDataDirectFromCumulative(aFrame, chooseCounty,
                                              countyChoices, stateChoices,
                                              timeWindow,
                                              tibbleName = tibbleName,
                                              traceThisRoutine = traceThisRoutine,
                                              prepend = myPrepend)
-  p <- assembleSomeTrendPlot(res, theTitle, xlabel, ylabel)
+  p <- assembleSomeTrendPlot(res, theTitle, xlabel, ylabel,
+                             traceThisRoutine = traceThisRoutine,
+                             prepend = myPrepend)
   result <- list(thePlot = p,
                  diags   = list(theData      = res$plotData,
                                 clampedN     = NA,
                                 boxplotStats = NA))
+
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving assembleDirectTrendPlot\n")
   }
@@ -471,7 +475,7 @@ assembleDirectTrendPlot <- function(aFrame, chooseCounty,
 assembleGrowthTrendPlot <- function(aFrame, chooseCounty,
                                     countyChoices, stateChoices,
                                     theTitle, xlabel, ylabel,
-                                    timeWindow = 14, nFirst = 4,
+                                    timeWindow = 14,
                                     tibbleName = "from assembleGrowthTrendPlot",
                                     traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
@@ -523,10 +527,9 @@ assembleGrowthTrendPlot <- function(aFrame, chooseCounty,
 
 ratioDeltaFrame <- function(numeratorFrame, denominatorFrame,
                             timeWindow,
-                            nFirstNum = 4, nFirstDenom = 4,
-                            numTibbleName = "from ratioDeltaFrame numerator",
-                            denomTibbleName = "from ratioDeltaFrame denominator",
-                            traceThisRoutine = FALSE, prepend = "CALLER??") {
+                            numTibbleName = "<?>",
+                            denomTibbleName = "<?>",
+                            traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered ratioDeltaFrame")
@@ -576,17 +579,26 @@ assembleRatioDeltaBoxPlot <- function(numeratorFrame, denominatorFrame,
                                       stateChoices, theTitle, xlabel, ylabel,
                                       clampFactor = 3,
                                       timeWindow = 14,
-                                      nFirstNum = 4,
-                                      nFirstDenom = 4,
+                                      numTibbleName = "<?>",
+                                      denomTibbleName = "<??>",
                                       traceThisRoutine = FALSE,
                                       prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered assembleRatioDeltaBoxPlot\n")
+  }
+
   myDataFrame <- ratioDeltaFrame(numeratorFrame, denominatorFrame, timeWindow,
-                                 nFirstNum = nFirstNum, nFirstDenom = nFirstDenom)
+                                 numTibbleName = numTibbleName,
+                                 denomTibbleName = denomTibbleName,
+                                 traceThisRoutine = traceThisRoutine,
+                                 prepend = myPrepend)
   res <- computePlotDataDirectFromCumulative(myDataFrame, 
                                              FALSE, # OUCH chooseCounty,
                                              NULL,  # OUCH countyChoices,
-                                             stateChoices,
-                                             timeWindow)
+                                             stateChoices, timeWindow,
+                                             traceThisRoutine = traceThisRoutine,
+                                             prepend = myPrepend)
 
   myBreaks <- unique(res$plotData$date)
   dateLabels <- res$dateLabels
@@ -620,17 +632,20 @@ assembleRatioDeltaBoxPlot <- function(numeratorFrame, denominatorFrame,
 assembleRatioDeltaTrendPlot <- function(numeratorFrame, denominatorFrame,
                                         stateChoices, theTitle, xlabel, ylabel,
                                         timeWindow = 14,
-                                        nFirstNum = 4,
-                                        nFirstDenom = 4,
+                                        numTibbleName = "<?>",
+                                        denomTibbleName = "<??>",
                                         traceThisRoutine = FALSE,
                                         prepend = "") {
-  myPrepend = paste("  ", prepend, sep = "")
+  myPrepend <- paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered assembleRatioDeltaTrendPlot\n")
   }
 
   myDataFrame <- ratioDeltaFrame(numeratorFrame, denominatorFrame, timeWindow,
-                                 nFirstNum = nFirstNum, nFirstDenom = nFirstDenom)
+                                 numTibbleName = numTibbleName,
+                                 denomTibbleName = denomTibbleName,
+                                 traceThisRoutine = traceThisRoutine,
+                                 prepend = myPrepend)
   res <- computePlotDataDirectFromCumulative(myDataFrame,
                                              FALSE, # OUCH chooseCounty,
                                              NULL,  # OUCH countyChoices,

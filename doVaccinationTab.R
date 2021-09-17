@@ -119,5 +119,5 @@ plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
                           timeWindowXLabel(timeWindow),
                           vaccYLabel(),
                           timeWindow = timeWindow, nFirst = 3,
-                          tibbleName = "from plotVaccTrend")
+                          tibbleName = "plotVaccTrend's 'theData'")
 }
