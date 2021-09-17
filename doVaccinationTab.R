@@ -57,6 +57,18 @@ vaccRBoxHTML <- function(movingAvg, vaccChoice) {
 vaccRTrendHTML <- function(movingAvg, vaccChoice) {
 }
 
+vaccPlotTitle <- function(vaccChoice, forBoxplot, justUS, movingAvg) {
+  baseTitleLookup <- c("First Doses"="First Vaccine Doses",
+                       "Second Doses"="Second Vaccine Doses",
+                       "Total Doses"="Total Vaccine Doses Administered",
+                       "People Fully Vaccinated"="People Fully Vaccinated")
+  title <- plotTitle(unname(baseTitleLookup[vaccChoice]), forBoxplot, justUS, movingAvg)
+}
+
+vaccYLabel <- function() {
+  "Vaccinations, percent of population"
+}
+
 vaccPlotXLabels <- function(timeWindow) {
   return(paste("Last", timeWindow, "days"))
 }
