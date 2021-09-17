@@ -12,8 +12,6 @@ library(ggplot2)
 library(tidyverse)
 
 source("mostRecentDataDate.R")
-source("updateTimeSeriesDataFilesAsNecessary.R")
-source("updateStateLevelSerializedDataFiles.R")
 source("assemblePlotObject.R")
 source("loadAllUSData.R")
 source("reopenPlotUtilities.R")
