@@ -126,7 +126,12 @@ plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
                                   clampFactor = 3, timeWindow = timeWindow)
 }
 
-plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
+plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
+                          traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered ROUTINE_NAME\n")
+  }
   theData <- filteredVaccData(FALSE, is.null(stateChoices), movingAvg, vaccChoice)
   
   timeWindow = min(timeWindow, dim(theData)[2] - 4)
