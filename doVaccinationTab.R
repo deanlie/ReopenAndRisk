@@ -107,7 +107,7 @@ plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
                              traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered plotVaccTrend\n")
+    cat(file = stderr(), prepend, "Entered plotVaccBoxplots\n")
     cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
   }
 
