@@ -1,8 +1,30 @@
 source("latestVaccExtremes.R")
 
+activeVaccData <- function(forBoxplot, justUS, movingAvg) {
+  if (forBoxplot || !justUS) {
+    if (movingAvg) {
+      activeData <- US_State_Vaccination_Pcts_A7
+    } else {
+      activeData <- US_State_Vaccination_Pcts
+    }
+  } else {
+    if (movingAvg) {
+      activeData <- US_Vaccination_Pcts_A7
+    } else {
+      activeData <- US_Vaccination_Pcts
+    }
+  }
+  activeData
+}
+
+filteredVaccData <- function(forBoxplot, justUS, movingAvg, vaccChoice) {
+  theData <- activeVaccData(forBoxplot, justUS, movingAvg) %>%
+    filter(Datum == vaccDatumKeyFromChoice(vaccChoice))
+}
+
 vaccHeaderHTML <- function(movingAvg, vaccChoice,
                            traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend)
+  myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered vaccHeaderHTML\n")
     cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
