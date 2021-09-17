@@ -147,8 +147,6 @@ plotMortalityGrowthBoxplots <- function(chooseCounty,
   } else {
     theData <- dataForMortalityPlots(TRUE, countyChoices, movingAvg, stateChoices)
   }
-  
-  mortalityDataPlotted <<- theData #OUCH for debugging
 
   assembleGrowthBoxPlot(theData, chooseCounty,
                         countyChoices,

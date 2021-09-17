@@ -24,7 +24,7 @@ filteredVaccData <- function(forBoxplot, justUS, movingAvg, vaccChoice) {
 
 vaccHeaderHTML <- function(movingAvg, vaccChoice,
                            traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend, sep = "")
+  myPrepend <- paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered vaccHeaderHTML\n")
     cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
