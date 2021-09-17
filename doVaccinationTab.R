@@ -30,21 +30,33 @@ vaccHeaderHTML <- function(movingAvg, vaccChoice,
     cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
   }
 
-  if (movingAvg) {
-    tooMuchData <- US_State_Vaccination_Pcts_A7
-  } else {
-    tooMuchData <- US_State_Vaccination_Pcts
+  tooMuchData <- filteredVaccData(TRUE, FALSE, movingAvg, vaccChoice)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "after tooMuchData <- \n")
   }
-  
+
   nMin <- 3
   nMax <- 3
   extremaStates <- latestVaccExtremes(tooMuchData, vaccChoice, nMin, nMax)
-  
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "after extremaStates <- \n")
+  }
+
   theMaxPct <- format(as.double(extremaStates$bot[nMax, 2]), digits=3)
   max2Pct   <- format(as.double(extremaStates$bot[nMax - 1, 2]), digits=3)
   theMinPct <- format(as.double(extremaStates$top[1, 2]), digits=3)
   min2Pct   <- format(as.double(extremaStates$top[2, 2]), digits=3)
-  theText <- paste(tags$h4(paste("Vaccination", vaccChoice, "Data")),
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "theMaxPct =", theMaxPct, "\n")
+    cat(file = stderr(), myPrepend, "max2Pct =", max2Pct, "\n")
+    cat(file = stderr(), myPrepend, "theMinPct =", theMinPct, "\n")
+    cat(file = stderr(), myPrepend, "min2Pct =", min2Pct, "\n")
+  }
+
+  theText <- paste(tags$h4(paste("Vaccinations,", vaccChoice)),
                    tags$p("Vaccination data is shown by percent of state or of US as a whole."),
                    tags$p(paste("Highest ", vaccChoice, " rate: ",
                                 extremaStates$bot[nMax, 1],
@@ -91,17 +103,9 @@ vaccYLabel <- function() {
   "Vaccinations, percent of population"
 }
 
-vaccPlotXLabels <- function(timeWindow) {
-  return(paste("Last", timeWindow, "days"))
-}
-
-vaccPlotYLabels <- function() {
-  return("Daily vaccination percentages")
-}
-
 plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
                              traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend)
+  myPrepend <- paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered plotVaccBoxplots\n")
     cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
@@ -130,12 +134,11 @@ plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
   
   vaccTrendData <<- list(full=tooMuchData, filtered=theData)
 
-  result <- assembleDirectBoxPlot(theData, FALSE,
-                                  c(""),
+  result <- assembleDirectBoxPlot(theData, FALSE, c(""),
                                   stateChoices,
                                   title,
-                                  vaccPlotXLabels(timeWindow),
-                                  vaccPlotYLabels(),
+                                  timeWindowXLabel(timeWindow),
+                                  vaccYLabel(),
                                   clampFactor = 3, timeWindow = timeWindow,
                                   traceThisRoutine = traceThisRoutine, prepend = myPrepend)
 
@@ -148,9 +151,9 @@ plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
 
 plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
                           traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend)
+  myPrepend <- paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered plotVaccTrend\n")
+    cat(file = stderr(), prepend, "Entered plotVaccBoxplots\n")
     cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
   }
 
@@ -192,14 +195,14 @@ plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
                                     NULL,
                                     stateChoices,
                                     title,
-                                    vaccPlotXLabels(timeWindow),
-                                    vaccPlotYLabels(),
+                                    timeWindowXLabel(timeWindow),
+                                    vaccYLabel(),
                                     timeWindow = timeWindow,
-                                    tibbleName = "from plotVaccTrend",
+                                    tibbleName = "from plotVaccBoxplots",
                                     traceThisRoutine = traceThisRoutine, prepend = myPrepend)
 
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving plotVaccTrend\n")
+    cat(file = stderr(), prepend, "Leaving plotVaccBoxplots\n")
   }
   
   return(result)
