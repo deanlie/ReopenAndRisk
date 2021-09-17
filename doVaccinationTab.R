@@ -112,10 +112,8 @@ plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
   }
 
   if (movingAvg) {
-    title <- paste("Vaccination", vaccChoice, "State Distribution, 7 day moving average")
     tooMuchData <- US_State_Vaccination_Pcts_A7
   } else {
-    title <- paste("Vaccination", vaccChoice, "State Distribution")
     tooMuchData <- US_State_Vaccination_Pcts
   }
 
@@ -136,7 +134,10 @@ plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
 
   result <- assembleDirectBoxPlot(theData, FALSE, c(""),
                                   stateChoices,
-                                  title,
+                                  vaccPlotTitle(vaccChoice,
+                                                TRUE,
+                                                is.null(stateChoices),
+                                                movingAvg),
                                   timeWindowXLabel(timeWindow),
                                   vaccYLabel(),
                                   clampFactor = 3, timeWindow = timeWindow,
