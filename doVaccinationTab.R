@@ -36,6 +36,10 @@ vaccHeaderHTML <- function(movingAvg, vaccChoice,
     cat(file = stderr(), myPrepend, "after tooMuchData <- \n")
   }
 
+  if (traceThisRoutine) {
+      cat(file = stderr(), myPrepend, "after tooMuchData <- \n")
+  }
+
   nMin <- 3
   nMax <- 3
   extremaStates <- latestVaccExtremes(tooMuchData, vaccChoice, nMin, nMax)
