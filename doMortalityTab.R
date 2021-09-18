@@ -3,8 +3,8 @@ source("./assemblePlotObject.R")
 
 library(stringr)
 
-dataForMortalityPlots <- function(countyChoices, movingAvg, stateChoices) {
-  if (is.null(stateChoices)) {
+dataForMortalityPlots <- function(forBoxplots, countyChoices, movingAvg, stateChoices) {
+  if ((!forBoxplots) && is.null(stateChoices)) {
     if (movingAvg) {
       theData <- US_Deaths_A7
     } else {
@@ -128,15 +128,24 @@ mortalityHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
   HTML(theText)
 }
 
+mortalityPlotTitle <- function(forBoxplot, justUS, movingAvg, justStates, state1) {
+  title <- plotTitle("Covid Mortality Growth",
+                     forBoxplot, justUS, movingAvg, justStates, state1)
+}
+
+mortalityGrowthYLabel <- function() {
+  "Daily growth rate: new day's deaths as percent of previous total deaths"
+}
+
 plotMortalityGrowthBoxplots <- function(chooseCounty,
                                         movingAvg,
                                         countyChoices,
                                         stateChoices,
                                         timeWindow) {
   if (is.null(stateChoices)) {
-    theData <- dataForMortalityPlots(NULL, movingAvg, "AK")
+    theData <- dataForMortalityPlots(TRUE, NULL, movingAvg, NULL)
   } else {
-    theData <- dataForMortalityPlots(countyChoices, movingAvg, stateChoices)
+    theData <- dataForMortalityPlots(TRUE, countyChoices, movingAvg, stateChoices)
   }
   
   if (movingAvg) {
@@ -170,7 +179,7 @@ plotMortalityGrowthTrend <- function(chooseCounty,
       title <- "COVID Mortality Growth Trends for Selected States"
     }
   }
-  theData <- dataForMortalityPlots(countyChoices, movingAvg, stateChoices)
+  theData <- dataForMortalityPlots(FALSE, countyChoices, movingAvg, stateChoices)
 
   assembleGrowthTrendPlot(theData, chooseCounty,
                           countyChoices,
