@@ -217,11 +217,13 @@ server <- function(input, output, session) {
   output$vaccRBox <- renderPlot({plotVaccBoxplots(input$movingAvg,
                                                   input$Vaccination,
                                                   input$stateChoices,
-                                                  input$timeWindow)})
+                                                  input$timeWindow,
+                                                  traceThisRoutine = TRUE)})
   output$vaccRTrend <- renderPlot({plotVaccTrend(input$movingAvg,
                                                  input$Vaccination,
                                                  input$stateChoices,
-                                                 input$timeWindow)})
+                                                 input$timeWindow,
+                                                 traceThisRoutine = TRUE)})
 
   # "Cases" Tab
   output$caseHeaderHTML <- renderUI({caseHeaderHTML(input$chooseCounty,

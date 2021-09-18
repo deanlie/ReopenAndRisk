@@ -128,9 +128,15 @@ plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
     cat(file = stderr(), myPrepend, "dim(theData) = (", paste(dim(theData)), ")\n")
   }
   
-  timeWindow = min(timeWindow, dim(theData)[2] - 4)
+  theData1 <- filteredVaccData(TRUE, is.null(stateChoices), movingAvg, vaccChoice)
   
-  vaccTrendData <<- list(full=tooMuchData, filtered=theData)
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "dim(theData1) = (", paste(dim(theData1)), ")\n")
+  }
+  
+  timeWindow <- min(timeWindow, dim(theData)[2] - 4)
+  
+  vaccTrendData <<- list(full=tooMuchData, filtered=theData, new=theData1)
 
   result <- assembleDirectBoxPlot(theData, FALSE, c(""),
                                   stateChoices,
