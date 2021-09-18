@@ -29,8 +29,12 @@ vaccHeaderHTML <- function(movingAvg, vaccChoice,
     cat(file = stderr(), prepend, "Entered vaccHeaderHTML\n")
     cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
   }
-
-  tooMuchData <- filteredVaccData(TRUE, FALSE, movingAvg, vaccChoice)
+  
+  if (movingAvg) {
+    tooMuchData <- US_State_Vaccination_Pcts_A7    
+  } else {
+    tooMuchData <- US_State_Vaccination_Pcts    
+  }
 
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "after tooMuchData <- \n")
