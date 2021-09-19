@@ -35,7 +35,6 @@ vaccHeaderHTML <- function(movingAvg, vaccChoice,
   } else {
     tooMuchData <- US_State_Vaccination_Pcts
   }
-  # tooMuchData <- filteredVaccData(TRUE, FALSE, movingAvg, vaccChoice)
 
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "after tooMuchData <- \n")
@@ -178,7 +177,7 @@ plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
 #  theData <- filteredVaccData(FALSE, is.null(stateChoices), movingAvg, vaccChoice)
   
   timeWindow = min(timeWindow, dim(theData)[2] - 4)
-  
+
   result <- assembleDirectTrendPlot(theData, FALSE,
                                     NULL,
                                     stateChoices,
@@ -189,7 +188,8 @@ plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
                                     timeWindowXLabel(timeWindow),
                                     vaccYLabel(),
                                     timeWindow = timeWindow,
-                                    tibbleName = "plotVaccTrend's 'theData'")
+                                    tibbleName = "from plotVaccTrend",
+                                    traceThisRoutine = traceThisRoutine, prepend = myPrepend)
 
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving plotVaccTrend\n")
