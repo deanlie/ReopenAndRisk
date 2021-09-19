@@ -23,7 +23,7 @@ filteredVaccData <- function(forBoxplot, justUS, movingAvg, vaccChoice) {
 }
 
 vaccHeaderHTML <- function(movingAvg, vaccChoice) {
-  theData <- filteredVaccData(TRUE, FALSE, movingAvg, vaccChoice)
+  theData <- activeVaccData(TRUE, FALSE, movingAvg)
   
   nMin <- 3
   nMax <- 3
@@ -77,7 +77,7 @@ vaccYLabel <- function() {
 }
 
 plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
-  theData <- filteredVaccData(TRUE, is.null(stateChoices), movingAvg, vaccChoice)
+  theData <- activeVaccData(TRUE, is.null(stateChoices), movingAvg)
   
   timeWindow <- min(timeWindow, dim(theData)[2] - 4)
   
@@ -94,7 +94,7 @@ plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
 }
 
 plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
-  theData <- filteredVaccData(FALSE, is.null(stateChoices), movingAvg, vaccChoice)
+  theData <- activeVaccData(FALSE, is.null(stateChoices), movingAvg)
   
   timeWindow = min(timeWindow, dim(theData)[2] - 4)
   
