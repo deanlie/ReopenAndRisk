@@ -387,6 +387,10 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
                                               pathnameOfStateLevelUpdateDataForDate(updateDate),
                                               "))\n", sep = ""))
       }
+      if (traceThisRoutine) {
+        cat(file = stderr(), myPrepend, "class of updateTibble is",
+            class(updateTibble)[1], "\n")
+      }
       if (class(updateTibble)[1] == "try-error") {
         if (traceThisRoutine) {
           cat(file = stderr(), myPrepend,
@@ -397,7 +401,7 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FA
       } else {
         if (traceThisRoutine) {
           cat(file = stderr(), myPrepend, "We were able to read",
-              pathnameOfStateLevelUpdateDataForDate(firstDate),
+              pathnameOfStateLevelUpdateDataForDate(updateDate),
               "from local disk/SSD\n")
         }
       }
