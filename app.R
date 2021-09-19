@@ -15,7 +15,6 @@ source("mostRecentDataDate.R")
 source("assemblePlotObject.R")
 source("loadAllUSData.R")
 source("reopenPlotUtilities.R")
-
 source("doVaccinationTab.R")
 source("doCaseGrowthTab.R")
 source("doMortalityTab.R")
@@ -31,6 +30,30 @@ loadAllUSData(traceThisRoutine = currentlyTesting(), prepend = "")
 
 currentlyTestingCounties <- function() {
   currentlyTesting() & TRUE
+}
+
+defaultTimeWindowValue <- function() {
+  if (currentlyTesting()) {
+    14
+  } else {
+    14
+  }
+}
+
+defaultStateChoices <- function() {
+  if (currentlyTesting()) {
+    c("MA", "ME")
+  } else {
+    NULL
+  }
+}
+
+defaultSelectedTab <- function() {
+  if (currentlyTesting()) {
+    "Vaccination Progress"
+  } else {
+    NULL
+  }
 }
 
 defaultTimeWindowValue <- function() {
