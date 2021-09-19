@@ -30,16 +30,37 @@ vaccHeaderHTML <- function(movingAvg, vaccChoice,
     cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
   }
 
-  theData <- filteredVaccData(TRUE, FALSE, movingAvg, vaccChoice)
-  
+  if (movingAvg) {
+    tooMuchData <- US_State_Vaccination_Pcts_A7
+  } else {
+    tooMuchData <- US_State_Vaccination_Pcts
+  }
+  # theData <- filteredVaccData(TRUE, FALSE, movingAvg, vaccChoice)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "after tooMuchData <- \n")
+  }
+
   nMin <- 3
   nMax <- 3
-  extremaStates <- latestVaccExtremes(theData, nMin, nMax)
-  
+  extremaStates <- latestVaccExtremes(tooMuchData, vaccChoice, nMin, nMax)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "after extremaStates <- \n")
+  }
+
   theMaxPct <- format(as.double(extremaStates$bot[nMax, 2]), digits=3)
   max2Pct   <- format(as.double(extremaStates$bot[nMax - 1, 2]), digits=3)
   theMinPct <- format(as.double(extremaStates$top[1, 2]), digits=3)
   min2Pct   <- format(as.double(extremaStates$top[2, 2]), digits=3)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "theMaxPct =", theMaxPct, "\n")
+    cat(file = stderr(), myPrepend, "max2Pct =", max2Pct, "\n")
+    cat(file = stderr(), myPrepend, "theMinPct =", theMinPct, "\n")
+    cat(file = stderr(), myPrepend, "min2Pct =", min2Pct, "\n")
+  }
+
   theText <- paste(tags$h4(paste("Vaccinations,", vaccChoice)),
                    tags$p("Vaccination data is shown by percent of state or of US as a whole."),
                    tags$p(paste("Highest ", vaccChoice, " rate: ",
@@ -88,7 +109,14 @@ vaccYLabel <- function() {
 }
 
 plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
-  theData <- filteredVaccData(TRUE, is.null(stateChoices), movingAvg, vaccChoice)
+  if (movingAvg) {
+    tooMuchData <- US_State_Vaccination_Pcts_A7
+  } else {
+    tooMuchData <- US_State_Vaccination_Pcts
+  }
+
+  theData <- makeFullyVaccDataIfNeeded(tooMuchData, vaccChoice)
+  #  theData <- filteredVaccData(FALSE, is.null(stateChoices), movingAvg, vaccChoice)
   
   timeWindow <- min(timeWindow, dim(theData)[2] - 4)
   
@@ -100,12 +128,18 @@ plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
                                       movingAvg),
                         timeWindowXLabel(timeWindow),
                         vaccYLabel(),
-                        clampFactor = 3, timeWindow = timeWindow,
-                        nFirst = 3)
+                        clampFactor = 3, timeWindow = timeWindow)
 }
 
 plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
-  theData <- filteredVaccData(FALSE, is.null(stateChoices), movingAvg, vaccChoice)
+  if (movingAvg) {
+    tooMuchData <- US_State_Vaccination_Pcts_A7
+  } else {
+    tooMuchData <- US_State_Vaccination_Pcts
+  }
+  
+  theData <- makeFullyVaccDataIfNeeded(tooMuchData, vaccChoice)
+#  theData <- filteredVaccData(FALSE, is.null(stateChoices), movingAvg, vaccChoice)
   
   timeWindow = min(timeWindow, dim(theData)[2] - 4)
   
@@ -118,6 +152,6 @@ plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
                                         movingAvg),
                           timeWindowXLabel(timeWindow),
                           vaccYLabel(),
-                          timeWindow = timeWindow, nFirst = 3,
+                          timeWindow = timeWindow,
                           tibbleName = "plotVaccTrend's 'theData'")
 }
