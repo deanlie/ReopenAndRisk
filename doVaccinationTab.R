@@ -108,7 +108,14 @@ vaccYLabel <- function() {
   "Vaccinations, percent of population"
 }
 
-plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
+plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
+                             traceThisRoutine = FALSE, prepend = "") {
+  myPrepend <- paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered plotVaccBoxplots\n")
+    cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
+  }
+
   if (movingAvg) {
     tooMuchData <- US_State_Vaccination_Pcts_A7
   } else {
@@ -120,18 +127,31 @@ plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
   
   timeWindow <- min(timeWindow, dim(theData)[2] - 4)
   
-  assembleDirectBoxPlot(theData, FALSE, NULL,
-                        stateChoices,
-                        vaccPlotTitle(vaccChoice,
-                                      TRUE,
-                                      is.null(stateChoices),
-                                      movingAvg),
-                        timeWindowXLabel(timeWindow),
-                        vaccYLabel(),
-                        clampFactor = 3, timeWindow = timeWindow)
+  result <- assembleDirectBoxPlot(theData, FALSE, NULL,
+                                  stateChoices,
+                                  vaccPlotTitle(vaccChoice,
+                                                TRUE,
+                                                is.null(stateChoices),
+                                                movingAvg),
+                                  timeWindowXLabel(timeWindow),
+                                  vaccYLabel(),
+                                  clampFactor = 3, timeWindow = timeWindow)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving plotVaccBoxplots\n")
+  }
+  
+  return(result)
 }
 
-plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
+plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
+                          traceThisRoutine = FALSE, prepend = "") {
+  myPrepend <- paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered plotVaccTrend\n")
+    cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
+  }
+
   if (movingAvg) {
     tooMuchData <- US_State_Vaccination_Pcts_A7
   } else {
@@ -143,15 +163,21 @@ plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
   
   timeWindow = min(timeWindow, dim(theData)[2] - 4)
   
-  assembleDirectTrendPlot(theData, FALSE,
-                          NULL,
-                          stateChoices,
-                          vaccPlotTitle(vaccChoice,
-                                        FALSE,
-                                        is.null(stateChoices),
-                                        movingAvg),
-                          timeWindowXLabel(timeWindow),
-                          vaccYLabel(),
-                          timeWindow = timeWindow,
-                          tibbleName = "plotVaccTrend's 'theData'")
+  result <- assembleDirectTrendPlot(theData, FALSE,
+                                    NULL,
+                                    stateChoices,
+                                    vaccPlotTitle(vaccChoice,
+                                                  FALSE,
+                                                  is.null(stateChoices),
+                                                  movingAvg),
+                                    timeWindowXLabel(timeWindow),
+                                    vaccYLabel(),
+                                    timeWindow = timeWindow,
+                                    tibbleName = "plotVaccTrend's 'theData'")
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving plotVaccTrend\n")
+  }
+  
+  return(result)
 }
