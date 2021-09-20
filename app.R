@@ -56,30 +56,6 @@ defaultSelectedTab <- function() {
   }
 }
 
-defaultTimeWindowValue <- function() {
-  if (currentlyTesting()) {
-    14
-  } else {
-    14
-  }
-}
-
-defaultStateChoices <- function() {
-  if (currentlyTesting()) {
-    c("MA", "ME")
-  } else {
-    NULL
-  }
-}
-
-defaultSelectedTab <- function() {
-  if (currentlyTesting()) {
-    "Vaccination Progress"
-  } else {
-    NULL
-  }
-}
-
 # Define UI for this application
 ui <- fluidPage(
     
@@ -240,13 +216,11 @@ server <- function(input, output, session) {
   output$vaccRBox <- renderPlot({plotVaccBoxplots(input$movingAvg,
                                                   input$Vaccination,
                                                   input$stateChoices,
-                                                  input$timeWindow,
-                                                  traceThisRoutine = TRUE)})
+                                                  input$timeWindow)})
   output$vaccRTrend <- renderPlot({plotVaccTrend(input$movingAvg,
                                                  input$Vaccination,
                                                  input$stateChoices,
-                                                 input$timeWindow,
-                                                 traceThisRoutine = TRUE)})
+                                                 input$timeWindow)})
 
   # "Cases" Tab
   output$caseHeaderHTML <- renderUI({caseHeaderHTML(input$chooseCounty,
