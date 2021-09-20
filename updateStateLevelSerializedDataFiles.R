@@ -207,7 +207,7 @@ updatePopulationEstimateData <- function(aDate, dailyStateData,
   return(newData)
 }
 
-makeInitialStateLevelData <- function(nDates = 90,
+makeInitialStateLevelData <- function(nDates = 60,
                                       traceThisRoutine = FALSE, prepend = "") {
   # stop("Per request!")
   myPrepend = paste("  ", prepend, sep = "")  

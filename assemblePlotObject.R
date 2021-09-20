@@ -355,13 +355,12 @@ assembleDirectBoxPlot <- function(aFrame, chooseCounty,
     cat(file = stderr(), prepend, "Entered assembleDirectBoxPlot\n")
     cat(file = stderr(), myPrepend, "dim(aFrame) = (", paste(dim(aFrame)), ")\n")
   }
-  plotData <- computePlotDataDirectFromCumulative(aFrame, chooseCounty,
-                                                  countyChoices, stateChoices,
-                                                  timeWindow, tibbleName = tibbleName,
-                                                  traceThisRoutine = FALSE,
-                                                  prepend = "")
-  result <- assembleSomeBoxPlot(plotData, theTitle,
-                                xlabel, ylabel, clampFactor,
+  res <- computePlotDataDirectFromCumulative(aFrame, chooseCounty,
+                                             countyChoices, stateChoices,
+                                             timeWindow, tibbleName = tibbleName,
+                                             traceThisRoutine = traceThisRoutine,
+                                             prepend = myPrepend)
+  result <- assembleSomeBoxPlot(res, theTitle, xlabel, ylabel, clampFactor,
                                 traceThisRoutine = traceThisRoutine,
                                 prepend = myPrepend)
 
@@ -384,21 +383,26 @@ assembleGrowthBoxPlot <- function(aFrame, chooseCounty,
     cat(file = stderr(), prepend, "Entered assembleGrowthBoxPlot\n")
     cat(file = stderr(), myPrepend, "dim(aFrame) = (", paste(dim(aFrame)), ")\n")
   }
-
-  plotData <- computeGrowthPlotDataFromCumulative(aFrame, chooseCounty,
+  res <- computeGrowthPlotDataFromCumulative(aFrame, chooseCounty,
                                              countyChoices, stateChoices,
                                              timeWindow,
                                              tibbleName = tibbleName,
-                                             traceThisRoutine = traceThisRoutine,
-                                             prepend = myPrepend)
+                                             traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   
-  result <- assembleSomeBoxPlot(plotData, theTitle, xlabel, ylabel, clampFactor,
-                                traceThisRoutine = traceThisRoutine,
-                                prepend = myPrepend)
-  
+  if (is.na(res)["plotData"]) {
+    result <- NA
+    if (traceThisRoutine) {
+      cat(file = stderr(), myPrepend, "assembleGrowthBoxPlot returning NA\n")
+    }
+  } else {
+    result <- assembleSomeBoxPlot(res, theTitle, xlabel, ylabel, clampFactor,
+                                  traceThisRoutine = traceThisRoutine,
+                                  prepend = myPrepend)
+  }
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving assembleGrowthBoxPlot\n")
   }
+  # OUCH caller must defend against returned NA ( if(is.na(<return value>)) {} )
   return(result)
 }
 
@@ -469,8 +473,12 @@ assembleGrowthTrendPlot <- function(aFrame, chooseCounty,
                                     theTitle, xlabel, ylabel,
                                     timeWindow = 14, nFirst = 4,
                                     tibbleName = "from assembleGrowthTrendPlot",
-                                    traceThisRoutine = FALSE,
-                                    prepend = "") {
+                                    traceThisRoutine = FALSE, prepend = "") {
+  myPrepend <- paste(prepend, "  ", sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered assembleGrowthTrendPlot\n")
+  }
+
   res <- computeGrowthPlotDataFromCumulative(aFrame, chooseCounty,
                                              countyChoices, stateChoices,
                                              timeWindow,
@@ -620,13 +628,13 @@ assembleRatioDeltaTrendPlot <- function(numeratorFrame, denominatorFrame,
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered assembleRatioDeltaTrendPlot\n")
   }
+
   myDataFrame <- ratioDeltaFrame(numeratorFrame, denominatorFrame, timeWindow,
                                  nFirstNum = nFirstNum, nFirstDenom = nFirstDenom)
   res <- computePlotDataDirectFromCumulative(myDataFrame,
                                              FALSE, # OUCH chooseCounty,
                                              NULL,  # OUCH countyChoices,
-                                             stateChoices,
-                                             timeWindow,
+                                             stateChoices, timeWindow,
                                              traceThisRoutine = traceThisRoutine,
                                              prepend = myPrepend)
   
