@@ -17,8 +17,33 @@ activeVaccData <- function(forBoxplot, justUS, movingAvg) {
   activeData
 }
 
+activeVaccData1 <- function(forBoxplot, movingAvg, stateChoices) {
+  if (forBoxplot ||
+      ((!is.na(stateChoices)) &&
+       (!is.null(stateChoices)) &&
+       (length(stateChoices) > 0))) {
+    if (movingAvg) {
+      activeData <- US_State_Vaccination_Pcts_A7
+    } else {
+      activeData <- US_State_Vaccination_Pcts
+    }
+  } else {
+    if (movingAvg) {
+      activeData <- US_Vaccination_Pcts_A7
+    } else {
+      activeData <- US_Vaccination_Pcts
+    }
+  }
+  activeData
+}
+
 filteredVaccData <- function(forBoxplot, justUS, movingAvg, vaccChoice) {
   theData <- activeVaccData(forBoxplot, justUS, movingAvg) %>%
+    filter(Datum == vaccDatumKeyFromChoice(vaccChoice))
+}
+
+filteredVaccData1 <- function(forBoxplot, movingAvg, stateChoices, vaccChoice) {
+  theData <- activeVaccData1(forBoxplot, movingAvg, stateChoices) %>%
     filter(Datum == vaccDatumKeyFromChoice(vaccChoice))
 }
 
@@ -173,7 +198,8 @@ plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
     justUS <- length(stateChoices) == 0
   }
   
-  tooMuchData <- activeVaccData(FALSE, justUS, movingAvg)
+  # tooMuchData0 <- activeVaccData(FALSE, justUS, movingAvg)
+  tooMuchData <- activeVaccData1(FALSE, movingAvg, stateChoices)
 
   theData <- makeFullyVaccDataIfNeeded(tooMuchData, vaccChoice)
 
