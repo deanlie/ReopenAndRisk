@@ -15,7 +15,6 @@ source("mostRecentDataDate.R")
 source("assemblePlotObject.R")
 source("loadAllUSData.R")
 source("reopenPlotUtilities.R")
-
 source("doVaccinationTab.R")
 source("doCaseGrowthTab.R")
 source("doMortalityTab.R")

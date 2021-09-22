@@ -7,7 +7,8 @@ vaccDatumKeyFromChoice <- function(vaccChoice) {
   vaccDatumLookup <- c("First Doses"="Stage_One_Doses",
                        "Second Doses"="Stage_Two_Doses",
                        "Total Doses"="Doses_admin",
-                       "Fully Vaccinated"="Fully_vaccinated")
+                       "Fully Vaccinated"="Fully_vaccinated",
+                       "People Fully Vaccinated"="People_Fully_Vaccinated")
   unname(vaccDatumLookup[vaccChoice])
 }
 

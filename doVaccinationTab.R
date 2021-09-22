@@ -29,19 +29,15 @@ vaccHeaderHTML <- function(movingAvg, vaccChoice,
     cat(file = stderr(), prepend, "Entered vaccHeaderHTML\n")
     cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
   }
-  
+
   if (movingAvg) {
-    tooMuchData <- US_State_Vaccination_Pcts_A7    
+    tooMuchData <- US_State_Vaccination_Pcts_A7
   } else {
-    tooMuchData <- US_State_Vaccination_Pcts    
+    tooMuchData <- US_State_Vaccination_Pcts
   }
 
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "after tooMuchData <- \n")
-  }
-
-  if (traceThisRoutine) {
-      cat(file = stderr(), myPrepend, "after tooMuchData <- \n")
   }
 
   nMin <- 3
@@ -89,7 +85,7 @@ vaccHeaderHTML <- function(movingAvg, vaccChoice,
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving vaccHeaderHTML\n")
   }
-  
+
   HTML(theText)
 }
 
@@ -136,16 +132,8 @@ plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
     cat(file = stderr(), myPrepend, "dim(theData) = (", paste(dim(theData)), ")\n")
   }
   
-  theData1 <- filteredVaccData(TRUE, is.null(stateChoices), movingAvg, vaccChoice)
-  
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "dim(theData1) = (", paste(dim(theData1)), ")\n")
-  }
-  
   timeWindow <- min(timeWindow, dim(theData)[2] - 4)
   
-  vaccTrendData <<- list(full=tooMuchData, filtered=theData, new=theData1)
-
   result <- assembleDirectBoxPlot(theData, FALSE, c(""),
                                   stateChoices,
                                   vaccPlotTitle(vaccChoice,
@@ -173,43 +161,23 @@ plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
   }
 
   if (movingAvg) {
-    if (length(stateChoices) > 0) {
-      title <- paste("Vaccination", vaccChoice, "For Selected States, 7 day moving average")
-      tooMuchData <- US_State_Vaccination_Pcts_A7
-    } else {
-      title <- paste("Vaccination", vaccChoice, "US Overall, 7 day moving average")
-      tooMuchData <- US_Vaccination_Pcts_A7
-    }
+    tooMuchData <- US_State_Vaccination_Pcts_A7
   } else {
-    if (length(stateChoices) > 0) {
-      title <- paste("Vaccination", vaccChoice, "For Selected States")
-      tooMuchData <- US_State_Vaccination_Pcts
-    } else {
-      title <- paste("Vaccination", vaccChoice, "US Overall")
-      tooMuchData <- US_Vaccination_Pcts
-    }
+    tooMuchData <- US_State_Vaccination_Pcts
   }
   
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "dim(tooMuchData) = (", paste(dim(tooMuchData)), ")\n")
-  }
-
-  theData <- makeFullyVaccDataIfNeeded(tooMuchData, vaccChoice,
-                                       traceThisRoutine = traceThisRoutine,
-                                       prepend = myPrepend)
-  
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "dim(theData) = (", paste(dim(theData)), ")\n")
-  }
-  
-  vaccTrendData <<- list(full=tooMuchData, filtered=theData)
+  theData <- makeFullyVaccDataIfNeeded(tooMuchData, vaccChoice)
+#  theData <- filteredVaccData(FALSE, is.null(stateChoices), movingAvg, vaccChoice)
   
   timeWindow = min(timeWindow, dim(theData)[2] - 4)
 
   result <- assembleDirectTrendPlot(theData, FALSE,
                                     NULL,
                                     stateChoices,
-                                    title,
+                                    vaccPlotTitle(vaccChoice,
+                                                  FALSE,
+                                                  is.null(stateChoices),
+                                                  movingAvg),
                                     timeWindowXLabel(timeWindow),
                                     vaccYLabel(),
                                     timeWindow = timeWindow,
