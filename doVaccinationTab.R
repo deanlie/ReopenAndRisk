@@ -29,19 +29,15 @@ vaccHeaderHTML <- function(movingAvg, vaccChoice,
     cat(file = stderr(), prepend, "Entered vaccHeaderHTML\n")
     cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
   }
-  
+
   if (movingAvg) {
-    tooMuchData <- US_State_Vaccination_Pcts_A7    
+    tooMuchData <- US_State_Vaccination_Pcts_A7
   } else {
-    tooMuchData <- US_State_Vaccination_Pcts    
+    tooMuchData <- US_State_Vaccination_Pcts
   }
 
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "after tooMuchData <- \n")
-  }
-
-  if (traceThisRoutine) {
-      cat(file = stderr(), myPrepend, "after tooMuchData <- \n")
   }
 
   nMin <- 3
@@ -89,7 +85,7 @@ vaccHeaderHTML <- function(movingAvg, vaccChoice,
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving vaccHeaderHTML\n")
   }
-  
+
   HTML(theText)
 }
 
@@ -209,7 +205,10 @@ plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
   result <- assembleDirectTrendPlot(theData, FALSE,
                                     NULL,
                                     stateChoices,
-                                    title,
+                                    vaccPlotTitle(vaccChoice,
+                                                  FALSE,
+                                                  is.null(stateChoices),
+                                                  movingAvg),
                                     timeWindowXLabel(timeWindow),
                                     vaccYLabel(),
                                     timeWindow = timeWindow,
