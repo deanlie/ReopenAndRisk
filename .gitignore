@@ -5,7 +5,9 @@
 .Ruserdata
 *.Rproj
 BackupScripts*
+DATA
 DATA/
+CACHE/
 DEVELOPMENT/
 BACKUPS/
 UNDER\ LOCAL\ GIT\ CONTROL/
