@@ -1,7 +1,10 @@
 source("latestVaccExtremes.R")
 
-activeVaccData <- function(forBoxplot, justUS, movingAvg) {
-  if (forBoxplot || !justUS) {
+activeVaccData <- function(forBoxplot, movingAvg, stateChoices) {
+  if (forBoxplot ||
+      ((!is.na(stateChoices)) &&
+       (!is.null(stateChoices)) &&
+       (length(stateChoices) > 0))) {
     if (movingAvg) {
       activeData <- US_State_Vaccination_Pcts_A7
     } else {
@@ -17,11 +20,6 @@ activeVaccData <- function(forBoxplot, justUS, movingAvg) {
   activeData
 }
 
-filteredVaccData <- function(forBoxplot, justUS, movingAvg, vaccChoice) {
-  theData <- activeVaccData(forBoxplot, justUS, movingAvg) %>%
-    filter(Datum == vaccDatumKeyFromChoice(vaccChoice))
-}
-
 vaccHeaderHTML <- function(movingAvg, vaccChoice,
                            traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste("  ", prepend, sep = "")
@@ -30,11 +28,7 @@ vaccHeaderHTML <- function(movingAvg, vaccChoice,
     cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
   }
 
-  if (movingAvg) {
-    tooMuchData <- US_State_Vaccination_Pcts_A7
-  } else {
-    tooMuchData <- US_State_Vaccination_Pcts
-  }
+  tooMuchData <- activeVaccData(TRUE, movingAvg, c())
 
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "after tooMuchData <- \n")
@@ -115,11 +109,7 @@ plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
     cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
   }
 
-  if (movingAvg) {
-    tooMuchData <- US_State_Vaccination_Pcts_A7
-  } else {
-    tooMuchData <- US_State_Vaccination_Pcts
-  }
+  tooMuchData <- activeVaccData(TRUE, movingAvg, stateChoices)
 
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "dim(tooMuchData) = (", paste(dim(tooMuchData)), ")\n")
@@ -160,31 +150,9 @@ plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
     cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
   }
 
-  if (movingAvg) {
-    if (length(stateChoices) > 0) {
-      tooMuchData <- US_State_Vaccination_Pcts_A7
-    } else {
-      tooMuchData <- US_Vaccination_Pcts_A7
-    }
-  } else {
-    if (length(stateChoices) > 0) {
-      tooMuchData <- US_State_Vaccination_Pcts
-    } else {
-      tooMuchData <- US_Vaccination_Pcts
-    }
-  }
-  
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "dim(tooMuchData) = (", paste(dim(tooMuchData)), ")\n")
-  }
+  tooMuchData <- activeVaccData(FALSE, movingAvg, stateChoices)
 
-  theData <- makeFullyVaccDataIfNeeded(tooMuchData, vaccChoice,
-                                       traceThisRoutine = traceThisRoutine,
-                                       prepend = myPrepend)
-  
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "dim(theData) = (", paste(dim(theData)), ")\n")
-  }
+  theData <- makeFullyVaccDataIfNeeded(tooMuchData, vaccChoice)
 
   timeWindow = min(timeWindow, dim(theData)[2] - 4)
 
