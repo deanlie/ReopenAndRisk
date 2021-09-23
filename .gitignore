@@ -4,10 +4,12 @@
 .RData
 .Ruserdata
 *.Rproj
+*.txt
+*.dcf
 BackupScripts*
 DATA
 DATA/
-CACHE/
 DEVELOPMENT/
+CACHE/
 BACKUPS/
 UNDER\ LOCAL\ GIT\ CONTROL/
