@@ -1,22 +1,5 @@
 source("latestVaccExtremes.R")
 
-activeVaccData0 <- function(forBoxplot, justUS, movingAvg) {
-  if (forBoxplot || !justUS) {
-    if (movingAvg) {
-      activeData <- US_State_Vaccination_Pcts_A7
-    } else {
-      activeData <- US_State_Vaccination_Pcts
-    }
-  } else {
-    if (movingAvg) {
-      activeData <- US_Vaccination_Pcts_A7
-    } else {
-      activeData <- US_Vaccination_Pcts
-    }
-  }
-  activeData
-}
-
 activeVaccData <- function(forBoxplot, movingAvg, stateChoices) {
   if (forBoxplot ||
       ((!is.na(stateChoices)) &&
