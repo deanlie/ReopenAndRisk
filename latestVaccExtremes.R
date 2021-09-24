@@ -7,7 +7,8 @@ vaccDatumKeyFromChoice <- function(vaccChoice) {
   vaccDatumLookup <- c("First Doses"="Stage_One_Doses",
                        "Second Doses"="Stage_Two_Doses",
                        "Total Doses"="Doses_admin",
-                       "Fully Vaccinated"="Fully_vaccinated")
+                       "Fully Vaccinated"="Fully_vaccinated",
+                       "People Fully Vaccinated"="People_Fully_Vaccinated")
   unname(vaccDatumLookup[vaccChoice])
 }
 
@@ -19,7 +20,8 @@ makeFullyVaccDataIfNeeded <- function(tooMuchData, vaccChoice,
     cat(file = stderr(), prepend, "Entered makeFullyVaccDataIfNeeded\n")
   }
 
-  if (vaccChoice == "People Fully Vaccinated") {
+  if ((vaccChoice == "People Fully Vaccinated") ||
+      (vaccChoice == "Fully Vaccinated")) {
     # Use "Stage_Two_Doses" as real "Datum" entry and offset dates later
     matchMe <- "Stage_Two_Doses"
   } else {
@@ -34,7 +36,8 @@ makeFullyVaccDataIfNeeded <- function(tooMuchData, vaccChoice,
         paste(dim(theData)), ")\n")
   }
   
-  if (vaccChoice == "Fully Vaccinated") {
+  if ((vaccChoice == "People Fully Vaccinated") ||
+      (vaccChoice == "Fully Vaccinated")) {
     # We've filtered data by "Stage_Two_Doses", now discard newest 2 weeks data
     #   and offset dates
     datumDims <- dim(theData)
@@ -48,7 +51,7 @@ makeFullyVaccDataIfNeeded <- function(tooMuchData, vaccChoice,
       mungedData[,4:lastNewCol] = theData[,firstOldCol:lastOldCol]
       names(mungedData)[4:lastNewCol] <- names(theData)[firstOldCol:lastOldCol]
       theData <- as_tibble(mungedData) %>%
-        mutate(Datum = "Fully Vaccinated", .keep = "all")
+        mutate(Datum = vaccChoice, .keep = "all")
     }
   }
   if (traceThisRoutine) {

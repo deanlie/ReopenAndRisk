@@ -1,7 +1,10 @@
 source("latestVaccExtremes.R")
 
-activeVaccData <- function(forBoxplot, justUS, movingAvg) {
-  if (forBoxplot || !justUS) {
+activeVaccData <- function(forBoxplot, movingAvg, stateChoices) {
+  if (forBoxplot ||
+      ((!is.na(stateChoices)) &&
+       (!is.null(stateChoices)) &&
+       (length(stateChoices) > 0))) {
     if (movingAvg) {
       activeData <- US_State_Vaccination_Pcts_A7
     } else {
@@ -17,22 +20,40 @@ activeVaccData <- function(forBoxplot, justUS, movingAvg) {
   activeData
 }
 
-filteredVaccData <- function(forBoxplot, justUS, movingAvg, vaccChoice) {
-  theData <- activeVaccData(forBoxplot, justUS, movingAvg) %>%
-    filter(Datum == vaccDatumKeyFromChoice(vaccChoice))
-}
+vaccHeaderHTML <- function(movingAvg, vaccChoice,
+                           traceThisRoutine = FALSE, prepend = "") {
+  myPrepend <- paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered vaccHeaderHTML\n")
+    cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
+  }
 
-vaccHeaderHTML <- function(movingAvg, vaccChoice) {
-  theData <- activeVaccData(TRUE, FALSE, movingAvg)
-  
+  tooMuchData <- activeVaccData(TRUE, movingAvg, c())
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "after tooMuchData <- \n")
+  }
+
   nMin <- 3
   nMax <- 3
-  extremaStates <- latestVaccExtremes(theData, nMin, nMax)
-  
+  extremaStates <- latestVaccExtremes(tooMuchData, vaccChoice, nMin, nMax)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "after extremaStates <- \n")
+  }
+
   theMaxPct <- format(as.double(extremaStates$bot[nMax, 2]), digits=3)
   max2Pct   <- format(as.double(extremaStates$bot[nMax - 1, 2]), digits=3)
   theMinPct <- format(as.double(extremaStates$top[1, 2]), digits=3)
   min2Pct   <- format(as.double(extremaStates$top[2, 2]), digits=3)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "theMaxPct =", theMaxPct, "\n")
+    cat(file = stderr(), myPrepend, "max2Pct =", max2Pct, "\n")
+    cat(file = stderr(), myPrepend, "theMinPct =", theMinPct, "\n")
+    cat(file = stderr(), myPrepend, "min2Pct =", min2Pct, "\n")
+  }
+
   theText <- paste(tags$h4(paste("Vaccinations,", vaccChoice)),
                    tags$p("Vaccination data is shown by percent of state or of US as a whole."),
                    tags$p(paste("Highest ", vaccChoice, " rate: ",
@@ -54,7 +75,11 @@ vaccHeaderHTML <- function(movingAvg, vaccChoice) {
                    tags$p("Note that 'Total Doses' will be above 100% when close to 50% of the population
                             has had a second dose!"),
                    sep="")
-  
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving vaccHeaderHTML\n")
+  }
+
   HTML(theText)
 }
 
@@ -76,37 +101,77 @@ vaccYLabel <- function() {
   "Vaccinations, percent of population"
 }
 
-plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
-  theData <- activeVaccData(TRUE, is.null(stateChoices), movingAvg)
+plotVaccBoxplots <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
+                             traceThisRoutine = FALSE, prepend = "") {
+  myPrepend <- paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered plotVaccBoxplots\n")
+    cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
+  }
+
+  tooMuchData <- activeVaccData(TRUE, movingAvg, stateChoices)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "dim(tooMuchData) = (", paste(dim(tooMuchData)), ")\n")
+  }
+
+  theData <- makeFullyVaccDataIfNeeded(tooMuchData, vaccChoice,
+                                       traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "dim(theData) = (", paste(dim(theData)), ")\n")
+  }
   
   timeWindow <- min(timeWindow, dim(theData)[2] - 4)
   
-  assembleDirectBoxPlot(theData, FALSE, NULL,
-                        stateChoices,
-                        vaccPlotTitle(vaccChoice,
-                                      TRUE,
-                                      is.null(stateChoices),
-                                      movingAvg),
-                        timeWindowXLabel(timeWindow),
-                        vaccYLabel(),
-                        clampFactor = 3, timeWindow = timeWindow,
-                        nFirst = 3)
+  result <- assembleDirectBoxPlot(theData, FALSE, c(""),
+                                  stateChoices,
+                                  vaccPlotTitle(vaccChoice,
+                                                TRUE,
+                                                is.null(stateChoices),
+                                                movingAvg),
+                                  timeWindowXLabel(timeWindow),
+                                  vaccYLabel(),
+                                  clampFactor = 3, timeWindow = timeWindow,
+                                  traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving plotVaccBoxplots\n")
+  }
+  
+  return(result)
 }
 
-plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow) {
-  theData <- activeVaccData(FALSE, is.null(stateChoices), movingAvg)
-  
+plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
+                          traceThisRoutine = FALSE, prepend = "") {
+  myPrepend <- paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered plotVaccTrend\n")
+    cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
+  }
+
+  tooMuchData <- activeVaccData(FALSE, movingAvg, stateChoices)
+
+  theData <- makeFullyVaccDataIfNeeded(tooMuchData, vaccChoice)
+
   timeWindow = min(timeWindow, dim(theData)[2] - 4)
+
+  result <- assembleDirectTrendPlot(theData, FALSE,
+                                    NULL,
+                                    stateChoices,
+                                    vaccPlotTitle(vaccChoice,
+                                                  FALSE,
+                                                  is.null(stateChoices),
+                                                  movingAvg),
+                                    timeWindowXLabel(timeWindow),
+                                    vaccYLabel(),
+                                    timeWindow = timeWindow,
+                                    tibbleName = "from plotVaccTrend",
+                                    traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving plotVaccTrend\n")
+  }
   
-  assembleDirectTrendPlot(theData, FALSE,
-                          NULL,
-                          stateChoices,
-                          vaccPlotTitle(vaccChoice,
-                                        FALSE,
-                                        is.null(stateChoices),
-                                        movingAvg),
-                          timeWindowXLabel(timeWindow),
-                          vaccYLabel(),
-                          timeWindow = timeWindow, nFirst = 3,
-                          tibbleName = "from plotVaccTrend")
+  return(result)
 }
