@@ -355,12 +355,12 @@ assembleDirectBoxPlot <- function(aFrame, chooseCounty,
     cat(file = stderr(), prepend, "Entered assembleDirectBoxPlot\n")
     cat(file = stderr(), myPrepend, "dim(aFrame) = (", paste(dim(aFrame)), ")\n")
   }
-  res <- computePlotDataDirectFromCumulative(aFrame, chooseCounty,
-                                             countyChoices, stateChoices,
-                                             timeWindow, tibbleName = tibbleName,
-                                             traceThisRoutine = traceThisRoutine,
-                                             prepend = myPrepend)
-  result <- assembleSomeBoxPlot(res, theTitle, xlabel, ylabel, clampFactor,
+  plotData <- computePlotDataDirectFromCumulative(aFrame, chooseCounty,
+                                                  countyChoices, stateChoices,
+                                                  timeWindow, tibbleName = tibbleName,
+                                                  traceThisRoutine = traceThisRoutine,
+                                                  prepend = myPrepend)
+  result <- assembleSomeBoxPlot(plotData, theTitle, xlabel, ylabel, clampFactor,
                                 traceThisRoutine = traceThisRoutine,
                                 prepend = myPrepend)
 
