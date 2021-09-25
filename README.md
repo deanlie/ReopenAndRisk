@@ -7,6 +7,8 @@ for selected items
 
 Available in https://deanlie.shinyapps.io/ReopenAndRisk/ (as of Aug 22, 2021)
 
-Branch Per100_Cases_And_Mortality: Change Cases and Deaths tabs to
-  New Cases and New Deaths resp; show numbers per 100K population in last day
-  in the graphs. Add Total Cases and Total Deaths tabs; show total numbers per 100K.
+Branch Per100_Cases_And_Mortality:
+  * Change Cases and Deaths tabs to New Cases and New Deaths resp;
+  * Add Total Cases and Total Deaths tabs with content duplicating New<resp> tabs
+  * Change text on those four tabs
+  * show numbers per 100K population in last day in the graphs on those four tabs.
