@@ -104,7 +104,7 @@ ui <- fluidPage(
         # Show a plot of the generated distribution
 
         mainPanel(
-            tabsetPanel(
+            tabsetPanel(id="mainTabsetPanel",
                 tabPanel("Vaccination Progress",
                          verticalLayout(
                            mainPanel(selectInput("Vaccination",
