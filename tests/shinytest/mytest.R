@@ -1,4 +1,4 @@
-app <- ShinyDriver$new("../../")
+app <- ShinyDriver$new("../../", loadTimeout=100000)
 app$snapshotInit("mytest")
 
 app$setInputs(stateChoices = character(0))
