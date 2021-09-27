@@ -86,7 +86,7 @@
       }
     },
     "mortalityBox": {
-      "src": "[image data sha1: eb77ba7bd95e5c5e64d6ed08f09e56ce63bddd5f]",
+      "src": "[image data sha1: 3945874874c486e6640a5fd6886f3b21cc881f27]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -127,7 +127,7 @@
       ]
     },
     "mortalityTrend": {
-      "src": "[image data sha1: 1e87893253903cc9858d5988d10955feee337e20]",
+      "src": "[image data sha1: d19ecbb5eebe63d445bee3fe130789c14599c5bc]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -162,13 +162,13 @@
       }
     },
     "summaryHTML": {
-      "html": "<div class=\"hghi_red\">\n  <h4>US<\/h4>\n  <ul><li class=\"hghi_red\">Confirmed new cases: 42 daily per 100,000 population<\/li><li class=\"hghi_yellow\">Growth trend of confirmed new cases: 0.352% per day<\/li><li class=\"hghi_red\">Estimated new cases: 60 daily per 100,000 population<\/li><li class=\"hghi_yellow\">Growth trend of estimated new cases: 0.294% per day<\/li><\/ul>\n<\/div>",
+      "html": "<div class=\"hghi_red\">\n  <h4>US<\/h4>\n  <ul><li class=\"hghi_red\">Confirmed new cases: 42 daily per 100,000 population<\/li><li class=\"hghi_yellow\">Growth trend of confirmed new cases: 0.352% per day<\/li><li class=\"hghi_red\">Estimated new cases: 59 daily per 100,000 population<\/li><li class=\"hghi_yellow\">Growth trend of estimated new cases: 0.285% per day<\/li><\/ul>\n<\/div>",
       "deps": [
 
       ]
     },
     "testGBox": {
-      "src": "[image data sha1: ae4c3275fbdc8022b942bd01e1401bcee03a36eb]",
+      "src": "[image data sha1: 3af72ab5d7035439bd839e6aa808ec52cc13947c]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -209,7 +209,7 @@
       ]
     },
     "testGTrend": {
-      "src": "[image data sha1: 79cabadadd25ab5001400fc16ef1623dc8509a92]",
+      "src": "[image data sha1: f2bf5bf50e60e69e2fc0a1b68762fa3737998b3e]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -244,7 +244,7 @@
       }
     },
     "testRBox": {
-      "src": "[image data sha1: 27083d7af87fd4687eaf52cecb1d1fda761592c4]",
+      "src": "[image data sha1: bb030836a774cc461fc30083997d87d1244795af]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -285,7 +285,7 @@
       ]
     },
     "testRTrend": {
-      "src": "[image data sha1: a17d6df321ababc94667cd940b267e978de12764]",
+      "src": "[image data sha1: 84891d6869f9e6e42cac819c3d5e4aa0d401287d]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
