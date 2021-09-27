@@ -1,7 +1,6 @@
 {
   "input": {
-    "chooseCounty": true,
-    "countyChoices": null,
+    "chooseCounty": false,
     "mainTabsetPanel": "New Cases",
     "movingAvg": true,
     "stateChoices": null,

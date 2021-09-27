@@ -1,6 +1,6 @@
 {
   "input": {
-    "chooseCounty": true,
+    "chooseCounty": false,
     "countyChoices": [
       "Barnstable",
       "Dukes",
@@ -18,7 +18,7 @@
   },
   "output": {
     "caseBox": {
-      "src": "[image data sha1: 0ba25446b14f9c2f7b73514cfc9246d74c2b3c18]",
+      "src": "[image data sha1: fddbbca3011f97bf4d795cda0f3e5df143faaac0]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -53,13 +53,13 @@
       }
     },
     "caseHeaderHTML": {
-      "html": "<h4>Trends of new cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all counties  in Massachusetts on that date. Half the counties fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p>It's possible that lines for some areas will be missing,\n                     especially if you've selected some counties with low population.\n                     That happens because a growth rate starting from zero\n                     can't be computed. If you see that, please change the selection\n                     to have ONLY the missing areas, and I'll display the NUMBER of\n                     cases rather than the growth rate.<\/p><p><\/p>",
+      "html": "<h4>Trends of new cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p>It's possible that lines for some areas will be missing,\n                     especially if you've selected some counties with low population.\n                     That happens because a growth rate starting from zero\n                     can't be computed. If you see that, please change the selection\n                     to have ONLY the missing areas, and I'll display the NUMBER of\n                     cases rather than the growth rate.<\/p><p><\/p>",
       "deps": [
 
       ]
     },
     "caseTrend": {
-      "src": "[image data sha1: ab15f687fb3538111c85188aa2b1868e54b1453c]",
+      "src": "[image data sha1: 01027577e0e50d00bec9b6349d5f6c7aa2fc74f6]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",

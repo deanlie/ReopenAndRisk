@@ -12,28 +12,25 @@ Branch Testing1234:
   * Learn to use shinytest.
   * Set up automatic test to run vaccination tab through just US, MA & ME, and 4 MA counties DONE
   * Ditto for remaining tabs as of Sept 26
+  * Plots all show static data used when manual testing is hardcoded in app, live data
+      otherwise
+  * Tests pass when manual testing is hardcoded in app
+  * When manual testing is turned off in app, test script must have line
+      app$setInputs(countyChoices = c("Barnstable", "Dukes", "Suffolk", "Worcester"),
+              allowInputNoBinding_ = TRUE)
+    rather than just
+      app$setInputs(countyChoices = c("Barnstable", "Dukes", "Suffolk", "Worcester"))
+    Note that this changes the output images which did not formerly have the "county"
+      selection box.
+
 
   TO DO:
-  * Deal with dynamic data. Docs say, 
-    "Problem: Dynamic data. If your application uses a data source that changes over time, 
-      then a snapshot taken yesterday may not match a snapshot taken today,
-      even if the app itself hasn’t changed. Dynamic data inherently poses a challenge for
-      snapshot-based testing.
+  * loadUSMortalityRateData and loadUSTestingRateData graphs reference snapshots showed
+      static data time range before those routines were updated, need checking out;
+      see loadUSVaccinationData for example of working logic.
+  * Check tests when manual testing is not turned on by app (i.e. tests rely on shiny.testmode)
 
-    This problem can be avoided by detecting when the application is being tested,
-      and in that case use a static data set instead. To do the detection,
-      you can do something like the following:
-      
-      if (isTRUE(getOption("shiny.testmode"))) {
-        # Load static/dummy data here
-      } else {
-        # Load normal dynamic data here
-      }""
-      
     To view differences between expected and current results, run:
       viewTestDiff(".", "mytest")
     To save current results as expected results, run:
       snapshotUpdate(".", "mytest")
-      
-    The testmode option is not available when the program is first loaded, maybe only when
-      a server instance is initialized. 

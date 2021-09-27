@@ -23,7 +23,7 @@ source("doTestResultsTab.R")
 source("doSummaryTab.R")
 
 manualTestModeQ <- function() {
-  TRUE
+  FALSE
 }
 
 manualTraceModeQ <- function() {

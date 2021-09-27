@@ -1,7 +1,6 @@
 {
   "input": {
-    "chooseCounty": true,
-    "countyChoices": null,
+    "chooseCounty": false,
     "mainTabsetPanel": "Test Results",
     "movingAvg": true,
     "stateChoices": null,

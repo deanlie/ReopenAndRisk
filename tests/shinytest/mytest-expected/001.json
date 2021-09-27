@@ -1,7 +1,6 @@
 {
   "input": {
-    "chooseCounty": true,
-    "countyChoices": null,
+    "chooseCounty": false,
     "mainTabsetPanel": "Vaccination Progress",
     "movingAvg": false,
     "stateChoices": null,
