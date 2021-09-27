@@ -15,8 +15,13 @@ loadATypeOfData <- function(staticData, theType, colTypes, stateColTypes, comput
   #####################################
   #  Functions local to this routine  #
   #####################################
-  readLeaf <- function(aLeaf, colTypes) {
-    aPath <- paste("./DATA/", aLeaf, sep = "")
+  readLeaf <- function(staticData, aLeaf, colTypes) {
+    if (staticData) {
+      theDirectory <- "./DATA/STATIC/"
+    } else {
+      theDirectory <- "./DATA/"
+    }
+    aPath <- paste(theDirectory, aLeaf, sep = "")
     aTibble <- read_csv(aPath, col_types = colTypes) %>%
       filter(!str_detect(Combined_Key, "Princess"))
   }
@@ -88,14 +93,14 @@ loadATypeOfData <- function(staticData, theType, colTypes, stateColTypes, comput
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "before readLeaf", US_leaf, "...\n")
   }
-  results$US_C  <- readLeaf(US_leaf, colTypes) # US_Cumulative
+  results$US_C  <- readLeaf(staticData, US_leaf, colTypes) # US_Cumulative
   
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "before readLeaf", State_leaf, "...\n")
   }
-  results$State_C <- readLeaf(State_leaf, stateColTypes)
+  results$State_C <- readLeaf(staticData, State_leaf, stateColTypes)
   if (computeCounty) {
-    results$County_C <- readLeaf(County_leaf, myCountyTSColTypes())
+    results$County_C <- readLeaf(staticData, County_leaf, myCountyTSColTypes())
     if (traceThisRoutine) {
       names_p <- paste(names(results$County_C)[1:5])
       cat(file = stderr(), myPrepend, "results$County_C names:", names_p, "...\n")
@@ -432,12 +437,19 @@ loadUSTestResultsData <- function(staticData = FALSE, traceThisRoutine = FALSE, 
   return(allTestResultsData)
 }
 
-loadUSVaccinationData <- function(staticData = FALSE, traceThisRoutine = FALSE, prepend = "") {
+loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered loadUSVaccinationData, staticData =", staticData, "\n")
+    cat(file = stderr(), prepend, "Entered loadUSVaccinationData\n")
   }
 
+  if (isTRUE(getOption("shiny.testmode"))) {
+    cat(file = stderr(), "TEST MODE!\n")
+    staticData <- TRUE
+  } else {
+    staticData <- FALSE
+  }
+  
   computeCounty <- FALSE
   computeNew <- FALSE
   computeAvg <- TRUE
@@ -517,7 +529,7 @@ loadAllUSData <- function(testing = FALSE, traceThisRoutine = FALSE, prepend = "
     cat(file = stderr(), myPrepend, "after read US_State_Population_Est\n")
   }
 
-  if (!testing) {
+  if (!isTRUE(getOption("shiny.testmode"))) {
     updateTimeSeriesDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
                                          prepend = myPrepend)
     updateStateLevelSerializedDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
