@@ -30,14 +30,8 @@ manualTraceModeQ <- function() {
   TRUE
 }
 
-loadAllUSData(testing = manualTestModeQ(), traceThisRoutine = manualTraceModeQ(), prepend = "")
-
 currentlyTestingCountiesQ <- function() {
   manualTestModeQ() & TRUE
-}
-
-defaultTimeWindowValue <- function() {
-  14
 }
 
 defaultStateChoices <- function() {
@@ -46,6 +40,14 @@ defaultStateChoices <- function() {
   } else {
     NULL
   }
+}
+
+loadAllUSData(staticDataQ = manualTestModeQ(),
+              traceThisRoutine = manualTraceModeQ(),
+              prepend = "")
+
+defaultTimeWindowValue <- function() {
+  14
 }
 
 defaultSelectedTab <- function() {
@@ -158,6 +160,7 @@ server <- function(input, output, session) {
   useCounty <- reactive({input$chooseCounty})
 
   testModeQ <- manualTestModeQ() || isTRUE(getOption("shiny.testmode"))
+
   # OUCH for development
   if (testModeQ || manualTraceModeQ()) {
     if (isTRUE(getOption("shiny.testmode"))) {
@@ -168,7 +171,7 @@ server <- function(input, output, session) {
   } else {
     cat(file = stderr(), "in Server: not test mode\n")
   }
-  # loadAllUSData(testing = testModeQ, traceThisRoutine = manualTraceModeQ(), prepend = "")
+  # loadAllUSData(staticDataQ = testModeQ, traceThisRoutine = manualTraceModeQ(), prepend = "")
   
   observeEvent(countyChoices(), {
     if(!input$chooseCounty) {

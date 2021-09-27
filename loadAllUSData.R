@@ -437,17 +437,15 @@ loadUSTestResultsData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE,
   return(allTestResultsData)
 }
 
-loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
+loadUSVaccinationData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered loadUSVaccinationData\n")
   }
 
   if (isTRUE(getOption("shiny.testmode"))) {
-    cat(file = stderr(), "TEST MODE!\n")
+    cat(file = stderr(), "loadUSVaccinationData TEST MODE!\n")
     staticDataQ <- TRUE
-  } else {
-    staticDataQ <- FALSE
   }
   
   computeCounty <- FALSE
@@ -508,7 +506,7 @@ loadUSIncidentRateData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE
   return(allIncidentRateData)
 }
 
-loadAllUSData <- function(testing = FALSE, traceThisRoutine = FALSE, prepend = "") {
+loadAllUSData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered loadAllUSData\n")
