@@ -10,7 +10,7 @@
   },
   "output": {
     "caseBox": {
-      "src": "[image data sha1: 381c4546b521b00f54b6e2a62f4f5f55e604317e]",
+      "src": "[image data sha1: 5bfd287d552351a501c470996c39f5483cebaa35]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -51,7 +51,7 @@
       ]
     },
     "caseTrend": {
-      "src": "[image data sha1: 483a7463a1b2fedfcd1c6054bd26b98515ef8c18]",
+      "src": "[image data sha1: a10659089bf4030c7450daccf19ce428fe369fab]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -86,13 +86,13 @@
       }
     },
     "vaccHeaderHTML": {
-      "html": "<h4>Vaccinations, People Fully Vaccinated<\/h4><p>Vaccination data is shown by percent of state or of US as a whole.<\/p><p>Highest People Fully Vaccinated rate: Montana with 75.4 percent<\/p><p>Next highest rate: Puerto Rico with 65.8 percent<\/p><p>Lowest People Fully Vaccinated rate: Wyoming with 37.4 percent<\/p><p>Next lowest rate: Idaho with 37.7 percent<\/p><p>Note that 'Total Doses' will be above 100% when close to 50% of the population\n                            has had a second dose!<\/p>",
+      "html": "<h4>Vaccinations, People Fully Vaccinated<\/h4><p>Vaccination data is shown by percent of state or of US as a whole.<\/p><p>Highest People Fully Vaccinated rate: Montana with 75.4 percent<\/p><p>Next highest rate: Puerto Rico with 64.9 percent<\/p><p>Lowest People Fully Vaccinated rate: Wyoming with 36.9 percent<\/p><p>Next lowest rate: Idaho with 37.3 percent<\/p><p>Note that 'Total Doses' will be above 100% when close to 50% of the population\n                            has had a second dose!<\/p>",
       "deps": [
 
       ]
     },
     "vaccRBox": {
-      "src": "[image data sha1: d5e849758cd654eb4ee17bfdac23d03e07f0c6b8]",
+      "src": "[image data sha1: 605347b7d8a794964dc6602e3e583a09021a349d]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -127,7 +127,7 @@
       }
     },
     "vaccRTrend": {
-      "src": "[image data sha1: 6724708e7427989b576da9273870981bf6043257]",
+      "src": "[image data sha1: 52e539481adf78d0582e88a4b06da393cd775480]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
