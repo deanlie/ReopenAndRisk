@@ -9,7 +9,7 @@ source("loadUSTestingRateData.R")
 source("columnUtilities.R")
 source("diagnosticRoutines.R")
 
-loadATypeOfData <- function(theType, colTypes, stateColTypes, computeCounty,
+loadATypeOfData <- function(staticData, theType, colTypes, stateColTypes, computeCounty,
                             computeNew, computeAvg, computePercent,
                             traceThisRoutine = FALSE, prepend = "") {
   #####################################
@@ -61,7 +61,7 @@ loadATypeOfData <- function(theType, colTypes, stateColTypes, computeCounty,
 
   myPrepend <- paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered loadATypeOfData\n")
+    cat(file = stderr(), prepend, "Entered loadATypeOfData, staticData =", staticData, "\n")
   }
   
   traceFlagOnEntry <- traceThisRoutine
@@ -311,18 +311,18 @@ normalizeByPopulation <- function(aTibble) {
   return(returnMe)
 }
 
-loadUSConfirmedData <- function(traceThisRoutine = FALSE, prepend = "") {
+loadUSConfirmedData <- function(staticData = FALSE, traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered loadUSConfirmedData\n")
+    cat(file = stderr(), prepend, "Entered loadUSConfirmedData, staticData =", staticData, "\n")
   }
-  
+
   computeCounty <- TRUE
   computeNew <- TRUE
   computeAvg <- TRUE
   computePercent <- FALSE
   
-  allConfirmedData <- loadATypeOfData("Confirmed",
+  allConfirmedData <- loadATypeOfData(staticData, "Confirmed",
                                       myTSColTypes(), myTSColTypes(),
                                       computeCounty, computeNew,
                                       computeAvg, computePercent,
@@ -348,10 +348,10 @@ loadUSConfirmedData <- function(traceThisRoutine = FALSE, prepend = "") {
   return(allConfirmedData)
 }
 
-loadUSDeathsData <- function(traceThisRoutine = FALSE, prepend = "") {
+loadUSDeathsData <- function(staticData = FALSE, traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered loadUSDeathsData\n")
+    cat(file = stderr(), prepend, "Entered loadUSDeathsData, staticData =", staticData, "\n")
   }
   
   computeCounty <- TRUE
@@ -359,7 +359,7 @@ loadUSDeathsData <- function(traceThisRoutine = FALSE, prepend = "") {
   computeAvg <- TRUE
   computePercent <- FALSE
   
-  allDeathsData <- loadATypeOfData("Deaths",
+  allDeathsData <- loadATypeOfData(staticData, "Deaths",
                                    myTSColTypes(), myTSColTypes(),
                                    computeCounty, computeNew,
                                    computeAvg, computeAvg,
@@ -400,10 +400,10 @@ loadUSDeathsData <- function(traceThisRoutine = FALSE, prepend = "") {
   return(allDeathsData)
 }
 
-loadUSTestResultsData <- function(traceThisRoutine = FALSE, prepend = "") {
+loadUSTestResultsData <- function(staticData = FALSE, traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered loadUSTestResultsData\n")
+    cat(file = stderr(), prepend, "Entered loadUSTestResultsData, staticData =", staticData, "\n")
   }
 
   computeCounty <- FALSE
@@ -411,7 +411,7 @@ loadUSTestResultsData <- function(traceThisRoutine = FALSE, prepend = "") {
   computeAvg <- TRUE
   computePercent <- FALSE
   
-  allTestResultsData <- loadATypeOfData("Total_Test_Results",
+  allTestResultsData <- loadATypeOfData(staticData, "Total_Test_Results",
                                         justCKColTypes(), justCKColTypes(),
                                         computeCounty, computeNew,
                                         computeAvg, computePercent,
@@ -432,10 +432,10 @@ loadUSTestResultsData <- function(traceThisRoutine = FALSE, prepend = "") {
   return(allTestResultsData)
 }
 
-loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
+loadUSVaccinationData <- function(staticData = FALSE, traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered loadUSVaccinationData\n")
+    cat(file = stderr(), prepend, "Entered loadUSVaccinationData, staticData =", staticData, "\n")
   }
 
   computeCounty <- FALSE
@@ -443,7 +443,7 @@ loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
   computeAvg <- TRUE
   computePercent <- TRUE
 
-  allVaccinationData <- loadATypeOfData("Vaccinations",
+  allVaccinationData <- loadATypeOfData(staticData, "Vaccinations",
                                         vaccColTypes(), vaccColTypes(),
                                         computeCounty, computeNew,
                                         computeAvg, computePercent,
@@ -462,10 +462,10 @@ loadUSVaccinationData <- function(traceThisRoutine = FALSE, prepend = "") {
   return(allVaccinationData)
 }
 
-loadUSIncidentRateData <- function(traceThisRoutine = FALSE, prepend = "") {
+loadUSIncidentRateData <- function(staticData = FALSE, traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered loadUSIncidentRateData\n")
+    cat(file = stderr(), prepend, "Entered loadUSIncidentRateData, staticData =", staticData, "\n")
   }
   
   computeCounty <- FALSE
@@ -473,7 +473,7 @@ loadUSIncidentRateData <- function(traceThisRoutine = FALSE, prepend = "") {
   computeAvg <- TRUE
   computePercent <- TRUE
   
-  allIncidentRateData <- loadATypeOfData("Incident_Rate",
+  allIncidentRateData <- loadATypeOfData(staticData, "Incident_Rate",
                                          myTSColTypes(), justCKColTypes(),
                                          computeCounty, computeNew,
                                          computeAvg, computePercent,
@@ -494,67 +494,6 @@ loadUSIncidentRateData <- function(traceThisRoutine = FALSE, prepend = "") {
   US_State_Incident_Rate_G7 <<- allIncidentRateData$State_N_A
 
   return(allIncidentRateData)
-}
-
-loadUSStaticData <- function(traceThisRoutine = FALSE, prepend = "") {
-  myPrepend <- paste(prepend, "  ", sep = "")
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered loadUSStaticData\n")
-  }
-
-  US_Population <<- read_csv("./DATA/US_Population.csv",
-                             col_types = populationColTypes())
-  US_State_Population_Est <<- read_csv("./DATA/US_State_Population_Est.csv",
-                                       col_types = estPopulationColTypes())
-
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "after read US_State_Population_Est\n")
-  }
-
-  # updateTimeSeriesDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
-  #                                      prepend = myPrepend)
-  # updateStateLevelSerializedDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
-  #                                                prepend = myPrepend)
-
-  loadUSVaccinationData(traceThisRoutine = traceThisRoutine,
-                        prepend = myPrepend)
-
-  loadUSConfirmedData(traceThisRoutine = traceThisRoutine,
-                      prepend = myPrepend)
-
-  loadUSDeathsData(traceThisRoutine = traceThisRoutine,
-                   prepend = myPrepend)
-
-  loadUSTestResultsData(traceThisRoutine = traceThisRoutine,
-                        prepend = myPrepend)
-
-  loadUSIncidentRateData(traceThisRoutine = traceThisRoutine,
-                         prepend = myPrepend)
-
-  loadUSMortalityRateData(traceThisRoutine = traceThisRoutine,
-                          prepend = myPrepend)
-
-  loadUSTestingRateData(traceThisRoutine = traceThisRoutine,
-                        prepend = myPrepend)
-
-  CountiesByState <<- US_County_Confirmed %>%
-    mutate(State = Province_State, County = Admin2, .keep="none") %>%
-    filter(str_detect(County, "Out of", negate=TRUE)) %>%
-    filter(str_detect(County, "Unassigned", negate=TRUE)) %>%
-    filter(str_detect(County, "Dukes and Nantucket", negate=TRUE)) %>%
-    filter(str_detect(County, "Michigan Department of Corrections", negate=TRUE)) %>%
-    filter(str_detect(County, "Federal Correctional Institution", negate=TRUE)) %>%
-    filter(str_detect(County, "Central Utah", negate=TRUE)) %>%
-    filter(str_detect(County, "Southeast Utah", negate=TRUE)) %>%
-    filter(str_detect(County, "Southwest Utah", negate=TRUE)) %>%
-    filter(str_detect(County, "TriCounty", negate=TRUE)) %>%
-    filter(str_detect(County, "Weber-Morgan", negate=TRUE))
-
-  States <<- unique(CountiesByState$State)
-
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving loadUSStaticData\n")
-  }
 }
 
 loadAllUSData <- function(testing = FALSE, traceThisRoutine = FALSE, prepend = "") {
