@@ -8,7 +8,12 @@ for selected items
 Available in https://deanlie.shinyapps.io/ReopenAndRisk/ (as of Aug 22, 2021)
 
 Branch Testing1234:
-  * Learn to use shinytest. DONE
+  Accomplished:
+  * Learn to use shinytest.
+  * Set up automatic test to run vaccination tab through just US, MA & ME, and 4 MA counties DONE
+  * Ditto for remaining tabs as of Sept 26
+
+  TO DO:
   * Deal with dynamic data. Docs say, 
     "Problem: Dynamic data. If your application uses a data source that changes over time, 
       then a snapshot taken yesterday may not match a snapshot taken today,
@@ -24,6 +29,11 @@ Branch Testing1234:
       } else {
         # Load normal dynamic data here
       }""
-
-  * Set up automatic test to run vaccination tab through just US, MA & ME, and 4 MA counties DONE
-  * Ditto for New Deaths tab
+      
+    To view differences between expected and current results, run:
+      viewTestDiff(".", "mytest")
+    To save current results as expected results, run:
+      snapshotUpdate(".", "mytest")
+      
+    The testmode option is not available when the program is first loaded, maybe only when
+      a server instance is initialized. 

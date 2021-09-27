@@ -2,7 +2,8 @@
 ROUTINE_NAME <- function(ARGS,
                          traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
-  if (traceThisRoutine) {
+  traceFlagOnEntry <- traceThisRoutine
+  if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Entered ROUTINE_NAME\n")
   }
 
@@ -10,7 +11,7 @@ ROUTINE_NAME <- function(ARGS,
     # cat(file = stderr(), myPrepend, "\n")    
   }
   
-  if (traceThisRoutine) {
+  if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Leaving ROUTINE_NAME\n")
   }
 }

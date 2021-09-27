@@ -279,7 +279,7 @@ makeInitialStateLevelData <- function(nDates = 60,
   }
 }
 
-updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = FALSE, prepend = "CALLER??") {
+updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = TRUE, prepend = "CALLER??") {
   myPrepend <- paste("  ", prepend)
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered updateStateLevelSerializedDataFilesAsNecessary\n")

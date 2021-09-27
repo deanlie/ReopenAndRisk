@@ -10,7 +10,7 @@
   },
   "output": {
     "caseBox": {
-      "src": "[image data sha1: fa0643819fd698ad846745623a6df3f2f1c22b2e]",
+      "src": "[image data sha1: 381c4546b521b00f54b6e2a62f4f5f55e604317e]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -51,7 +51,7 @@
       ]
     },
     "caseTrend": {
-      "src": "[image data sha1: 7d180d003460df8222190a6719125e01d2f87455]",
+      "src": "[image data sha1: 483a7463a1b2fedfcd1c6054bd26b98515ef8c18]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -86,7 +86,7 @@
       }
     },
     "mortalityBox": {
-      "src": "[image data sha1: 23ddf718f96b1c82cef17797ec179e6834ef4c10]",
+      "src": "[image data sha1: 248c3cc3b3da756c73f2866ffb47f71f91941edd]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -127,7 +127,7 @@
       ]
     },
     "mortalityTrend": {
-      "src": "[image data sha1: d966c8acc7cac8d9d85f0d32e57231b45dd84089]",
+      "src": "[image data sha1: 331f5af868c9936a32a4fc2f1f03dfffaa183b35]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -162,13 +162,13 @@
       }
     },
     "summaryHTML": {
-      "html": "<div class=\"hghi_red\">\n  <h4>US<\/h4>\n  <ul><li class=\"hghi_red\">Confirmed new cases: 37 daily per 100,000 population<\/li><li class=\"hghi_yellow\">Growth trend of confirmed new cases: 0.315% per day<\/li><li class=\"hghi_red\">Estimated new cases: 62 daily per 100,000 population<\/li><li class=\"hghi_yellow\">Growth trend of estimated new cases: 0.296% per day<\/li><\/ul>\n<\/div>",
+      "html": "<div class=\"hghi_red\">\n  <h4>US<\/h4>\n  <ul><li class=\"hghi_red\">Confirmed new cases: 37 daily per 100,000 population<\/li><li class=\"hghi_yellow\">Growth trend of confirmed new cases: 0.304% per day<\/li><li class=\"hghi_red\">Estimated new cases: 61 daily per 100,000 population<\/li><li class=\"hghi_yellow\">Growth trend of estimated new cases: 0.298% per day<\/li><\/ul>\n<\/div>",
       "deps": [
 
       ]
     },
     "testGBox": {
-      "src": "[image data sha1: 15f5f030085cb66eb2e32e6b61cdc13184a0b4bd]",
+      "src": "[image data sha1: 5fd10726e4ac8fe7500b86616aab929ba37ae7a0]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -209,7 +209,7 @@
       ]
     },
     "testGTrend": {
-      "src": "[image data sha1: 2f6f18f3c5645bb8bd40fc83b7a219e0abc3a01a]",
+      "src": "[image data sha1: d01f997da3e0c11b08ef64a31fdc931d62634dba]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -244,7 +244,7 @@
       }
     },
     "testRBox": {
-      "src": "[image data sha1: 16ea9f9415a2cfcb6d0174549bc02655700c1a90]",
+      "src": "[image data sha1: 052f8f1c750dccfe377e5179bfbcddef06d703e3]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -285,7 +285,7 @@
       ]
     },
     "testRTrend": {
-      "src": "[image data sha1: a32ca1627f2f3b82fbfd353eab4e0744f870b467]",
+      "src": "[image data sha1: f2c9694f39068256ec40bd9a0666ebf21315b91e]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -320,13 +320,13 @@
       }
     },
     "vaccHeaderHTML": {
-      "html": "<h4>Vaccinations, People Fully Vaccinated<\/h4><p>Vaccination data is shown by percent of state or of US as a whole.<\/p><p>Highest People Fully Vaccinated rate: Montana with 75.4 percent<\/p><p>Next highest rate: Puerto Rico with 65.6 percent<\/p><p>Lowest People Fully Vaccinated rate: Wyoming with 37.3 percent<\/p><p>Next lowest rate: Idaho with 37.6 percent<\/p><p>Note that 'Total Doses' will be above 100% when close to 50% of the population\n                            has had a second dose!<\/p>",
+      "html": "<h4>Vaccinations, People Fully Vaccinated<\/h4><p>Vaccination data is shown by percent of state or of US as a whole.<\/p><p>Highest People Fully Vaccinated rate: Montana with 75.4 percent<\/p><p>Next highest rate: Puerto Rico with 65.8 percent<\/p><p>Lowest People Fully Vaccinated rate: Wyoming with 37.4 percent<\/p><p>Next lowest rate: Idaho with 37.7 percent<\/p><p>Note that 'Total Doses' will be above 100% when close to 50% of the population\n                            has had a second dose!<\/p>",
       "deps": [
 
       ]
     },
     "vaccRBox": {
-      "src": "[image data sha1: 323067b45f006fe1c56a5aef23f3f3d37676b99d]",
+      "src": "[image data sha1: d5e849758cd654eb4ee17bfdac23d03e07f0c6b8]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -361,7 +361,7 @@
       }
     },
     "vaccRTrend": {
-      "src": "[image data sha1: cdc08a56948f9746ee940c6a6139982a554f9af3]",
+      "src": "[image data sha1: 6724708e7427989b576da9273870981bf6043257]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",

@@ -57,12 +57,16 @@ zerolessRowIndices <- function(aTibble, aColumnRange) {
 computeNewOnDayAndGrowthRate <- function(aTibble, aDate,
                                          nDays = 10,
                                          getGrowthRate = TRUE, nonzeroOnly = FALSE,
-                                         tibbleName = "from computeNewOnDayAndGrowthRate",
+                                         tibbleName = "<?>",
                                          traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered computeNewOnDayAndGrowthRate\n")
   }
+  
+  # OUCH
+  traceFlagOnEntry <- traceThisRoutine
+  traceThisRoutine <- FALSE
   
   # Get a range of nDays + 1 so you can compute nDays growth
   theRange <- findColumnRangeForDate(aTibble, aDate, nDays + 1,
@@ -109,7 +113,7 @@ computeNewOnDayAndGrowthRate <- function(aTibble, aDate,
   NewOnDay   <- bind_cols(JustKey, as_tibble(Diff))
   NewerData  <- bind_cols(JustKey, as_tibble(NewerData))
 
-  if (traceThisRoutine) {
+  if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Leaving computeNewOnDayAndGrowthRate\n")
   }
   
@@ -124,6 +128,11 @@ movingAverageData <- function(aTibble, aDate, mAvgs, nDayAvg,
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered movingAverageData for", tibbleName, "\n")
   }
+  
+  # OUCH Keep tracing off within this call 
+  traceFlagOnEntry <- traceThisRoutine
+  traceThisRoutine <- FALSE
+  
   nBeforeDates <- nColumnsBeforeDates(aTibble)
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "nBeforeDates computed as", nBeforeDates, "\n")
@@ -167,9 +176,11 @@ movingAverageData <- function(aTibble, aDate, mAvgs, nDayAvg,
   
   theFirstCols  <- select(aTibble, 1:all_of(nBeforeDates))
   Averages      <- bind_cols(theFirstCols, as_tibble(Avgs))
-  if (traceThisRoutine) {
+
+  if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Leaving movingAverageData\n")
   }
+
   return(Averages)
 }
 

@@ -1,6 +1,7 @@
 app <- ShinyDriver$new("../../", loadTimeout=100000)
 app$snapshotInit("mytest")
 
+Sys.sleep(7)
 app$setInputs(stateChoices = character(0))
 app$setInputs(movingAvg = FALSE)
 app$snapshot()

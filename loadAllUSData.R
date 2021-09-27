@@ -32,6 +32,11 @@ loadATypeOfData <- function(theType, colTypes, stateColTypes, computeCounty,
     if (traceThisRoutine) {
       cat(file = stderr(), prepend, "Entered newFromCumulative\n")
     }
+    
+    # OUCH
+    traceFlagOnEntry <- traceThisRoutine
+    traceThisRoutine <- FALSE
+
     outputList <- computeNewOnDayAndGrowthRate(inputTibble,
                                                updateToThisDate,
                                                nDays,
@@ -44,7 +49,7 @@ loadATypeOfData <- function(theType, colTypes, stateColTypes, computeCounty,
                                                traceThisRoutine = traceThisRoutine,
                                                prepend = myPrepend)
     myPrepend <- paste(prepend, "  ", sep = "")
-    if (traceThisRoutine) {
+    if (traceFlagOnEntry) {
       cat(file = stderr(), prepend, "Leaving newFromCumulative\n")
     }
     outputTibble <- outputList$new
@@ -59,6 +64,8 @@ loadATypeOfData <- function(theType, colTypes, stateColTypes, computeCounty,
     cat(file = stderr(), prepend, "Entered loadATypeOfData\n")
   }
   
+  traceFlagOnEntry <- traceThisRoutine
+  
   results <- list(US_C = NULL,      US_C_P = NULL,
                   US_C_A = NULL,    US_C_PA7 = NULL,
                   US_N = NULL,      US_N_A = NULL,
@@ -69,8 +76,7 @@ loadATypeOfData <- function(theType, colTypes, stateColTypes, computeCounty,
                   County_N = NULL,  County_N_A = NULL)
 
   updateToThisDate <- expectedLatestUpdateDataDate()
-  updateTimeSeriesDataFilesAsNecessary()
-  
+
   US_leaf <- paste("US_", theType, ".csv", sep = "")
   State_leaf <- paste("US_State_", theType, ".csv", sep = "")
   if (computeCounty) {
@@ -113,6 +119,9 @@ loadATypeOfData <- function(theType, colTypes, stateColTypes, computeCounty,
                                    "State", theType, nDaysData,
                                    traceThisRoutine = traceThisRoutine,
                                    prepend = myPrepend)
+
+    # OUCH
+    traceThisRoutine <- FALSE
 
     if (traceThisRoutine) {
       conciseEndsOfTibbleRow(results$State_N, "results$State_N",
@@ -282,7 +291,7 @@ loadATypeOfData <- function(theType, colTypes, stateColTypes, computeCounty,
     }
   }
   
-  if (traceThisRoutine) {
+  if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Leaving loadATypeOfData\n")
   }
 
@@ -342,7 +351,7 @@ loadUSConfirmedData <- function(traceThisRoutine = FALSE, prepend = "") {
 loadUSDeathsData <- function(traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered loadUSDeathsData (in loadAllUSData.R)\n")
+    cat(file = stderr(), prepend, "Entered loadUSDeathsData\n")
   }
   
   computeCounty <- TRUE
@@ -486,16 +495,77 @@ loadUSIncidentRateData <- function(traceThisRoutine = FALSE, prepend = "") {
 
   return(allIncidentRateData)
 }
-  
-loadAllUSData <- function(traceThisRoutine = FALSE, prepend = "") {
+
+loadUSStaticData <- function(traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered loadAllUSData (in loadAllUSData.R)\n")
+    cat(file = stderr(), prepend, "Entered loadUSStaticData\n")
+  }
+
+  US_Population <<- read_csv("./DATA/US_Population.csv",
+                             col_types = populationColTypes())
+  US_State_Population_Est <<- read_csv("./DATA/US_State_Population_Est.csv",
+                                       col_types = estPopulationColTypes())
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "after read US_State_Population_Est\n")
+  }
+
+  # updateTimeSeriesDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
+  #                                      prepend = myPrepend)
+  # updateStateLevelSerializedDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
+  #                                                prepend = myPrepend)
+
+  loadUSVaccinationData(traceThisRoutine = traceThisRoutine,
+                        prepend = myPrepend)
+
+  loadUSConfirmedData(traceThisRoutine = traceThisRoutine,
+                      prepend = myPrepend)
+
+  loadUSDeathsData(traceThisRoutine = traceThisRoutine,
+                   prepend = myPrepend)
+
+  loadUSTestResultsData(traceThisRoutine = traceThisRoutine,
+                        prepend = myPrepend)
+
+  loadUSIncidentRateData(traceThisRoutine = traceThisRoutine,
+                         prepend = myPrepend)
+
+  loadUSMortalityRateData(traceThisRoutine = traceThisRoutine,
+                          prepend = myPrepend)
+
+  loadUSTestingRateData(traceThisRoutine = traceThisRoutine,
+                        prepend = myPrepend)
+
+  CountiesByState <<- US_County_Confirmed %>%
+    mutate(State = Province_State, County = Admin2, .keep="none") %>%
+    filter(str_detect(County, "Out of", negate=TRUE)) %>%
+    filter(str_detect(County, "Unassigned", negate=TRUE)) %>%
+    filter(str_detect(County, "Dukes and Nantucket", negate=TRUE)) %>%
+    filter(str_detect(County, "Michigan Department of Corrections", negate=TRUE)) %>%
+    filter(str_detect(County, "Federal Correctional Institution", negate=TRUE)) %>%
+    filter(str_detect(County, "Central Utah", negate=TRUE)) %>%
+    filter(str_detect(County, "Southeast Utah", negate=TRUE)) %>%
+    filter(str_detect(County, "Southwest Utah", negate=TRUE)) %>%
+    filter(str_detect(County, "TriCounty", negate=TRUE)) %>%
+    filter(str_detect(County, "Weber-Morgan", negate=TRUE))
+
+  States <<- unique(CountiesByState$State)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving loadUSStaticData\n")
+  }
+}
+
+loadAllUSData <- function(testing = FALSE, traceThisRoutine = FALSE, prepend = "") {
+  myPrepend <- paste(prepend, "  ", sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered loadAllUSData\n")
   }
 
   #OUCH  
   traceFlagOnEntry <- traceThisRoutine
-  traceThisRoutine <- FALSE
+  # traceThisRoutine <- FALSE
 
   aDate = today("EST")
 
@@ -508,10 +578,12 @@ loadAllUSData <- function(traceThisRoutine = FALSE, prepend = "") {
     cat(file = stderr(), myPrepend, "after read US_State_Population_Est\n")
   }
 
-  updateTimeSeriesDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
-                                       prepend = myPrepend)
-  updateStateLevelSerializedDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
-                                                 prepend = myPrepend)
+  if (!testing) {
+    updateTimeSeriesDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
+                                         prepend = myPrepend)
+    updateStateLevelSerializedDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
+                                                   prepend = myPrepend)
+  }
 
   loadUSVaccinationData(traceThisRoutine = traceThisRoutine,
                         prepend = myPrepend)
@@ -533,21 +605,11 @@ loadAllUSData <- function(traceThisRoutine = FALSE, prepend = "") {
 
   traceThisRoutine <- traceFlagOnEntry
 
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "after loadUSIncidentRateData\n")
-  }
+  loadUSMortalityRateData(traceThisRoutine = traceThisRoutine,
+                          prepend = myPrepend)
 
-  loadUSMortalityRateData(aDate)
-
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "after loadUSMortalityRateData\n")
-  }
-
-  loadUSTestingRateData()
-
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "after loadUSTestingRateData\n")
-  }
+  loadUSTestingRateData(traceThisRoutine = traceThisRoutine,
+                        prepend = myPrepend)
 
   CountiesByState <<- US_County_Confirmed %>%
     mutate(State = Province_State, County = Admin2, .keep="none") %>%
@@ -565,6 +627,6 @@ loadAllUSData <- function(traceThisRoutine = FALSE, prepend = "") {
   States <<- unique(CountiesByState$State)
 
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving loadAllUSData (in loadAllUSData.R)\n")
+    cat(file = stderr(), prepend, "Leaving loadAllUSData\n")
   }
 }
