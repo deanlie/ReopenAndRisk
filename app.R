@@ -123,23 +123,23 @@ ui <- fluidPage(
                                    plotOutput("newCaseBox"),
                                    plotOutput("newCaseTrend"))),
                 tabPanel("New Deaths",
-                         mainPanel(htmlOutput("mortalityHeaderHTML"),
+                         mainPanel(htmlOutput("newMortalityHeaderHTML"),
                                    # tags$p(textOutput("mortalityP1")),
                                    # tags$p(textOutput("mortalityP2")),
                                    
-                                   plotOutput("mortalityBox"),
-                                   plotOutput("mortalityTrend"))),
+                                   plotOutput("newMortalityBox"),
+                                   plotOutput("newMortalityTrend"))),
                 tabPanel("Total Cases",
                          mainPanel(htmlOutput("totalCaseHeaderHTML"),
                                    plotOutput("totalCaseBox"),
                                    plotOutput("totalCaseTrend"))),
-                # tabPanel("Total Deaths",
-                #          mainPanel(htmlOutput("mortalityHeaderHTML"),
-                #                    # tags$p(textOutput("mortalityP1")),
-                #                    # tags$p(textOutput("mortalityP2")),
-                #                    
-                #                    plotOutput("mortalityBox"),
-                #                    plotOutput("mortalityTrend"))),
+                tabPanel("Total Deaths",
+                         mainPanel(htmlOutput("totalMortalityHeaderHTML"),
+                                   # tags$p(textOutput("mortalityP1")),
+                                   # tags$p(textOutput("mortalityP2")),
+
+                                   plotOutput("totalMortalityBox"),
+                                   plotOutput("totalMortalityTrend"))),
                 tabPanel("Test Growth",
                          mainPanel(htmlOutput("testGrowthHeaderHTML"),
                                    plotOutput("testGBox"),
@@ -279,20 +279,35 @@ server <- function(input, output, session) {
                                                            input$stateChoices,
                                                            input$timeWindow)})
   
-  # "Mortality" tab    
-  output$mortalityHeaderHTML <- renderUI({mortalityHeaderHTML(input$chooseCounty,
-                                                              input$countyChoices,
-                                                              input$stateChoices)})
-  output$mortalityBox <- renderPlot({plotMortalityGrowthBoxplots(input$chooseCounty,
-                                                                 input$movingAvg,
+  # "New Deaths" tab    
+  output$newMortalityHeaderHTML <- renderUI({mortalityHeaderHTML(input$chooseCounty,
                                                                  input$countyChoices,
-                                                                 input$stateChoices,
-                                                                 input$timeWindow)})
-  output$mortalityTrend <- renderPlot({plotMortalityGrowthTrend(input$chooseCounty,
-                                                                input$movingAvg,
-                                                                input$countyChoices,
-                                                                input$stateChoices,
-                                                                input$timeWindow)})
+                                                                 input$stateChoices)})
+  output$newMortalityBox <- renderPlot({plotMortalityGrowthBoxplots(input$chooseCounty,
+                                                                    input$movingAvg,
+                                                                    input$countyChoices,
+                                                                    input$stateChoices,
+                                                                    input$timeWindow)})
+  output$newMortalityTrend <- renderPlot({plotMortalityGrowthTrend(input$chooseCounty,
+                                                                   input$movingAvg,
+                                                                   input$countyChoices,
+                                                                   input$stateChoices,
+                                                                   input$timeWindow)})
+  
+  # "Total Deaths" tab    
+  output$totalMortalityHeaderHTML <- renderUI({mortalityHeaderHTML(input$chooseCounty,
+                                                                   input$countyChoices,
+                                                                   input$stateChoices)})
+  output$totalMortalityBox <- renderPlot({plotMortalityGrowthBoxplots(input$chooseCounty,
+                                                                      input$movingAvg,
+                                                                      input$countyChoices,
+                                                                      input$stateChoices,
+                                                                      input$timeWindow)})
+  output$totalMortalityTrend <- renderPlot({plotMortalityGrowthTrend(input$chooseCounty,
+                                                                     input$movingAvg,
+                                                                     input$countyChoices,
+                                                                     input$stateChoices,
+                                                                     input$timeWindow)})
   
   # "Test Growth" tab
   output$testGrowthHeaderHTML <- renderUI({testGrowthHeaderHTML(input$chooseCounty,
