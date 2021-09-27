@@ -13,7 +13,7 @@
   },
   "output": {
     "caseBox": {
-      "src": "[image data sha1: e2f626e4ad4504a404f944af20d5c17cd86b9447]",
+      "src": "[image data sha1: 26e78381844aa12f2cefc087690191492af76464]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -54,7 +54,7 @@
       ]
     },
     "caseTrend": {
-      "src": "[image data sha1: 9d480fd2787d6b6d3622398212ab01adcc9e7f09]",
+      "src": "[image data sha1: 445e0780a1fc4a03a1c2d4b545ba47760a81d208]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -165,7 +165,7 @@
       }
     },
     "summaryHTML": {
-      "html": "<div class=\"hghi_red\">\n  <h4>US<\/h4>\n  <ul><li class=\"hghi_red\">Confirmed new cases: 36 daily per 100,000 population<\/li><li class=\"hghi_yellow\">Growth trend of confirmed new cases: 0.293% per day<\/li><li class=\"hghi_red\">Estimated new cases: 60 daily per 100,000 population<\/li><li class=\"hghi_yellow\">Growth trend of estimated new cases: 0.294% per day<\/li><\/ul>\n<\/div>",
+      "html": "<div class=\"hghi_red\">\n  <h4>US<\/h4>\n  <ul><li class=\"hghi_red\">Confirmed new cases: 42 daily per 100,000 population<\/li><li class=\"hghi_yellow\">Growth trend of confirmed new cases: 0.352% per day<\/li><li class=\"hghi_red\">Estimated new cases: 60 daily per 100,000 population<\/li><li class=\"hghi_yellow\">Growth trend of estimated new cases: 0.294% per day<\/li><\/ul>\n<\/div>",
       "deps": [
 
       ]
@@ -247,7 +247,7 @@
       }
     },
     "testRBox": {
-      "src": "[image data sha1: 1aa6ff8c310dab1a346ae4889e6ad02eafe9d3a6]",
+      "src": "[image data sha1: a326dff08851a0b8dfd885a03f6dc84b970aef77]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -288,7 +288,7 @@
       ]
     },
     "testRTrend": {
-      "src": "[image data sha1: 547f538b16a5de84a59ee39bb2c8b7a0718e0185]",
+      "src": "[image data sha1: 7c7f4ed3f8c4e7d85e4d89086bee588e1484036f]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",

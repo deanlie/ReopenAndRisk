@@ -322,6 +322,11 @@ loadUSConfirmedData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, p
     cat(file = stderr(), prepend, "Entered loadUSConfirmedData, staticDataQ =", staticDataQ, "\n")
   }
 
+  if (isTRUE(getOption("shiny.testmode"))) {
+    cat(file = stderr(), "loadUSConfirmedData TEST MODE!\n")
+    staticDataQ <- TRUE
+  }
+
   computeCounty <- TRUE
   computeNew <- TRUE
   computeAvg <- TRUE
@@ -358,6 +363,12 @@ loadUSDeathsData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prep
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered loadUSDeathsData, staticDataQ =", staticDataQ, "\n")
   }
+  
+  # if (isTRUE(getOption("shiny.testmode"))) {
+  #   cat(file = stderr(), "loadUSDeathsData TEST MODE!\n")
+  #   staticDataQ <- TRUE
+  # }
+  # HERE
   
   computeCounty <- TRUE
   computeNew <- TRUE
@@ -534,10 +545,12 @@ loadAllUSData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend
                                                    prepend = myPrepend)
   }
 
-  loadUSVaccinationData(traceThisRoutine = traceThisRoutine,
+  loadUSVaccinationData(staticDataQ = staticDataQ,
+                        traceThisRoutine = traceThisRoutine,
                         prepend = myPrepend)
 
-  loadUSConfirmedData(traceThisRoutine = traceThisRoutine,
+  loadUSConfirmedData(staticDataQ = staticDataQ,
+                      traceThisRoutine = traceThisRoutine,
                       prepend = myPrepend)
 
   loadUSDeathsData(traceThisRoutine = traceThisRoutine,

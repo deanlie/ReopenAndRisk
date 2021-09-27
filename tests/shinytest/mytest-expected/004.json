@@ -10,7 +10,7 @@
   },
   "output": {
     "caseBox": {
-      "src": "[image data sha1: 5bfd287d552351a501c470996c39f5483cebaa35]",
+      "src": "[image data sha1: d66cc237b667c0793faf631b1a7139dcd5c1e277]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -51,7 +51,7 @@
       ]
     },
     "caseTrend": {
-      "src": "[image data sha1: a10659089bf4030c7450daccf19ce428fe369fab]",
+      "src": "[image data sha1: d14caf3499fc262a87f560de9d238fe953bec16e]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
