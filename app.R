@@ -166,13 +166,17 @@ server <- function(input, output, session) {
     if (isTRUE(getOption("shiny.testmode"))) {
       cat(file = stderr(), "in Server: Shiny TEST MODE\n")
     } else {
-      cat(file = stderr(), "in Server: manual TEST mode\n")
+      if (manualTestModeQ()) {
+        cat(file = stderr(), "in Server: manual TEST mode\n")
+      } else {
+        cat(file = stderr(), "in Server: not test mode\n")
+      }
     }
-  } else {
-    cat(file = stderr(), "in Server: not test mode\n")
   }
-  # loadAllUSData(staticDataQ = testModeQ, traceThisRoutine = manualTraceModeQ(), prepend = "")
-  
+  if (manualTraceModeQ()) {
+    cat(file = stderr(), "in Server: manual TRACE mode is on\n")
+  }
+
   observeEvent(countyChoices(), {
     if(!input$chooseCounty) {
       removeUI(selector = "#CountyXX")
