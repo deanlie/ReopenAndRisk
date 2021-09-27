@@ -4,8 +4,6 @@ library(lubridate)
 source("computeNewAndGrowth.R")
 source("mostRecentDataDate.R")
 source("updateTimeSeriesDataFilesAsNecessary.R")
-source("loadUSMortalityRateData.R")
-source("loadUSTestingRateData.R")
 source("columnUtilities.R")
 source("diagnosticRoutines.R")
 
@@ -493,6 +491,11 @@ loadUSIncidentRateData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE
     cat(file = stderr(), prepend, "Entered loadUSIncidentRateData, staticDataQ =", staticDataQ, "\n")
   }
   
+  if (isTRUE(getOption("shiny.testmode"))) {
+    cat(file = stderr(), "loadUSIncidentRateData TEST MODE!\n")
+    staticDataQ <- TRUE
+  }
+  
   computeCounty <- FALSE
   computeNew <- TRUE
   computeAvg <- TRUE
@@ -519,6 +522,116 @@ loadUSIncidentRateData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE
   US_State_Incident_Rate_G7 <<- allIncidentRateData$State_N_A
 
   return(allIncidentRateData)
+}
+
+loadUSTestingRate0Data <- function(staticDataQ = FALSE,
+                                    traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered loadUSTestingRate0Data\n")
+  }
+
+  if (isTRUE(getOption("shiny.testmode"))) {
+    cat(file = stderr(), "loadUSTestingRate0Data TEST MODE!\n")
+    staticDataQ <- TRUE
+  }
+
+  US_Testing_Rate0 <<- read_csv("./DATA/US_Testing_Rate.csv",
+                                 col_types = myTSColTypes())
+  US_State_Testing_Rate0 <<- read_csv("./DATA/US_State_Testing_Rate.csv",
+                                       col_types = justCKColTypes())
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving loadUSTestingRate0Data\n")
+  }
+}
+
+loadUSTestingRateData <- function(staticDataQ = FALSE,
+                                  traceThisRoutine = FALSE,
+                                  prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered loadUSTestingRateData\n")
+  }
+  
+  if (isTRUE(getOption("shiny.testmode"))) {
+    cat(file = stderr(), "loadUSTestingRateData TEST MODE!\n")
+    staticDataQ <- TRUE
+  }
+  
+  computeCounty <- FALSE
+  computeNew <- FALSE
+  computeAvg <- FALSE
+  computePercent <- FALSE
+  
+  allTestingRateData <- loadATypeOfData(staticDataQ, "Testing_Rate",
+                                        myTSColTypes(), justCKColTypes(),
+                                        computeCounty, computeNew,
+                                        computeAvg, computePercent,
+                                        traceThisRoutine = traceThisRoutine,
+                                        prepend = myPrepend)
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving loadUSTestingRateData\n")
+  }
+
+  US_Testing_Rate <<- allTestingRateData$US_C
+  US_State_Testing_Rate <<- allTestingRateData$State_C
+}
+
+loadUSMortalityRate0Data <- function(staticDataQ = FALSE,
+                                    traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered loadUSMortalityRate0Data\n")
+  }
+
+  if (isTRUE(getOption("shiny.testmode"))) {
+    cat(file = stderr(), "loadUSMortalityRate0Data TEST MODE!\n")
+    staticDataQ <- TRUE
+  }
+
+  US_Mortality_Rate0 <<- read_csv("./DATA/US_Case_Fatality_Ratio.csv",
+                                 col_types = myTSColTypes())
+  US_State_Mortality_Rate0 <<- read_csv("./DATA/US_State_Case_Fatality_Ratio.csv",
+                                       col_types = justCKColTypes())
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving loadUSMortalityRate0Data\n")
+  }
+}
+
+loadUSMortalityRateData <- function(staticDataQ = FALSE,
+                                  traceThisRoutine = FALSE,
+                                  prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered loadUSMortalityRateData\n")
+  }
+  
+  if (isTRUE(getOption("shiny.testmode"))) {
+    cat(file = stderr(), "loadUSMortalityRateData TEST MODE!\n")
+    staticDataQ <- TRUE
+  }
+  
+  computeCounty <- FALSE
+  computeNew <- FALSE
+  computeAvg <- FALSE
+  computePercent <- FALSE
+  
+  allMortalityRateData <- loadATypeOfData(staticDataQ, "Case_Fatality_Ratio",
+                                        myTSColTypes(), justCKColTypes(),
+                                        computeCounty, computeNew,
+                                        computeAvg, computePercent,
+                                        traceThisRoutine = traceThisRoutine,
+                                        prepend = myPrepend)
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving loadUSMortalityRateData\n")
+  }
+  
+  US_Mortality_Rate <<- allMortalityRateData$US_C
+  US_State_Mortality_Rate <<- allMortalityRateData$State_C
 }
 
 loadAllUSData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend = "") {
@@ -580,6 +693,16 @@ loadAllUSData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend
                         traceThisRoutine = traceThisRoutine,
                         prepend = myPrepend)
 
+  # OUCH testing just once!  
+  loadUSMortalityRate0Data(staticDataQ = staticDataQ,
+                          traceThisRoutine = traceThisRoutine,
+                          prepend = myPrepend)
+  
+  loadUSTestingRate0Data(staticDataQ = staticDataQ,
+                        traceThisRoutine = traceThisRoutine,
+                        prepend = myPrepend)
+  browser() # END_OUCH
+  
   CountiesByState <<- US_County_Confirmed %>%
     mutate(State = Province_State, County = Admin2, .keep="none") %>%
     filter(str_detect(County, "Out of", negate=TRUE)) %>%
