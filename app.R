@@ -28,7 +28,7 @@ manualTestModeQ <- function() {
 
 loadAllUSData(testing = manualTestModeQ(), traceThisRoutine = manualTestModeQ(), prepend = "")
 
-currentlyTestingCounties <- function() {
+currentlyTestingCountiesQ <- function() {
   manualTestModeQ() & TRUE
 }
 
@@ -87,7 +87,7 @@ ui <- fluidPage(
                         multiple = TRUE),
             tags$p("County data is available on the New Cases, New Deaths, and Summary tabs."),
             checkboxInput("chooseCounty", "Select up to six counties",
-                          value = currentlyTestingCounties()), # "Select County(ies)"),
+                          value = currentlyTestingCountiesQ()), # "Select County(ies)"),
             # Without the spacer, the County dropbox overwrote the
             #  caption "Select County/Counties.
             tags$p("", id="Spacer"),
