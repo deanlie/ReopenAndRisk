@@ -22,11 +22,19 @@ source("doTestGrowthTab.R")
 source("doTestResultsTab.R")
 source("doSummaryTab.R")
 
+if (isTRUE(getOption("shiny.testmode"))) {
+  cat(file = stderr(), "Top: TEST MODE\n")
+  # Load static/dummy data here
+} else {
+  cat(file = stderr(), "Top: unable to see 'shiny.testmode' option\n")
+  # Load normal dynamic data here
+}
+
 currentlyTesting <- function() {
   TRUE
 }
 
-loadAllUSData(traceThisRoutine = currentlyTesting(), prepend = "")
+loadAllUSData(testing = currentlyTesting(), traceThisRoutine = currentlyTesting(), prepend = "")
 
 currentlyTestingCounties <- function() {
   currentlyTesting() & TRUE
@@ -160,6 +168,19 @@ server <- function(input, output, session) {
   })
   
   useCounty <- reactive({input$chooseCounty})
+
+  testMode <- isTRUE(getOption("shiny.testmode"))
+  # OUCH for development
+  # testMode <- TRUE
+  if (isTRUE(getOption("shiny.testmode"))) {
+    cat(file = stderr(), "in Server: TEST MODE\n")
+  } else {
+    cat(file = stderr(), "in Server: not test mode\n")
+  }
+  testMode <- isTRUE(getOption("shiny.testmode"))
+  # OUCH for development
+  # testMode <- TRUE
+  # loadAllUSData(testing = testMode, traceThisRoutine = currentlyTesting(), prepend = "")
   
   observeEvent(countyChoices(), {
     if(!input$chooseCounty) {
