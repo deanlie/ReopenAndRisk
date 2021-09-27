@@ -29,7 +29,10 @@ Branch Testing1234 merged in 2021-09-27:
       snapshotUpdate(".", "mytest")
 
 Branch Per100_Cases_And_Mortality:
+  Accomplished:
   * Change Cases and Deaths tabs to New Cases and New Deaths resp;
+  
+  To Do:
   * Add Total Cases and Total Deaths tabs with content duplicating New<resp> tabs
   * Change text on those four tabs
   * show numbers per 100K population in last day in the graphs on those four tabs.

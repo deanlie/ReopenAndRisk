@@ -119,9 +119,9 @@ ui <- fluidPage(
                                      htmlOutput("vaccRTrendHTML"),
                                      plotOutput("vaccRTrend")))),
                 tabPanel("New Cases",
-                         mainPanel(htmlOutput("caseHeaderHTML"),
-                                   plotOutput("caseBox"),
-                                   plotOutput("caseTrend"))),
+                         mainPanel(htmlOutput("newCaseHeaderHTML"),
+                                   plotOutput("newCaseBox"),
+                                   plotOutput("newCaseTrend"))),
                 tabPanel("New Deaths",
                          mainPanel(htmlOutput("mortalityHeaderHTML"),
                                    # tags$p(textOutput("mortalityP1")),
@@ -129,6 +129,17 @@ ui <- fluidPage(
                                    
                                    plotOutput("mortalityBox"),
                                    plotOutput("mortalityTrend"))),
+                tabPanel("Total Cases",
+                         mainPanel(htmlOutput("totalCaseHeaderHTML"),
+                                   plotOutput("totalCaseBox"),
+                                   plotOutput("totalCaseTrend"))),
+                # tabPanel("Total Deaths",
+                #          mainPanel(htmlOutput("mortalityHeaderHTML"),
+                #                    # tags$p(textOutput("mortalityP1")),
+                #                    # tags$p(textOutput("mortalityP2")),
+                #                    
+                #                    plotOutput("mortalityBox"),
+                #                    plotOutput("mortalityTrend"))),
                 tabPanel("Test Growth",
                          mainPanel(htmlOutput("testGrowthHeaderHTML"),
                                    plotOutput("testGBox"),
@@ -238,20 +249,35 @@ server <- function(input, output, session) {
                                                  input$stateChoices,
                                                  input$timeWindow)})
 
-  # "Cases" Tab
-  output$caseHeaderHTML <- renderUI({caseHeaderHTML(input$chooseCounty,
-                                                    input$countyChoices,
-                                                    input$stateChoices)})
-  output$caseBox <- renderPlot({plotCaseGrowthBoxplots(input$chooseCounty,
-                                                       input$movingAvg,
+  # "New Cases" Tab
+  output$newCaseHeaderHTML <- renderUI({caseHeaderHTML(input$chooseCounty,
                                                        input$countyChoices,
-                                                       input$stateChoices,
-                                                       input$timeWindow)})
-  output$caseTrend <- renderPlot({plotCaseGrowthTrend(input$chooseCounty,
-                                                      input$movingAvg,
-                                                      input$countyChoices,
-                                                      input$stateChoices,
-                                                      input$timeWindow)})
+                                                       input$stateChoices)})
+  output$newCaseBox <- renderPlot({plotCaseGrowthBoxplots(input$chooseCounty,
+                                                          input$movingAvg,
+                                                          input$countyChoices,
+                                                          input$stateChoices,
+                                                          input$timeWindow)})
+  output$newCaseTrend <- renderPlot({plotCaseGrowthTrend(input$chooseCounty,
+                                                         input$movingAvg,
+                                                         input$countyChoices,
+                                                         input$stateChoices,
+                                                         input$timeWindow)})
+  
+  # "Total Cases" Tab
+  output$totalCaseHeaderHTML <- renderUI({caseHeaderHTML(input$chooseCounty,
+                                                         input$countyChoices,
+                                                         input$stateChoices)})
+  output$totalCaseBox <- renderPlot({plotCaseGrowthBoxplots(input$chooseCounty,
+                                                            input$movingAvg,
+                                                            input$countyChoices,
+                                                            input$stateChoices,
+                                                            input$timeWindow)})
+  output$totalCaseTrend <- renderPlot({plotCaseGrowthTrend(input$chooseCounty,
+                                                           input$movingAvg,
+                                                           input$countyChoices,
+                                                           input$stateChoices,
+                                                           input$timeWindow)})
   
   # "Mortality" tab    
   output$mortalityHeaderHTML <- renderUI({mortalityHeaderHTML(input$chooseCounty,
