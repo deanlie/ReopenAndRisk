@@ -7,7 +7,7 @@ for selected items
 
 Available in https://deanlie.shinyapps.io/ReopenAndRisk/ (as of Aug 22, 2021)
 
-Branch Testing1234:
+Branch Testing1234 merged in 2021-09-27:
   Accomplished:
   * Learn to use shinytest.
   * Set up automatic test to run vaccination tab through just US, MA & ME, and 4 MA counties DONE
@@ -27,3 +27,10 @@ Branch Testing1234:
       viewTestDiff(".", "mytest")
     To save current results as expected results, run:
       snapshotUpdate(".", "mytest")
+
+Branch Per100_Cases_And_Mortality:
+  * Change Cases and Deaths tabs to New Cases and New Deaths resp;
+  * Add Total Cases and Total Deaths tabs with content duplicating New<resp> tabs
+  * Change text on those four tabs
+  * show numbers per 100K population in last day in the graphs on those four tabs.
+
