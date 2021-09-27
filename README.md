@@ -23,13 +23,6 @@ Branch Testing1234:
     Note that this changes the output images which did not formerly have the "county"
       selection box.
 
-
-  TO DO:
-  * loadUSMortalityRateData and loadUSTestingRateData graphs reference snapshots showed
-      static data time range before those routines were updated, need checking out;
-      see loadUSVaccinationData for example of working logic.
-  * Check tests when manual testing is not turned on by app (i.e. tests rely on shiny.testmode)
-
     To view differences between expected and current results, run:
       viewTestDiff(".", "mytest")
     To save current results as expected results, run:
