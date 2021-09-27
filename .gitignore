@@ -6,10 +6,11 @@
 *.Rproj
 *.txt
 *.dcf
+RefactorAndRisk.Rproj
 BackupScripts*
 DATA/*.csv
+tests/shinytest/*-current/
 DEVELOPMENT/
 CACHE/
 BACKUPS/
-RefactorAndRisk.Rproj
 UNDER\ LOCAL\ GIT\ CONTROL/
