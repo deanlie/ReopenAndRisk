@@ -22,26 +22,18 @@ source("doTestGrowthTab.R")
 source("doTestResultsTab.R")
 source("doSummaryTab.R")
 
-if (isTRUE(getOption("shiny.testmode"))) {
-  cat(file = stderr(), "Top: TEST MODE\n")
-  # Load static/dummy data here
-} else {
-  cat(file = stderr(), "Top: unable to see 'shiny.testmode' option\n")
-  # Load normal dynamic data here
-}
-
-currentlyTesting <- function() {
+manualTestModeQ <- function() {
   TRUE
 }
 
-loadAllUSData(testing = currentlyTesting(), traceThisRoutine = currentlyTesting(), prepend = "")
+loadAllUSData(testing = manualTestModeQ(), traceThisRoutine = manualTestModeQ(), prepend = "")
 
 currentlyTestingCounties <- function() {
-  currentlyTesting() & TRUE
+  manualTestModeQ() & TRUE
 }
 
 defaultTimeWindowValue <- function() {
-  if (currentlyTesting()) {
+  if (manualTestModeQ()) {
     14
   } else {
     14
@@ -49,7 +41,7 @@ defaultTimeWindowValue <- function() {
 }
 
 defaultStateChoices <- function() {
-  if (currentlyTesting()) {
+  if (manualTestModeQ()) {
     c("MA", "ME")
   } else {
     NULL
@@ -57,7 +49,7 @@ defaultStateChoices <- function() {
 }
 
 defaultSelectedTab <- function() {
-  if (currentlyTesting()) {
+  if (manualTestModeQ()) {
     "Vaccination Progress"
   } else {
     NULL
@@ -180,7 +172,7 @@ server <- function(input, output, session) {
   testMode <- isTRUE(getOption("shiny.testmode"))
   # OUCH for development
   # testMode <- TRUE
-  # loadAllUSData(testing = testMode, traceThisRoutine = currentlyTesting(), prepend = "")
+  # loadAllUSData(testing = testMode, traceThisRoutine = manualTestModeQ(), prepend = "")
   
   observeEvent(countyChoices(), {
     if(!input$chooseCounty) {
