@@ -26,7 +26,11 @@ manualTestModeQ <- function() {
   TRUE
 }
 
-loadAllUSData(testing = manualTestModeQ(), traceThisRoutine = manualTestModeQ(), prepend = "")
+manualTraceModeQ <- function() {
+  TRUE
+}
+
+loadAllUSData(testing = manualTestModeQ(), traceThisRoutine = manualTraceModeQ(), prepend = "")
 
 currentlyTestingCountiesQ <- function() {
   manualTestModeQ() & TRUE
