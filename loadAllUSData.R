@@ -364,12 +364,11 @@ loadUSDeathsData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prep
     cat(file = stderr(), prepend, "Entered loadUSDeathsData, staticDataQ =", staticDataQ, "\n")
   }
   
-  # if (isTRUE(getOption("shiny.testmode"))) {
-  #   cat(file = stderr(), "loadUSDeathsData TEST MODE!\n")
-  #   staticDataQ <- TRUE
-  # }
-  # HERE
-  
+  if (isTRUE(getOption("shiny.testmode"))) {
+    cat(file = stderr(), "loadUSDeathsData TEST MODE!\n")
+    staticDataQ <- TRUE
+  }
+
   computeCounty <- TRUE
   computeNew <- TRUE
   computeAvg <- TRUE
@@ -420,6 +419,11 @@ loadUSTestResultsData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE,
   myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered loadUSTestResultsData, staticDataQ =", staticDataQ, "\n")
+  }
+  
+  if (isTRUE(getOption("shiny.testmode"))) {
+    cat(file = stderr(), "loadUSTestResultsData TEST MODE!\n")
+    staticDataQ <- TRUE
   }
 
   computeCounty <- FALSE
@@ -523,9 +527,7 @@ loadAllUSData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend
     cat(file = stderr(), prepend, "Entered loadAllUSData\n")
   }
 
-  #OUCH  
   traceFlagOnEntry <- traceThisRoutine
-  # traceThisRoutine <- FALSE
 
   aDate = today("EST")
 
@@ -537,8 +539,13 @@ loadAllUSData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "after read US_State_Population_Est\n")
   }
-
-  if (!isTRUE(getOption("shiny.testmode"))) {
+  
+  if (isTRUE(getOption("shiny.testmode"))) {
+    cat(file = stderr(), "loadUSVaccinationData TEST MODE!\n")
+    staticDataQ <- TRUE
+  }
+  
+  if (!staticDataQ) {
     updateTimeSeriesDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
                                          prepend = myPrepend)
     updateStateLevelSerializedDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
@@ -553,24 +560,24 @@ loadAllUSData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend
                       traceThisRoutine = traceThisRoutine,
                       prepend = myPrepend)
 
-  loadUSDeathsData(traceThisRoutine = traceThisRoutine,
+  loadUSDeathsData(staticDataQ = staticDataQ,
+                   traceThisRoutine = traceThisRoutine,
                    prepend = myPrepend)
 
-  loadUSTestResultsData(traceThisRoutine = traceThisRoutine,
+  loadUSTestResultsData(staticDataQ = staticDataQ,
+                        traceThisRoutine = traceThisRoutine,
                         prepend = myPrepend)
 
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "after loadUSTestResultsData\n")
-  }
+  loadUSIncidentRateData(staticDataQ = staticDataQ,
+                         traceThisRoutine = traceThisRoutine,
+                         prepend = myPrepend)
 
-  loadUSIncidentRateData(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
-
-  traceThisRoutine <- traceFlagOnEntry
-
-  loadUSMortalityRateData(traceThisRoutine = traceThisRoutine,
+  loadUSMortalityRateData(staticDataQ = staticDataQ,
+                          traceThisRoutine = traceThisRoutine,
                           prepend = myPrepend)
 
-  loadUSTestingRateData(traceThisRoutine = traceThisRoutine,
+  loadUSTestingRateData(staticDataQ = staticDataQ,
+                        traceThisRoutine = traceThisRoutine,
                         prepend = myPrepend)
 
   CountiesByState <<- US_County_Confirmed %>%
@@ -588,7 +595,7 @@ loadAllUSData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend
 
   States <<- unique(CountiesByState$State)
 
-  if (traceThisRoutine) {
+  if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Leaving loadAllUSData\n")
   }
 }

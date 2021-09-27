@@ -1,12 +1,17 @@
 source("updateStateLevelSerializedDataFiles.R")
 source("columnUtilities.R")
 
-loadUSMortalityRateData <- function(traceThisRoutine = FALSE, prepend = "") {
+# OUCH RED_FLAG Move this into loadAllUSData.R
+# OUCH RED_FLAG Respect staticDataQ flag
+
+loadUSMortalityRateData <- function(staticDataQ = FALSE,
+                                    traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered loadUSMortalityRateData\n")
   }
 
+  # OUCH I think load a type... handles this
   updateStateLevelSerializedDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
                                                  prepend = myPrepend)
   
