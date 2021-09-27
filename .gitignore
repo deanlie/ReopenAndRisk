@@ -7,8 +7,7 @@
 *.txt
 *.dcf
 BackupScripts*
-DATA
-DATA/
+DATA/*.csv
 DEVELOPMENT/
 CACHE/
 BACKUPS/
