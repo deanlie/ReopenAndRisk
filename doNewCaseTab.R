@@ -2,7 +2,7 @@ source("state_abbrev_lookup.R")
 source("assemblePlotObject.R")
 source("reopenPlotUtilities.R")
 
-dataForCaseGrowthPlots <- function(forBoxplots, countyChoices, movingAvg, stateChoices) {
+dataForNewCasePlots <- function(forBoxplots, countyChoices, movingAvg, stateChoices) {
   if ((!forBoxplots) && is.null(stateChoices)) {
     if (movingAvg) {
       theData <- US_Confirmed_A7
@@ -28,7 +28,7 @@ dataForCaseGrowthPlots <- function(forBoxplots, countyChoices, movingAvg, stateC
   theData
 }
 
-caseHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
+newCaseHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
   if (chooseCounty && (length(countyChoices) > 0)) {
     admin1Ts <- admin1TypeFor(stateChoices[1])$LC_PL
     middle_blank_1 <- paste(admin1Ts, " in",
@@ -67,48 +67,46 @@ caseHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
   HTML(theText)
 }
 
-casePlotTitle <- function(forBoxplot, justUS, movingAvg, justStates, state1) {
-  baseTitle <- "Covid Case Growth Distribution"
-  title <- plotTitle("Covid Case Growth Distribution",
-                     forBoxplot, justUS, movingAvg, justStates, state1)
+newCasePlotTitle <- function(forBoxplot, justUS, movingAvg, justStates, state1) {
+  title <- plotTitle("New Covid Cases", forBoxplot, justUS, movingAvg, justStates, state1)
 }
 
-caseGrowthYLabel <- function() {
-  "Daily growth rate: new day's cases as percent of previous total cases"
+newCaseYLabel <- function() {
+  "New cases per 100,000 population"
 }
 
-plotCaseGrowthBoxplots <- function(chooseCounty,
-                                   movingAvg,
-                                   countyChoices,
-                                   stateChoices,
-                                   timeWindow) {
-  if (is.null(stateChoices)) {
-    theData <- dataForCaseGrowthPlots(TRUE, NULL, movingAvg, stateChoices)
-  } else {
-    theData <- dataForCaseGrowthPlots(TRUE, countyChoices, movingAvg, stateChoices)
-  }
-
-  assembleGrowthBoxPlot(theData, chooseCounty,
-                        countyChoices, stateChoices,
-                        casePlotTitle(TRUE, is.null(stateChoices), movingAvg,
-                                      is.null(countyChoices), stateChoices[1]),
-                        timeWindowXLabel(timeWindow),
-                        caseGrowthYLabel(),
-                        clampFactor = 3, timeWindow = timeWindow)
-}
-
-plotCaseGrowthTrend <- function(chooseCounty,
+plotNewCaseBoxplots <- function(chooseCounty,
                                 movingAvg,
                                 countyChoices,
                                 stateChoices,
                                 timeWindow) {
-  theData <- dataForCaseGrowthPlots(FALSE, countyChoices, movingAvg, stateChoices)
+  if (is.null(stateChoices)) {
+    theData <- dataForNewCasePlots(TRUE, NULL, movingAvg, stateChoices)
+  } else {
+    theData <- dataForNewCasePlots(TRUE, countyChoices, movingAvg, stateChoices)
+  }
+
+  assembleGrowthBoxPlot(theData, chooseCounty,
+                        countyChoices, stateChoices,
+                        newCasePlotTitle(TRUE, is.null(stateChoices), movingAvg,
+                                         is.null(countyChoices), stateChoices[1]),
+                        timeWindowXLabel(timeWindow),
+                        newCaseYLabel(),
+                        clampFactor = 3, timeWindow = timeWindow)
+}
+
+plotNewCaseTrend <- function(chooseCounty,
+                             movingAvg,
+                             countyChoices,
+                             stateChoices,
+                             timeWindow) {
+  theData <- dataForNewCasePlots(FALSE, countyChoices, movingAvg, stateChoices)
 
   assembleGrowthTrendPlot(theData, chooseCounty,
                           countyChoices, stateChoices,
-                          casePlotTitle(FALSE, is.null(stateChoices), movingAvg,
-                                        is.null(countyChoices), stateChoices[1]),
+                          newCasePlotTitle(FALSE, is.null(stateChoices), movingAvg,
+                                           is.null(countyChoices), stateChoices[1]),
                           timeWindowXLabel(timeWindow),
-                          caseGrowthYLabel(),
+                          newCaseYLabel(),
                           timeWindow)
 }

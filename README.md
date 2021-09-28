@@ -31,9 +31,12 @@ Branch Testing1234 merged in 2021-09-27:
 Branch Per100_Cases_And_Mortality:
   Accomplished:
   * Change Cases and Deaths tabs to New Cases and New Deaths resp;
+  * Add Total Cases and Total Deaths tabs with content duplicating New<resp> tabs
+  * There are now tests newCasesTest, newDeathsTest, totalCasesTest, totalDeathsTest
+  * Changed text on those four tabs
   
   To Do:
-  * Add Total Cases and Total Deaths tabs with content duplicating New<resp> tabs
-  * Change text on those four tabs
   * show numbers per 100K population in last day in the graphs on those four tabs.
+    That's what the graph labels say, but it's a lie. I need to get the right data
+    and process it properly.
 

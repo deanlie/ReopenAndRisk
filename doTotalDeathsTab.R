@@ -3,7 +3,7 @@ source("./assemblePlotObject.R")
 
 library(stringr)
 
-dataForMortalityPlots <- function(forBoxplots, countyChoices, movingAvg, stateChoices) {
+dataForTotalDeathsPlots <- function(forBoxplots, countyChoices, movingAvg, stateChoices) {
   if ((!forBoxplots) && is.null(stateChoices)) {
     if (movingAvg) {
       theData <- US_Deaths_A7
@@ -70,7 +70,7 @@ getPopulationLimitedKeysText <- function(keyList, popLimit, adminTypePlural, col
   }
 }
 
-mortalityHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
+totalDeathsHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
   theText <- paste(tags$h4("Deaths"),
                    tags$p("The CDC does not base reopening recommendations directly on 
                              COVID-19 deaths, but we have the statistics and the graphing
@@ -128,49 +128,49 @@ mortalityHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
   HTML(theText)
 }
 
-mortalityPlotTitle <- function(forBoxplot, justUS, movingAvg, justStates, state1) {
-  title <- plotTitle("Covid Mortality Growth",
+totalDeathsPlotTitle <- function(forBoxplot, justUS, movingAvg, justStates, state1) {
+  title <- plotTitle("Total Covid Deaths",
                      forBoxplot, justUS, movingAvg, justStates, state1)
 }
 
-mortalityGrowthYLabel <- function() {
-  "Daily growth rate: new day's deaths as percent of previous total deaths"
+totalDeathsYLabel <- function() {
+  "Total deaths per 100,000 population"
 }
 
-plotMortalityGrowthBoxplots <- function(chooseCounty,
-                                        movingAvg,
-                                        countyChoices,
-                                        stateChoices,
-                                        timeWindow) {
+plotTotalDeathsBoxplots <- function(chooseCounty,
+                                    movingAvg,
+                                    countyChoices,
+                                    stateChoices,
+                                    timeWindow) {
   if (is.null(stateChoices)) {
-    theData <- dataForMortalityPlots(TRUE, NULL, movingAvg, NULL)
+    theData <- dataForTotalDeathsPlots(TRUE, NULL, movingAvg, NULL)
   } else {
-    theData <- dataForMortalityPlots(TRUE, countyChoices, movingAvg, stateChoices)
+    theData <- dataForTotalDeathsPlots(TRUE, countyChoices, movingAvg, stateChoices)
   }
 
   assembleGrowthBoxPlot(theData, chooseCounty,
                         countyChoices,
                         stateChoices,
-                        mortalityPlotTitle(TRUE, is.null(stateChoices), movingAvg,
-                                           is.null(countyChoices), stateChoices[1]),
+                        totalDeathsPlotTitle(TRUE, is.null(stateChoices), movingAvg,
+                                             is.null(countyChoices), stateChoices[1]),
                         timeWindowXLabel(timeWindow),
-                        mortalityGrowthYLabel(),
+                        totalDeathsYLabel(),
                         clampFactor = 3, timeWindow = timeWindow)
 }
 
-plotMortalityGrowthTrend <- function(chooseCounty,
-                                     movingAvg,
-                                     countyChoices,
-                                     stateChoices,
-                                     timeWindow) {
-  theData <- dataForMortalityPlots(FALSE, countyChoices, movingAvg, stateChoices)
+plotTotalDeathsTrend <- function(chooseCounty,
+                                 movingAvg,
+                                 countyChoices,
+                                 stateChoices,
+                                 timeWindow) {
+  theData <- dataForTotalDeathsPlots(FALSE, countyChoices, movingAvg, stateChoices)
 
   assembleGrowthTrendPlot(theData, chooseCounty,
                           countyChoices,
                           stateChoices,
-                          mortalityPlotTitle(FALSE, is.null(stateChoices), movingAvg,
-                                             is.null(countyChoices), stateChoices[1]),
+                          totalDeathsPlotTitle(FALSE, is.null(stateChoices), movingAvg,
+                                               is.null(countyChoices), stateChoices[1]),
                           timeWindowXLabel(timeWindow),
-                          mortalityGrowthYLabel(),
+                          totalDeathsYLabel(),
                           timeWindow)
 }
