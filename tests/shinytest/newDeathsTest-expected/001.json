@@ -8,8 +8,8 @@
     "Vaccination": "People Fully Vaccinated"
   },
   "output": {
-    "newMortalityBox": {
-      "src": "[image data sha1: 3945874874c486e6640a5fd6886f3b21cc881f27]",
+    "newDeathsBox": {
+      "src": "[image data sha1: f67b463832264dd76b13498a0085350674882bad]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -43,14 +43,14 @@
         }
       }
     },
-    "newMortalityHeaderHTML": {
+    "newDeathsHeaderHTML": {
       "html": "<h4>Deaths<\/h4><p>The CDC does not base reopening recommendations directly on \n                             COVID-19 deaths, but we have the statistics and the graphing\n                             programs, so here you go:<\/p>",
       "deps": [
 
       ]
     },
-    "newMortalityTrend": {
-      "src": "[image data sha1: d19ecbb5eebe63d445bee3fe130789c14599c5bc]",
+    "newDeathsTrend": {
+      "src": "[image data sha1: 6974f035de451f4dac66be4cbbd44c63cb3ffc50]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",

@@ -8,8 +8,11 @@ source("updateStateLevelSerializedDataFiles.R")
 source("columnUtilities.R")
 source("diagnosticRoutines.R")
 
-loadATypeOfData <- function(staticDataQ, theType, colTypes, stateColTypes, computeCounty,
-                            computeNew, computeAvg, computePercent,
+loadATypeOfData <- function(staticDataQ, theType, colTypes, stateColTypes,
+                            computeCounty = FALSE,
+                            computeNew = FALSE,
+                            computeAvg = FALSE,
+                            computePercent = FALSE,
                             traceThisRoutine = FALSE, prepend = "") {
   #####################################
   #  Functions local to this routine  #
@@ -317,7 +320,8 @@ normalizeByPopulation <- function(aTibble) {
 
 loadUSConfirmedData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
-  if (traceThisRoutine) {
+  traceFlagOnEntry <- traceThisRoutine
+  if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Entered loadUSConfirmedData, staticDataQ =", staticDataQ, "\n")
   }
 
@@ -326,16 +330,13 @@ loadUSConfirmedData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, p
     staticDataQ <- TRUE
   }
 
-  computeCounty <- TRUE
-  computeNew <- TRUE
-  computeAvg <- TRUE
-  computePercent <- FALSE
-  
+  traceThisRoutine <- FALSE
   allConfirmedData <- loadATypeOfData(staticDataQ, "Confirmed",
                                       myTSColTypes(), myTSColTypes(),
-                                      computeCounty, computeNew,
-                                      computeAvg, computePercent,
-                                      traceThisRoutine = FALSE,
+                                      computeCounty = TRUE,
+                                      computeNew = TRUE,
+                                      computeAvg = TRUE,
+                                      traceThisRoutine = traceThisRoutine,
                                       prepend = myPrepend)
   
   US_Confirmed <<- allConfirmedData$US_C
@@ -350,7 +351,21 @@ loadUSConfirmedData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, p
   US_State_Confirmed_G7 <<- allConfirmedData$State_N_A
   US_County_Confirmed_G7 <<- allConfirmedData$County_N_A
 
-  if (traceThisRoutine) {
+  US_Confirmed_Per100K <<- normalizeByPopulation(US_Confirmed)
+  US_Confirmed_Per100K_A7 <<- normalizeByPopulation(US_Confirmed_A7)
+  US_State_Confirmed_Per100K <<- normalizeByPopulation(US_State_Confirmed)
+  US_State_Confirmed_Per100K_A7 <<- normalizeByPopulation(US_State_Confirmed_A7)
+  US_County_Confirmed_Per100K <<- normalizeByPopulation(US_County_Confirmed)
+  US_County_Confirmed_Per100K_A7 <<- normalizeByPopulation(US_County_Confirmed_A7)
+  # US_Confirmed_Per100K_New <<- normalizeByPopulation(US_Confirmed_New)
+  US_Confirmed_Per100K_G7 <<- normalizeByPopulation(US_Confirmed_G7)
+  # US_State_Confirmed_Per100K_New <<- normalizeByPopulation(US_State_Confirmed_New)
+  US_State_Confirmed_Per100K_G7 <<- normalizeByPopulation(US_State_Confirmed_G7)
+  # US_County_Confirmed_Per100K_New <<- normalizeByPopulation(US_County_Confirmed_New)
+  US_County_Confirmed_Per100K_G7 <<- normalizeByPopulation(US_County_Confirmed_G7)
+  
+  # STOP
+  if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Leaving loadUSConfirmedData\n")
   }
 
@@ -359,7 +374,8 @@ loadUSConfirmedData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, p
 
 loadUSDeathsData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
-  if (traceThisRoutine) {
+  traceFlagOnEntry <- traceThisRoutine
+  if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Entered loadUSDeathsData, staticDataQ =", staticDataQ, "\n")
   }
   
@@ -368,16 +384,13 @@ loadUSDeathsData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prep
     staticDataQ <- TRUE
   }
 
-  computeCounty <- TRUE
-  computeNew <- TRUE
-  computeAvg <- TRUE
-  computePercent <- FALSE
-  
+  traceThisRoutine <-  FALSE
   allDeathsData <- loadATypeOfData(staticDataQ, "Deaths",
                                    myTSColTypes(), myTSColTypes(),
-                                   computeCounty, computeNew,
-                                   computeAvg, computeAvg,
-                                   traceThisRoutine = FALSE,
+                                   computeCounty = TRUE,
+                                   computeNew = TRUE,
+                                   computeAvg = TRUE,
+                                   traceThisRoutine = traceThisRoutine,
                                    prepend = myPrepend)
   
   US_Deaths <<- allDeathsData$US_C
@@ -406,7 +419,7 @@ loadUSDeathsData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prep
   US_County_Deaths_Per100K_New <<- normalizeByPopulation(US_County_Deaths_New)
   US_County_Deaths_Per100K_G7 <<- normalizeByPopulation(US_County_Deaths_G7)
   
-  if (traceThisRoutine) {
+  if (traceFlagOnEntry) {
     cat(file = stderr(), myPrepend, "...created Per100K files\n")
     cat(file = stderr(), prepend, "Leaving loadUSDeathsData\n")
   }
@@ -416,7 +429,8 @@ loadUSDeathsData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prep
 
 loadUSTestResultsData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
-  if (traceThisRoutine) {
+  traceFlagOnEntry <- traceThisRoutine
+  if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Entered loadUSTestResultsData, staticDataQ =", staticDataQ, "\n")
   }
   
@@ -425,16 +439,12 @@ loadUSTestResultsData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE,
     staticDataQ <- TRUE
   }
 
-  computeCounty <- FALSE
-  computeNew <- TRUE
-  computeAvg <- TRUE
-  computePercent <- FALSE
-  
+  traceThisRoutine <- FALSE
   allTestResultsData <- loadATypeOfData(staticDataQ, "Total_Test_Results",
                                         justCKColTypes(), justCKColTypes(),
-                                        computeCounty, computeNew,
-                                        computeAvg, computePercent,
-                                        traceThisRoutine = FALSE,
+                                        computeNew = TRUE,
+                                        computeAvg = TRUE,
+                                        traceThisRoutine = traceThisRoutine,
                                         prepend = myPrepend)
 
   US_People_Tested <<- allTestResultsData$US_C
@@ -444,7 +454,7 @@ loadUSTestResultsData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE,
   US_People_Tested_A7 <<- allTestResultsData$US_C_A
   US_State_People_Tested_A7 <<- allTestResultsData$State_C_A
 
-  if (traceThisRoutine) {
+  if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Leaving loadUSTestResultsData\n")
   }
   
@@ -453,7 +463,8 @@ loadUSTestResultsData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE,
 
 loadUSVaccinationData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
-  if (traceThisRoutine) {
+  traceFlagOnEntry <- traceThisRoutine
+  if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Entered loadUSVaccinationData\n")
   }
 
@@ -461,17 +472,13 @@ loadUSVaccinationData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE,
     cat(file = stderr(), "loadUSVaccinationData TEST MODE!\n")
     staticDataQ <- TRUE
   }
-  
-  computeCounty <- FALSE
-  computeNew <- FALSE
-  computeAvg <- TRUE
-  computePercent <- TRUE
 
+  traceThisRoutine <- FALSE
   allVaccinationData <- loadATypeOfData(staticDataQ, "Vaccinations",
                                         vaccColTypes(), vaccColTypes(),
-                                        computeCounty, computeNew,
-                                        computeAvg, computePercent,
-                                        traceThisRoutine = FALSE,
+                                        computeAvg = TRUE,
+                                        computePercent = TRUE,
+                                        traceThisRoutine = traceThisRoutine,
                                         prepend = myPrepend)
 
   US_Vaccination_Pcts <<- allVaccinationData$US_C_P
@@ -479,7 +486,7 @@ loadUSVaccinationData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE,
   US_Vaccination_Pcts_A7 <<- allVaccinationData$US_C_PA7
   US_State_Vaccination_Pcts_A7 <<- allVaccinationData$State_C_PA7
 
-  if (traceThisRoutine) {
+  if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Leaving loadUSVaccinationData\n")
   }
 
@@ -488,7 +495,8 @@ loadUSVaccinationData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE,
 
 loadUSIncidentRateData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
-  if (traceThisRoutine) {
+  traceFlagOnEntry <- traceThisRoutine
+  if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Entered loadUSIncidentRateData, staticDataQ =", staticDataQ, "\n")
   }
   
@@ -496,20 +504,17 @@ loadUSIncidentRateData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE
     cat(file = stderr(), "loadUSIncidentRateData TEST MODE!\n")
     staticDataQ <- TRUE
   }
-  
-  computeCounty <- FALSE
-  computeNew <- TRUE
-  computeAvg <- TRUE
-  computePercent <- TRUE
-  
+
+  traceThisRoutine <- FALSE
   allIncidentRateData <- loadATypeOfData(staticDataQ, "Incident_Rate",
                                          myTSColTypes(), justCKColTypes(),
-                                         computeCounty, computeNew,
-                                         computeAvg, computePercent,
+                                         computeNew = TRUE,
+                                         computeAvg = TRUE,
+                                         computePercent = TRUE,
                                          traceThisRoutine = traceThisRoutine,
                                          prepend = myPrepend)
 
-  if (traceThisRoutine) {
+  if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Leaving loadUSIncidentRateData\n")
   }
 
@@ -529,7 +534,8 @@ loadUSTestingRateData <- function(staticDataQ = FALSE,
                                   traceThisRoutine = FALSE,
                                   prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
-  if (traceThisRoutine) {
+  traceFlagOnEntry <- traceThisRoutine
+  if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Entered loadUSTestingRateData\n")
   }
   
@@ -562,7 +568,8 @@ loadUSMortalityRateData <- function(staticDataQ = FALSE,
                                   traceThisRoutine = FALSE,
                                   prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
-  if (traceThisRoutine) {
+  traceFlagOnEntry <- traceThisRoutine
+  if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Entered loadUSMortalityRateData\n")
   }
   
@@ -571,19 +578,14 @@ loadUSMortalityRateData <- function(staticDataQ = FALSE,
     staticDataQ <- TRUE
   }
   
-  computeCounty <- FALSE
-  computeNew <- FALSE
-  computeAvg <- FALSE
-  computePercent <- FALSE
+  traceThisRoutine <- FALSE
   
   allMortalityRateData <- loadATypeOfData(staticDataQ, "Case_Fatality_Ratio",
                                         myTSColTypes(), justCKColTypes(),
-                                        computeCounty, computeNew,
-                                        computeAvg, computePercent,
                                         traceThisRoutine = traceThisRoutine,
                                         prepend = myPrepend)
   
-  if (traceThisRoutine) {
+  if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Leaving loadUSMortalityRateData\n")
   }
   
@@ -593,11 +595,10 @@ loadUSMortalityRateData <- function(staticDataQ = FALSE,
 
 loadAllUSData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
-  if (traceThisRoutine) {
+  traceFlagOnEntry <- traceThisRoutine
+  if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Entered loadAllUSData\n")
   }
-
-  traceFlagOnEntry <- traceThisRoutine
 
   aDate = today("EST")
 
@@ -606,6 +607,7 @@ loadAllUSData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend
   US_State_Population_Est <<- read_csv("./DATA/US_State_Population_Est.csv",
                                        col_types = estPopulationColTypes())
 
+  traceThisRoutine <- FALSE
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "after read US_State_Population_Est\n")
   }

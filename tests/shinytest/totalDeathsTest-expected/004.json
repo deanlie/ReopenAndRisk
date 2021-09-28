@@ -11,8 +11,8 @@
     "Vaccination": "People Fully Vaccinated"
   },
   "output": {
-    "totalMortalityBox": {
-      "src": "[image data sha1: c2a67a381d14557380782b7bd5dabf09896c0213]",
+    "totalDeathsBox": {
+      "src": "[image data sha1: 50d4446d13f7162c9bcc631bb747bde6e799a15d]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -46,14 +46,14 @@
         }
       }
     },
-    "totalMortalityHeaderHTML": {
+    "totalDeathsHeaderHTML": {
       "html": "<h4>Deaths<\/h4><p>The CDC does not base reopening recommendations directly on \n                             COVID-19 deaths, but we have the statistics and the graphing\n                             programs, so here you go:<\/p><p>In states with small populations, such as Maine, a few deaths -- not to minimize their importance -- can make the statistics jump a lot from day to day.<\/p>",
       "deps": [
 
       ]
     },
-    "totalMortalityTrend": {
-      "src": "[image data sha1: a65308dcb46662a4f263d6bd7cf850ec798a227c]",
+    "totalDeathsTrend": {
+      "src": "[image data sha1: 1ff98c8d23cdbfd34aca453d747f415679ab44db]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",

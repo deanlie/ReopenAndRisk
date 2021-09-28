@@ -17,8 +17,8 @@
     "Vaccination": "People Fully Vaccinated"
   },
   "output": {
-    "newMortalityBox": {
-      "src": "[image data sha1: 5ad10a7a93069b7a7ecfff897875f33f1883fe5b]",
+    "newDeathsBox": {
+      "src": "[image data sha1: af1952c5a4bb1c1c4672d0baf9e44e00c8d10f8e]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -52,14 +52,14 @@
         }
       }
     },
-    "newMortalityHeaderHTML": {
+    "newDeathsHeaderHTML": {
       "html": "<h4>Deaths<\/h4><p>The CDC does not base reopening recommendations directly on \n                             COVID-19 deaths, but we have the statistics and the graphing\n                             programs, so here you go:<\/p><p>In counties with small populations, such as Dukes County, a few deaths -- not to minimize their importance -- can make the statistics jump a lot from day to day.<\/p><p>If two or more selected  counties  have identical graphs (e.g. zero deaths) for the selected  time period, the last one drawn wil hide the other.  If no graph is shown for your  county  please try again, selecting only it.<\/p><p>It's possible that lines for some areas will be missing,\n especially if you've selected some counties with low population.\n That happens because a growth rate starting from zero\n can't be computed. If you see that, please change the selection\n to have ONLY the missing areas, and I'll display the NUMBER of\n cases rather than the growth rate.<\/p>",
       "deps": [
 
       ]
     },
-    "newMortalityTrend": {
-      "src": "[image data sha1: 3b5fc06dc2bb96094c3372384127ac77b0d55a7f]",
+    "newDeathsTrend": {
+      "src": "[image data sha1: 0d6a1c386e52640ba0f2fe3fd252d5b8528a17df]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
