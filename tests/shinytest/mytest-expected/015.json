@@ -1,18 +1,15 @@
 {
   "input": {
     "chooseCounty": false,
-    "mainTabsetPanel": "Test Growth",
-    "movingAvg": false,
-    "stateChoices": [
-      "MA",
-      "ME"
-    ],
+    "mainTabsetPanel": "Vaccination Progress",
+    "movingAvg": true,
+    "stateChoices": null,
     "timeWindow": 14,
     "Vaccination": "People Fully Vaccinated"
   },
   "output": {
-    "caseBox": {
-      "src": "[image data sha1: 26e78381844aa12f2cefc087690191492af76464]",
+    "newCaseBox": {
+      "src": "[image data sha1: 766b328afeefd7dd5c5d7523160c592bebffaf0e]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -46,14 +43,14 @@
         }
       }
     },
-    "caseHeaderHTML": {
+    "newCaseHeaderHTML": {
       "html": "<h4>Trends of new cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p>It's possible that lines for some areas will be missing,\n                     especially if you've selected some counties with low population.\n                     That happens because a growth rate starting from zero\n                     can't be computed. If you see that, please change the selection\n                     to have ONLY the missing areas, and I'll display the NUMBER of\n                     cases rather than the growth rate.<\/p><p><\/p>",
       "deps": [
 
       ]
     },
-    "caseTrend": {
-      "src": "[image data sha1: 445e0780a1fc4a03a1c2d4b545ba47760a81d208]",
+    "newCaseTrend": {
+      "src": "[image data sha1: 0b87dae0c54fc077e353988a93d154188f8f6656]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -87,8 +84,8 @@
         }
       }
     },
-    "mortalityBox": {
-      "src": "[image data sha1: 6ab688d3c6806e4b7d7a40ee01d46f7f0c137fca]",
+    "newDeathsBox": {
+      "src": "[image data sha1: f67b463832264dd76b13498a0085350674882bad]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -122,14 +119,14 @@
         }
       }
     },
-    "mortalityHeaderHTML": {
-      "html": "<h4>Deaths<\/h4><p>The CDC does not base reopening recommendations directly on \n                             COVID-19 deaths, but we have the statistics and the graphing\n                             programs, so here you go:<\/p><p>In states with small populations, such as Maine, a few deaths -- not to minimize their importance -- can make the statistics jump a lot from day to day.<\/p>",
+    "newDeathsHeaderHTML": {
+      "html": "<h4>Deaths<\/h4><p>The CDC does not base reopening recommendations directly on \n                             COVID-19 deaths, but we have the statistics and the graphing\n                             programs, so here you go:<\/p>",
       "deps": [
 
       ]
     },
-    "mortalityTrend": {
-      "src": "[image data sha1: cf531650f36ea386e5a6641b218eb631968a3c61]",
+    "newDeathsTrend": {
+      "src": "[image data sha1: 6974f035de451f4dac66be4cbbd44c63cb3ffc50]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -170,7 +167,7 @@
       ]
     },
     "testGBox": {
-      "src": "[image data sha1: 67524336d47857d83507c678c722dac2b2497ad8]",
+      "src": "[image data sha1: 3af72ab5d7035439bd839e6aa808ec52cc13947c]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -211,7 +208,7 @@
       ]
     },
     "testGTrend": {
-      "src": "[image data sha1: 8917552897d969310acc783bb3fff9ea6eceb49f]",
+      "src": "[image data sha1: f2bf5bf50e60e69e2fc0a1b68762fa3737998b3e]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -321,14 +318,166 @@
         }
       }
     },
+    "totalCaseBox": {
+      "src": "[image data sha1: c75668b811a1d62a8b9c8eb67533d4588e2f9cd7]",
+      "width": 506,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 506,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 506,
+          "height": 400
+        }
+      }
+    },
+    "totalCaseHeaderHTML": {
+      "html": "<h4>Trends of total cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p>It's possible that lines for some areas will be missing,\n                     especially if you've selected some counties with low population.\n                     That happens because a growth rate starting from zero\n                     can't be computed. If you see that, please change the selection\n                     to have ONLY the missing areas, and I'll display the NUMBER of\n                     cases rather than the growth rate.<\/p><p><\/p>",
+      "deps": [
+
+      ]
+    },
+    "totalCaseTrend": {
+      "src": "[image data sha1: 4288083587089bef09a4e8c536a790decc812d99]",
+      "width": 506,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 506,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 506,
+          "height": 400
+        }
+      }
+    },
+    "totalDeathsBox": {
+      "src": "[image data sha1: 5830f539fbb219368c3cc0e18c3507c9f7d2b7de]",
+      "width": 506,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 506,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 506,
+          "height": 400
+        }
+      }
+    },
+    "totalDeathsHeaderHTML": {
+      "html": "<h4>Deaths<\/h4><p>The CDC does not base reopening recommendations directly on \n                             COVID-19 deaths, but we have the statistics and the graphing\n                             programs, so here you go:<\/p>",
+      "deps": [
+
+      ]
+    },
+    "totalDeathsTrend": {
+      "src": "[image data sha1: 36b3824db2db9ebc5dde42a9e0a8fec80303c224]",
+      "width": 506,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 506,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 506,
+          "height": 400
+        }
+      }
+    },
     "vaccHeaderHTML": {
-      "html": "<h4>Vaccinations, People Fully Vaccinated<\/h4><p>Vaccination data is shown by percent of state or of US as a whole.<\/p><p>Highest People Fully Vaccinated rate: Montana with 75.4 percent<\/p><p>Next highest rate: Puerto Rico with 64.9 percent<\/p><p>Lowest People Fully Vaccinated rate: Wyoming with 36.9 percent<\/p><p>Next lowest rate: Idaho with 37.3 percent<\/p><p>Note that 'Total Doses' will be above 100% when close to 50% of the population\n                            has had a second dose!<\/p>",
+      "html": "<h4>Vaccinations, People Fully Vaccinated<\/h4><p>Vaccination data is shown by percent of state or of US as a whole.<\/p><p>Highest People Fully Vaccinated rate: Montana with 74.6 percent<\/p><p>Next highest rate: Puerto Rico with 63.9 percent<\/p><p>Lowest People Fully Vaccinated rate: Wyoming with 36.8 percent<\/p><p>Next lowest rate: Idaho with 37 percent<\/p><p>Note that 'Total Doses' will be above 100% when close to 50% of the population\n                            has had a second dose!<\/p>",
       "deps": [
 
       ]
     },
     "vaccRBox": {
-      "src": "[image data sha1: cff1fc5026f96c7ce30bd8f0b5a3ba3870e8421c]",
+      "src": "[image data sha1: 70d2b9a608493ac5c341686f111aa6c8b66d38c2]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -363,7 +512,7 @@
       }
     },
     "vaccRTrend": {
-      "src": "[image data sha1: b7ad188fac2c9da0e5c315ff88ba0e6e7152f5c6]",
+      "src": "[image data sha1: aad2fd3eb0f6b45baea4457dbc7d43b4c7986f0e]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",

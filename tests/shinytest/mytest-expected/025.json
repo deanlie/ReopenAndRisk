@@ -1,13 +1,7 @@
 {
   "input": {
     "chooseCounty": false,
-    "countyChoices": [
-      "Barnstable",
-      "Dukes",
-      "Suffolk",
-      "Worcester"
-    ],
-    "mainTabsetPanel": "New Cases",
+    "mainTabsetPanel": "Total Deaths",
     "movingAvg": true,
     "stateChoices": [
       "MA",
@@ -17,8 +11,8 @@
     "Vaccination": "People Fully Vaccinated"
   },
   "output": {
-    "caseBox": {
-      "src": "[image data sha1: 749d17140b6a48c1021e4f349199479ffccfdc88]",
+    "newCaseBox": {
+      "src": "[image data sha1: b00dc66c9924cac4b3e9645ef50de26239e4eb57]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -52,14 +46,14 @@
         }
       }
     },
-    "caseHeaderHTML": {
+    "newCaseHeaderHTML": {
       "html": "<h4>Trends of new cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p>It's possible that lines for some areas will be missing,\n                     especially if you've selected some counties with low population.\n                     That happens because a growth rate starting from zero\n                     can't be computed. If you see that, please change the selection\n                     to have ONLY the missing areas, and I'll display the NUMBER of\n                     cases rather than the growth rate.<\/p><p><\/p>",
       "deps": [
 
       ]
     },
-    "caseTrend": {
-      "src": "[image data sha1: 0538b4a66b605fd23c2d3cfabe56758a0965e814]",
+    "newCaseTrend": {
+      "src": "[image data sha1: 043b3a316e4706cc7e3f498b31f7ba653753b090]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -93,8 +87,8 @@
         }
       }
     },
-    "mortalityBox": {
-      "src": "[image data sha1: b2c8c2dcd6c08f9cdad0a53d8a5d5e0f5f172cf1]",
+    "newDeathsBox": {
+      "src": "[image data sha1: 42749846918a37ecf77a902c1d336563cb818f9a]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -128,14 +122,14 @@
         }
       }
     },
-    "mortalityHeaderHTML": {
+    "newDeathsHeaderHTML": {
       "html": "<h4>Deaths<\/h4><p>The CDC does not base reopening recommendations directly on \n                             COVID-19 deaths, but we have the statistics and the graphing\n                             programs, so here you go:<\/p><p>In states with small populations, such as Maine, a few deaths -- not to minimize their importance -- can make the statistics jump a lot from day to day.<\/p>",
       "deps": [
 
       ]
     },
-    "mortalityTrend": {
-      "src": "[image data sha1: cf4fcc71dba6357d78c7074c01397843f61cf5e8]",
+    "newDeathsTrend": {
+      "src": "[image data sha1: 902cec28abd93d44763a38b122044a21085f9ec1]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -294,6 +288,158 @@
     },
     "testRTrend": {
       "src": "[image data sha1: 083b6a9ea23910c173cbcb59fe8c8004d750299f]",
+      "width": 506,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 506,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 506,
+          "height": 400
+        }
+      }
+    },
+    "totalCaseBox": {
+      "src": "[image data sha1: 92eb4f75954c039cfca63688ceafb9a2c0e93777]",
+      "width": 506,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 506,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 506,
+          "height": 400
+        }
+      }
+    },
+    "totalCaseHeaderHTML": {
+      "html": "<h4>Trends of total cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p>It's possible that lines for some areas will be missing,\n                     especially if you've selected some counties with low population.\n                     That happens because a growth rate starting from zero\n                     can't be computed. If you see that, please change the selection\n                     to have ONLY the missing areas, and I'll display the NUMBER of\n                     cases rather than the growth rate.<\/p><p><\/p>",
+      "deps": [
+
+      ]
+    },
+    "totalCaseTrend": {
+      "src": "[image data sha1: 0d29e9c130a63540e19e5cac6bcb5a1c30acb70f]",
+      "width": 506,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 506,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 506,
+          "height": 400
+        }
+      }
+    },
+    "totalDeathsBox": {
+      "src": "[image data sha1: 50d4446d13f7162c9bcc631bb747bde6e799a15d]",
+      "width": 506,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 506,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 506,
+          "height": 400
+        }
+      }
+    },
+    "totalDeathsHeaderHTML": {
+      "html": "<h4>Deaths<\/h4><p>The CDC does not base reopening recommendations directly on \n                             COVID-19 deaths, but we have the statistics and the graphing\n                             programs, so here you go:<\/p><p>In states with small populations, such as Maine, a few deaths -- not to minimize their importance -- can make the statistics jump a lot from day to day.<\/p>",
+      "deps": [
+
+      ]
+    },
+    "totalDeathsTrend": {
+      "src": "[image data sha1: 1ff98c8d23cdbfd34aca453d747f415679ab44db]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
