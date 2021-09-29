@@ -73,14 +73,14 @@ loadATypeOfData <- function(staticDataQ, theType, colTypes, stateColTypes,
   
   traceFlagOnEntry <- traceThisRoutine
   
-  results <- list(US_C = NULL,      US_C_P = NULL,
-                  US_C_A = NULL,    US_C_PA7 = NULL,
-                  US_N = NULL,      US_N_A = NULL,
-                  State_C = NULL,   State_C_P = NULL,
-                  State_C_A = NULL, State_C_PA7 = NULL,
-                  State_N = NULL,   State_N_A = NULL,
-                  County_C = NULL,  County_C_A = NULL,
-                  County_N = NULL,  County_N_A = NULL)
+  results <- list(US = NULL,         US_Pct = NULL,
+                  US_Avg = NULL,     US_PctAvg = NULL,
+                  US_New = NULL,     US_NewAvg = NULL,
+                  State = NULL,      State_Pct = NULL,
+                  State_Avg = NULL,  State_PctAvg = NULL,
+                  State_New = NULL,  State_NewAvg = NULL,
+                  County = NULL,     County_Avg = NULL,
+                  County_New = NULL, County_NewAvg = NULL)
 
   updateToThisDate <- expectedLatestUpdateDataDate()
 
@@ -95,17 +95,17 @@ loadATypeOfData <- function(staticDataQ, theType, colTypes, stateColTypes,
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "before readLeaf", US_leaf, "...\n")
   }
-  results$US_C  <- readLeaf(staticDataQ, US_leaf, colTypes) # US_Cumulative
+  results$US <- readLeaf(staticDataQ, US_leaf, colTypes) # US_Cumulative
   
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "before readLeaf", State_leaf, "...\n")
   }
-  results$State_C <- readLeaf(staticDataQ, State_leaf, stateColTypes)
+  results$State <- readLeaf(staticDataQ, State_leaf, stateColTypes)
   if (computeCounty) {
-    results$County_C <- readLeaf(staticDataQ, County_leaf, myCountyTSColTypes())
+    results$County <- readLeaf(staticDataQ, County_leaf, myCountyTSColTypes())
     if (traceThisRoutine) {
-      names_p <- paste(names(results$County_C)[1:5])
-      cat(file = stderr(), myPrepend, "results$County_C names:", names_p, "...\n")
+      names_p <- paste(names(results$County)[1:5])
+      cat(file = stderr(), myPrepend, "results$County names:", names_p, "...\n")
     }
   }
 
@@ -118,11 +118,11 @@ loadATypeOfData <- function(staticDataQ, theType, colTypes, stateColTypes,
   }
 
   if (computeNew) {
-    results$US_N <- newFromCumulative(results$US_C, updateToThisDate,
+    results$US_New <- newFromCumulative(results$US, updateToThisDate,
                                 "US", theType, nDaysData,
                                 traceThisRoutine = traceThisRoutine,
                                 prepend = myPrepend)
-    results$State_N <- newFromCumulative(results$State_C, updateToThisDate,
+    results$State_New <- newFromCumulative(results$State, updateToThisDate,
                                    "State", theType, nDaysData,
                                    traceThisRoutine = traceThisRoutine,
                                    prepend = myPrepend)
@@ -131,20 +131,20 @@ loadATypeOfData <- function(staticDataQ, theType, colTypes, stateColTypes,
     traceThisRoutine <- FALSE
 
     if (traceThisRoutine) {
-      conciseEndsOfTibbleRow(results$State_N, "results$State_N",
+      conciseEndsOfTibbleRow(results$State_New, "results$State_New",
                              nFirst = 4, nLast = 4,
                              traceThisRoutine = traceThisRoutine,
                              prepend = myPrepend)
     }
 
     if (computeCounty) {
-      results$County_N <- newFromCumulative(results$County_C, updateToThisDate,
+      results$County_New <- newFromCumulative(results$County, updateToThisDate,
                                       "County", theType,
                                       nDays = nDaysData,
                                       traceThisRoutine = traceThisRoutine,
                                       prepend = myPrepend)
       if (traceThisRoutine) {
-        conciseEndsOfTibbleRow(results$County_N, "results$County_N",
+        conciseEndsOfTibbleRow(results$County_New, "results$County_New",
                                nFirst = 4, nLast = 4,
                                traceThisRoutine = traceThisRoutine,
                                prepend = myPrepend)
@@ -157,30 +157,30 @@ loadATypeOfData <- function(staticDataQ, theType, colTypes, stateColTypes,
   }
 
   if (computeAvg) {
-    results$US_C_A <- movingAverageData(results$US_C, updateToThisDate, getNAvgs, averageOverDays,
+    results$US_Avg <- movingAverageData(results$US, updateToThisDate, getNAvgs, averageOverDays,
                                           tibbleName = paste("US", theType, "Cumulative", sep=""),
                                           traceThisRoutine = traceThisRoutine,
                                           prepend = myPrepend)
-    results$State_C_A <- movingAverageData(results$State_C, updateToThisDate, getNAvgs, averageOverDays,
+    results$State_Avg <- movingAverageData(results$State, updateToThisDate, getNAvgs, averageOverDays,
                                              tibbleName = paste("State", theType, "Cumulative", sep=""),
                                              traceThisRoutine = traceThisRoutine,
                                              prepend = myPrepend)
 
     if (traceThisRoutine) {
-      conciseEndsOfTibbleRow(results$State_C_A, "State_Cumulative_A7",
+      conciseEndsOfTibbleRow(results$State_Avg, "State_Avg",
                              nFirst = 4, nLast = 4,
                              traceThisRoutine = traceThisRoutine,
                              prepend = myPrepend)
     }
 
     if (computeCounty) {
-      results$County_C_A <- movingAverageData(results$County_C, updateToThisDate, getNAvgs, averageOverDays,
+      results$County_Avg <- movingAverageData(results$County, updateToThisDate, getNAvgs, averageOverDays,
                                                 tibbleName = paste("County", theType, "Cumulative", sep=""),
                                                 traceThisRoutine = traceThisRoutine,
                                                 prepend = myPrepend)
 
       if (traceThisRoutine) {
-        conciseEndsOfTibbleRow(results$County_C_A, "results$County_C_A",
+        conciseEndsOfTibbleRow(results$County_Avg, "results$County_Avg",
                                nFirst = 4, nLast = 4,
                                traceThisRoutine = traceThisRoutine,
                                prepend = myPrepend)
@@ -188,31 +188,31 @@ loadATypeOfData <- function(staticDataQ, theType, colTypes, stateColTypes,
     }
 
     if (computeNew) {
-      results$US_N_A <- movingAverageGrowth(results$US_C, updateToThisDate, getNAvgs, averageOverDays,
+      results$US_NewAvg <- movingAverageGrowth(results$US, updateToThisDate, getNAvgs, averageOverDays,
                                    tibbleName = paste("US", theType, "Cumulative", sep = ""),
                                    traceThisRoutine = traceThisRoutine,
                                    prepend = myPrepend)
       
-      results$State_N_A <- movingAverageGrowth(results$State_C, updateToThisDate, getNAvgs, averageOverDays,
+      results$State_NewAvg <- movingAverageGrowth(results$State, updateToThisDate, getNAvgs, averageOverDays,
                                       tibbleName = paste("State", theType, "Cumulative", sep = ""),
                                       traceThisRoutine = traceThisRoutine,
                                       prepend = myPrepend)
       
       if (traceThisRoutine) {
-        conciseEndsOfTibbleRow(results$State_N_A, "results$State_N_A",
+        conciseEndsOfTibbleRow(results$State_NewAvg, "results$State_NewAvg",
                                nFirst = 4, nLast = 4,
                                traceThisRoutine = traceThisRoutine,
                                prepend = myPrepend)
       }
       
       if (computeCounty) {
-        results$County_N_A <- movingAverageGrowth(results$County_C, updateToThisDate, getNAvgs, averageOverDays,
+        results$County_NewAvg <- movingAverageGrowth(results$County, updateToThisDate, getNAvgs, averageOverDays,
                                          tibbleName = paste("County", theType, "Cumulative", sep = ""),
                                          traceThisRoutine = traceThisRoutine,
                                          prepend = myPrepend)
 
         if (traceThisRoutine) {
-          conciseEndsOfTibbleRow(results$County_N_A, "results$County_N_A",
+          conciseEndsOfTibbleRow(results$County_NewAvg, "results$County_NewAvg",
                                  nFirst = 4, nLast = 4,
                                  traceThisRoutine = traceThisRoutine,
                                  prepend = myPrepend)
@@ -229,13 +229,13 @@ loadATypeOfData <- function(staticDataQ, theType, colTypes, stateColTypes,
       select(Combined_Key, Population)
 
     if (traceThisRoutine) {
-      conciseEndsOfTibbleRow(results$US_C, "results$US_C",
+      conciseEndsOfTibbleRow(results$US, "results$US",
                              nFirst = 4, nLast = 4,
                              traceThisRoutine = traceThisRoutine,
                              prepend = myPrepend)
     }
       
-    US_PopCumulative <- inner_join(pop_Data, results$US_C, by = "Combined_Key")
+    US_PopCumulative <- inner_join(pop_Data, results$US, by = "Combined_Key")
 
     #OUCH
     if (traceThisRoutine) {
@@ -246,13 +246,13 @@ loadATypeOfData <- function(staticDataQ, theType, colTypes, stateColTypes,
     }
     
     if (traceThisRoutine) {
-      conciseEndsOfTibbleRow(results$State_C, "results$State_C",
+      conciseEndsOfTibbleRow(results$State, "results$State",
                              nFirst = 4, nLast = 4,
                              traceThisRoutine = traceThisRoutine,
                              prepend = myPrepend)
     }
     
-    State_PopCumulative <- inner_join(pop_Data, results$State_C, by = "Combined_Key")
+    State_PopCumulative <- inner_join(pop_Data, results$State, by = "Combined_Key")
 
     if (traceThisRoutine) {
       conciseEndsOfTibbleRow(State_PopCumulative, "State_PopCumulative",
@@ -264,34 +264,34 @@ loadATypeOfData <- function(staticDataQ, theType, colTypes, stateColTypes,
     usDims = dim(US_PopCumulative)
     usStDm = dim(State_PopCumulative)
 
-    results$US_C_P <- US_PopCumulative %>%
+    results$US_Pct <- US_PopCumulative %>%
       mutate(across(matches(".*2.$"), ~ 100.0 * .x / Population))
-    results$State_C_P <- State_PopCumulative %>%
+    results$State_Pct <- State_PopCumulative %>%
       mutate(across(matches(".*2.$"), ~ 100.0 * .x / Population))
 
-    results$US_C_PA7 <- movingAverageData(results$US_C_P,
+    results$US_PctAvg <- movingAverageData(results$US_Pct,
                                               updateToThisDate,
                                               getNAvgs, averageOverDays,
-                                              tibbleName="results$US_C_P",
+                                              tibbleName="results$US_Pct",
                                               traceThisRoutine = traceThisRoutine,
                                               prepend = myPrepend)
     
     if (traceThisRoutine) {
-      conciseEndsOfTibbleRow(results$US_C_PA7, "results$US_C_PA7",
+      conciseEndsOfTibbleRow(results$US_PctAvg, "results$US_PctAvg",
                              nFirst = 4, nLast = 4,
                              traceThisRoutine = traceThisRoutine,
                              prepend = myPrepend)
     }
 
-    results$State_C_PA7 <- movingAverageData(results$State_C_P,
+    results$State_PctAvg <- movingAverageData(results$State_Pct,
                                                     updateToThisDate,
                                                     getNAvgs, averageOverDays,
-                                                    tibbleName="results$State_C_PA7",
+                                                    tibbleName="results$State_PctAvg",
                                                     traceThisRoutine = traceThisRoutine,
                                                     prepend = myPrepend)
     
     if (traceThisRoutine) {
-      conciseEndsOfTibbleRow(results$State_C_PA7, "results$State_C_PA7",
+      conciseEndsOfTibbleRow(results$State_PctAvg, "results$State_PctAvg",
                              nFirst = 4, nLast = 4,
                              traceThisRoutine = traceThisRoutine,
                              prepend = myPrepend)
@@ -339,24 +339,24 @@ loadUSConfirmedData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, p
                                       traceThisRoutine = traceThisRoutine,
                                       prepend = myPrepend)
   
-  US_Confirmed <<- allConfirmedData$US_C
-  US_State_Confirmed <<- allConfirmedData$State_C
-  US_County_Confirmed <<- allConfirmedData$County_C
+  US_Confirmed <<- allConfirmedData$US
+  US_State_Confirmed <<- allConfirmedData$State
+  US_County_Confirmed <<- allConfirmedData$County
 
-  US_Confirmed_A7 <<- allConfirmedData$US_C_A
-  US_State_Confirmed_A7 <<- allConfirmedData$State_C_A
-  US_County_Confirmed_A7 <<- allConfirmedData$County_C_A
+  US_Confirmed_A7 <<- allConfirmedData$US_Avg
+  US_State_Confirmed_A7 <<- allConfirmedData$State_Avg
+  US_County_Confirmed_A7 <<- allConfirmedData$County_Avg
 
-  US_Confirmed_G7 <<- allConfirmedData$US_N_A
-  US_State_Confirmed_G7 <<- allConfirmedData$State_N_A
-  US_County_Confirmed_G7 <<- allConfirmedData$County_N_A
+  US_Confirmed_G7 <<- allConfirmedData$US_NewAvg
+  US_State_Confirmed_G7 <<- allConfirmedData$State_NewAvg
+  US_County_Confirmed_G7 <<- allConfirmedData$County_NewAvg
 
   US_Confirmed_Per100K <<- normalizeByPopulation(US_Confirmed)
-  US_Confirmed_Per100K_A7 <<- normalizeByPopulation(US_Confirmed_A7)
+  US_Confirmed_Per100KAvg <<- normalizeByPopulation(US_Confirmed_A7)
   US_State_Confirmed_Per100K <<- normalizeByPopulation(US_State_Confirmed)
-  US_State_Confirmed_Per100K_A7 <<- normalizeByPopulation(US_State_Confirmed_A7)
+  US_State_Confirmed_Per100KAvg <<- normalizeByPopulation(US_State_Confirmed_A7)
   US_County_Confirmed_Per100K <<- normalizeByPopulation(US_County_Confirmed)
-  US_County_Confirmed_Per100K_A7 <<- normalizeByPopulation(US_County_Confirmed_A7)
+  US_County_Confirmed_Per100KAvg <<- normalizeByPopulation(US_County_Confirmed_A7)
   # US_Confirmed_Per100K_New <<- normalizeByPopulation(US_Confirmed_New)
   US_Confirmed_Per100K_G7 <<- normalizeByPopulation(US_Confirmed_G7)
   # US_State_Confirmed_Per100K_New <<- normalizeByPopulation(US_State_Confirmed_New)
@@ -393,25 +393,25 @@ loadUSDeathsData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prep
                                    traceThisRoutine = traceThisRoutine,
                                    prepend = myPrepend)
   
-  US_Deaths <<- allDeathsData$US_C
-  US_Deaths_A7 <<- allDeathsData$US_C_A
-  US_State_Deaths <<- allDeathsData$State_C
-  US_State_Deaths_A7 <<- allDeathsData$State_C_A
-  US_County_Deaths <<- allDeathsData$County_C
-  US_County_Deaths_A7 <<- allDeathsData$County_C_A
-  US_Deaths_New <<- allDeathsData$US_N
-  US_Deaths_G7 <<- allDeathsData$US_N_A
-  US_State_Deaths_New <<- allDeathsData$State_N
-  US_State_Deaths_G7 <<- allDeathsData$State_N_A
-  US_County_Deaths_New <<- allDeathsData$County_N
-  US_County_Deaths_G7 <<- allDeathsData$County_N_A
+  US_Deaths <<- allDeathsData$US
+  US_Deaths_A7 <<- allDeathsData$US_Avg
+  US_State_Deaths <<- allDeathsData$State
+  US_State_Deaths_A7 <<- allDeathsData$State_Avg
+  US_County_Deaths <<- allDeathsData$County
+  US_County_Deaths_A7 <<- allDeathsData$County_Avg
+  US_Deaths_New <<- allDeathsData$US_New
+  US_Deaths_G7 <<- allDeathsData$US_NewAvg
+  US_State_Deaths_New <<- allDeathsData$State_New
+  US_State_Deaths_G7 <<- allDeathsData$State_NewAvg
+  US_County_Deaths_New <<- allDeathsData$County_New
+  US_County_Deaths_G7 <<- allDeathsData$County_NewAvg
   
   US_Deaths_Per100K <<- normalizeByPopulation(US_Deaths)
-  US_Deaths_Per100K_A7 <<- normalizeByPopulation(US_Deaths_A7)
+  US_Deaths_Per100KAvg <<- normalizeByPopulation(US_Deaths_A7)
   US_State_Deaths_Per100K <<- normalizeByPopulation(US_State_Deaths)
-  US_State_Deaths_Per100K_A7 <<- normalizeByPopulation(US_State_Deaths_A7)
+  US_State_Deaths_Per100KAvg <<- normalizeByPopulation(US_State_Deaths_A7)
   US_County_Deaths_Per100K <<- normalizeByPopulation(US_County_Deaths)
-  US_County_Deaths_Per100K_A7 <<- normalizeByPopulation(US_County_Deaths_A7)
+  US_County_Deaths_Per100KAvg <<- normalizeByPopulation(US_County_Deaths_A7)
   US_Deaths_Per100K_New <<- normalizeByPopulation(US_Deaths_New)
   US_Deaths_Per100K_G7 <<- normalizeByPopulation(US_Deaths_G7)
   US_State_Deaths_Per100K_New <<- normalizeByPopulation(US_State_Deaths_New)
@@ -447,12 +447,12 @@ loadUSTestResultsData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE,
                                         traceThisRoutine = traceThisRoutine,
                                         prepend = myPrepend)
 
-  US_People_Tested <<- allTestResultsData$US_C
-  US_State_People_Tested <<- allTestResultsData$State_C
-  US_People_Tested_G7 <<- allTestResultsData$US_N_A
-  US_State_People_Tested_G7 <<- allTestResultsData$State_N_A
-  US_People_Tested_A7 <<- allTestResultsData$US_C_A
-  US_State_People_Tested_A7 <<- allTestResultsData$State_C_A
+  US_People_Tested <<- allTestResultsData$US
+  US_State_People_Tested <<- allTestResultsData$State
+  US_People_Tested_G7 <<- allTestResultsData$US_NewAvg
+  US_State_People_Tested_G7 <<- allTestResultsData$State_NewAvg
+  US_People_Tested_A7 <<- allTestResultsData$US_Avg
+  US_State_People_Tested_A7 <<- allTestResultsData$State_Avg
 
   if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Leaving loadUSTestResultsData\n")
@@ -481,10 +481,10 @@ loadUSVaccinationData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE,
                                         traceThisRoutine = traceThisRoutine,
                                         prepend = myPrepend)
 
-  US_Vaccination_Pcts <<- allVaccinationData$US_C_P
-  US_State_Vaccination_Pcts <<- allVaccinationData$State_C_P
-  US_Vaccination_Pcts_A7 <<- allVaccinationData$US_C_PA7
-  US_State_Vaccination_Pcts_A7 <<- allVaccinationData$State_C_PA7
+  US_Vaccination_Pcts <<- allVaccinationData$US_Pct
+  US_State_Vaccination_Pcts <<- allVaccinationData$State_Pct
+  US_Vaccination_Pcts_A7 <<- allVaccinationData$US_PctAvg
+  US_State_Vaccination_Pcts_A7 <<- allVaccinationData$State_PctAvg
 
   if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Leaving loadUSVaccinationData\n")
@@ -518,14 +518,14 @@ loadUSIncidentRateData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE
     cat(file = stderr(), prepend, "Leaving loadUSIncidentRateData\n")
   }
 
-  US_Incident_Rate <<- allIncidentRateData$US_C
-  US_State_Incident_Rate <<- allIncidentRateData$State_C
+  US_Incident_Rate <<- allIncidentRateData$US
+  US_State_Incident_Rate <<- allIncidentRateData$State
 
-  US_Incident_Rate_A7 <<- allIncidentRateData$US_C_A
-  US_State_Incident_Rate_A7 <<- allIncidentRateData$State_C_A
+  US_Incident_Rate_A7 <<- allIncidentRateData$US_Avg
+  US_State_Incident_Rate_A7 <<- allIncidentRateData$State_Avg
 
-  US_Incident_Rate_G7 <<- allIncidentRateData$US_N_A
-  US_State_Incident_Rate_G7 <<- allIncidentRateData$State_N_A
+  US_Incident_Rate_G7 <<- allIncidentRateData$US_NewAvg
+  US_State_Incident_Rate_G7 <<- allIncidentRateData$State_NewAvg
 
   return(allIncidentRateData)
 }
@@ -560,8 +560,8 @@ loadUSTestingRateData <- function(staticDataQ = FALSE,
     cat(file = stderr(), prepend, "Leaving loadUSTestingRateData\n")
   }
 
-  US_Testing_Rate <<- allTestingRateData$US_C
-  US_State_Testing_Rate <<- allTestingRateData$State_C
+  US_Testing_Rate <<- allTestingRateData$US
+  US_State_Testing_Rate <<- allTestingRateData$State
 }
 
 loadUSMortalityRateData <- function(staticDataQ = FALSE,
@@ -589,8 +589,8 @@ loadUSMortalityRateData <- function(staticDataQ = FALSE,
     cat(file = stderr(), prepend, "Leaving loadUSMortalityRateData\n")
   }
   
-  US_Mortality_Rate <<- allMortalityRateData$US_C
-  US_State_Mortality_Rate <<- allMortalityRateData$State_C
+  US_Mortality_Rate <<- allMortalityRateData$US
+  US_State_Mortality_Rate <<- allMortalityRateData$State
 }
 
 loadAllUSData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend = "") {
