@@ -347,9 +347,9 @@ loadUSConfirmedData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, p
   US_State_Confirmed_Avg <<- allConfirmedData$State_Avg
   US_County_Confirmed_Avg <<- allConfirmedData$County_Avg
 
-  US_Confirmed_G7 <<- allConfirmedData$US_NewAvg
-  US_State_Confirmed_G7 <<- allConfirmedData$State_NewAvg
-  US_County_Confirmed_G7 <<- allConfirmedData$County_NewAvg
+  US_Confirmed_NewAvg <<- allConfirmedData$US_NewAvg
+  US_State_Confirmed_NewAvg <<- allConfirmedData$State_NewAvg
+  US_County_Confirmed_NewAvg <<- allConfirmedData$County_NewAvg
 
   US_Confirmed_Per100K <<- normalizeByPopulation(US_Confirmed)
   US_Confirmed_Per100KAvg <<- normalizeByPopulation(US_Confirmed_Avg)
@@ -358,11 +358,11 @@ loadUSConfirmedData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, p
   US_County_Confirmed_Per100K <<- normalizeByPopulation(US_County_Confirmed)
   US_County_Confirmed_Per100KAvg <<- normalizeByPopulation(US_County_Confirmed_Avg)
   # US_Confirmed_Per100K_New <<- normalizeByPopulation(US_Confirmed_New)
-  US_Confirmed_Per100K_G7 <<- normalizeByPopulation(US_Confirmed_G7)
+  US_Confirmed_Per100K_NewAvg <<- normalizeByPopulation(US_Confirmed_NewAvg)
   # US_State_Confirmed_Per100K_New <<- normalizeByPopulation(US_State_Confirmed_New)
-  US_State_Confirmed_Per100K_G7 <<- normalizeByPopulation(US_State_Confirmed_G7)
+  US_State_Confirmed_Per100K_NewAvg <<- normalizeByPopulation(US_State_Confirmed_NewAvg)
   # US_County_Confirmed_Per100K_New <<- normalizeByPopulation(US_County_Confirmed_New)
-  US_County_Confirmed_Per100K_G7 <<- normalizeByPopulation(US_County_Confirmed_G7)
+  US_County_Confirmed_Per100K_NewAvg <<- normalizeByPopulation(US_County_Confirmed_NewAvg)
   
   # STOP
   if (traceFlagOnEntry) {
@@ -400,11 +400,11 @@ loadUSDeathsData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prep
   US_County_Deaths <<- allDeathsData$County
   US_County_Deaths_Avg <<- allDeathsData$County_Avg
   US_Deaths_New <<- allDeathsData$US_New
-  US_Deaths_G7 <<- allDeathsData$US_NewAvg
+  US_Deaths_NewAvg <<- allDeathsData$US_NewAvg
   US_State_Deaths_New <<- allDeathsData$State_New
-  US_State_Deaths_G7 <<- allDeathsData$State_NewAvg
+  US_State_Deaths_NewAvg <<- allDeathsData$State_NewAvg
   US_County_Deaths_New <<- allDeathsData$County_New
-  US_County_Deaths_G7 <<- allDeathsData$County_NewAvg
+  US_County_Deaths_NewAvg <<- allDeathsData$County_NewAvg
   
   US_Deaths_Per100K <<- normalizeByPopulation(US_Deaths)
   US_Deaths_Per100KAvg <<- normalizeByPopulation(US_Deaths_Avg)
@@ -413,11 +413,11 @@ loadUSDeathsData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prep
   US_County_Deaths_Per100K <<- normalizeByPopulation(US_County_Deaths)
   US_County_Deaths_Per100KAvg <<- normalizeByPopulation(US_County_Deaths_Avg)
   US_Deaths_Per100K_New <<- normalizeByPopulation(US_Deaths_New)
-  US_Deaths_Per100K_G7 <<- normalizeByPopulation(US_Deaths_G7)
+  US_Deaths_Per100K_NewAvg <<- normalizeByPopulation(US_Deaths_NewAvg)
   US_State_Deaths_Per100K_New <<- normalizeByPopulation(US_State_Deaths_New)
-  US_State_Deaths_Per100K_G7 <<- normalizeByPopulation(US_State_Deaths_G7)
+  US_State_Deaths_Per100K_NewAvg <<- normalizeByPopulation(US_State_Deaths_NewAvg)
   US_County_Deaths_Per100K_New <<- normalizeByPopulation(US_County_Deaths_New)
-  US_County_Deaths_Per100K_G7 <<- normalizeByPopulation(US_County_Deaths_G7)
+  US_County_Deaths_Per100K_NewAvg <<- normalizeByPopulation(US_County_Deaths_NewAvg)
   
   if (traceFlagOnEntry) {
     cat(file = stderr(), myPrepend, "...created Per100K files\n")
@@ -449,8 +449,8 @@ loadUSTestResultsData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE,
 
   US_People_Tested <<- allTestResultsData$US
   US_State_People_Tested <<- allTestResultsData$State
-  US_People_Tested_G7 <<- allTestResultsData$US_NewAvg
-  US_State_People_Tested_G7 <<- allTestResultsData$State_NewAvg
+  US_People_Tested_NewAvg <<- allTestResultsData$US_NewAvg
+  US_State_People_Tested_NewAvg <<- allTestResultsData$State_NewAvg
   US_People_Tested_Avg <<- allTestResultsData$US_Avg
   US_State_People_Tested_Avg <<- allTestResultsData$State_Avg
 
@@ -524,8 +524,8 @@ loadUSIncidentRateData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE
   US_Incident_Rate_Avg <<- allIncidentRateData$US_Avg
   US_State_Incident_Rate_Avg <<- allIncidentRateData$State_Avg
 
-  US_Incident_Rate_G7 <<- allIncidentRateData$US_NewAvg
-  US_State_Incident_Rate_G7 <<- allIncidentRateData$State_NewAvg
+  US_Incident_Rate_NewAvg <<- allIncidentRateData$US_NewAvg
+  US_State_Incident_Rate_NewAvg <<- allIncidentRateData$State_NewAvg
 
   return(allIncidentRateData)
 }
