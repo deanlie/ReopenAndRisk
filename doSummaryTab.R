@@ -95,23 +95,23 @@ computeStatsOfLocale <- function(aCounty, stateAbbrev,
 
   if ((!is.null(aCounty)) && (!is.na(aCounty)) && (aCounty != "")) {
     confirmedCaseNewAvg   <- US_County_Confirmed_G7
-    confirmedCaseTotalAvg <- US_County_Confirmed_A7
+    confirmedCaseTotalAvg <- US_County_Confirmed_Avg
     deathsNewAvg          <- US_County_Deaths_G7
-    deathsTotalAvg        <- US_County_Deaths_A7
+    deathsTotalAvg        <- US_County_Deaths_Avg
   } else {
     if ((!is.null(stateAbbrev)) && (!is.na(stateAbbrev)) && (stateAbbrev != "")) {
       confirmedCaseNewAvg   <- US_State_Confirmed_G7
-      confirmedCaseTotalAvg <- US_State_Confirmed_A7
+      confirmedCaseTotalAvg <- US_State_Confirmed_Avg
       deathsNewAvg          <- US_State_Deaths_G7
-      deathsTotalAvg        <- US_State_Deaths_A7
+      deathsTotalAvg        <- US_State_Deaths_Avg
       
       incidentRateData      <- US_State_Incident_Rate_G7
       haveStateOrUSData     <- TRUE
     } else {
       confirmedCaseNewAvg   <- US_Confirmed_G7
-      confirmedCaseTotalAvg <- US_Confirmed_A7
+      confirmedCaseTotalAvg <- US_Confirmed_Avg
       deathsNewAvg          <- US_Deaths_G7
-      deathsTotalAvg        <- US_Deaths_A7
+      deathsTotalAvg        <- US_Deaths_Avg
       
       incidentRateData      <- US_Incident_Rate_G7
       haveStateOrUSData <- TRUE

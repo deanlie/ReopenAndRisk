@@ -6,13 +6,13 @@ activeVaccData <- function(forBoxplot, movingAvg, stateChoices) {
        (!is.null(stateChoices)) &&
        (length(stateChoices) > 0))) {
     if (movingAvg) {
-      activeData <- US_State_Vaccination_Pcts_A7
+      activeData <- US_State_Vaccination_Pcts_Avg
     } else {
       activeData <- US_State_Vaccination_Pcts
     }
   } else {
     if (movingAvg) {
-      activeData <- US_Vaccination_Pcts_A7
+      activeData <- US_Vaccination_Pcts_Avg
     } else {
       activeData <- US_Vaccination_Pcts
     }

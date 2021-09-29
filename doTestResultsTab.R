@@ -27,10 +27,10 @@ plotTestResultBoxplots <- function(chooseCounty, movingAvg, countyChoices,
   title <- testResultPlotTitle(TRUE, length(stateChoices) == 0, movingAvg)
   
   if (movingAvg) {
-    theCaseData <- US_State_Confirmed_A7
-    theTestData <- US_State_People_Tested_A7 
-    numTibbleName <- "US_State_Confirmed_A7"
-    denomTibbleName <- "US_State_People_Tested_A7"
+    theCaseData <- US_State_Confirmed_Avg
+    theTestData <- US_State_People_Tested_Avg 
+    numTibbleName <- "US_State_Confirmed_Avg"
+    denomTibbleName <- "US_State_People_Tested_Avg"
   } else {
     theCaseData <- US_State_Confirmed
     theTestData <- US_State_People_Tested 
@@ -70,16 +70,16 @@ plotTestResultTrend <- function(chooseCounty, movingAvg, countyChoices,
 
   if (is.null(stateChoices)) {
     if (movingAvg) {
-      theCaseData <- US_Confirmed_A7
-      theTestData <- US_People_Tested_A7
+      theCaseData <- US_Confirmed_Avg
+      theTestData <- US_People_Tested_Avg
     } else {
       theCaseData <- US_Confirmed
       theTestData <- US_People_Tested
     }
   } else {
     if (movingAvg) {
-      theCaseData <- US_State_Confirmed_A7
-      theTestData <- US_State_People_Tested_A7
+      theCaseData <- US_State_Confirmed_Avg
+      theTestData <- US_State_People_Tested_Avg
     } else {
       theCaseData <- US_State_Confirmed
       theTestData <- US_State_People_Tested

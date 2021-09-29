@@ -20,13 +20,13 @@ testGrowthHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
 dataForTestGrowthPlots <- function(countyChoices, movingAvg, stateChoices) {
   if (is.null(stateChoices)) {
     if (movingAvg) {
-      theData <- US_People_Tested_A7
+      theData <- US_People_Tested_Avg
     } else {
       theData <- US_People_Tested
     }
   } else {
     if (movingAvg) {
-      theData <- US_State_People_Tested_A7
+      theData <- US_State_People_Tested_Avg
     } else {
       theData <- US_State_People_Tested
     }

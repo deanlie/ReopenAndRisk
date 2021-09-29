@@ -5,20 +5,20 @@ source("reopenPlotUtilities.R")
 dataForTotalCasePlots <- function(forBoxplots, countyChoices, movingAvg, stateChoices) {
   if ((!forBoxplots) && is.null(stateChoices)) {
     if (movingAvg) {
-      theData <- US_Confirmed_A7
+      theData <- US_Confirmed_Avg
     } else {
       theData <- US_Confirmed
     }
   } else {
     if (is.null(countyChoices)) {
       if (movingAvg) {
-        theData <- US_State_Confirmed_A7
+        theData <- US_State_Confirmed_Avg
       } else {
         theData <- US_State_Confirmed
       }
     } else {
       if (movingAvg) {
-        dataTibble <- US_County_Confirmed_A7
+        dataTibble <- US_County_Confirmed_Avg
       } else {
         dataTibble <- US_County_Confirmed
       }
