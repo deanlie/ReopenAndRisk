@@ -6,14 +6,14 @@ library(stringr)
 dataForNewDeathsPlots <- function(forBoxplots, countyChoices, movingAvg, stateChoices) {
   if ((!forBoxplots) && is.null(stateChoices)) {
     if (movingAvg) {
-      theData <- US_Deaths_Avg
+      theData <- US_Deaths_Per100K_NewAvg
     } else {
       theData <- US_Deaths
     }
   } else {
     if (is.null(countyChoices)) {
       if (movingAvg) {
-        theData <- US_State_Deaths_Avg
+        theData <- US_State_Deaths_Per100K_NewAvg
       } else {
         theData <- US_State_Deaths
       }
