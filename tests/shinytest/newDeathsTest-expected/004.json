@@ -12,7 +12,7 @@
   },
   "output": {
     "newDeathsBox": {
-      "src": "[image data sha1: 1865be411798e8967cfc2d67148d4a89e92c2c0b]",
+      "src": "[image data sha1: 86ab80663113ef6ecf4d361174bff63eb5f0e18e]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -53,7 +53,7 @@
       ]
     },
     "newDeathsTrend": {
-      "src": "[image data sha1: 504b6bf01dd11cae0fbb777dba6ee058a473251a]",
+      "src": "[image data sha1: a23c14b98c70bf247868fbaa3cfc1370079544f9]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
