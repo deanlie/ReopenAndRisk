@@ -18,7 +18,7 @@
   },
   "output": {
     "newCaseBox": {
-      "src": "[image data sha1: 9b57d2baf86e508e8ce6a00357e4e0454b467760]",
+      "src": "[image data sha1: f4b7fd417478a1f16553186828424bd3d8904b24]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -53,7 +53,7 @@
       }
     },
     "newCaseHeaderHTML": {
-      "html": "<h4>Trends of new cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p>It's possible that lines for some areas will be missing,\n                     especially if you've selected some counties with low population.\n                     That happens because a growth rate starting from zero\n                     can't be computed. If you see that, please change the selection\n                     to have ONLY the missing areas, and I'll display the NUMBER of\n                     cases rather than the growth rate.<\/p><p><\/p>",
+      "html": "<h4>Trends of new cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p><\/p>",
       "deps": [
 
       ]
@@ -94,7 +94,7 @@
       }
     },
     "newDeathsBox": {
-      "src": "[image data sha1: 05c4d8be8b6e1e6d02dcdc4f7ed46e950dd96054]",
+      "src": "[image data sha1: 9f85c1f2b4ff53bb272076292bfeab8ca733290c]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -328,7 +328,7 @@
       }
     },
     "totalCaseBox": {
-      "src": "[image data sha1: 93680c89b767afaeaa72f8b6b1c707e85d8b3ecf]",
+      "src": "[image data sha1: 1927666e00ddcf7f14fc0ac067a049aef72c87f8]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -363,7 +363,7 @@
       }
     },
     "totalCaseHeaderHTML": {
-      "html": "<h4>Trends of total cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p>It's possible that lines for some areas will be missing,\n                     especially if you've selected some counties with low population.\n                     That happens because a growth rate starting from zero\n                     can't be computed. If you see that, please change the selection\n                     to have ONLY the missing areas, and I'll display the NUMBER of\n                     cases rather than the growth rate.<\/p><p><\/p>",
+      "html": "<h4>Trends of total cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p><\/p>",
       "deps": [
 
       ]
@@ -404,7 +404,7 @@
       }
     },
     "totalDeathsBox": {
-      "src": "[image data sha1: f0199985bf04909108932bc6688871c4c4a23892]",
+      "src": "[image data sha1: b313f97b55ea6abe44e51f32b0634294e7e229f3]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",

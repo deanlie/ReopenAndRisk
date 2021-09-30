@@ -12,7 +12,7 @@
   },
   "output": {
     "newCaseBox": {
-      "src": "[image data sha1: b00dc66c9924cac4b3e9645ef50de26239e4eb57]",
+      "src": "[image data sha1: cc538fc48309e5bec5ccc9d503c83de67306381c]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -47,13 +47,13 @@
       }
     },
     "newCaseHeaderHTML": {
-      "html": "<h4>Trends of new cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p>It's possible that lines for some areas will be missing,\n                     especially if you've selected some counties with low population.\n                     That happens because a growth rate starting from zero\n                     can't be computed. If you see that, please change the selection\n                     to have ONLY the missing areas, and I'll display the NUMBER of\n                     cases rather than the growth rate.<\/p><p><\/p>",
+      "html": "<h4>Trends of new cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p><\/p>",
       "deps": [
 
       ]
     },
     "newCaseTrend": {
-      "src": "[image data sha1: 043b3a316e4706cc7e3f498b31f7ba653753b090]",
+      "src": "[image data sha1: eaa8021e8e0a6eceb9bdcf87f7e62318c3e91afa]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -88,7 +88,7 @@
       }
     },
     "newDeathsBox": {
-      "src": "[image data sha1: 1865be411798e8967cfc2d67148d4a89e92c2c0b]",
+      "src": "[image data sha1: 86ab80663113ef6ecf4d361174bff63eb5f0e18e]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -129,7 +129,7 @@
       ]
     },
     "newDeathsTrend": {
-      "src": "[image data sha1: 504b6bf01dd11cae0fbb777dba6ee058a473251a]",
+      "src": "[image data sha1: a23c14b98c70bf247868fbaa3cfc1370079544f9]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -322,7 +322,7 @@
       }
     },
     "totalCaseBox": {
-      "src": "[image data sha1: 83064df88d1941fd447add818cec2a2e81f52af7]",
+      "src": "[image data sha1: 24cdc99c0113e91ff62620c49ce9ed5840ccae5f]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -357,13 +357,13 @@
       }
     },
     "totalCaseHeaderHTML": {
-      "html": "<h4>Trends of total cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p>It's possible that lines for some areas will be missing,\n                     especially if you've selected some counties with low population.\n                     That happens because a growth rate starting from zero\n                     can't be computed. If you see that, please change the selection\n                     to have ONLY the missing areas, and I'll display the NUMBER of\n                     cases rather than the growth rate.<\/p><p><\/p>",
+      "html": "<h4>Trends of total cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p><\/p>",
       "deps": [
 
       ]
     },
     "totalCaseTrend": {
-      "src": "[image data sha1: 8e59ab5db41a21ffdad41470bcbbeaef512678d5]",
+      "src": "[image data sha1: fca68a6a2d97493a418e0cce837c9cde4d5a0a0f]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -398,7 +398,7 @@
       }
     },
     "totalDeathsBox": {
-      "src": "[image data sha1: 50d4446d13f7162c9bcc631bb747bde6e799a15d]",
+      "src": "[image data sha1: 49e9e4c8edf758fb087bd6c0f43d250233c29eef]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -439,7 +439,7 @@
       ]
     },
     "totalDeathsTrend": {
-      "src": "[image data sha1: 1ff98c8d23cdbfd34aca453d747f415679ab44db]",
+      "src": "[image data sha1: 3ebe741dc2fe57a29d0af6e41425b43908c2a80a]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
