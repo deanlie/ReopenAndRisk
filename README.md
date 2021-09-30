@@ -31,11 +31,15 @@ Branch Testing1234 merged in 2021-09-27:
 Branch Per100_Cases_And_Mortality:
   Accomplished:
   * Change Cases and Deaths tabs to New Cases and New Deaths resp;
-  * Add Total Cases and Total Deaths tabs with content duplicating New<resp> tabs
+  * Display on New Cases tab shows correct "per 100K" data except for one test, see To Do below
+  * Added Total Cases tab with correct display and test for it
   * There are now tests newCasesTest, newDeathsTest, totalCasesTest, totalDeathsTest
   * Changed text on those four tabs
   
   To Do:
+  * newCasesTest is broken for test6 "Problem with `filter() input `..1`"
+                                      object `Province_State' not found"
+  * Correct display for New Deaths and Total Deaths tabs 
   * show numbers per 100K population in last day in the graphs on those four tabs.
     That's what the graph labels say, but it's a lie. I need to get the right data
     and process it properly.

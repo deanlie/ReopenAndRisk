@@ -342,7 +342,10 @@ loadUSConfirmedData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, p
   US_Confirmed <<- allConfirmedData$US
   US_State_Confirmed <<- allConfirmedData$State
   US_County_Confirmed <<- allConfirmedData$County
-
+  US_Confirmed_New <<- allConfirmedData$US_New
+  US_State_Confirmed_New <<- allConfirmedData$State_New
+  US_County_Confirmed_New <<- allConfirmedData$County_New
+  
   US_Confirmed_Avg <<- allConfirmedData$US_Avg
   US_State_Confirmed_Avg <<- allConfirmedData$State_Avg
   US_County_Confirmed_Avg <<- allConfirmedData$County_Avg
@@ -357,11 +360,11 @@ loadUSConfirmedData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, p
   US_State_Confirmed_Per100KAvg <<- normalizeByPopulation(US_State_Confirmed_Avg)
   US_County_Confirmed_Per100K <<- normalizeByPopulation(US_County_Confirmed)
   US_County_Confirmed_Per100KAvg <<- normalizeByPopulation(US_County_Confirmed_Avg)
-  # US_Confirmed_Per100K_New <<- normalizeByPopulation(US_Confirmed_New)
+  US_Confirmed_Per100K_New <<- normalizeByPopulation(US_Confirmed_New)
   US_Confirmed_Per100K_NewAvg <<- normalizeByPopulation(US_Confirmed_NewAvg)
-  # US_State_Confirmed_Per100K_New <<- normalizeByPopulation(US_State_Confirmed_New)
+  US_State_Confirmed_Per100K_New <<- normalizeByPopulation(US_State_Confirmed_New)
   US_State_Confirmed_Per100K_NewAvg <<- normalizeByPopulation(US_State_Confirmed_NewAvg)
-  # US_County_Confirmed_Per100K_New <<- normalizeByPopulation(US_County_Confirmed_New)
+  US_County_Confirmed_Per100K_New <<- normalizeByPopulation(US_County_Confirmed_New)
   US_County_Confirmed_Per100K_NewAvg <<- normalizeByPopulation(US_County_Confirmed_NewAvg)
   
   # STOP

@@ -5,22 +5,22 @@ source("reopenPlotUtilities.R")
 dataForTotalCasePlots <- function(forBoxplots, countyChoices, movingAvg, stateChoices) {
   if ((!forBoxplots) && is.null(stateChoices)) {
     if (movingAvg) {
-      theData <- US_Confirmed_Avg
+      theData <- US_Confirmed_Per100KAvg
     } else {
-      theData <- US_Confirmed
+      theData <- US_Confirmed_Per100K
     }
   } else {
     if (is.null(countyChoices)) {
       if (movingAvg) {
-        theData <- US_State_Confirmed_Avg
+        theData <- US_State_Confirmed_Per100KAvg
       } else {
-        theData <- US_State_Confirmed
+        theData <- US_State_Confirmed_Per100K
       }
     } else {
       if (movingAvg) {
-        dataTibble <- US_County_Confirmed_Avg
+        dataTibble <- US_County_Confirmed_Per100KAvg
       } else {
-        dataTibble <- US_County_Confirmed
+        dataTibble <- US_County_Confirmed_Per100K
       }
       theData <- filterToStateChoice(dataTibble, stateChoices[1])
     }
@@ -48,20 +48,13 @@ totalCaseHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
  near the top of the graph are not real data, but mean there is a data point
  at that level or higher (if the graph were scaled to show everything,
  the interesting part of the graph would be all squished at the bottom)")
-  pgphThree <- paste("It's possible that lines for some areas will be missing,
-                     especially if you've selected some counties with low population.
-                     That happens because a growth rate starting from zero
-                     can't be computed. If you see that, please change the selection
-                     to have ONLY the missing areas, and I'll display the NUMBER of
-                     cases rather than the growth rate.")
-  
+
   theText <- paste(tags$h4("Trends of total cases"),
                    tags$p("The CDC's recommendation was that a state not begin reopening
                    after the initial lockdown until it had a downward trajectory or
                    near-zero incidence of documented cases over a 14 day period.
                    The trend of cases is still an important measure."),
                    tags$p(pgphTwo),
-                   tags$p(pgphThree),
                    tags$p(),
                    sep="")
   HTML(theText)
@@ -86,7 +79,7 @@ plotTotalCaseBoxplots <- function(chooseCounty,
     theData <- dataForTotalCasePlots(TRUE, countyChoices, movingAvg, stateChoices)
   }
 
-  assembleGrowthBoxPlot(theData, chooseCounty,
+  assembleDirectBoxPlot(theData, chooseCounty,
                         countyChoices, stateChoices,
                         totalCasePlotTitle(TRUE, is.null(stateChoices), movingAvg,
                                            is.null(countyChoices), stateChoices[1]),
@@ -102,7 +95,7 @@ plotTotalCaseTrend <- function(chooseCounty,
                              timeWindow) {
   theData <- dataForTotalCasePlots(FALSE, countyChoices, movingAvg, stateChoices)
 
-  assembleGrowthTrendPlot(theData, chooseCounty,
+  assembleDirectTrendPlot(theData, chooseCounty,
                           countyChoices, stateChoices,
                           totalCasePlotTitle(FALSE, is.null(stateChoices), movingAvg,
                                              is.null(countyChoices), stateChoices[1]),
