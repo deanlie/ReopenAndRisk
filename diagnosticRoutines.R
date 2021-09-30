@@ -3,7 +3,7 @@ library(tidyverse)
 # A Debugging utility
 returnEndsOfTibbleRow <- function(aTibble, itsName = "<?>",
                                   theKey = "Combined_Key",
-                                  keyValue = "Massachusetts, US",
+                                  keyValue = NULL,
                                   nFirst = 3, nLast = 8,
                                   optionalMessage = "",
                                   traceThisRoutine = FALSE,
@@ -15,8 +15,16 @@ returnEndsOfTibbleRow <- function(aTibble, itsName = "<?>",
       cat(file = stderr(), myPrepend, optionalMessage, "\n")
     }
   }
+  
+  if (is.null(theKey)) {
+    theData <- filter(aTibble,
+                      (.data[[theKey]] == "US") |
+                        (.data[[theKey]] == "Massachusetts, US") |
+                        (.data[[theKey]] == "Suffolk, Massachusetts, US"))
+  } else {
+    theData <- filter(aTibble, .data[[theKey]] == {keyValue})
+  }
 
-  theData <- filter(aTibble, .data[[theKey]] == {keyValue})
   theLength <- dim(theData)[2]
   preEnd <- (theLength + 1) - nLast
 
@@ -55,9 +63,11 @@ conciseEndsOfTibbleRow <- function(aTibble, itsName = "<?>",
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "Tibble", itsName, "has", theLength, "cols\n")
     cat(file = stderr(), myPrepend, "Cols:",
-        paste(names(theData)[c(1:nFirst,preEnd:theLength)]), "\n")
+        paste(names(theData)[c(1:nFirst)]), "...",
+        paste(names(theData)[c(preEnd:theLength)]),"\n")
     cat(file = stderr(), myPrepend, "Data:",
-        paste(theData[1,c(1:nFirst,preEnd:theLength)]), "\n")
+        paste(theData[1,c(1:nFirst)]), "...",
+        paste(theData[1,c(preEnd:theLength)]), "\n")
   }
   
   if (traceThisRoutine) {
