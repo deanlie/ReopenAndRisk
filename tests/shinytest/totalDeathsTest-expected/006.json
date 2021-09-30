@@ -18,7 +18,7 @@
   },
   "output": {
     "totalDeathsBox": {
-      "src": "[image data sha1: 4cca116d75ec8c3bb9930f8f21e647caf487c00c]",
+      "src": "[image data sha1: a0df936b9c372de2e95347028eb13e8cb32db8a1]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -53,13 +53,13 @@
       }
     },
     "totalDeathsHeaderHTML": {
-      "html": "<h4>Deaths<\/h4><p>The CDC does not base reopening recommendations directly on \n                             COVID-19 deaths, but we have the statistics and the graphing\n                             programs, so here you go:<\/p><p>In counties with small populations, such as Dukes County, a few deaths -- not to minimize their importance -- can make the statistics jump a lot from day to day.<\/p><p>If two or more selected  counties  have identical graphs (e.g. zero deaths) for the selected  time period, the last one drawn wil hide the other.  If no graph is shown for your  county  please try again, selecting only it.<\/p><p>It's possible that lines for some areas will be missing,\n especially if you've selected some counties with low population.\n That happens because a growth rate starting from zero\n can't be computed. If you see that, please change the selection\n to have ONLY the missing areas, and I'll display the NUMBER of\n cases rather than the growth rate.<\/p>",
+      "html": "<h4>Deaths<\/h4><p>The CDC does not base reopening recommendations directly on \n                             COVID-19 deaths, but we have the statistics and the graphing\n                             programs, so here you go:<\/p><p>In counties with small populations, such as Dukes County, a few deaths -- not to minimize their importance -- can make the statistics jump a lot from day to day.<\/p><p>If two or more selected  counties  have identical graphs (e.g. zero deaths) for the selected  time period, the last one drawn wil hide the other.  If no graph is shown for your  county  please try again, selecting only it.<\/p>",
       "deps": [
 
       ]
     },
     "totalDeathsTrend": {
-      "src": "[image data sha1: 0ee682064d90a3171a762051ff58fc7d3521fe47]",
+      "src": "[image data sha1: c1513b651c2a11f5abfbe03b9590bb137e1ae38e]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
