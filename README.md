@@ -39,8 +39,13 @@ Branch Per100_Cases_And_Mortality:
   To Do:
   * newCasesTest is broken for test6 "Problem with `filter() input `..1`"
                                       object `Province_State' not found"
-  * Correct display for New Deaths and Total Deaths tabs 
-  * show numbers per 100K population in last day in the graphs on those four tabs.
-    That's what the graph labels say, but it's a lie. I need to get the right data
-    and process it properly.
+  * Correct display for New Deaths and Total Deaths tabs. Display appears to
+      have new and total numbers reversed???
+  * New Deaths for counties, not moving average, has same error message
+      as newCasesTest test6 note above. That display for with moving average
+      looks like what I would expect for total deaths with those input selections.
+  * Total Deaths display for counties, with moving average, shows error
+      "Error: object 'US_County_Deaths_Per100K_Avg' not found"
+  * Total Deaths display for counties without moving average seems not to
+      have per100K data
 

@@ -8,14 +8,14 @@ dataForNewDeathsPlots <- function(forBoxplots, countyChoices, movingAvg, stateCh
     if (movingAvg) {
       theData <- US_Deaths_Per100K_NewAvg
     } else {
-      theData <- US_Deaths
+      theData <- US_Deaths_Per100K_New
     }
   } else {
     if (is.null(countyChoices)) {
       if (movingAvg) {
         theData <- US_State_Deaths_Per100K_NewAvg
       } else {
-        theData <- US_State_Deaths
+        theData <- US_State_Deaths_Per100K_New
       }
     } else {
       detectOutOf <- function(aString) {
@@ -25,9 +25,9 @@ dataForNewDeathsPlots <- function(forBoxplots, countyChoices, movingAvg, stateCh
         str_detect(aString, "Unassigned", negate = TRUE)
       }
       if (movingAvg) {
-        dataTibble <- US_County_Deaths_Avg
+        dataTibble <- US_County_Deaths_Per100K_NewAvg
       } else {
-        dataTibble <- US_County_Deaths
+        dataTibble <- US_County_Deaths_Per100K_New
       }
       theData <- dataTibble %>%
         filter(Province_State == stateLookup[stateChoices[1]]) %>%
@@ -92,22 +92,14 @@ newDeathsHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
                         "If no graph is shown for your ",
                         admin1T$LC_S,
                         " please try again, selecting only it.")
-    missingLineTxt <- "It's possible that lines for some areas will be missing,
- especially if you've selected some counties with low population.
- That happens because a growth rate starting from zero
- can't be computed. If you see that, please change the selection
- to have ONLY the missing areas, and I'll display the NUMBER of
- cases rather than the growth rate."
     if (length(smallPopsTxt > 0)) {
       theText <- paste(theText,
                        tags$p(smallPopsTxt),
                        tags$p(overlapTxt),
-                       tags$p(missingLineTxt),
                        sep = "")
     } else {
       theText <- paste(theText,
                        tags$p(overlapTxt),
-                       tags$p(missingLineTxt),
                        sep = "")
       
     }
@@ -148,7 +140,7 @@ plotNewDeathsBoxplots <- function(chooseCounty,
     theData <- dataForNewDeathsPlots(TRUE, countyChoices, movingAvg, stateChoices)
   }
 
-  assembleGrowthBoxPlot(theData, chooseCounty,
+  assembleDirectBoxPlot(theData, chooseCounty,
                         countyChoices,
                         stateChoices,
                         newDeathsPlotTitle(TRUE, is.null(stateChoices), movingAvg,
@@ -165,7 +157,7 @@ plotNewDeathsTrend <- function(chooseCounty,
                                timeWindow) {
   theData <- dataForNewDeathsPlots(FALSE, countyChoices, movingAvg, stateChoices)
 
-  assembleGrowthTrendPlot(theData, chooseCounty,
+  assembleDirectTrendPlot(theData, chooseCounty,
                           countyChoices,
                           stateChoices,
                           newDeathsPlotTitle(FALSE, is.null(stateChoices), movingAvg,
