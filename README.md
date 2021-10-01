@@ -31,21 +31,15 @@ Branch Testing1234 merged in 2021-09-27:
 Branch Per100_Cases_And_Mortality:
   Accomplished:
   * Change Cases and Deaths tabs to New Cases and New Deaths resp;
-  * Display on New Cases tab shows correct "per 100K" data except for one test, see To Do below
+  * Display on New Cases tab shows correct "per 100K" data except for one test,
+      see To Do below
   * Added Total Cases tab with correct display and test for it
   * There are now tests newCasesTest, newDeathsTest, totalCasesTest, totalDeathsTest
   * Changed text on those four tabs
+  * Corrected display for Total Deaths tab
   
   To Do:
-  * newCasesTest is broken for test6 "Problem with `filter() input `..1`"
-                                      object `Province_State' not found"
-  * Correct display for New Deaths and Total Deaths tabs. Display appears to
-      have new and total numbers reversed???
-  * New Deaths for counties, not moving average, has same error message
-      as newCasesTest test6 note above. That display for with moving average
-      looks like what I would expect for total deaths with those input selections.
-  * Total Deaths display for counties, with moving average, shows error
-      "Error: object 'US_County_Deaths_Per100K_Avg' not found"
-  * Total Deaths display for counties without moving average seems not to
-      have per100K data
+  * newCasesTest and newDeathsTest are broken for test6 (same test both tabs)
+      "Problem with `filter() input `..1`"
+      object `Province_State' not found"
 
