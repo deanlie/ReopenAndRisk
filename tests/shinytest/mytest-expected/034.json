@@ -18,12 +18,39 @@
   },
   "output": {
     "newCaseBox": {
-      "message": "Problem with `filter()` input `..1`.\n✖ object 'Province_State' not found\nℹ Input `..1` is `Province_State == stateLookup[aStateChoices]`.",
-      "call": "NULL",
-      "type": [
-        "dplyr_error",
-        "rlang_error"
-      ]
+      "src": "[image data sha1: 3e2fd414aee46fe092b883d8569a53dbabbb412a]",
+      "width": 506,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 506,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 506,
+          "height": 400
+        }
+      }
     },
     "newCaseHeaderHTML": {
       "html": "<h4>Trends of new cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p><\/p>",
@@ -32,20 +59,74 @@
       ]
     },
     "newCaseTrend": {
-      "message": "Problem with `filter()` input `..1`.\n✖ object 'Province_State' not found\nℹ Input `..1` is `Province_State == stateLookup[aStateChoices]`.",
-      "call": "NULL",
-      "type": [
-        "dplyr_error",
-        "rlang_error"
-      ]
+      "src": "[image data sha1: 3685a1009cd1be52bd28624f8bc5f178510d8af5]",
+      "width": 506,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 506,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 506,
+          "height": 400
+        }
+      }
     },
     "newDeathsBox": {
-      "message": "Problem with `filter()` input `..1`.\n✖ object 'Province_State' not found\nℹ Input `..1` is `Province_State == stateLookup[stateChoices[1]]`.",
-      "call": "NULL",
-      "type": [
-        "dplyr_error",
-        "rlang_error"
-      ]
+      "src": "[image data sha1: c3bfb7fe668250fafda4a36e41c1e86aafceff6c]",
+      "width": 506,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 506,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 506,
+          "height": 400
+        }
+      }
     },
     "newDeathsHeaderHTML": {
       "html": "<h4>Deaths<\/h4><p>The CDC does not base reopening recommendations directly on \n                             COVID-19 deaths, but we have the statistics and the graphing\n                             programs, so here you go:<\/p><p>In states with small populations, such as Maine, a few deaths -- not to minimize their importance -- can make the statistics jump a lot from day to day.<\/p>",
@@ -54,12 +135,39 @@
       ]
     },
     "newDeathsTrend": {
-      "message": "Problem with `filter()` input `..1`.\n✖ object 'Province_State' not found\nℹ Input `..1` is `Province_State == stateLookup[stateChoices[1]]`.",
-      "call": "NULL",
-      "type": [
-        "dplyr_error",
-        "rlang_error"
-      ]
+      "src": "[image data sha1: 30d8a9c2e830dc3e4e74ab919dba4e3bec0fadfe]",
+      "width": 506,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 506,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 506,
+          "height": 400
+        }
+      }
     },
     "summaryHTML": {
       "html": "<div class=\"hghi_red\">\n  <h4>US<\/h4>\n  <ul><li class=\"hghi_red\">Confirmed new cases: 42 daily per 100,000 population<\/li><li class=\"hghi_yellow\">Growth trend of confirmed new cases: 0.352% per day<\/li><li class=\"hghi_red\">Estimated new cases: 59 daily per 100,000 population<\/li><li class=\"hghi_yellow\">Growth trend of estimated new cases: 0.285% per day<\/li><\/ul>\n<\/div>",
