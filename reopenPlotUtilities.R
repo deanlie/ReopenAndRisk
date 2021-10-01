@@ -31,8 +31,38 @@ timeWindowXLabel <- function(timeWindow) {
   paste("Last", timeWindow, "days")
 }
 
-filterToStateChoice <- function(aTibble, aStateChoices) {
+filterToStateChoice0 <- function(aTibble, aStateChoice) {
   aTibble %>%
-    filter(Province_State == stateLookup[aStateChoices])
+    filter(Province_State == stateLookup[aStateChoice])
 }
+
+filterToStateChoice <- function(aTibble, aStateChoice, countyChoices = NULL) {
+  # START
+  # detectOutOf <- function(aString) {
+  #   str_detect(aString, "Out of", negate = TRUE)
+  # }
+  # detectUnassigned <- function(aString) {
+  #   str_detect(aString, "Unassigned", negate = TRUE)
+  # }
+  # theData <- dataTibble %>%
+  #   filter(Province_State == stateLookup[stateChoices[1]]) %>%
+  #   filter(detectOutOf(Admin2)) %>%
+  #   filter(detectUnassigned(Admin2))
+  # STOP
+  selectedState <- stateLookup[aStateChoice]
+  if (is.null(countyChoices)) {
+    result <- aTibble %>%
+      filter(Province_State == selectedState)
+  } else {
+    result <- aTibble %>%
+      filter(stri_detect_fixed(Combined_Key, {{selectedState}}))
+    if ("Admin2" %in% names(result)) {
+      result <- result %>%
+        filter(stri_detect_fixed(Admin2, "Out of", negate = TRUE)) %>%
+        filter(stri_detect_fixed(Admin2, "Unassigned", negate = TRUE))
+    }
+  }
+  return(result)
+}
+
 

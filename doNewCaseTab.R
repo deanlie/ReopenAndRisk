@@ -22,7 +22,7 @@ dataForNewCasePlots <- function(forBoxplots, countyChoices, movingAvg, stateChoi
       } else {
         dataTibble <- US_County_Confirmed_Per100K_New
       }
-      theData <- filterToStateChoice(dataTibble, stateChoices[1])
+      theData <- filterToStateChoice(dataTibble, stateChoices[1], countyChoices)
     }
   }
   theData

@@ -18,21 +18,12 @@ dataForNewDeathsPlots <- function(forBoxplots, countyChoices, movingAvg, stateCh
         theData <- US_State_Deaths_Per100K_New
       }
     } else {
-      detectOutOf <- function(aString) {
-        str_detect(aString, "Out of", negate = TRUE)
-      }
-      detectUnassigned <- function(aString) {
-        str_detect(aString, "Unassigned", negate = TRUE)
-      }
       if (movingAvg) {
         dataTibble <- US_County_Deaths_Per100K_NewAvg
       } else {
         dataTibble <- US_County_Deaths_Per100K_New
       }
-      theData <- dataTibble %>%
-        filter(Province_State == stateLookup[stateChoices[1]]) %>%
-        filter(detectOutOf(Admin2)) %>%
-        filter(detectUnassigned(Admin2))
+      theData <- filterToStateChoice(dataTibble, stateChoices[1], countyChoices)
     }
   }
   theData
