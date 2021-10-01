@@ -68,16 +68,27 @@ totalCaseYLabel <- function() {
   "Total cases per 100,000 population"
 }
 
+selectPlotData <- function(selectorRoutine, chooseCounty,
+                           forBoxplot, countyChoices, movingAvg, stateChoices) {
+  if (is.null(stateChoices)) {
+    theData <- selectorRoutine(TRUE, NULL, movingAvg, stateChoices)
+  } else {
+    theData <- selectorRoutine(TRUE, countyChoices, movingAvg, stateChoices)
+  }
+}
+
 plotTotalCaseBoxplots <- function(chooseCounty,
                                 movingAvg,
                                 countyChoices,
                                 stateChoices,
                                 timeWindow) {
-  if (is.null(stateChoices)) {
-    theData <- dataForTotalCasePlots(TRUE, NULL, movingAvg, stateChoices)
-  } else {
-    theData <- dataForTotalCasePlots(TRUE, countyChoices, movingAvg, stateChoices)
-  }
+  # if (is.null(stateChoices)) {
+  #   theData <- dataForTotalCasePlots(TRUE, NULL, movingAvg, stateChoices)
+  # } else {
+  #   theData <- dataForTotalCasePlots(TRUE, countyChoices, movingAvg, stateChoices)
+  # }
+  theData <- selectPlotData(dataForTotalCasePlots, chooseCounty,
+                            TRUE, countyChoices, movingAvg, stateChoices)
 
   assembleDirectBoxPlot(theData, chooseCounty,
                         countyChoices, stateChoices,
