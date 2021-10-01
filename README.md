@@ -37,9 +37,10 @@ Branch Per100_Cases_And_Mortality:
   * There are now tests newCasesTest, newDeathsTest, totalCasesTest, totalDeathsTest
   * Changed text on those four tabs
   * Corrected display for Total Deaths tab
+  * Fixed display for newCasesTest and newDeathsTest test6
   
   To Do:
-  * newCasesTest and newDeathsTest are broken for test6 (same test both tabs)
-      "Problem with `filter() input `..1`"
-      object `Province_State' not found"
+  * Does not go back to state distribution/trend plot if you have counties selected
+      and then uncheck "select counties" checkbox. Need to get "choose county" into
+      data file selection logic.
 
