@@ -1,7 +1,7 @@
 {
   "input": {
     "chooseCounty": false,
-    "countyChoices": "Barnstable",
+    "countyChoices": null,
     "mainTabsetPanel": "New Cases",
     "movingAvg": false,
     "stateChoices": [
@@ -13,7 +13,7 @@
   },
   "output": {
     "newCaseBox": {
-      "src": "[image data sha1: 3e2fd414aee46fe092b883d8569a53dbabbb412a]",
+      "src": "[image data sha1: 834b04c20f11889111ceeb7107d3b7309aeed44e]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -54,7 +54,7 @@
       ]
     },
     "newCaseTrend": {
-      "src": "[image data sha1: 3685a1009cd1be52bd28624f8bc5f178510d8af5]",
+      "src": "[image data sha1: 7870c3614bfce4f53570fb701b9a26158ffb871a]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -95,7 +95,7 @@
       ]
     },
     "vaccRBox": {
-      "src": "[image data sha1: ab58e25bd269521ea54a1f6988a8fac0b239a32d]",
+      "src": "[image data sha1: c9692679f0bf1c5a99cc38415e7f0482de396327]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -130,7 +130,7 @@
       }
     },
     "vaccRTrend": {
-      "src": "[image data sha1: 3ab0895946461ad951e9e41a38382371d66dfffc]",
+      "src": "[image data sha1: 182a3e2ba856a891d90e22b7502490a2f5b222ad]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",

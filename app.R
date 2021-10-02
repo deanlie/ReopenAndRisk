@@ -227,9 +227,17 @@ server <- function(input, output, session) {
                           tags$p("", id="Spacer2")))
         
       } else {
+        # Set countyChoices blank
+        updateSelectInput(session, 'countyChoices',
+                          choices = character(0),
+                          selected = NULL)
         removeUI(selector = "#CountyXX")
       }
     } else {
+      # Set countyChoices blank
+      updateSelectInput(session, 'countyChoices',
+                        choices = character(0),
+                        selected = NULL)
       removeUI(selector = "#CountyXX")
     }
   })

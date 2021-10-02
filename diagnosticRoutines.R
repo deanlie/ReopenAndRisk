@@ -71,16 +71,16 @@ conciseEndsOfTibbleRow <- function(aTibble, itsName = "<?>",
   preEnd <- (theLength + 1) - nLast
   
   if (traceThisRoutine) {
-    nDigits <- getOption("digits")
-    options(digits = 6)
     cat(file = stderr(), myPrepend, "Tibble", itsName, "has", theLength, "cols\n")
     cat(file = stderr(), myPrepend, "Cols:",
         paste(names(theData)[c(1:nFirst)]), "...",
         paste(names(theData)[c(preEnd:theLength)]),"\n")
+    warnOption <- getOption("warn")
+    options(warn = -1)
     cat(file = stderr(), myPrepend, "Data:",
         paste(sprintf("%10.2f", theData[1,c(1:nFirst)])), "...",
         paste(sprintf("%10.2f", theData[1,c(preEnd:theLength)])), "\n")
-    options(digits = nDigits)
+    options(warn = warnOption)
   }
   
   if (traceThisRoutine) {

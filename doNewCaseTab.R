@@ -72,34 +72,78 @@ plotNewCaseBoxplots <- function(chooseCounty,
                                 movingAvg,
                                 countyChoices,
                                 stateChoices,
-                                timeWindow) {
+                                timeWindow,
+                                traceThisRoutine = FALSE,
+                                prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  traceFlagOnEntry <- traceThisRoutine
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Entered plotNewCaseBoxplots\n")
+  }
   if (is.null(stateChoices)) {
     theData <- dataForNewCasePlots(TRUE, NULL, movingAvg, stateChoices)
   } else {
     theData <- dataForNewCasePlots(TRUE, countyChoices, movingAvg, stateChoices)
   }
+  
+  if (traceThisRoutine) {
+    junk <- conciseEndsOfTibbleRow(theData,
+                                   traceThisRoutine = traceThisRoutine,
+                                   prepend = myPrepend)
+    cat(file = stderr(), myPrepend, "chooseCounty:", chooseCounty, "\n")
+    cat(file = stderr(), myPrepend, "countyChoices:", paste(countyChoices), "\n")
+  }
 
-  assembleDirectBoxPlot(theData, chooseCounty,
-                        countyChoices, stateChoices,
-                        newCasePlotTitle(TRUE, is.null(stateChoices), movingAvg,
-                                         is.null(countyChoices), stateChoices[1]),
-                        timeWindowXLabel(timeWindow),
-                        newCaseYLabel(),
-                        clampFactor = 3, timeWindow = timeWindow)
+  result <- assembleDirectBoxPlot(theData, chooseCounty,
+                                  countyChoices, stateChoices,
+                                  newCasePlotTitle(TRUE, is.null(stateChoices), movingAvg,
+                                                   is.null(countyChoices), stateChoices[1]),
+                                  timeWindowXLabel(timeWindow),
+                                  newCaseYLabel(),
+                                  clampFactor = 3, timeWindow = timeWindow,
+                                  traceThisRoutine = traceThisRoutine,
+                                  prepend = myPrepend)
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Leaving plotNewCaseBoxplots\n")
+  }
+  
+  return(result)
 }
 
 plotNewCaseTrend <- function(chooseCounty,
                              movingAvg,
                              countyChoices,
                              stateChoices,
-                             timeWindow) {
+                             timeWindow,
+                             traceThisRoutine = FALSE,
+                             prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  traceFlagOnEntry <- traceThisRoutine
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Entered plotNewCaseTrend\n")
+  }
   theData <- dataForNewCasePlots(FALSE, countyChoices, movingAvg, stateChoices)
-
-  assembleDirectTrendPlot(theData, chooseCounty,
-                          countyChoices, stateChoices,
-                          newCasePlotTitle(FALSE, is.null(stateChoices), movingAvg,
-                                           is.null(countyChoices), stateChoices[1]),
-                          timeWindowXLabel(timeWindow),
-                          newCaseYLabel(),
-                          timeWindow)
+  
+  if (traceThisRoutine) {
+    junk <- conciseEndsOfTibbleRow(theData,
+                                   traceThisRoutine = traceThisRoutine,
+                                   prepend = myPrepend)
+    cat(file = stderr(), myPrepend, "chooseCounty:", chooseCounty, "\n")
+    cat(file = stderr(), myPrepend, "countyChoices:", paste(countyChoices), "\n")
+  }
+  
+  result <- assembleDirectTrendPlot(theData, chooseCounty,
+                                    countyChoices, stateChoices,
+                                    newCasePlotTitle(FALSE, is.null(stateChoices), movingAvg,
+                                                     is.null(countyChoices), stateChoices[1]),
+                                    timeWindowXLabel(timeWindow),
+                                    newCaseYLabel(),
+                                    timeWindow,
+                                    traceThisRoutine = traceThisRoutine,
+                                    prepend = myPrepend)
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Leaving plotNewCaseTrend \n")
+  }
+  
+  return(result)
 }

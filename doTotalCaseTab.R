@@ -70,10 +70,13 @@ totalCaseYLabel <- function() {
 
 selectPlotData <- function(selectorRoutine, chooseCounty,
                            forBoxplot, countyChoices, movingAvg, stateChoices) {
+  if (!chooseCounty) {
+    countyChoices <- NULL
+  }
   if (is.null(stateChoices)) {
-    theData <- selectorRoutine(TRUE, NULL, movingAvg, stateChoices)
+    theData <- selectorRoutine(forBoxplot, NULL, movingAvg, stateChoices)
   } else {
-    theData <- selectorRoutine(TRUE, countyChoices, movingAvg, stateChoices)
+    theData <- selectorRoutine(forBoxplot, countyChoices, movingAvg, stateChoices)
   }
 }
 
@@ -82,11 +85,6 @@ plotTotalCaseBoxplots <- function(chooseCounty,
                                 countyChoices,
                                 stateChoices,
                                 timeWindow) {
-  # if (is.null(stateChoices)) {
-  #   theData <- dataForTotalCasePlots(TRUE, NULL, movingAvg, stateChoices)
-  # } else {
-  #   theData <- dataForTotalCasePlots(TRUE, countyChoices, movingAvg, stateChoices)
-  # }
   theData <- selectPlotData(dataForTotalCasePlots, chooseCounty,
                             TRUE, countyChoices, movingAvg, stateChoices)
 
