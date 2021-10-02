@@ -18,7 +18,7 @@
   },
   "output": {
     "newDeathsBox": {
-      "src": "[image data sha1: 88be536db54649f8010bb258cb52aa84ebdda841]",
+      "src": "[image data sha1: 8ae40b930356a7cf4d9216d66637814662f64c2e]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -53,13 +53,13 @@
       }
     },
     "newDeathsHeaderHTML": {
-      "html": "<h4>Deaths<\/h4><p>The CDC does not base reopening recommendations directly on \n                             COVID-19 deaths, but we have the statistics and the graphing\n                             programs, so here you go:<\/p><p>In counties with small populations, such as Dukes County, a few deaths -- not to minimize their importance -- can make the statistics jump a lot from day to day.<\/p><p>If two or more selected  counties  have identical graphs (e.g. zero deaths) for the selected  time period, the last one drawn wil hide the other.  If no graph is shown for your  county  please try again, selecting only it.<\/p><p>It's possible that lines for some areas will be missing,\n especially if you've selected some counties with low population.\n That happens because a growth rate starting from zero\n can't be computed. If you see that, please change the selection\n to have ONLY the missing areas, and I'll display the NUMBER of\n cases rather than the growth rate.<\/p>",
+      "html": "<h4>Deaths<\/h4><p>The CDC does not base reopening recommendations directly on \n                             COVID-19 deaths, but we have the statistics and the graphing\n                             programs, so here you go:<\/p><p>In counties with small populations, such as Dukes County, a few deaths -- not to minimize their importance -- can make the statistics jump a lot from day to day.<\/p><p>If two or more selected  counties  have identical graphs (e.g. zero deaths) for the selected  time period, the last one drawn wil hide the other.  If no graph is shown for your  county  please try again, selecting only it.<\/p>",
       "deps": [
 
       ]
     },
     "newDeathsTrend": {
-      "src": "[image data sha1: c20e884ead1a739c32cb4711e5d823fae8eee502]",
+      "src": "[image data sha1: 32101f94c3da9c9c802195bfca755f58d8a6d89a]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -100,7 +100,7 @@
       ]
     },
     "vaccRBox": {
-      "src": "[image data sha1: 70d2b9a608493ac5c341686f111aa6c8b66d38c2]",
+      "src": "[image data sha1: 6ee3ec7aff23970d2464f14036e84aab65826a3f]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -135,7 +135,7 @@
       }
     },
     "vaccRTrend": {
-      "src": "[image data sha1: aad2fd3eb0f6b45baea4457dbc7d43b4c7986f0e]",
+      "src": "[image data sha1: 0b6fb1310def1556a11f0bfca8793003ce6f3d9e]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",

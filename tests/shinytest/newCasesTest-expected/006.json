@@ -18,7 +18,7 @@
   },
   "output": {
     "newCaseBox": {
-      "src": "[image data sha1: 89d67e0896e29a7b4fd06b2f09b26d2772430f1c]",
+      "src": "[image data sha1: 0521b64b595708c794964736d67385a021af6534]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -53,13 +53,13 @@
       }
     },
     "newCaseHeaderHTML": {
-      "html": "<h4>Trends of new cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all counties  in Massachusetts on that date. Half the counties fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p>It's possible that lines for some areas will be missing,\n                     especially if you've selected some counties with low population.\n                     That happens because a growth rate starting from zero\n                     can't be computed. If you see that, please change the selection\n                     to have ONLY the missing areas, and I'll display the NUMBER of\n                     cases rather than the growth rate.<\/p><p><\/p>",
+      "html": "<h4>Trends of new cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all counties  in Massachusetts on that date. Half the counties fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p><\/p>",
       "deps": [
 
       ]
     },
     "newCaseTrend": {
-      "src": "[image data sha1: afb515b23b36c5519d0304e00238192f6bc6844f]",
+      "src": "[image data sha1: 913a97bb60c30a48055dbb20e3aacc94dc7f7e18]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -100,7 +100,7 @@
       ]
     },
     "vaccRBox": {
-      "src": "[image data sha1: 70d2b9a608493ac5c341686f111aa6c8b66d38c2]",
+      "src": "[image data sha1: 6ee3ec7aff23970d2464f14036e84aab65826a3f]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -135,7 +135,7 @@
       }
     },
     "vaccRTrend": {
-      "src": "[image data sha1: aad2fd3eb0f6b45baea4457dbc7d43b4c7986f0e]",
+      "src": "[image data sha1: 0b6fb1310def1556a11f0bfca8793003ce6f3d9e]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",

@@ -18,7 +18,7 @@
   },
   "output": {
     "newCaseBox": {
-      "src": "[image data sha1: 3e2fd414aee46fe092b883d8569a53dbabbb412a]",
+      "src": "[image data sha1: 21c66338345c62a7929832030f72cad0184b916c]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -59,7 +59,7 @@
       ]
     },
     "newCaseTrend": {
-      "src": "[image data sha1: 3685a1009cd1be52bd28624f8bc5f178510d8af5]",
+      "src": "[image data sha1: de991267ba5437ab0e2d16f501e56086cc93c688]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -94,7 +94,7 @@
       }
     },
     "newDeathsBox": {
-      "src": "[image data sha1: 86ab80663113ef6ecf4d361174bff63eb5f0e18e]",
+      "src": "[image data sha1: dd6f9f0402a70b68e10cc7e0fcd97b120f9c0205]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -135,7 +135,7 @@
       ]
     },
     "newDeathsTrend": {
-      "src": "[image data sha1: a23c14b98c70bf247868fbaa3cfc1370079544f9]",
+      "src": "[image data sha1: cd7348fabd7b5d061c48e13d0d039bf2d3f98301]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -176,7 +176,7 @@
       ]
     },
     "testGBox": {
-      "src": "[image data sha1: af7761bcf9b5d71c38712e0ced3183e5f15cde63]",
+      "src": "[image data sha1: db46bfbdce618ef01b0b42b8a277d13bd52c9b29]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -217,7 +217,7 @@
       ]
     },
     "testGTrend": {
-      "src": "[image data sha1: 1eab510451ad0d820dfdab6b4f08b04e3747b6fe]",
+      "src": "[image data sha1: 1fecb13524816a4560fca924e4d0ea4e13867e89]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -252,7 +252,7 @@
       }
     },
     "testRBox": {
-      "src": "[image data sha1: f16d9b2ceb76bfd16719458c917798f394add3c9]",
+      "src": "[image data sha1: 2056a0fb477db4d9302880b231afeb87b69ea772]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -293,7 +293,7 @@
       ]
     },
     "testRTrend": {
-      "src": "[image data sha1: 083b6a9ea23910c173cbcb59fe8c8004d750299f]",
+      "src": "[image data sha1: 9fd5d4a344e97535c25544f3f1bf0c296d02c29a]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -328,7 +328,7 @@
       }
     },
     "totalCaseBox": {
-      "src": "[image data sha1: 58621bea5dbd9cf51136719f3fe42fe1f3c0cda9]",
+      "src": "[image data sha1: da85664bee0e7cb69b747b37fedd7d185b910ae9]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -369,7 +369,7 @@
       ]
     },
     "totalCaseTrend": {
-      "src": "[image data sha1: 8c98631e235ee6724b0719ee33fac4e286a8bb9f]",
+      "src": "[image data sha1: b52e061ee8ff3ff05609519e814cf4fec344741d]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -404,7 +404,7 @@
       }
     },
     "totalDeathsBox": {
-      "src": "[image data sha1: 49e9e4c8edf758fb087bd6c0f43d250233c29eef]",
+      "src": "[image data sha1: a9cb447932ccf13e87b82d90eeea85e36f84a0b4]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -445,7 +445,7 @@
       ]
     },
     "totalDeathsTrend": {
-      "src": "[image data sha1: 3ebe741dc2fe57a29d0af6e41425b43908c2a80a]",
+      "src": "[image data sha1: 19b90e361f9e03a32b22b0d1e3437ee90a906189]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -486,7 +486,7 @@
       ]
     },
     "vaccRBox": {
-      "src": "[image data sha1: cff1fc5026f96c7ce30bd8f0b5a3ba3870e8421c]",
+      "src": "[image data sha1: e533fd32bc8a4815035e199a0029015b62b42882]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -521,7 +521,7 @@
       }
     },
     "vaccRTrend": {
-      "src": "[image data sha1: b7ad188fac2c9da0e5c315ff88ba0e6e7152f5c6]",
+      "src": "[image data sha1: 6ae8f466cfd6c0f15a92555c27d52b3c19162388]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
