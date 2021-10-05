@@ -1,8 +1,9 @@
 {
   "input": {
     "chooseCounty": false,
-    "mainTabsetPanel": "Vaccination Progress",
-    "movingAvg": true,
+    "countyChoices": null,
+    "mainTabsetPanel": "Total Deaths",
+    "movingAvg": false,
     "stateChoices": [
       "MA",
       "ME"
@@ -12,7 +13,7 @@
   },
   "output": {
     "newCaseBox": {
-      "src": "[image data sha1: 8ba72a8323e5293e41902a4ba38e65bc9b198f58]",
+      "src": "[image data sha1: cc538fc48309e5bec5ccc9d503c83de67306381c]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -53,7 +54,7 @@
       ]
     },
     "newCaseTrend": {
-      "src": "[image data sha1: 2a3c53e587591be11c394a3e826b5b66e95d265b]",
+      "src": "[image data sha1: eaa8021e8e0a6eceb9bdcf87f7e62318c3e91afa]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -88,7 +89,7 @@
       }
     },
     "newDeathsBox": {
-      "src": "[image data sha1: 86ab80663113ef6ecf4d361174bff63eb5f0e18e]",
+      "src": "[image data sha1: 520052856c65e252b1f8b08888abcbbc842da4e6]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -129,7 +130,7 @@
       ]
     },
     "newDeathsTrend": {
-      "src": "[image data sha1: a23c14b98c70bf247868fbaa3cfc1370079544f9]",
+      "src": "[image data sha1: 754890c791229e0d1572dac13b608426da7928b2]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -322,7 +323,7 @@
       }
     },
     "totalCaseBox": {
-      "src": "[image data sha1: 24cdc99c0113e91ff62620c49ce9ed5840ccae5f]",
+      "src": "[image data sha1: b269c329a954e267164cf5893c7a43dc3ae5b997]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -363,7 +364,7 @@
       ]
     },
     "totalCaseTrend": {
-      "src": "[image data sha1: fca68a6a2d97493a418e0cce837c9cde4d5a0a0f]",
+      "src": "[image data sha1: 1e225a10049f4e9d75a807b9759430cf4aa4564e]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -398,7 +399,7 @@
       }
     },
     "totalDeathsBox": {
-      "src": "[image data sha1: 49e9e4c8edf758fb087bd6c0f43d250233c29eef]",
+      "src": "[image data sha1: bc176932c9d886ee96c256c61cf1361d10e48d06]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -439,7 +440,7 @@
       ]
     },
     "totalDeathsTrend": {
-      "src": "[image data sha1: 3ebe741dc2fe57a29d0af6e41425b43908c2a80a]",
+      "src": "[image data sha1: 942bf91b7fdb80b4d8eb82126480d5659940e8c1]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",

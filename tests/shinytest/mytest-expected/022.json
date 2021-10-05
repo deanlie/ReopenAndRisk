@@ -1,8 +1,8 @@
 {
   "input": {
     "chooseCounty": false,
-    "mainTabsetPanel": "Test Results",
-    "movingAvg": false,
+    "mainTabsetPanel": "Test Growth",
+    "movingAvg": true,
     "stateChoices": [
       "MA",
       "ME"
@@ -170,7 +170,7 @@
       ]
     },
     "testGBox": {
-      "src": "[image data sha1: 67524336d47857d83507c678c722dac2b2497ad8]",
+      "src": "[image data sha1: af7761bcf9b5d71c38712e0ced3183e5f15cde63]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -211,7 +211,7 @@
       ]
     },
     "testGTrend": {
-      "src": "[image data sha1: 8917552897d969310acc783bb3fff9ea6eceb49f]",
+      "src": "[image data sha1: 1eab510451ad0d820dfdab6b4f08b04e3747b6fe]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -246,7 +246,7 @@
       }
     },
     "testRBox": {
-      "src": "[image data sha1: 4f133b1169237cf9dd71236680b67175dfda30e9]",
+      "src": "[image data sha1: f16d9b2ceb76bfd16719458c917798f394add3c9]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -287,7 +287,7 @@
       ]
     },
     "testRTrend": {
-      "src": "[image data sha1: a3b940b872f9c627208612cf3f13688aacd3967e]",
+      "src": "[image data sha1: 083b6a9ea23910c173cbcb59fe8c8004d750299f]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",

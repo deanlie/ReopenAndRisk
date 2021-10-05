@@ -1,7 +1,7 @@
 {
   "input": {
     "chooseCounty": false,
-    "mainTabsetPanel": "Total Deaths",
+    "mainTabsetPanel": "Total Cases",
     "movingAvg": true,
     "stateChoices": [
       "MA",
@@ -88,7 +88,7 @@
       }
     },
     "newDeathsBox": {
-      "src": "[image data sha1: 520052856c65e252b1f8b08888abcbbc842da4e6]",
+      "src": "[image data sha1: 86ab80663113ef6ecf4d361174bff63eb5f0e18e]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -129,7 +129,7 @@
       ]
     },
     "newDeathsTrend": {
-      "src": "[image data sha1: 754890c791229e0d1572dac13b608426da7928b2]",
+      "src": "[image data sha1: a23c14b98c70bf247868fbaa3cfc1370079544f9]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -322,7 +322,7 @@
       }
     },
     "totalCaseBox": {
-      "src": "[image data sha1: b269c329a954e267164cf5893c7a43dc3ae5b997]",
+      "src": "[image data sha1: 24cdc99c0113e91ff62620c49ce9ed5840ccae5f]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -363,7 +363,7 @@
       ]
     },
     "totalCaseTrend": {
-      "src": "[image data sha1: 1e225a10049f4e9d75a807b9759430cf4aa4564e]",
+      "src": "[image data sha1: fca68a6a2d97493a418e0cce837c9cde4d5a0a0f]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",

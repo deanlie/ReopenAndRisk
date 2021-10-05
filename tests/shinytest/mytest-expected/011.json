@@ -2,14 +2,14 @@
   "input": {
     "chooseCounty": false,
     "mainTabsetPanel": "Total Deaths",
-    "movingAvg": true,
+    "movingAvg": false,
     "stateChoices": null,
     "timeWindow": 14,
     "Vaccination": "People Fully Vaccinated"
   },
   "output": {
     "newCaseBox": {
-      "src": "[image data sha1: 8b7a48f1cb76273e165650c99c3f5a302dbd1fe5]",
+      "src": "[image data sha1: 9d166fc877ae811aacdef8d5d0aba34137819547]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -50,7 +50,7 @@
       ]
     },
     "newCaseTrend": {
-      "src": "[image data sha1: f4efd80f5a36c7d338f0f368eb6a8710b37abd6e]",
+      "src": "[image data sha1: c401e0ffc9d515a9d813194ea27d7d1b8736f371]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -85,7 +85,7 @@
       }
     },
     "newDeathsBox": {
-      "src": "[image data sha1: 756fccf65415f9feb33bbca8b6cbddc9ac36dca9]",
+      "src": "[image data sha1: 469ebe0123ecf2267e6d2e49077778957837b004]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -126,7 +126,7 @@
       ]
     },
     "newDeathsTrend": {
-      "src": "[image data sha1: 1a3cf4723253b87731a65d29424567ea2dce2617]",
+      "src": "[image data sha1: 7feb1040f0b9c981a4c7fbd8f67b152d3851dbb5]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -167,7 +167,7 @@
       ]
     },
     "testGBox": {
-      "src": "[image data sha1: 3af72ab5d7035439bd839e6aa808ec52cc13947c]",
+      "src": "[image data sha1: dc0f2a72d9a634a11974409553fba000c1312f20]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -208,7 +208,7 @@
       ]
     },
     "testGTrend": {
-      "src": "[image data sha1: f2bf5bf50e60e69e2fc0a1b68762fa3737998b3e]",
+      "src": "[image data sha1: 338c372f88552e39879d65240612f6f60afbd93c]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -243,7 +243,7 @@
       }
     },
     "testRBox": {
-      "src": "[image data sha1: bb030836a774cc461fc30083997d87d1244795af]",
+      "src": "[image data sha1: f29f8e569bc6048f5f2cd90444de9128ad1df0c3]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -284,7 +284,7 @@
       ]
     },
     "testRTrend": {
-      "src": "[image data sha1: 84891d6869f9e6e42cac819c3d5e4aa0d401287d]",
+      "src": "[image data sha1: a0644a33eb54bed4297399428b203f9a7da19e34]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -319,7 +319,7 @@
       }
     },
     "totalCaseBox": {
-      "src": "[image data sha1: ec2fd379b68159bd684b8d637b97a4ddfa43290d]",
+      "src": "[image data sha1: f2de98595a307b822883802ffafc2f7e5f14e1cf]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -360,7 +360,7 @@
       ]
     },
     "totalCaseTrend": {
-      "src": "[image data sha1: 1280b7598d5511b4bc8a0376f73c6a1b61618990]",
+      "src": "[image data sha1: b38a00508828578d78c14230b5ba47bb1e5b916b]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -395,7 +395,7 @@
       }
     },
     "totalDeathsBox": {
-      "src": "[image data sha1: 53b8ce8be6adeae1ee7409a37b2709938dc1b9fa]",
+      "src": "[image data sha1: 01abeef96ff04ac7459efb35c9f94c385aef371c]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -436,7 +436,7 @@
       ]
     },
     "totalDeathsTrend": {
-      "src": "[image data sha1: 83de5531a8a4310aeda414b51594bab326a2c953]",
+      "src": "[image data sha1: 1adb393010ae3fbb85da0a9b1d546b4a347c0941]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -471,13 +471,13 @@
       }
     },
     "vaccHeaderHTML": {
-      "html": "<h4>Vaccinations, People Fully Vaccinated<\/h4><p>Vaccination data is shown by percent of state or of US as a whole.<\/p><p>Highest People Fully Vaccinated rate: Montana with 75.4 percent<\/p><p>Next highest rate: Puerto Rico with 64.9 percent<\/p><p>Lowest People Fully Vaccinated rate: Wyoming with 36.9 percent<\/p><p>Next lowest rate: Idaho with 37.3 percent<\/p><p>Note that 'Total Doses' will be above 100% when close to 50% of the population\n                            has had a second dose!<\/p>",
+      "html": "<h4>Vaccinations, People Fully Vaccinated<\/h4><p>Vaccination data is shown by percent of state or of US as a whole.<\/p><p>Highest People Fully Vaccinated rate: Montana with 74.6 percent<\/p><p>Next highest rate: Puerto Rico with 63.9 percent<\/p><p>Lowest People Fully Vaccinated rate: Wyoming with 36.8 percent<\/p><p>Next lowest rate: Idaho with 37 percent<\/p><p>Note that 'Total Doses' will be above 100% when close to 50% of the population\n                            has had a second dose!<\/p>",
       "deps": [
 
       ]
     },
     "vaccRBox": {
-      "src": "[image data sha1: 605347b7d8a794964dc6602e3e583a09021a349d]",
+      "src": "[image data sha1: 70d2b9a608493ac5c341686f111aa6c8b66d38c2]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -512,7 +512,7 @@
       }
     },
     "vaccRTrend": {
-      "src": "[image data sha1: 52e539481adf78d0582e88a4b06da393cd775480]",
+      "src": "[image data sha1: aad2fd3eb0f6b45baea4457dbc7d43b4c7986f0e]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",

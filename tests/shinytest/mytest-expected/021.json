@@ -1,7 +1,7 @@
 {
   "input": {
     "chooseCounty": false,
-    "mainTabsetPanel": "Test Growth",
+    "mainTabsetPanel": "Test Results",
     "movingAvg": false,
     "stateChoices": [
       "MA",
@@ -246,7 +246,7 @@
       }
     },
     "testRBox": {
-      "src": "[image data sha1: bb030836a774cc461fc30083997d87d1244795af]",
+      "src": "[image data sha1: 4f133b1169237cf9dd71236680b67175dfda30e9]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -287,7 +287,7 @@
       ]
     },
     "testRTrend": {
-      "src": "[image data sha1: 84891d6869f9e6e42cac819c3d5e4aa0d401287d]",
+      "src": "[image data sha1: a3b940b872f9c627208612cf3f13688aacd3967e]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",

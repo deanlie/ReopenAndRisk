@@ -38,9 +38,6 @@ Branch Per100_Cases_And_Mortality:
   * Changed text on those four tabs
   * Corrected display for Total Deaths tab
   * Fixed display for newCasesTest and newDeathsTest test6
-  
-  To Do:
-  * Does not go back to state distribution/trend plot if you have counties selected
-      and then uncheck "select counties" checkbox. Need to get "choose county" into
-      data file selection logic.
+  * Clears selected counties when you uncheck "select counties" checkbox, so you
+      get the correct display (distribution of state statistics) afterwards
 

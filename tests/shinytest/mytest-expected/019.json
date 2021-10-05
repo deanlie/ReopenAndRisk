@@ -1,7 +1,7 @@
 {
   "input": {
     "chooseCounty": false,
-    "mainTabsetPanel": "New Deaths",
+    "mainTabsetPanel": "Total Deaths",
     "movingAvg": false,
     "stateChoices": [
       "MA",
@@ -170,7 +170,7 @@
       ]
     },
     "testGBox": {
-      "src": "[image data sha1: 3af72ab5d7035439bd839e6aa808ec52cc13947c]",
+      "src": "[image data sha1: dc0f2a72d9a634a11974409553fba000c1312f20]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -211,7 +211,7 @@
       ]
     },
     "testGTrend": {
-      "src": "[image data sha1: f2bf5bf50e60e69e2fc0a1b68762fa3737998b3e]",
+      "src": "[image data sha1: 338c372f88552e39879d65240612f6f60afbd93c]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -246,7 +246,7 @@
       }
     },
     "testRBox": {
-      "src": "[image data sha1: bb030836a774cc461fc30083997d87d1244795af]",
+      "src": "[image data sha1: f29f8e569bc6048f5f2cd90444de9128ad1df0c3]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -287,7 +287,7 @@
       ]
     },
     "testRTrend": {
-      "src": "[image data sha1: 84891d6869f9e6e42cac819c3d5e4aa0d401287d]",
+      "src": "[image data sha1: a0644a33eb54bed4297399428b203f9a7da19e34]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -398,7 +398,7 @@
       }
     },
     "totalDeathsBox": {
-      "src": "[image data sha1: 53b8ce8be6adeae1ee7409a37b2709938dc1b9fa]",
+      "src": "[image data sha1: bc176932c9d886ee96c256c61cf1361d10e48d06]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -433,13 +433,13 @@
       }
     },
     "totalDeathsHeaderHTML": {
-      "html": "<h4>Deaths<\/h4><p>The CDC does not base reopening recommendations directly on \n                             COVID-19 deaths, but we have the statistics and the graphing\n                             programs, so here you go:<\/p>",
+      "html": "<h4>Deaths<\/h4><p>The CDC does not base reopening recommendations directly on \n                             COVID-19 deaths, but we have the statistics and the graphing\n                             programs, so here you go:<\/p><p>In states with small populations, such as Maine, a few deaths -- not to minimize their importance -- can make the statistics jump a lot from day to day.<\/p>",
       "deps": [
 
       ]
     },
     "totalDeathsTrend": {
-      "src": "[image data sha1: 83de5531a8a4310aeda414b51594bab326a2c953]",
+      "src": "[image data sha1: 942bf91b7fdb80b4d8eb82126480d5659940e8c1]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",

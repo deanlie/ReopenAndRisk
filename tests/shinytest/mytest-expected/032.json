@@ -1,13 +1,13 @@
 {
   "input": {
-    "chooseCounty": false,
+    "chooseCounty": true,
     "countyChoices": [
       "Barnstable",
       "Dukes",
       "Suffolk",
       "Worcester"
     ],
-    "mainTabsetPanel": "New Deaths",
+    "mainTabsetPanel": "Total Deaths",
     "movingAvg": false,
     "stateChoices": [
       "MA",
@@ -18,7 +18,7 @@
   },
   "output": {
     "newCaseBox": {
-      "src": "[image data sha1: 3e2fd414aee46fe092b883d8569a53dbabbb412a]",
+      "src": "[image data sha1: eb776e71232b49088393af686100620d2c2ce062]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -53,13 +53,13 @@
       }
     },
     "newCaseHeaderHTML": {
-      "html": "<h4>Trends of new cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p><\/p>",
+      "html": "<h4>Trends of new cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all counties  in Massachusetts on that date. Half the counties fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p><\/p>",
       "deps": [
 
       ]
     },
     "newCaseTrend": {
-      "src": "[image data sha1: 3685a1009cd1be52bd28624f8bc5f178510d8af5]",
+      "src": "[image data sha1: 9d461c6012db6a8e6740ed2a6c46ad3f3fd97563]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -94,7 +94,7 @@
       }
     },
     "newDeathsBox": {
-      "src": "[image data sha1: c3bfb7fe668250fafda4a36e41c1e86aafceff6c]",
+      "src": "[image data sha1: 997cb97a77c7f592686efb0a6a2bf06f34bccebd]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -129,13 +129,13 @@
       }
     },
     "newDeathsHeaderHTML": {
-      "html": "<h4>Deaths<\/h4><p>The CDC does not base reopening recommendations directly on \n                             COVID-19 deaths, but we have the statistics and the graphing\n                             programs, so here you go:<\/p><p>In states with small populations, such as Maine, a few deaths -- not to minimize their importance -- can make the statistics jump a lot from day to day.<\/p>",
+      "html": "<h4>Deaths<\/h4><p>The CDC does not base reopening recommendations directly on \n                             COVID-19 deaths, but we have the statistics and the graphing\n                             programs, so here you go:<\/p><p>In counties with small populations, such as Dukes County, a few deaths -- not to minimize their importance -- can make the statistics jump a lot from day to day.<\/p><p>If two or more selected  counties  have identical graphs (e.g. zero deaths) for the selected  time period, the last one drawn wil hide the other.  If no graph is shown for your  county  please try again, selecting only it.<\/p>",
       "deps": [
 
       ]
     },
     "newDeathsTrend": {
-      "src": "[image data sha1: 30d8a9c2e830dc3e4e74ab919dba4e3bec0fadfe]",
+      "src": "[image data sha1: 81073ae7f46072b7576cf2b46a8f7a91a39208c1]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -328,7 +328,7 @@
       }
     },
     "totalCaseBox": {
-      "src": "[image data sha1: 271dce8243b9dc62947000b06d4660ac482e6692]",
+      "src": "[image data sha1: 68dc2145beb188598fc9c837ad3331e93563f347]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -363,13 +363,13 @@
       }
     },
     "totalCaseHeaderHTML": {
-      "html": "<h4>Trends of total cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p><\/p>",
+      "html": "<h4>Trends of total cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all counties  in Massachusetts on that date. Half the counties fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p><\/p>",
       "deps": [
 
       ]
     },
     "totalCaseTrend": {
-      "src": "[image data sha1: 8c98631e235ee6724b0719ee33fac4e286a8bb9f]",
+      "src": "[image data sha1: 1ed6f63612aa468e20a89a210f240c5ad5aa5893]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -404,7 +404,7 @@
       }
     },
     "totalDeathsBox": {
-      "src": "[image data sha1: 49e9e4c8edf758fb087bd6c0f43d250233c29eef]",
+      "src": "[image data sha1: a0df936b9c372de2e95347028eb13e8cb32db8a1]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -439,13 +439,13 @@
       }
     },
     "totalDeathsHeaderHTML": {
-      "html": "<h4>Deaths<\/h4><p>The CDC does not base reopening recommendations directly on \n                             COVID-19 deaths, but we have the statistics and the graphing\n                             programs, so here you go:<\/p><p>In states with small populations, such as Maine, a few deaths -- not to minimize their importance -- can make the statistics jump a lot from day to day.<\/p>",
+      "html": "<h4>Deaths<\/h4><p>The CDC does not base reopening recommendations directly on \n                             COVID-19 deaths, but we have the statistics and the graphing\n                             programs, so here you go:<\/p><p>In counties with small populations, such as Dukes County, a few deaths -- not to minimize their importance -- can make the statistics jump a lot from day to day.<\/p><p>If two or more selected  counties  have identical graphs (e.g. zero deaths) for the selected  time period, the last one drawn wil hide the other.  If no graph is shown for your  county  please try again, selecting only it.<\/p>",
       "deps": [
 
       ]
     },
     "totalDeathsTrend": {
-      "src": "[image data sha1: 3ebe741dc2fe57a29d0af6e41425b43908c2a80a]",
+      "src": "[image data sha1: c1513b651c2a11f5abfbe03b9590bb137e1ae38e]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -480,13 +480,13 @@
       }
     },
     "vaccHeaderHTML": {
-      "html": "<h4>Vaccinations, People Fully Vaccinated<\/h4><p>Vaccination data is shown by percent of state or of US as a whole.<\/p><p>Highest People Fully Vaccinated rate: Montana with 75.4 percent<\/p><p>Next highest rate: Puerto Rico with 64.9 percent<\/p><p>Lowest People Fully Vaccinated rate: Wyoming with 36.9 percent<\/p><p>Next lowest rate: Idaho with 37.3 percent<\/p><p>Note that 'Total Doses' will be above 100% when close to 50% of the population\n                            has had a second dose!<\/p>",
+      "html": "<h4>Vaccinations, People Fully Vaccinated<\/h4><p>Vaccination data is shown by percent of state or of US as a whole.<\/p><p>Highest People Fully Vaccinated rate: Montana with 74.6 percent<\/p><p>Next highest rate: Puerto Rico with 63.9 percent<\/p><p>Lowest People Fully Vaccinated rate: Wyoming with 36.8 percent<\/p><p>Next lowest rate: Idaho with 37 percent<\/p><p>Note that 'Total Doses' will be above 100% when close to 50% of the population\n                            has had a second dose!<\/p>",
       "deps": [
 
       ]
     },
     "vaccRBox": {
-      "src": "[image data sha1: cff1fc5026f96c7ce30bd8f0b5a3ba3870e8421c]",
+      "src": "[image data sha1: ab58e25bd269521ea54a1f6988a8fac0b239a32d]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -521,7 +521,7 @@
       }
     },
     "vaccRTrend": {
-      "src": "[image data sha1: b7ad188fac2c9da0e5c315ff88ba0e6e7152f5c6]",
+      "src": "[image data sha1: 3ab0895946461ad951e9e41a38382371d66dfffc]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",

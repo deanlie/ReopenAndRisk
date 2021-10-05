@@ -1,7 +1,7 @@
 {
   "input": {
     "chooseCounty": false,
-    "mainTabsetPanel": "Total Deaths",
+    "mainTabsetPanel": "Test Growth",
     "movingAvg": false,
     "stateChoices": [
       "MA",
@@ -170,7 +170,7 @@
       ]
     },
     "testGBox": {
-      "src": "[image data sha1: 3af72ab5d7035439bd839e6aa808ec52cc13947c]",
+      "src": "[image data sha1: 67524336d47857d83507c678c722dac2b2497ad8]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -211,7 +211,7 @@
       ]
     },
     "testGTrend": {
-      "src": "[image data sha1: f2bf5bf50e60e69e2fc0a1b68762fa3737998b3e]",
+      "src": "[image data sha1: 8917552897d969310acc783bb3fff9ea6eceb49f]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -246,7 +246,7 @@
       }
     },
     "testRBox": {
-      "src": "[image data sha1: bb030836a774cc461fc30083997d87d1244795af]",
+      "src": "[image data sha1: f29f8e569bc6048f5f2cd90444de9128ad1df0c3]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -287,7 +287,7 @@
       ]
     },
     "testRTrend": {
-      "src": "[image data sha1: 84891d6869f9e6e42cac819c3d5e4aa0d401287d]",
+      "src": "[image data sha1: a0644a33eb54bed4297399428b203f9a7da19e34]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
