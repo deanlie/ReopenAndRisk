@@ -29,7 +29,7 @@ manualTestModeQ <- function() {
 }
 
 manualTraceModeQ <- function() {
-  TRUE
+  FALSE
 }
 
 currentlyTestingCountiesQ <- function() {
