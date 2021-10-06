@@ -9,7 +9,9 @@
 RefactorAndRisk.Rproj
 BackupScripts*
 DATA/*.csv
+DATA/*.tar
 DATA/*.csv.icloud
+DATA/DATA
 tests/shinytest/*-current/
 DEVELOPMENT/
 CACHE/
