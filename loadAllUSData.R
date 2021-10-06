@@ -604,10 +604,16 @@ loadAllUSData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend
   }
 
   aDate = today("EST")
+  
+  if (staticDataQ) {
+    dataDir <- "./DATA/STATIC/"
+  } else {
+    dataDir <- "./DATA/"
+  }  
 
-  US_Population <<- read_csv("./DATA/US_Population.csv",
+  US_Population <<- read_csv(paste(dataDir, "US_Population.csv", sep = ""),
                             col_types = populationColTypes())
-  US_State_Population_Est <<- read_csv("./DATA/US_State_Population_Est.csv",
+  US_State_Population_Est <<- read_csv(paste(dataDir, "US_State_Population_Est.csv", sep = ""),
                                        col_types = estPopulationColTypes())
 
   traceThisRoutine <- FALSE
