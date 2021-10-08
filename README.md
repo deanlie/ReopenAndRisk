@@ -7,37 +7,21 @@ for selected items
 
 Available in https://deanlie.shinyapps.io/ReopenAndRisk/ (as of Aug 22, 2021)
 
-Branch Testing1234 merged in 2021-09-27:
-  Accomplished:
-  * Learn to use shinytest.
-  * Set up automatic test to run vaccination tab through just US, MA & ME, and 4 MA counties DONE
-  * Ditto for remaining tabs as of Sept 26
-  * Plots all show static data used when manual testing is hardcoded in app, live data
-      otherwise
-  * Tests pass when manual testing is hardcoded in app
-  * When manual testing is turned off in app, test script must have line
-      app$setInputs(countyChoices = c("Barnstable", "Dukes", "Suffolk", "Worcester"),
-              allowInputNoBinding_ = TRUE)
-    rather than just
-      app$setInputs(countyChoices = c("Barnstable", "Dukes", "Suffolk", "Worcester"))
-    Note that this changes the output images which did not formerly have the "county"
-      selection box.
+2021-10-08: Test Positivity boxplots have a bug! Scale is off,
+  maybe by a factor of 10000, or maybe two data points are way off,
+  throwing the whole plot scale off. Hold off on debugging until tables are
+  displayed!
+  
+Branch OneDisplayItemPerNestedTab:
+  * 2021-10-08: All tabs (except summary, special case) have nested tabs
+      for Boxplot / Trend Line
+  * Test mytest is updated for vaccination tab, default (Boxplot) subtab
+  * TODO: Add "Table" subtab with some static display to each tab
+  * TODO: Add appropriate table data with no styling to each "Table" subtab
+  * TODO: Add styling to highlight selected rows on tables
 
     To view differences between expected and current results, run:
       viewTestDiff(".", "mytest")
     To save current results as expected results, run:
       snapshotUpdate(".", "mytest")
-
-Branch Per100_Cases_And_Mortality:
-  Accomplished:
-  * Change Cases and Deaths tabs to New Cases and New Deaths resp;
-  * Display on New Cases tab shows correct "per 100K" data except for one test,
-      see To Do below
-  * Added Total Cases tab with correct display and test for it
-  * There are now tests newCasesTest, newDeathsTest, totalCasesTest, totalDeathsTest
-  * Changed text on those four tabs
-  * Corrected display for Total Deaths tab
-  * Fixed display for newCasesTest and newDeathsTest test6
-  * Clears selected counties when you uncheck "select counties" checkbox, so you
-      get the correct display (distribution of state statistics) afterwards
 

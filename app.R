@@ -124,8 +124,7 @@ ui <- fluidPage(
                   tabPanel("Trend Line",
                     verticalLayout(
                       htmlOutput("vaccRTrendHTML"),
-                      plotOutput("vaccRTrend"))))))
-              ),
+                      plotOutput("vaccRTrend"))))))),
             tabPanel("New Cases",
               verticalLayout(
                 htmlOutput("newCaseHeaderHTML"),
@@ -133,8 +132,7 @@ ui <- fluidPage(
                   tabPanel("Boxplot",
                            plotOutput("newCaseBox")),
                   tabPanel("Trend Line",
-                           plotOutput("newCaseTrend"))))
-            ),
+                           plotOutput("newCaseTrend"))))),
             tabPanel("Total Cases",
                      verticalLayout(
                        htmlOutput("totalCaseHeaderHTML"),
@@ -142,8 +140,7 @@ ui <- fluidPage(
                                    tabPanel("Boxplot",
                                             plotOutput("totalCaseBox")),
                                    tabPanel("Trend Line",
-                                            plotOutput("totalCaseTrend"))))
-            ),
+                                            plotOutput("totalCaseTrend"))))),
             tabPanel("New Deaths",
                      verticalLayout(
                        htmlOutput("newDeathsHeaderHTML"),
@@ -151,8 +148,7 @@ ui <- fluidPage(
                                    tabPanel("Boxplot",
                                             plotOutput("newDeathsBox")),
                                    tabPanel("Trend Line",
-                                            plotOutput("newDeathsTrend"))))
-            ),
+                                            plotOutput("newDeathsTrend"))))),
             tabPanel("Total Deaths",
                      verticalLayout(
                        htmlOutput("totalDeathsHeaderHTML"),
@@ -160,16 +156,23 @@ ui <- fluidPage(
                                    tabPanel("Boxplot",
                                             plotOutput("totalDeathsBox")),
                                    tabPanel("Trend Line",
-                                            plotOutput("totalDeathsTrend"))))
-            ),
+                                            plotOutput("totalDeathsTrend"))))),
             tabPanel("Test Growth",
-                         mainPanel(htmlOutput("testGrowthHeaderHTML"),
-                                   plotOutput("testGBox"),
-                                   plotOutput("testGTrend"))),
+                     verticalLayout(
+                       htmlOutput("testGrowthHeaderHTML"),
+                       tabsetPanel(id = "testGrowthTabsetPanel",
+                                   tabPanel("Boxplot",
+                                            plotOutput("testGBox")),
+                                   tabPanel("Trend Line",
+                                            plotOutput("testGTrend"))))),
             tabPanel("Test Results",
-                         mainPanel(htmlOutput("testResultsHeaderHTML"),
-                                   plotOutput("testRBox"),
-                                   plotOutput("testRTrend"))),
+                     verticalLayout(
+                       htmlOutput("testResultsHeaderHTML"),
+                       tabsetPanel(id = "testResultsTabsetPanel",
+                                   tabPanel("Boxplot",
+                                            plotOutput("testRBox")),
+                                   tabPanel("Trend Line",
+                                            plotOutput("testRTrend"))))),
             tabPanel("Summary",
                          includeHTML("./www/harvard_link.html"),
                          mainPanel(htmlOutput("summaryHTML"))),
