@@ -136,23 +136,32 @@ ui <- fluidPage(
                            plotOutput("newCaseTrend"))))
             ),
             tabPanel("Total Cases",
-                         mainPanel(htmlOutput("totalCaseHeaderHTML"),
-                                   plotOutput("totalCaseBox"),
-                                   plotOutput("totalCaseTrend"))),
+                     verticalLayout(
+                       htmlOutput("totalCaseHeaderHTML"),
+                       tabsetPanel(id = "totalCaseTabsetPanel",
+                                   tabPanel("Boxplot",
+                                            plotOutput("totalCaseBox")),
+                                   tabPanel("Trend Line",
+                                            plotOutput("totalCaseTrend"))))
+            ),
             tabPanel("New Deaths",
-                         mainPanel(htmlOutput("newDeathsHeaderHTML"),
-                                   # tags$p(textOutput("mortalityP1")),
-                                   # tags$p(textOutput("mortalityP2")),
-                                   
-                                   plotOutput("newDeathsBox"),
-                                   plotOutput("newDeathsTrend"))),
+                     verticalLayout(
+                       htmlOutput("newDeathsHeaderHTML"),
+                       tabsetPanel(id = "newDeathsTabsetPanel",
+                                   tabPanel("Boxplot",
+                                            plotOutput("newDeathsBox")),
+                                   tabPanel("Trend Line",
+                                            plotOutput("newDeathsTrend"))))
+            ),
             tabPanel("Total Deaths",
-                         mainPanel(htmlOutput("totalDeathsHeaderHTML"),
-                                   # tags$p(textOutput("mortalityP1")),
-                                   # tags$p(textOutput("mortalityP2")),
-
-                                   plotOutput("totalDeathsBox"),
-                                   plotOutput("totalDeathsTrend"))),
+                     verticalLayout(
+                       htmlOutput("totalDeathsHeaderHTML"),
+                       tabsetPanel(id = "totalDeathsTabsetPanel",
+                                   tabPanel("Boxplot",
+                                            plotOutput("totalDeathsBox")),
+                                   tabPanel("Trend Line",
+                                            plotOutput("totalDeathsTrend"))))
+            ),
             tabPanel("Test Growth",
                          mainPanel(htmlOutput("testGrowthHeaderHTML"),
                                    plotOutput("testGBox"),
