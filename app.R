@@ -124,43 +124,48 @@ ui <- fluidPage(
                   tabPanel("Trend Line",
                     verticalLayout(
                       htmlOutput("vaccRTrendHTML"),
-                      plotOutput("vaccRTrend")))))),
-                ),
-                tabPanel("New Cases",
-                         mainPanel(htmlOutput("newCaseHeaderHTML"),
-                                   plotOutput("newCaseBox"),
-                                   plotOutput("newCaseTrend"))),
-                tabPanel("Total Cases",
+                      plotOutput("vaccRTrend"))))))
+              ),
+            tabPanel("New Cases",
+              verticalLayout(
+                htmlOutput("newCaseHeaderHTML"),
+                tabsetPanel(id = "newCaseTabsetPanel",
+                  tabPanel("Boxplot",
+                           plotOutput("newCaseBox")),
+                  tabPanel("Trend Line",
+                           plotOutput("newCaseTrend"))))
+            ),
+            tabPanel("Total Cases",
                          mainPanel(htmlOutput("totalCaseHeaderHTML"),
                                    plotOutput("totalCaseBox"),
                                    plotOutput("totalCaseTrend"))),
-                tabPanel("New Deaths",
+            tabPanel("New Deaths",
                          mainPanel(htmlOutput("newDeathsHeaderHTML"),
                                    # tags$p(textOutput("mortalityP1")),
                                    # tags$p(textOutput("mortalityP2")),
                                    
                                    plotOutput("newDeathsBox"),
                                    plotOutput("newDeathsTrend"))),
-                tabPanel("Total Deaths",
+            tabPanel("Total Deaths",
                          mainPanel(htmlOutput("totalDeathsHeaderHTML"),
                                    # tags$p(textOutput("mortalityP1")),
                                    # tags$p(textOutput("mortalityP2")),
 
                                    plotOutput("totalDeathsBox"),
                                    plotOutput("totalDeathsTrend"))),
-                tabPanel("Test Growth",
+            tabPanel("Test Growth",
                          mainPanel(htmlOutput("testGrowthHeaderHTML"),
                                    plotOutput("testGBox"),
                                    plotOutput("testGTrend"))),
-                tabPanel("Test Results",
+            tabPanel("Test Results",
                          mainPanel(htmlOutput("testResultsHeaderHTML"),
                                    plotOutput("testRBox"),
                                    plotOutput("testRTrend"))),
-                tabPanel("Summary",
+            tabPanel("Summary",
                          includeHTML("./www/harvard_link.html"),
                          mainPanel(htmlOutput("summaryHTML"))),
-                selected = defaultSelectedTab())
-            )
+            selected = defaultSelectedTab())
+          )
         )
 )
 
