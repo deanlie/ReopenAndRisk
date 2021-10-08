@@ -8,7 +8,8 @@
       "ME"
     ],
     "timeWindow": 14,
-    "Vaccination": "People Fully Vaccinated"
+    "Vaccination": "People Fully Vaccinated",
+    "vaccinationTabsetPanel": "Boxplot"
   },
   "output": {
     "newCaseBox": {
@@ -513,43 +514,7 @@
           "height": 400
         }
       }
-    },
-    "vaccRTrend": {
-      "src": "[image data sha1: b7ad188fac2c9da0e5c315ff88ba0e6e7152f5c6]",
-      "width": 506,
-      "height": 400,
-      "alt": "Plot object",
-      "coordmap": {
-        "panels": [
-          {
-            "domain": {
-              "left": -0.04,
-              "right": 1.04,
-              "bottom": -0.04,
-              "top": 1.04
-            },
-            "range": {
-              "left": 0,
-              "right": 506,
-              "bottom": 399,
-              "top": -1
-            },
-            "log": {
-              "x": null,
-              "y": null
-            },
-            "mapping": {
-
-            }
-          }
-        ],
-        "dims": {
-          "width": 506,
-          "height": 400
-        }
-      }
-    },
-    "vaccRTrendHTML": null
+    }
   },
   "export": {
 
