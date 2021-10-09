@@ -101,11 +101,25 @@ vaccPlotTitle <- function(vaccChoice, forBoxplot, justUS, movingAvg) {
   title <- plotTitle(unname(baseTitleLookup[vaccChoice]), forBoxplot, justUS, movingAvg)
 }
 
-vaccDataSubtitle <- function(movingAvg) {
-  if (movingAvg) {
-    result <- "Percent of population, 7 day moving average"
+vaccDataTitle <- function(vaccChoice, movingAvg) {
+  
+}
+
+vaccDataSubtitle <- function(vaccChoice, movingAvg) {
+  subtitleLookup <- c("First Doses"="with at least first dose",
+                      "Second Doses"="with at least second dose",
+                      "Total Doses"="Total Vaccine Doses Administered",
+                      "People Fully Vaccinated"="fully vaccinated")
+  
+  if (vaccChoice == "Total Doses") {
+    partialSub <- "Total doses as percent of state population"
   } else {
-    result <- "Percent of population"
+    partialSub <- paste("Percent of state population",
+                        subtitleLookup[vaccChoice],
+                        sep = " ")
+  }
+  if (movingAvg) {
+    partialSub <- paste(partialSub, ", 7 day moving average", sep = " ")
   }
 }
 
@@ -188,30 +202,6 @@ plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
   return(result)
 }
 
-# OUCH Move this to its own module???
-makeGtPresentation <- function(theData, stateChoices, countyChoices,
-                               theTitle, theSubtitle) {
-  # write_csv(theData, "../ShinyPart1/presentThis.csv")
-  # cat(theTitle, "\n", file = "../ShinyPart1/aTitle.txt")
-  
-  theData %>%
-    mutate(State = Combined_Key, .before = 1, .keep = "unused") %>%
-    gt() %>%
-    tab_header(title = theTitle,
-               subtitle = theSubtitle) %>%
-    cols_hide(c("Datum", "Population")) %>%
-    fmt_number(columns = matches("^[1-9]"), decimals = 1) %>%
-    tab_style(
-      style = list(cell_text(size = "small")),
-      locations = cells_body()) %>%
-    tab_style(
-      style = list(cell_text(size = "small")),
-      locations = cells_column_labels())
-  # 
-  # gt_tbl <- theData %>%
-  #   gt()
-}
-
 presentVaccData <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
                             traceThisRoutine = FALSE, prepend = "") {
   
@@ -229,15 +219,19 @@ presentVaccData <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
   
   theData <- makeFullyVaccDataIfNeeded(tooMuchData, vaccChoice,
                                        traceThisRoutine = traceThisRoutine, prepend = myPrepend)
-
+  
+  theData <- theData %>%
+    mutate(State = str_replace(Combined_Key, ", US", ""),
+           .before = 1, .keep = "unused") %>%
+    select(-Population) %>%
+    select(-contains("Datum"))
+    
   result <- makeGtPresentation(theData,
                                stateChoices,
                                character(0),
-                               vaccPlotTitle(vaccChoice,
-                                             TRUE,
-                                             is.null(stateChoices),
-                                             FALSE),
-                               vaccDataSubtitle(movingAvg))
+                               "Vaccinations",
+                               vaccDataSubtitle(vaccChoice, movingAvg)) %>%
+    styleSelectedLines(stateChoices, character(0))
 
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving presentVaccData\n")

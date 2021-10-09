@@ -147,3 +147,40 @@ plotNewCaseTrend <- function(chooseCounty,
   
   return(result)
 }
+
+presentNewCaseData <- function(movingAvg, countyChoices,
+                               stateChoices, timeWindow,
+                               traceThisRoutine = FALSE,
+                               prepend = "") {
+  
+  myPrepend <- paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered presentNewCaseData\n")
+  }
+  if (is.null(stateChoices)) {
+    theData <- dataForNewCasePlots(TRUE, NULL, movingAvg, stateChoices)
+  } else {
+    theData <- dataForNewCasePlots(TRUE, countyChoices, movingAvg, stateChoices)
+  }
+
+  # theData <- theData %>%
+  #   mutate(State = str_replace(Combined_Key, ", US", ""),
+  #          .before = 1, .keep = "unused") %>%
+  #   select(-Population) %>%
+  #   select(-contains("Datum"))
+  
+  result <- makeGtPresentation(theData,
+                               stateChoices,
+                               countyChoices,
+                               "New Cases",
+                               "number of new cases per 100,000 population") %>%
+    styleSelectedLines(stateChoices, character(0))
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving presentVaccData\n")
+  }
+  
+  return(result)
+}
+  
+  
