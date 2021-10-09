@@ -89,12 +89,24 @@ vaccRBoxHTML <- function(movingAvg, vaccChoice) {
 vaccRTrendHTML <- function(movingAvg, vaccChoice) {
 }
 
+vaccDataHTML <- function(movingAvg, vaccChoice,
+                           traceThisRoutine = FALSE, prepend = "") {
+}
+
 vaccPlotTitle <- function(vaccChoice, forBoxplot, justUS, movingAvg) {
   baseTitleLookup <- c("First Doses"="First Vaccine Doses",
                        "Second Doses"="Second Vaccine Doses",
                        "Total Doses"="Total Vaccine Doses Administered",
                        "People Fully Vaccinated"="People Fully Vaccinated")
   title <- plotTitle(unname(baseTitleLookup[vaccChoice]), forBoxplot, justUS, movingAvg)
+}
+
+vaccDataSubtitle <- function(movingAvg) {
+  if (movingAvg) {
+    result <- "Percent of population, 7 day moving average"
+  } else {
+    result <- "Percent of population"
+  }
 }
 
 vaccYLabel <- function() {
@@ -171,6 +183,64 @@ plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
 
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving plotVaccTrend\n")
+  }
+  
+  return(result)
+}
+
+# OUCH Move this to its own module???
+makeGtPresentation <- function(theData, stateChoices, countyChoices,
+                               theTitle, theSubtitle) {
+  # write_csv(theData, "../ShinyPart1/presentThis.csv")
+  # cat(theTitle, "\n", file = "../ShinyPart1/aTitle.txt")
+  
+  theData %>%
+    mutate(State = Combined_Key, .before = 1, .keep = "unused") %>%
+    gt() %>%
+    tab_header(title = theTitle,
+               subtitle = theSubtitle) %>%
+    cols_hide(c("Datum", "Population")) %>%
+    fmt_number(columns = matches("^[1-9]"), decimals = 1) %>%
+    tab_style(
+      style = list(cell_text(size = "small")),
+      locations = cells_body()) %>%
+    tab_style(
+      style = list(cell_text(size = "small")),
+      locations = cells_column_labels())
+  # 
+  # gt_tbl <- theData %>%
+  #   gt()
+}
+
+presentVaccData <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
+                            traceThisRoutine = FALSE, prepend = "") {
+  
+  myPrepend <- paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered presentVaccData\n")
+    cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
+  }
+  
+  tooMuchData <- activeVaccData(TRUE, movingAvg, stateChoices)
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "dim(tooMuchData) = (", paste(dim(tooMuchData)), ")\n")
+  }
+  
+  theData <- makeFullyVaccDataIfNeeded(tooMuchData, vaccChoice,
+                                       traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+
+  result <- makeGtPresentation(theData,
+                               stateChoices,
+                               character(0),
+                               vaccPlotTitle(vaccChoice,
+                                             TRUE,
+                                             is.null(stateChoices),
+                                             FALSE),
+                               vaccDataSubtitle(movingAvg))
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving presentVaccData\n")
   }
   
   return(result)

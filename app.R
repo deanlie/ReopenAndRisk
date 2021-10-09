@@ -9,6 +9,7 @@
 
 library(shiny)
 library(ggplot2)
+library(gt)
 library(tidyverse)
 
 source("mostRecentDataDate.R")
@@ -124,7 +125,12 @@ ui <- fluidPage(
                   tabPanel("Trend Line",
                     verticalLayout(
                       htmlOutput("vaccRTrendHTML"),
-                      plotOutput("vaccRTrend"))))))),
+                      plotOutput("vaccRTrend"))),
+                  tabPanel("Data",
+                    verticalLayout(
+                      htmlOutput("vaccDataHTML"),
+                      gt_output("vaccGtData")
+                    )))))),
             tabPanel("New Cases",
               verticalLayout(
                 htmlOutput("newCaseHeaderHTML"),
@@ -271,7 +277,9 @@ server <- function(input, output, session) {
   output$vaccRBoxHTML   <- renderUI({vaccRBoxHTML(input$movingAvg,
                                                   input$Vaccination)})
   output$vaccRTrendHTML <- renderUI({vaccRTrendHTML(input$movingAvg,
-                                                    input$Vaccination)})    
+                                                    input$Vaccination)})
+  output$vaccDataHTML <- renderUI({vaccDataHTML(input$movingAvg,
+                                                input$Vaccination)})
 
   output$vaccRBox <- renderPlot({plotVaccBoxplots(input$movingAvg,
                                                   input$Vaccination,
@@ -281,6 +289,11 @@ server <- function(input, output, session) {
                                                  input$Vaccination,
                                                  input$stateChoices,
                                                  input$timeWindow)})
+  output$vaccGtData <- render_gt(presentVaccData(input$movingAvg,
+                                                  input$Vaccination,
+                                                  input$stateChoices,
+                                                  input$timeWindow),
+                                 width = px(1000))
 
   # "New Cases" Tab
   output$newCaseHeaderHTML <- renderUI({newCaseHeaderHTML(input$chooseCounty,
