@@ -150,7 +150,9 @@ ui <- fluidPage(
                 htmlOutput("totalCaseHeaderHTML"),
                 tabsetPanel(id = "totalCaseTabsetPanel",
                   tabPanel("Boxplot",
-                           plotOutput("totalCaseBox")),
+                    verticalLayout(
+                      htmlOutput("totalCaseBoxplotHeaderHTML"),
+                      plotOutput("totalCaseBox"))),
                   tabPanel("Trend Line",
                            plotOutput("totalCaseTrend")),
                   tabPanel("Data",
@@ -344,9 +346,7 @@ server <- function(input, output, session) {
                                     width = px(1000))
   
   # "Total Cases" Tab
-  output$totalCaseHeaderHTML <- renderUI({totalCaseHeaderHTML(input$chooseCounty,
-                                                              input$countyChoices,
-                                                              input$stateChoices)})
+  output$totalCaseHeaderHTML <- renderUI({totalCaseHeaderHTML(input$movingAvg)})
   output$totalCaseBox <- renderPlot({plotTotalCaseBoxplots(input$chooseCounty,
                                                            input$movingAvg,
                                                            input$countyChoices,
@@ -357,11 +357,10 @@ server <- function(input, output, session) {
                                                           input$countyChoices,
                                                           input$stateChoices,
                                                           input$timeWindow)})
-  output$totalCaseGtData <- render_gt(presentTotalCaseData(input$movingAvg,
-                                                           input$countyChoices,
-                                                           input$stateChoices,
-                                                           input$timeWindow),
-                                 width = px(1000))
+  output$totalCaseBoxplotHeaderHTML <- renderUI({boxplotHeaderHTML(input$countyChoices,
+                                                                   input$stateChoices)})
+  output$totalCaseGtData <- render_gt(presentTotalCaseData(input$movingAvg),
+                                      width = px(1000))
   
   # "New Deaths" tab    
   output$newDeathsHeaderHTML <- renderUI({newDeathsHeaderHTML(input$chooseCounty,
