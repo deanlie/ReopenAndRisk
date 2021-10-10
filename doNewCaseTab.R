@@ -55,14 +55,20 @@ boxplotHeaderHTML <- function(countyChoices, stateChoices) {
     tags$p(), tags$p()))
 }
 
-newCaseHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
+newCaseHeaderHTML <- function(movingAvg) {
+  if (!movingAvg) {
+    movingAvgPgph <- paste(tags$p("A 7-day moving average will show trends more clearly."),
+             tags$p("Without averaging, states which do not report on Sundays, e.g.,
+                    make the data look less uniform than it is."),
+             sep = "")
+  } else {
+    movingAvgPgph <- character(0)
+  }
   HTML(paste(tags$h4("Trends of new cases"),
-                   tags$p("The CDC's recommendation was that a state not begin reopening
-                   after the initial lockdown until it had a downward trajectory or
-                   near-zero incidence of documented cases over a 14 day period.
-                   The trend of cases is still an important measure."),
-                   tags$p(),
-                   sep=""))
+             tags$p("We are hoping to see a steady downward trend of new cases."),
+             movingAvgPgph,
+             tags$p(),
+             sep=""))
 }
 
 newCasePlotTitle <- function(forBoxplot, justUS, movingAvg, justStates, state1) {

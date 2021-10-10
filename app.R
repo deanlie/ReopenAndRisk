@@ -323,9 +323,7 @@ server <- function(input, output, session) {
                                  width = px(1000))
 
   # "New Cases" Tab
-  output$newCaseHeaderHTML <- renderUI({newCaseHeaderHTML(input$chooseCounty,
-                                                          input$countyChoices,
-                                                          input$stateChoices)})
+  output$newCaseHeaderHTML <- renderUI({newCaseHeaderHTML(input$movingAvg)})
   output$newCaseBox <- renderPlot({plotNewCaseBoxplots(input$chooseCounty,
                                                        input$movingAvg,
                                                        input$countyChoices,
