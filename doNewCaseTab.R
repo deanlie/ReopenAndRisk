@@ -28,7 +28,7 @@ dataForNewCasePlots <- function(forBoxplots, countyChoices, movingAvg, stateChoi
   theData
 }
 
-newCaseHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
+boxplotParagraph <- function(chooseCounty, countyChoices, stateChoices) {
   if (chooseCounty && (length(countyChoices) > 0)) {
     admin1Ts <- admin1TypeFor(stateChoices[1])$LC_PL
     middle_blank_1 <- paste(admin1Ts, " in",
@@ -38,23 +38,26 @@ newCaseHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
     middle_blank_1 <- "states"
     middle_blank_2 <- "states"
   }
-  pgphTwo <- paste("How to interpret these charts:
+
+  paste("How to interpret these charts:
  The bar across the middle of the box gives the median of all",
-                      middle_blank_1,
-                      "on that date. Half the",
-                      middle_blank_2,
-                      "fall within the box,
+        middle_blank_1,
+        "on that date. Half the",
+        middle_blank_2,
+        "fall within the box,
  a quarter above it and a quarter below it. Dots in a horizontal line
  near the top of the graph are not real data, but mean there is a data point
  at that level or higher (if the graph were scaled to show everything,
  the interesting part of the graph would be all squished at the bottom)")
+}
 
+newCaseHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
   theText <- paste(tags$h4("Trends of new cases"),
                    tags$p("The CDC's recommendation was that a state not begin reopening
                    after the initial lockdown until it had a downward trajectory or
                    near-zero incidence of documented cases over a 14 day period.
                    The trend of cases is still an important measure."),
-                   tags$p(pgphTwo),
+                   tags$p(boxplotParagraph(chooseCounty, countyChoices, stateChoices)),
                    tags$p(),
                    sep="")
   HTML(theText)
