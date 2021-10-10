@@ -6,6 +6,7 @@ Display boxplots for state-by-state or county-by-county statistics within a stat
 for selected items
 
 Available in https://deanlie.shinyapps.io/ReopenAndRisk/ (as of Aug 22, 2021)
+Updated, Redeployed Oct 7, 2021
 
 Branch Testing1234 merged in 2021-09-27:
   Accomplished:
