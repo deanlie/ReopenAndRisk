@@ -137,13 +137,13 @@ ui <- fluidPage(
                 htmlOutput("newCaseHeaderHTML"),
                 tabsetPanel(id = "newCaseTabsetPanel",
                   tabPanel("Boxplot",
-                           plotOutput("newCaseBox")),
+                    verticalLayout(
+                      htmlOutput("newCaseBoxplotHeaderHTML"),
+                      plotOutput("newCaseBox"))),
                   tabPanel("Trend Line",
                            plotOutput("newCaseTrend")),
                   tabPanel("Data",
-                           verticalLayout(
-                             gt_output("newCaseGtData") #OUCH
-                           ))))),
+                           gt_output("newCaseGtData"))))),
             tabPanel("Total Cases",
               verticalLayout(
                 htmlOutput("totalCaseHeaderHTML"),
@@ -336,6 +336,8 @@ server <- function(input, output, session) {
                                                       input$countyChoices,
                                                       input$stateChoices,
                                                       input$timeWindow)})
+  output$newCaseBoxplotHeaderHTML <- renderUI({boxplotHeaderHTML(input$countyChoices,
+                                                                 input$stateChoices)})
   output$newCaseGtData <- render_gt(presentNewCaseData(input$movingAvg,
                                                        input$countyChoices,
                                                        input$stateChoices,

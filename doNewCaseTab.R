@@ -39,19 +39,23 @@ boxplotParagraph <- function(countyChoices, stateChoices) {
     middle_blank_2 <- "states"
   }
 
-  paste("How to interpret these charts:
- The bar across the middle of the box gives the median of all",
-        middle_blank_1,
-        "on that date. Half the",
-        middle_blank_2,
-        "fall within the box,
- a quarter above it and a quarter below it. Dots in a horizontal line
- near the top of the graph are not real data, but mean there is a data point
- at that level or higher (if the graph were scaled to show everything,
- the interesting part of the graph would be all squished at the bottom)")
+  paste(tags$p(),
+        tags$p(paste(
+    "How to interpret these charts: The bar across the middle",
+    " of the box gives the median of all ",
+    middle_blank_1,
+    " on that date. Half the ",
+    middle_blank_2,
+    " fall within the box, a quarter above it and",
+    " a quarter below it. Dots in a horizontal line near",
+    " the top of the graph are not real data, but mean there",
+    " is a data point at that level or higher (if the graph",
+    " were scaled to show everything, the interesting part",
+    " of the graph would be all squished at the bottom)", sep = "")),
+    tags$p(), tags$p())
 }
 
-newCaseBoxplotHeaderHTML <- function(countyChoices, stateChoices) {
+boxplotHeaderHTML <- function(countyChoices, stateChoices) {
   HTML(boxplotParagraph(countyChoices, stateChoices))
 }
 
@@ -61,7 +65,6 @@ newCaseHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
                    after the initial lockdown until it had a downward trajectory or
                    near-zero incidence of documented cases over a 14 day period.
                    The trend of cases is still an important measure."),
-                   tags$p(boxplotParagraph(countyChoices, stateChoices)),
                    tags$p(),
                    sep="")
   HTML(theText)
