@@ -163,24 +163,20 @@ presentNewCaseData <- function(movingAvg, countyChoices,
     theData <- dataForNewCasePlots(TRUE, countyChoices, movingAvg, stateChoices)
   }
 
-  # theData <- theData %>%
-  #   mutate(State = str_replace(Combined_Key, ", US", ""),
-  #          .before = 1, .keep = "unused") %>%
-  #   select(-Population) %>%
-  #   select(-contains("Datum"))
-  
+  theData <- cleanDataForPresentation(theData,
+                                      stateChoices,
+                                      countyChoices)
+    
   result <- makeGtPresentation(theData,
                                stateChoices,
                                countyChoices,
                                "New Cases",
                                "number of new cases per 100,000 population") %>%
-    styleSelectedLines(stateChoices, character(0))
+    styleSelectedLines(stateChoices, countyChoices)
   
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving presentVaccData\n")
+    cat(file = stderr(), prepend, "Leaving presentNewCasesData\n")
   }
   
   return(result)
 }
-  
-  

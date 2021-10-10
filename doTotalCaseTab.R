@@ -10,7 +10,7 @@ dataForTotalCasePlots <- function(forBoxplots, countyChoices, movingAvg, stateCh
       theData <- US_Confirmed_Per100K
     }
   } else {
-    if (is.null(countyChoices)) {
+    if (is.null(countyChoices) || length(countyChoices) == 0) {
       if (movingAvg) {
         theData <- US_State_Confirmed_Per100KAvg
       } else {
@@ -70,9 +70,12 @@ totalCaseYLabel <- function() {
 
 selectPlotData <- function(selectorRoutine, chooseCounty,
                            forBoxplot, countyChoices, movingAvg, stateChoices) {
-  if (!chooseCounty) {
-    countyChoices <- NULL
-  }
+  # if (!chooseCounty) {
+  #   countyChoices <- NULL
+  # }
+  cat(file = stderr(), "selectPlotData: countyChoices = *",
+      paste(countyChoices, sep = " "), "*\n", sep = "")
+
   if (is.null(stateChoices)) {
     theData <- selectorRoutine(forBoxplot, NULL, movingAvg, stateChoices)
   } else {
@@ -112,3 +115,38 @@ plotTotalCaseTrend <- function(chooseCounty,
                           totalCaseYLabel(),
                           timeWindow)
 }
+
+presentTotalCaseData <- function(movingAvg, countyChoices,
+                                 stateChoices, timeWindow,
+                                 traceThisRoutine = FALSE,
+                                 prepend = "") {
+  
+  myPrepend <- paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered presentTotalCaseData\n")
+  }
+  theData <- selectPlotData(dataForTotalCasePlots, TRUE,
+                            TRUE, countyChoices, movingAvg, stateChoices)
+  
+  theData <- cleanDataForPresentation(theData,
+                                      stateChoices,
+                                      countyChoices)
+  
+  result <- makeGtPresentation(theData,
+                               stateChoices,
+                               countyChoices,
+                               "Total Cases",
+                               "total number of cases per 100,000 population") %>%
+    styleSelectedLines(stateChoices, countyChoices)
+    
+    if (traceThisRoutine) {
+      cat(file = stderr(), prepend, "Leaving presentNewCasesData\n")
+    }
+    
+    return(result)
+  }
+
+
+
+  
+  

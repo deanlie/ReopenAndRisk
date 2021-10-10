@@ -157,3 +157,35 @@ plotNewDeathsTrend <- function(chooseCounty,
                           newDeathsYLabel(),
                           timeWindow)
 }
+
+presentNewDeathsData <- function(movingAvg, countyChoices,
+                                 stateChoices, timeWindow,
+                                 traceThisRoutine = FALSE,
+                                 prepend = "") {
+  myPrepend <- paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered presentNewDeathsData\n")
+  }
+  if (is.null(stateChoices)) {
+    theData <- dataForNewDeathsPlots(TRUE, NULL, movingAvg, stateChoices)
+  } else {
+    theData <- dataForNewDeathsPlots(TRUE, countyChoices, movingAvg, stateChoices)
+  }
+  
+  theData <- cleanDataForPresentation(theData,
+                                      stateChoices,
+                                      countyChoices)
+  
+  result <- makeGtPresentation(theData,
+                               stateChoices,
+                               countyChoices,
+                               "New Deaths",
+                               "number of single day deaths per 100,000 population") %>%
+    styleSelectedLines(stateChoices, countyChoices)
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving presentNewDeathsData\n")
+  }
+  
+  return(result)
+}

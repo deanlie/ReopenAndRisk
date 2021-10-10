@@ -76,3 +76,10 @@ plotTestGrowthTrend <- function(chooseCounty, movingAvg, countyChoices,
                           "Daily growth rate: new day's number of tests as percent of previous number",
                           timeWindow)
 }
+
+presentTestGrowthData <- function(movingAvg, countyChoices,
+                                  stateChoices, timeWindow,
+                                  traceThisRoutine = FALSE,
+                                  prepend = "") {
+  return(bogusGtDisplay("presentTestGrowthData"))
+}

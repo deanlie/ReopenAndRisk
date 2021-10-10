@@ -80,7 +80,7 @@ totalDeathsHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
   if (chooseCounty && (length(countyChoices) > 0)) {
     countyKeys <- c()
     for (aCounty in countyChoices) {
-      newKeys <- makeCombinedKeys(aCounty, stateChoices[1])
+      TotalKeys <- makeCombinedKeys(aCounty, stateChoices[1])
       countyKeys <- c(countyKeys, newKeys$spaced, newKeys$spaceless)
     }
     admin1T <- admin1TypeFor(stateChoices[1])
@@ -165,4 +165,37 @@ plotTotalDeathsTrend <- function(chooseCounty,
                           timeWindowXLabel(timeWindow),
                           totalDeathsYLabel(),
                           timeWindow)
+}
+
+presentTotalDeathsData <- function(movingAvg, countyChoices,
+                                 stateChoices, timeWindow,
+                                 traceThisRoutine = FALSE,
+                                 prepend = "") {
+#  return(bogusGtDisplay("presentTotalDeathsData"))
+  myPrepend <- paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered presentTotalDeathsData\n")
+  }
+  if (is.null(stateChoices)) {
+    theData <- dataForTotalDeathsPlots(TRUE, NULL, movingAvg, stateChoices)
+  } else {
+    theData <- dataForTotalDeathsPlots(TRUE, countyChoices, movingAvg, stateChoices)
+  }
+  
+  theData <- cleanDataForPresentation(theData,
+                                      stateChoices,
+                                      countyChoices)
+  
+  result <- makeGtPresentation(theData,
+                               stateChoices,
+                               countyChoices,
+                               "Total Deaths",
+                               "total number of deaths per 100,000 population") %>%
+    styleSelectedLines(stateChoices, countyChoices)
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving presentTotalDeathsData\n")
+  }
+  
+  return(result)
 }

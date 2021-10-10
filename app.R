@@ -93,7 +93,7 @@ ui <- fluidPage(
             # Without the spacer, the County dropbox overwrote the
             #  caption "Select County/Counties.
             tags$p("", id="Spacer"),
-            checkboxInput("movingAvg", "Plot 7-day moving average", value = TRUE),
+            checkboxInput("movingAvg", "Use 7-day moving average", value = TRUE),
             tags$p("", id="Spacer"),
             tags$img(src="TeamScience_500.png",
                      width="100%"),
