@@ -66,7 +66,7 @@
       ]
     },
     "newCaseHeaderHTML": {
-      "html": "<h4>Trends of new cases<\/h4><p>We are hoping to see a steady downward trend of new cases.<\/p><p>A 7-day moving average will show trends more clearly.<\/p><p>Without averaging, states which do not report on Sundays, e.g.,\n                    make the data look less uniform than it is.<\/p><p><\/p>",
+      "html": "<h4>Trends of new cases<\/h4><p>We are hoping to see a steady downward trend of new cases.<\/p><p>A 7-day moving average often shows trends more clearly.<\/p><p>Without averaging, states which do not report on Sundays, e.g.,\n                    make the data look less uniform than it is.<\/p><p><\/p>",
       "deps": [
 
       ]

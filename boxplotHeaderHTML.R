@@ -27,7 +27,7 @@ boxplotHeaderHTML <- function(countyChoices, stateChoices) {
 }
 
 movingAvgWhy <- function() {
-  paste(tags$p("A 7-day moving average will show trends more clearly."),
+  paste(tags$p("A 7-day moving average often shows trends more clearly."),
                       tags$p("Without averaging, states which do not report on Sundays, e.g.,
                     make the data look less uniform than it is."),
                       sep = "")
