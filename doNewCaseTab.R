@@ -28,8 +28,8 @@ dataForNewCasePlots <- function(forBoxplots, countyChoices, movingAvg, stateChoi
   theData
 }
 
-boxplotParagraph <- function(chooseCounty, countyChoices, stateChoices) {
-  if (chooseCounty && (length(countyChoices) > 0)) {
+boxplotParagraph <- function(countyChoices, stateChoices) {
+  if ((!is.na(countyChoices)) && (length(countyChoices) > 0)) {
     admin1Ts <- admin1TypeFor(stateChoices[1])$LC_PL
     middle_blank_1 <- paste(admin1Ts, " in",
                             stateLookup[stateChoices[1]])
@@ -51,13 +51,17 @@ boxplotParagraph <- function(chooseCounty, countyChoices, stateChoices) {
  the interesting part of the graph would be all squished at the bottom)")
 }
 
+newCaseBoxplotHeaderHTML <- function(countyChoices, stateChoices) {
+  HTML(boxplotParagraph(countyChoices, stateChoices))
+}
+
 newCaseHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
   theText <- paste(tags$h4("Trends of new cases"),
                    tags$p("The CDC's recommendation was that a state not begin reopening
                    after the initial lockdown until it had a downward trajectory or
                    near-zero incidence of documented cases over a 14 day period.
                    The trend of cases is still an important measure."),
-                   tags$p(boxplotParagraph(chooseCounty, countyChoices, stateChoices)),
+                   tags$p(boxplotParagraph(countyChoices, stateChoices)),
                    tags$p(),
                    sep="")
   HTML(theText)
