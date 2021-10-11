@@ -193,7 +193,9 @@ ui <- fluidPage(
                 htmlOutput("testGrowthHeaderHTML"),
                 tabsetPanel(id = "testGrowthTabsetPanel",
                   tabPanel("Boxplot",
-                           plotOutput("testGBox")),
+                    verticalLayout(
+                      htmlOutput("testGBoxplotHeaderHTML"),
+                      plotOutput("testGBox"))),
                   tabPanel("Trend Line",
                            plotOutput("testGTrend")),
                   tabPanel("Data",
@@ -206,7 +208,9 @@ ui <- fluidPage(
                 htmlOutput("testResultsHeaderHTML"),
                 tabsetPanel(id = "testResultsTabsetPanel",
                   tabPanel("Boxplot",
-                           plotOutput("testRBox")),
+                    verticalLayout(
+                      htmlOutput("testRBoxplotHeaderHTML"),
+                      plotOutput("testRBox"))),
                   tabPanel("Trend Line",
                            plotOutput("testRTrend")),
                   tabPanel("Data",
@@ -414,6 +418,8 @@ server <- function(input, output, session) {
   output$testGrowthHeaderHTML <- renderUI({testGrowthHeaderHTML(input$chooseCounty,
                                                                 input$countyChoices,
                                                                 input$stateChoices)})
+  output$testGBoxplotHeaderHTML <- renderUI({boxplotHeaderHTML(input$countyChoices,
+                                                               input$stateChoices)})
   output$testGBox <- renderPlot({plotTestGrowthBoxplots(input$chooseCounty,
                                                         input$movingAvg,
                                                         input$countyChoices,
@@ -434,6 +440,8 @@ server <- function(input, output, session) {
   output$testResultsHeaderHTML <- renderUI({testResultsHeaderHTML(input$chooseCounty,
                                                                   input$countyChoices,
                                                                   input$stateChoices)})
+  output$testRBoxplotHeaderHTML <- renderUI({boxplotHeaderHTML(input$countyChoices,
+                                                               input$stateChoices)})
   output$testRBox <- renderPlot({plotTestResultBoxplots(input$chooseCounty,
                                                         input$movingAvg,
                                                         input$countyChoices,
