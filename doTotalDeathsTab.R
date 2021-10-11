@@ -70,14 +70,12 @@ getPopulationLimitedKeysText <- function(keyList, popLimit, adminTypePlural, col
   }
 }
 
-totalDeathsHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
+totalDeathsHeaderHTML <- function(movingAvg, countyChoices, stateChoices) {
   theText <- paste(tags$h4("Deaths"),
-                   tags$p("The CDC does not base reopening recommendations directly on 
-                             COVID-19 deaths, but we have the statistics and the graphing
-                             programs, so here you go:"),
+                   tags$p("By the present time, these totals change very slowly. Don't expect to see much change in this plot."),
                    sep="")
   
-  if (chooseCounty && (length(countyChoices) > 0)) {
+  if (length(countyChoices) > 0) {
     countyKeys <- c()
     for (aCounty in countyChoices) {
       TotalKeys <- makeCombinedKeys(aCounty, stateChoices[1])
@@ -92,9 +90,10 @@ totalDeathsHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
                         "If no graph is shown for your ",
                         admin1T$LC_S,
                         " please try again, selecting only it.")
-    if (length(smallPopsTxt > 0)) {
+    if ((!movingAvg) && (length(smallPopsTxt) > 0)) {
       theText <- paste(theText,
                        tags$p(smallPopsTxt),
+                       movingAvgWhy(),
                        tags$p(overlapTxt),
                        sep = "")
     } else {
@@ -111,9 +110,10 @@ totalDeathsHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
     }
     smallPopsTxt <- getPopulationLimitedKeysText(stateKeys, 2000000,
                                                  "states", "Province_State")
-    if (length(smallPopsTxt > 0)) {
+    if ((!movingAvg) && (length(smallPopsTxt) > 0)) {
       theText <- paste(theText,
                        tags$p(smallPopsTxt),
+                       movingAvgWhy(),
                        sep = "")
     }
   }

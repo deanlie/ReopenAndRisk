@@ -164,7 +164,9 @@ ui <- fluidPage(
                 htmlOutput("newDeathsHeaderHTML"),
                 tabsetPanel(id = "newDeathsTabsetPanel",
                   tabPanel("Boxplot",
-                           plotOutput("newDeathsBox")),
+                           verticalLayout(
+                             htmlOutput("newDeathsBoxplotHeaderHTML"),
+                             plotOutput("newDeathsBox"))),
                   tabPanel("Trend Line",
                            plotOutput("newDeathsTrend")),
                   tabPanel("Data",
@@ -176,7 +178,9 @@ ui <- fluidPage(
                 htmlOutput("totalDeathsHeaderHTML"),
                 tabsetPanel(id = "totalDeathsTabsetPanel",
                   tabPanel("Boxplot",
-                           plotOutput("totalDeathsBox")),
+                           verticalLayout(
+                             htmlOutput("totalDeathsBoxplotHeaderHTML"),
+                             plotOutput("totalDeathsBox"))),
                   tabPanel("Trend Line",
                            plotOutput("totalDeathsTrend")),
                   tabPanel("Data",
@@ -363,7 +367,7 @@ server <- function(input, output, session) {
                                       width = px(1000))
   
   # "New Deaths" tab    
-  output$newDeathsHeaderHTML <- renderUI({newDeathsHeaderHTML(input$chooseCounty,
+  output$newDeathsHeaderHTML <- renderUI({newDeathsHeaderHTML(input$movingAvg,
                                                               input$countyChoices,
                                                               input$stateChoices)})
   output$newDeathsBox <- renderPlot({plotNewDeathsBoxplots(input$chooseCounty,
@@ -376,6 +380,8 @@ server <- function(input, output, session) {
                                                           input$countyChoices,
                                                           input$stateChoices,
                                                           input$timeWindow)})
+  output$newDeathsBoxplotHeaderHTML <- renderUI({boxplotHeaderHTML(input$countyChoices,
+                                                                   input$stateChoices)})
   output$newDeathsGtData <- render_gt(presentNewDeathsData(input$movingAvg,
                                                            input$countyChoices,
                                                            input$stateChoices,
@@ -396,6 +402,8 @@ server <- function(input, output, session) {
                                                               input$countyChoices,
                                                               input$stateChoices,
                                                               input$timeWindow)})
+  output$totalDeathsBoxplotHeaderHTML <- renderUI({boxplotHeaderHTML(input$countyChoices,
+                                                                     input$stateChoices)})
   output$totalDeathsGtData <- render_gt(presentTotalDeathsData(input$movingAvg,
                                                                input$countyChoices,
                                                                input$stateChoices,
