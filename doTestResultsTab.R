@@ -98,3 +98,11 @@ plotTestResultTrend <- function(chooseCounty, movingAvg, countyChoices,
   
   return(result)
 }
+
+presentTestResultsData <- function(movingAvg, countyChoices,
+                                  stateChoices, timeWindow,
+                                  traceThisRoutine = FALSE,
+                                  prepend = "") {
+  return(bogusGtDisplay("presentTestResultsData"))
+}
+

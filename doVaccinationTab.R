@@ -89,12 +89,38 @@ vaccRBoxHTML <- function(movingAvg, vaccChoice) {
 vaccRTrendHTML <- function(movingAvg, vaccChoice) {
 }
 
+vaccDataHTML <- function(movingAvg, vaccChoice,
+                           traceThisRoutine = FALSE, prepend = "") {
+}
+
 vaccPlotTitle <- function(vaccChoice, forBoxplot, justUS, movingAvg) {
   baseTitleLookup <- c("First Doses"="First Vaccine Doses",
                        "Second Doses"="Second Vaccine Doses",
                        "Total Doses"="Total Vaccine Doses Administered",
                        "People Fully Vaccinated"="People Fully Vaccinated")
   title <- plotTitle(unname(baseTitleLookup[vaccChoice]), forBoxplot, justUS, movingAvg)
+}
+
+vaccDataTitle <- function(vaccChoice, movingAvg) {
+  
+}
+
+vaccDataSubtitle <- function(vaccChoice, movingAvg) {
+  subtitleLookup <- c("First Doses"="with at least first dose",
+                      "Second Doses"="with at least second dose",
+                      "Total Doses"="Total Vaccine Doses Administered",
+                      "People Fully Vaccinated"="fully vaccinated")
+  
+  if (vaccChoice == "Total Doses") {
+    partialSub <- "Total doses as percent of state population"
+  } else {
+    partialSub <- paste("Percent of state population",
+                        subtitleLookup[vaccChoice],
+                        sep = " ")
+  }
+  if (movingAvg) {
+    partialSub <- paste(partialSub, ", 7 day moving average", sep = " ")
+  }
 }
 
 vaccYLabel <- function() {
@@ -171,6 +197,44 @@ plotVaccTrend <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
 
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving plotVaccTrend\n")
+  }
+  
+  return(result)
+}
+
+presentVaccData <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
+                            traceThisRoutine = FALSE, prepend = "") {
+  
+  myPrepend <- paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered presentVaccData\n")
+    cat(file = stderr(), myPrepend, "vaccChoice =", vaccChoice, "\n")
+  }
+  
+  tooMuchData <- activeVaccData(TRUE, movingAvg, stateChoices)
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "dim(tooMuchData) = (", paste(dim(tooMuchData)), ")\n")
+  }
+  
+  theData <- makeFullyVaccDataIfNeeded(tooMuchData, vaccChoice,
+                                       traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+  
+  theData <- theData %>%
+    mutate(State = str_replace(Combined_Key, ", US", ""),
+           .before = 1, .keep = "unused") %>%
+    select(-Population) %>%
+    select(-contains("Datum"))
+    
+  result <- makeGtPresentation(theData,
+                               stateChoices,
+                               character(0),
+                               "Vaccinations",
+                               vaccDataSubtitle(vaccChoice, movingAvg)) %>%
+    styleSelectedLines(stateChoices, character(0))
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving presentVaccData\n")
   }
   
   return(result)

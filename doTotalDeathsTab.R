@@ -70,31 +70,30 @@ getPopulationLimitedKeysText <- function(keyList, popLimit, adminTypePlural, col
   }
 }
 
-totalDeathsHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
+totalDeathsHeaderHTML <- function(movingAvg, countyChoices, stateChoices) {
   theText <- paste(tags$h4("Deaths"),
-                   tags$p("The CDC does not base reopening recommendations directly on 
-                             COVID-19 deaths, but we have the statistics and the graphing
-                             programs, so here you go:"),
+                   tags$p("By the present time, these totals change very slowly. Don't expect to see much change in this plot."),
                    sep="")
   
-  if (chooseCounty && (length(countyChoices) > 0)) {
+  if (length(countyChoices) > 0) {
     countyKeys <- c()
     for (aCounty in countyChoices) {
       newKeys <- makeCombinedKeys(aCounty, stateChoices[1])
       countyKeys <- c(countyKeys, newKeys$spaced, newKeys$spaceless)
     }
     admin1T <- admin1TypeFor(stateChoices[1])
-    smallPopsTxt <- getPopulationLimitedKeysText(countyKeys, 100000,
+    smallPopsTxt <- getPopulationLimitedKeysText(countyKeys, 10000,
                                                  admin1T$LC_PL, "CountyName")
     overlapTxt <- paste("If two or more selected ", admin1T$LC_PL,
                         " have identical graphs (e.g. zero deaths) for the selected ",
-                        "time period, the last one drawn wil hide the other. ",
+                        "time period, the last one drawn will hide the other. ",
                         "If no graph is shown for your ",
                         admin1T$LC_S,
                         " please try again, selecting only it.")
-    if (length(smallPopsTxt > 0)) {
+    if ((!movingAvg) && (length(smallPopsTxt) > 0)) {
       theText <- paste(theText,
                        tags$p(smallPopsTxt),
+                       movingAvgWhy(),
                        tags$p(overlapTxt),
                        sep = "")
     } else {
@@ -109,11 +108,12 @@ totalDeathsHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
       newKeys <- makeCombinedKeys(NA, aState)
       stateKeys <- c(stateKeys,  newKeys$spaced, newKeys$spaceless)
     }
-    smallPopsTxt <- getPopulationLimitedKeysText(stateKeys, 2000000,
+    smallPopsTxt <- getPopulationLimitedKeysText(stateKeys, 200000,
                                                  "states", "Province_State")
-    if (length(smallPopsTxt > 0)) {
+    if ((!movingAvg) && (length(smallPopsTxt) > 0)) {
       theText <- paste(theText,
                        tags$p(smallPopsTxt),
+                       movingAvgWhy(),
                        sep = "")
     }
   }
@@ -165,4 +165,37 @@ plotTotalDeathsTrend <- function(chooseCounty,
                           timeWindowXLabel(timeWindow),
                           totalDeathsYLabel(),
                           timeWindow)
+}
+
+presentTotalDeathsData <- function(movingAvg, countyChoices,
+                                 stateChoices, timeWindow,
+                                 traceThisRoutine = FALSE,
+                                 prepend = "") {
+#  return(bogusGtDisplay("presentTotalDeathsData"))
+  myPrepend <- paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered presentTotalDeathsData\n")
+  }
+  if (is.null(stateChoices)) {
+    theData <- dataForTotalDeathsPlots(TRUE, NULL, movingAvg, stateChoices)
+  } else {
+    theData <- dataForTotalDeathsPlots(TRUE, countyChoices, movingAvg, stateChoices)
+  }
+  
+  theData <- cleanDataForPresentation(theData,
+                                      stateChoices,
+                                      countyChoices)
+  
+  result <- makeGtPresentation(theData,
+                               stateChoices,
+                               countyChoices,
+                               "Total Deaths",
+                               "total number of deaths per 100,000 population") %>%
+    styleSelectedLines(stateChoices, countyChoices)
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving presentTotalDeathsData\n")
+  }
+  
+  return(result)
 }

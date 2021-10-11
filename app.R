@@ -9,12 +9,15 @@
 
 library(shiny)
 library(ggplot2)
+library(gt)
 library(tidyverse)
 
 source("mostRecentDataDate.R")
 source("assemblePlotObject.R")
 source("loadAllUSData.R")
 source("reopenPlotUtilities.R")
+source("makeGtPresentation.R")
+source("boxplotHeaderHTML.R")
 source("doVaccinationTab.R")
 source("doNewCaseTab.R")
 source("doTotalCaseTab.R")
@@ -91,7 +94,7 @@ ui <- fluidPage(
             # Without the spacer, the County dropbox overwrote the
             #  caption "Select County/Counties.
             tags$p("", id="Spacer"),
-            checkboxInput("movingAvg", "Plot 7-day moving average", value = TRUE),
+            checkboxInput("movingAvg", "Use 7-day moving average", value = TRUE),
             tags$p("", id="Spacer"),
             tags$img(src="TeamScience_500.png",
                      width="100%"),
@@ -104,57 +107,121 @@ ui <- fluidPage(
         # Show a plot of the generated distribution
 
         mainPanel(
-            tabsetPanel(id="mainTabsetPanel",
-                tabPanel("Vaccination Progress",
-                         verticalLayout(
-                           mainPanel(selectInput("Vaccination",
-                                                 "Choose one item",
-                                                 c("First Doses",
-                                                   "Second Doses",
-                                                   "Total Doses",
-                                                   "People Fully Vaccinated"),
-                                                 multiple = FALSE,
-                                                 selected = "People Fully Vaccinated"),
-                                     htmlOutput("vaccHeaderHTML"),
-                                     htmlOutput("vaccRboxHTML"),
-                                     plotOutput("vaccRBox"),
-                                     htmlOutput("vaccRTrendHTML"),
-                                     plotOutput("vaccRTrend")))),
-                tabPanel("New Cases",
-                         mainPanel(htmlOutput("newCaseHeaderHTML"),
-                                   plotOutput("newCaseBox"),
-                                   plotOutput("newCaseTrend"))),
-                tabPanel("Total Cases",
-                         mainPanel(htmlOutput("totalCaseHeaderHTML"),
-                                   plotOutput("totalCaseBox"),
-                                   plotOutput("totalCaseTrend"))),
-                tabPanel("New Deaths",
-                         mainPanel(htmlOutput("newDeathsHeaderHTML"),
-                                   # tags$p(textOutput("mortalityP1")),
-                                   # tags$p(textOutput("mortalityP2")),
-                                   
-                                   plotOutput("newDeathsBox"),
-                                   plotOutput("newDeathsTrend"))),
-                tabPanel("Total Deaths",
-                         mainPanel(htmlOutput("totalDeathsHeaderHTML"),
-                                   # tags$p(textOutput("mortalityP1")),
-                                   # tags$p(textOutput("mortalityP2")),
-
-                                   plotOutput("totalDeathsBox"),
-                                   plotOutput("totalDeathsTrend"))),
-                tabPanel("Test Growth",
-                         mainPanel(htmlOutput("testGrowthHeaderHTML"),
-                                   plotOutput("testGBox"),
-                                   plotOutput("testGTrend"))),
-                tabPanel("Test Results",
-                         mainPanel(htmlOutput("testResultsHeaderHTML"),
-                                   plotOutput("testRBox"),
-                                   plotOutput("testRTrend"))),
-                tabPanel("Summary",
-                         includeHTML("./www/harvard_link.html"),
-                         mainPanel(htmlOutput("summaryHTML"))),
-                selected = defaultSelectedTab())
-            )
+          tabsetPanel(id = "mainTabsetPanel",
+            tabPanel("Vaccination Progress",
+              verticalLayout(
+                mainPanel(selectInput("Vaccination",
+                                      "Choose one item",
+                                      c("First Doses",
+                                        "Second Doses",
+                                        "Total Doses",
+                                        "People Fully Vaccinated"),
+                                      multiple = FALSE,
+                                      selected = "People Fully Vaccinated"),
+                htmlOutput("vaccHeaderHTML"),
+                tabsetPanel(id = "vaccinationTabsetPanel",
+                  tabPanel("Boxplot",
+                    verticalLayout(
+                      htmlOutput("vaccRboxHTML"),
+                      plotOutput("vaccRBox"))),
+                  tabPanel("Trend Line",
+                    verticalLayout(
+                      htmlOutput("vaccRTrendHTML"),
+                      plotOutput("vaccRTrend"))),
+                  tabPanel("Data",
+                    verticalLayout(
+                      htmlOutput("vaccDataHTML"),
+                      gt_output("vaccGtData")
+                    )))))),
+            tabPanel("New Cases",
+              verticalLayout(
+                htmlOutput("newCaseHeaderHTML"),
+                tabsetPanel(id = "newCaseTabsetPanel",
+                  tabPanel("Boxplot",
+                    verticalLayout(
+                      htmlOutput("newCaseBoxplotHeaderHTML"),
+                      plotOutput("newCaseBox"))),
+                  tabPanel("Trend Line",
+                           plotOutput("newCaseTrend")),
+                  tabPanel("Data",
+                           gt_output("newCaseGtData"))))),
+            tabPanel("Total Cases",
+              verticalLayout(
+                htmlOutput("totalCaseHeaderHTML"),
+                tabsetPanel(id = "totalCaseTabsetPanel",
+                  tabPanel("Boxplot",
+                    verticalLayout(
+                      htmlOutput("totalCaseBoxplotHeaderHTML"),
+                      plotOutput("totalCaseBox"))),
+                  tabPanel("Trend Line",
+                           plotOutput("totalCaseTrend")),
+                  tabPanel("Data",
+                           verticalLayout(
+                             gt_output("totalCaseGtData")
+                           ))))),
+            tabPanel("New Deaths",
+              verticalLayout(
+                htmlOutput("newDeathsHeaderHTML"),
+                tabsetPanel(id = "newDeathsTabsetPanel",
+                  tabPanel("Boxplot",
+                           verticalLayout(
+                             htmlOutput("newDeathsBoxplotHeaderHTML"),
+                             plotOutput("newDeathsBox"))),
+                  tabPanel("Trend Line",
+                           plotOutput("newDeathsTrend")),
+                  tabPanel("Data",
+                           verticalLayout(
+                             gt_output("newDeathsGtData")
+                           ))))),
+            tabPanel("Total Deaths",
+              verticalLayout(
+                htmlOutput("totalDeathsHeaderHTML"),
+                tabsetPanel(id = "totalDeathsTabsetPanel",
+                  tabPanel("Boxplot",
+                           verticalLayout(
+                             htmlOutput("totalDeathsBoxplotHeaderHTML"),
+                             plotOutput("totalDeathsBox"))),
+                  tabPanel("Trend Line",
+                           plotOutput("totalDeathsTrend")),
+                  tabPanel("Data",
+                           verticalLayout(
+                             # htmlOutput("totalDeathsDataHTML"),
+                             gt_output("totalDeathsGtData")
+                           ))))),
+            tabPanel("Test Growth",
+              verticalLayout(
+                htmlOutput("testGrowthHeaderHTML"),
+                tabsetPanel(id = "testGrowthTabsetPanel",
+                  tabPanel("Boxplot",
+                    verticalLayout(
+                      htmlOutput("testGBoxplotHeaderHTML"),
+                      plotOutput("testGBox"))),
+                  tabPanel("Trend Line",
+                           plotOutput("testGTrend")),
+                  tabPanel("Data",
+                           verticalLayout(
+                             # htmlOutput("testGrowthDataHTML"),
+                             gt_output("testGrowthGtData")
+                           ))))),
+            tabPanel("Test Results",
+              verticalLayout(
+                htmlOutput("testResultsHeaderHTML"),
+                tabsetPanel(id = "testResultsTabsetPanel",
+                  tabPanel("Boxplot",
+                    verticalLayout(
+                      htmlOutput("testRBoxplotHeaderHTML"),
+                      plotOutput("testRBox"))),
+                  tabPanel("Trend Line",
+                           plotOutput("testRTrend")),
+                  tabPanel("Data",
+                           verticalLayout(
+                             gt_output("testResultsGtData")
+                           ))))),
+            tabPanel("Summary",
+                     includeHTML("./www/harvard_link.html"),
+                     mainPanel(htmlOutput("summaryHTML"))),
+            selected = defaultSelectedTab())
+          )
         )
 )
 
@@ -248,7 +315,9 @@ server <- function(input, output, session) {
   output$vaccRBoxHTML   <- renderUI({vaccRBoxHTML(input$movingAvg,
                                                   input$Vaccination)})
   output$vaccRTrendHTML <- renderUI({vaccRTrendHTML(input$movingAvg,
-                                                    input$Vaccination)})    
+                                                    input$Vaccination)})
+  output$vaccDataHTML <- renderUI({vaccDataHTML(input$movingAvg,
+                                                input$Vaccination)})
 
   output$vaccRBox <- renderPlot({plotVaccBoxplots(input$movingAvg,
                                                   input$Vaccination,
@@ -258,26 +327,34 @@ server <- function(input, output, session) {
                                                  input$Vaccination,
                                                  input$stateChoices,
                                                  input$timeWindow)})
+  output$vaccGtData <- render_gt(presentVaccData(input$movingAvg,
+                                                 input$Vaccination,
+                                                 input$stateChoices,
+                                                 input$timeWindow),
+                                 width = px(1000))
 
   # "New Cases" Tab
-  output$newCaseHeaderHTML <- renderUI({newCaseHeaderHTML(input$chooseCounty,
-                                                          input$countyChoices,
-                                                          input$stateChoices)})
+  output$newCaseHeaderHTML <- renderUI({newCaseHeaderHTML(input$movingAvg)})
   output$newCaseBox <- renderPlot({plotNewCaseBoxplots(input$chooseCounty,
                                                        input$movingAvg,
                                                        input$countyChoices,
                                                        input$stateChoices,
                                                        input$timeWindow)})
   output$newCaseTrend <- renderPlot({plotNewCaseTrend(input$chooseCounty,
-                                                         input$movingAvg,
-                                                         input$countyChoices,
-                                                         input$stateChoices,
-                                                         input$timeWindow)})
+                                                      input$movingAvg,
+                                                      input$countyChoices,
+                                                      input$stateChoices,
+                                                      input$timeWindow)})
+  output$newCaseBoxplotHeaderHTML <- renderUI({boxplotHeaderHTML(input$countyChoices,
+                                                                 input$stateChoices)})
+  output$newCaseGtData <- render_gt(presentNewCaseData(input$movingAvg,
+                                                       input$countyChoices,
+                                                       input$stateChoices,
+                                                       input$timeWindow),
+                                    width = px(1000))
   
   # "Total Cases" Tab
-  output$totalCaseHeaderHTML <- renderUI({totalCaseHeaderHTML(input$chooseCounty,
-                                                              input$countyChoices,
-                                                              input$stateChoices)})
+  output$totalCaseHeaderHTML <- renderUI({totalCaseHeaderHTML(input$movingAvg)})
   output$totalCaseBox <- renderPlot({plotTotalCaseBoxplots(input$chooseCounty,
                                                            input$movingAvg,
                                                            input$countyChoices,
@@ -288,9 +365,13 @@ server <- function(input, output, session) {
                                                           input$countyChoices,
                                                           input$stateChoices,
                                                           input$timeWindow)})
+  output$totalCaseBoxplotHeaderHTML <- renderUI({boxplotHeaderHTML(input$countyChoices,
+                                                                   input$stateChoices)})
+  output$totalCaseGtData <- render_gt(presentTotalCaseData(input$movingAvg),
+                                      width = px(1000))
   
   # "New Deaths" tab    
-  output$newDeathsHeaderHTML <- renderUI({newDeathsHeaderHTML(input$chooseCounty,
+  output$newDeathsHeaderHTML <- renderUI({newDeathsHeaderHTML(input$movingAvg,
                                                               input$countyChoices,
                                                               input$stateChoices)})
   output$newDeathsBox <- renderPlot({plotNewDeathsBoxplots(input$chooseCounty,
@@ -303,9 +384,16 @@ server <- function(input, output, session) {
                                                           input$countyChoices,
                                                           input$stateChoices,
                                                           input$timeWindow)})
+  output$newDeathsBoxplotHeaderHTML <- renderUI({boxplotHeaderHTML(input$countyChoices,
+                                                                   input$stateChoices)})
+  output$newDeathsGtData <- render_gt(presentNewDeathsData(input$movingAvg,
+                                                           input$countyChoices,
+                                                           input$stateChoices,
+                                                           input$timeWindow),
+                                 width = px(1000))
   
   # "Total Deaths" tab    
-  output$totalDeathsHeaderHTML <- renderUI({totalDeathsHeaderHTML(input$chooseCounty,
+  output$totalDeathsHeaderHTML <- renderUI({totalDeathsHeaderHTML(input$movingAvg,
                                                                   input$countyChoices,
                                                                   input$stateChoices)})
   output$totalDeathsBox <- renderPlot({plotTotalDeathsBoxplots(input$chooseCounty,
@@ -318,11 +406,20 @@ server <- function(input, output, session) {
                                                               input$countyChoices,
                                                               input$stateChoices,
                                                               input$timeWindow)})
+  output$totalDeathsBoxplotHeaderHTML <- renderUI({boxplotHeaderHTML(input$countyChoices,
+                                                                     input$stateChoices)})
+  output$totalDeathsGtData <- render_gt(presentTotalDeathsData(input$movingAvg,
+                                                               input$countyChoices,
+                                                               input$stateChoices,
+                                                               input$timeWindow),
+                                 width = px(1000))
   
   # "Test Growth" tab
   output$testGrowthHeaderHTML <- renderUI({testGrowthHeaderHTML(input$chooseCounty,
                                                                 input$countyChoices,
                                                                 input$stateChoices)})
+  output$testGBoxplotHeaderHTML <- renderUI({boxplotHeaderHTML(input$countyChoices,
+                                                               input$stateChoices)})
   output$testGBox <- renderPlot({plotTestGrowthBoxplots(input$chooseCounty,
                                                         input$movingAvg,
                                                         input$countyChoices,
@@ -333,11 +430,18 @@ server <- function(input, output, session) {
                                                        input$countyChoices,
                                                        input$stateChoices,
                                                        input$timeWindow)})
+  output$testGrowthGtData <- render_gt(presentTestGrowthData(input$movingAvg,
+                                                             input$countyChoices,
+                                                             input$stateChoices,
+                                                             input$timeWindow),
+                                 width = px(1000))
   
   # "Test Results" tab
   output$testResultsHeaderHTML <- renderUI({testResultsHeaderHTML(input$chooseCounty,
                                                                   input$countyChoices,
                                                                   input$stateChoices)})
+  output$testRBoxplotHeaderHTML <- renderUI({boxplotHeaderHTML(input$countyChoices,
+                                                               input$stateChoices)})
   output$testRBox <- renderPlot({plotTestResultBoxplots(input$chooseCounty,
                                                         input$movingAvg,
                                                         input$countyChoices,
@@ -348,6 +452,11 @@ server <- function(input, output, session) {
                                                        input$countyChoices,
                                                        input$stateChoices,
                                                        input$timeWindow)})
+  output$testResultsGtData <- render_gt(presentTestResultsData(input$movingAvg,
+                                                               input$countyChoices,
+                                                               input$stateChoices,
+                                                               input$timeWindow),
+                                        width = px(1000))
   
   # "Summary" tab
   output$summaryHTML <- renderUI({

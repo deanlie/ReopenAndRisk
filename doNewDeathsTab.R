@@ -61,14 +61,12 @@ getPopulationLimitedKeysText <- function(keyList, popLimit, adminTypePlural, col
   }
 }
 
-newDeathsHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
+newDeathsHeaderHTML <- function(movingAvg, countyChoices, stateChoices) {
   theText <- paste(tags$h4("Deaths"),
-                   tags$p("The CDC does not base reopening recommendations directly on 
-                             COVID-19 deaths, but we have the statistics and the graphing
-                             programs, so here you go:"),
+                   tags$p("The number of deaths from COVID-19 is unlikely to reach zero, but the fewer the better."),
                    sep="")
   
-  if (chooseCounty && (length(countyChoices) > 0)) {
+  if (length(countyChoices) > 0) {
     countyKeys <- c()
     for (aCounty in countyChoices) {
       newKeys <- makeCombinedKeys(aCounty, stateChoices[1])
@@ -79,13 +77,14 @@ newDeathsHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
                                                  admin1T$LC_PL, "CountyName")
     overlapTxt <- paste("If two or more selected ", admin1T$LC_PL,
                         " have identical graphs (e.g. zero deaths) for the selected ",
-                        "time period, the last one drawn wil hide the other. ",
-                        "If no graph is shown for your ",
+                        "time period, the last one drawn will hide the other. ",
+                        "If no graph is shown for a particular ",
                         admin1T$LC_S,
                         " please try again, selecting only it.")
-    if (length(smallPopsTxt > 0)) {
+    if ((!movingAvg) && (length(smallPopsTxt) > 0)) {
       theText <- paste(theText,
                        tags$p(smallPopsTxt),
+                       movingAvgWhy(),
                        tags$p(overlapTxt),
                        sep = "")
     } else {
@@ -102,9 +101,10 @@ newDeathsHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
     }
     smallPopsTxt <- getPopulationLimitedKeysText(stateKeys, 2000000,
                                                  "states", "Province_State")
-    if (length(smallPopsTxt > 0)) {
+    if ((!movingAvg) && (length(smallPopsTxt) > 0)) {
       theText <- paste(theText,
                        tags$p(smallPopsTxt),
+                       movingAvgWhy(),
                        sep = "")
     }
   }
@@ -156,4 +156,36 @@ plotNewDeathsTrend <- function(chooseCounty,
                           timeWindowXLabel(timeWindow),
                           newDeathsYLabel(),
                           timeWindow)
+}
+
+presentNewDeathsData <- function(movingAvg, countyChoices,
+                                 stateChoices, timeWindow,
+                                 traceThisRoutine = FALSE,
+                                 prepend = "") {
+  myPrepend <- paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered presentNewDeathsData\n")
+  }
+  if (is.null(stateChoices)) {
+    theData <- dataForNewDeathsPlots(TRUE, NULL, movingAvg, stateChoices)
+  } else {
+    theData <- dataForNewDeathsPlots(TRUE, countyChoices, movingAvg, stateChoices)
+  }
+  
+  theData <- cleanDataForPresentation(theData,
+                                      stateChoices,
+                                      countyChoices)
+  
+  result <- makeGtPresentation(theData,
+                               stateChoices,
+                               countyChoices,
+                               "New Deaths",
+                               "number of single day deaths per 100,000 population") %>%
+    styleSelectedLines(stateChoices, countyChoices)
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving presentNewDeathsData\n")
+  }
+  
+  return(result)
 }
