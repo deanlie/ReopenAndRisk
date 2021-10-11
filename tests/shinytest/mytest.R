@@ -35,7 +35,7 @@ app$setInputs(mainTabsetPanel = "Vaccination Progress")
 app$snapshot() # 15
 app$setInputs(mainTabsetPanel = "New Cases")
 app$snapshot()
-app$setInputs(mainTabsetPanel = "Total Cases")
+app$setInputs(mainTabsetPanel = "Total Cases", wait_ = FALSE, values_ = FALSE)
 app$snapshot()
 app$setInputs(mainTabsetPanel = "New Deaths")
 app$snapshot()
