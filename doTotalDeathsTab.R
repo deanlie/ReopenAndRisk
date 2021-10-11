@@ -78,7 +78,7 @@ totalDeathsHeaderHTML <- function(movingAvg, countyChoices, stateChoices) {
   if (length(countyChoices) > 0) {
     countyKeys <- c()
     for (aCounty in countyChoices) {
-      TotalKeys <- makeCombinedKeys(aCounty, stateChoices[1])
+      newKeys <- makeCombinedKeys(aCounty, stateChoices[1])
       countyKeys <- c(countyKeys, newKeys$spaced, newKeys$spaceless)
     }
     admin1T <- admin1TypeFor(stateChoices[1])
