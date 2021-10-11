@@ -4,17 +4,24 @@
     "countyChoices": null,
     "mainTabsetPanel": "Total Cases",
     "movingAvg": false,
+    "newCaseTabsetPanel": "Boxplot",
+    "newDeathsTabsetPanel": "Boxplot",
     "stateChoices": [
       "MA",
       "ME"
     ],
+    "testGrowthTabsetPanel": "Boxplot",
+    "testResultsTabsetPanel": "Boxplot",
     "timeWindow": 14,
-    "Vaccination": "People Fully Vaccinated"
+    "totalCaseTabsetPanel": "Boxplot",
+    "totalDeathsTabsetPanel": "Boxplot",
+    "Vaccination": "People Fully Vaccinated",
+    "vaccinationTabsetPanel": "Boxplot"
   },
   "output": {
     "totalCaseBox": {
-      "src": "[image data sha1: b269c329a954e267164cf5893c7a43dc3ae5b997]",
-      "width": 506,
+      "src": "[image data sha1: 06252e594c0f82850acb57b7dd86ce39acd2000f]",
+      "width": 714,
       "height": 400,
       "alt": "Plot object",
       "coordmap": {
@@ -28,7 +35,7 @@
             },
             "range": {
               "left": 0,
-              "right": 506,
+              "right": 714,
               "bottom": 399,
               "top": -1
             },
@@ -42,51 +49,22 @@
           }
         ],
         "dims": {
-          "width": 506,
+          "width": 714,
           "height": 400
         }
       }
     },
-    "totalCaseHeaderHTML": {
-      "html": "<h4>Trends of total cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p><\/p>",
+    "totalCaseBoxplotHeaderHTML": {
+      "html": "<p><\/p> <p>How to interpret these charts: The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box, a quarter above it and a quarter below it. Dots in a horizontal line near the top of the graph are not real data, but mean there is a data point at that level or higher (if the graph were scaled to show everything, the interesting part of the graph would be all squished at the bottom)<\/p> <p><\/p> <p><\/p>",
       "deps": [
 
       ]
     },
-    "totalCaseTrend": {
-      "src": "[image data sha1: 1e225a10049f4e9d75a807b9759430cf4aa4564e]",
-      "width": 506,
-      "height": 400,
-      "alt": "Plot object",
-      "coordmap": {
-        "panels": [
-          {
-            "domain": {
-              "left": -0.04,
-              "right": 1.04,
-              "bottom": -0.04,
-              "top": 1.04
-            },
-            "range": {
-              "left": 0,
-              "right": 506,
-              "bottom": 399,
-              "top": -1
-            },
-            "log": {
-              "x": null,
-              "y": null
-            },
-            "mapping": {
+    "totalCaseHeaderHTML": {
+      "html": "<h4>Trends of total cases<\/h4><p>Let's hope total number of total cases curve continues to flatten.<\/p><p>A 7-day moving average often shows trends more clearly.<\/p><p>Without averaging, states which do not report on Sundays, e.g.,\n                    make the data look less uniform than it is.<\/p><p><\/p>",
+      "deps": [
 
-            }
-          }
-        ],
-        "dims": {
-          "width": 506,
-          "height": 400
-        }
-      }
+      ]
     },
     "vaccHeaderHTML": {
       "html": "<h4>Vaccinations, People Fully Vaccinated<\/h4><p>Vaccination data is shown by percent of state or of US as a whole.<\/p><p>Highest People Fully Vaccinated rate: Montana with 74.6 percent<\/p><p>Next highest rate: Puerto Rico with 63.9 percent<\/p><p>Lowest People Fully Vaccinated rate: Wyoming with 36.8 percent<\/p><p>Next lowest rate: Idaho with 37 percent<\/p><p>Note that 'Total Doses' will be above 100% when close to 50% of the population\n                            has had a second dose!<\/p>",
@@ -95,7 +73,7 @@
       ]
     },
     "vaccRBox": {
-      "src": "[image data sha1: 70d2b9a608493ac5c341686f111aa6c8b66d38c2]",
+      "src": "[image data sha1: c9692679f0bf1c5a99cc38415e7f0482de396327]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
@@ -128,43 +106,7 @@
           "height": 400
         }
       }
-    },
-    "vaccRTrend": {
-      "src": "[image data sha1: aad2fd3eb0f6b45baea4457dbc7d43b4c7986f0e]",
-      "width": 506,
-      "height": 400,
-      "alt": "Plot object",
-      "coordmap": {
-        "panels": [
-          {
-            "domain": {
-              "left": -0.04,
-              "right": 1.04,
-              "bottom": -0.04,
-              "top": 1.04
-            },
-            "range": {
-              "left": 0,
-              "right": 506,
-              "bottom": 399,
-              "top": -1
-            },
-            "log": {
-              "x": null,
-              "y": null
-            },
-            "mapping": {
-
-            }
-          }
-        ],
-        "dims": {
-          "width": 506,
-          "height": 400
-        }
-      }
-    },
-    "vaccRTrendHTML": null
+    }
   },
   "export": {
 
