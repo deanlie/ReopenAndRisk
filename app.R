@@ -389,7 +389,7 @@ server <- function(input, output, session) {
                                  width = px(1000))
   
   # "Total Deaths" tab    
-  output$totalDeathsHeaderHTML <- renderUI({totalDeathsHeaderHTML(input$chooseCounty,
+  output$totalDeathsHeaderHTML <- renderUI({totalDeathsHeaderHTML(input$movingAvg,
                                                                   input$countyChoices,
                                                                   input$stateChoices)})
   output$totalDeathsBox <- renderPlot({plotTotalDeathsBoxplots(input$chooseCounty,

@@ -82,7 +82,7 @@ totalDeathsHeaderHTML <- function(movingAvg, countyChoices, stateChoices) {
       countyKeys <- c(countyKeys, newKeys$spaced, newKeys$spaceless)
     }
     admin1T <- admin1TypeFor(stateChoices[1])
-    smallPopsTxt <- getPopulationLimitedKeysText(countyKeys, 100000,
+    smallPopsTxt <- getPopulationLimitedKeysText(countyKeys, 10000,
                                                  admin1T$LC_PL, "CountyName")
     overlapTxt <- paste("If two or more selected ", admin1T$LC_PL,
                         " have identical graphs (e.g. zero deaths) for the selected ",
@@ -108,7 +108,7 @@ totalDeathsHeaderHTML <- function(movingAvg, countyChoices, stateChoices) {
       newKeys <- makeCombinedKeys(NA, aState)
       stateKeys <- c(stateKeys,  newKeys$spaced, newKeys$spaceless)
     }
-    smallPopsTxt <- getPopulationLimitedKeysText(stateKeys, 2000000,
+    smallPopsTxt <- getPopulationLimitedKeysText(stateKeys, 200000,
                                                  "states", "Province_State")
     if ((!movingAvg) && (length(smallPopsTxt) > 0)) {
       theText <- paste(theText,

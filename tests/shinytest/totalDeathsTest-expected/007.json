@@ -61,7 +61,7 @@
       ]
     },
     "totalDeathsHeaderHTML": {
-      "html": "<h4>Deaths<\/h4><p>By the present time, these totals change very slowly. Don't expect to see much change in this plot.<\/p><p>In states with small populations, such as Maine, a few deaths -- not to minimize their importance -- can make the statistics jump a lot from day to day.<\/p><p>A 7-day moving average often shows trends more clearly.<\/p><p>Without averaging, states which do not report on Sundays, e.g.,\n                make the data look less uniform than it is.<\/p>",
+      "html": "<h4>Deaths<\/h4><p>By the present time, these totals change very slowly. Don't expect to see much change in this plot.<\/p>",
       "deps": [
 
       ]
