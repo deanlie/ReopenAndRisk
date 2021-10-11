@@ -86,7 +86,7 @@ totalDeathsHeaderHTML <- function(movingAvg, countyChoices, stateChoices) {
                                                  admin1T$LC_PL, "CountyName")
     overlapTxt <- paste("If two or more selected ", admin1T$LC_PL,
                         " have identical graphs (e.g. zero deaths) for the selected ",
-                        "time period, the last one drawn wil hide the other. ",
+                        "time period, the last one drawn will hide the other. ",
                         "If no graph is shown for your ",
                         admin1T$LC_S,
                         " please try again, selecting only it.")

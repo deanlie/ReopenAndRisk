@@ -66,7 +66,7 @@
       ]
     },
     "newDeathsHeaderHTML": {
-      "html": "<h4>Deaths<\/h4><p>The number of deaths from COVID-19 is unlikely to reach zero, but the fewer the better.<\/p><p>In counties with small populations, such as Dukes County, a few deaths -- not to minimize their importance -- can make the statistics jump a lot from day to day.<\/p><p>A 7-day moving average often shows trends more clearly.<\/p><p>Without averaging, states which do not report on Sundays, e.g.,\n                make the data look less uniform than it is.<\/p><p>If two or more selected  counties  have identical graphs (e.g. zero deaths) for the selected  time period, the last one drawn wil hide the other.  If no graph is shown for a particular  county  please try again, selecting only it.<\/p>",
+      "html": "<h4>Deaths<\/h4><p>The number of deaths from COVID-19 is unlikely to reach zero, but the fewer the better.<\/p><p>In counties with small populations, such as Dukes County, a few deaths -- not to minimize their importance -- can make the statistics jump a lot from day to day.<\/p><p>A 7-day moving average often shows trends more clearly.<\/p><p>Without averaging, states which do not report on Sundays, e.g.,\n                make the data look less uniform than it is.<\/p><p>If two or more selected  counties  have identical graphs (e.g. zero deaths) for the selected  time period, the last one drawn will hide the other.  If no graph is shown for a particular  county  please try again, selecting only it.<\/p>",
       "deps": [
 
       ]

@@ -66,7 +66,7 @@
       ]
     },
     "totalDeathsHeaderHTML": {
-      "html": "<h4>Deaths<\/h4><p>By the present time, these totals change very slowly. Don't expect to see much change in this plot.<\/p><p>If two or more selected  counties  have identical graphs (e.g. zero deaths) for the selected  time period, the last one drawn wil hide the other.  If no graph is shown for your  county  please try again, selecting only it.<\/p>",
+      "html": "<h4>Deaths<\/h4><p>By the present time, these totals change very slowly. Don't expect to see much change in this plot.<\/p><p>If two or more selected  counties  have identical graphs (e.g. zero deaths) for the selected  time period, the last one drawn will hide the other.  If no graph is shown for your  county  please try again, selecting only it.<\/p>",
       "deps": [
 
       ]
