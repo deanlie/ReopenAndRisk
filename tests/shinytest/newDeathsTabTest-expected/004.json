@@ -1,0 +1,154 @@
+{
+  "input": {
+    "chooseCounty": false,
+    "mainTabsetPanel": "New Deaths",
+    "movingAvg": false,
+    "newCaseTabsetPanel": "Boxplot",
+    "newDeathsTabsetPanel": "Data",
+    "stateChoices": null,
+    "testGrowthTabsetPanel": "Boxplot",
+    "testResultsTabsetPanel": "Boxplot",
+    "timeWindow": 14,
+    "totalCaseTabsetPanel": "Boxplot",
+    "totalDeathsTabsetPanel": "Boxplot",
+    "Vaccination": "People Fully Vaccinated",
+    "vaccinationTabsetPanel": "Boxplot"
+  },
+  "output": {
+    "newDeathsBox": {
+      "src": "[image data sha1: 60067802e9aadc8b674095323445bf0ce50e5fa5]",
+      "width": 714,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 714,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 714,
+          "height": 400
+        }
+      }
+    },
+    "newDeathsBoxplotHeaderHTML": {
+      "html": "<p><\/p> <p>How to interpret these charts: The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box, a quarter above it and a quarter below it. Dots in a horizontal line near the top of the graph are not real data, but mean there is a data point at that level or higher (if the graph were scaled to show everything, the interesting part of the graph would be all squished at the bottom)<\/p> <p><\/p> <p><\/p>",
+      "deps": [
+
+      ]
+    },
+    "newDeathsGtData": {
+      "message": "ERROR",
+      "call": "NULL",
+      "type": [
+        "dplyr:::mutate_error",
+        "dplyr_error",
+        "rlang_error"
+      ]
+    },
+    "newDeathsHeaderHTML": {
+      "html": "<h4>Deaths<\/h4><p>The number of deaths from COVID-19 is unlikely to reach zero, but the fewer the better.<\/p>",
+      "deps": [
+
+      ]
+    },
+    "newDeathsTrend": {
+      "src": "[image data sha1: 621f06a0e6f871af010067622110c8d70d376646]",
+      "width": 714,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 714,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 714,
+          "height": 400
+        }
+      }
+    },
+    "vaccHeaderHTML": {
+      "html": "<h4>Vaccinations, People Fully Vaccinated<\/h4><p>Vaccination data is shown by percent of state or of US as a whole.<\/p><p>Highest People Fully Vaccinated rate: Montana with 74.6 percent<\/p><p>Next highest rate: Puerto Rico with 63.9 percent<\/p><p>Lowest People Fully Vaccinated rate: Wyoming with 36.8 percent<\/p><p>Next lowest rate: Idaho with 37 percent<\/p><p>Note that 'Total Doses' will be above 100% when close to 50% of the population\n                            has had a second dose!<\/p>",
+      "deps": [
+
+      ]
+    },
+    "vaccRBox": {
+      "src": "[image data sha1: 6ee3ec7aff23970d2464f14036e84aab65826a3f]",
+      "width": 506,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 506,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 506,
+          "height": 400
+        }
+      }
+    }
+  },
+  "export": {
+
+  }
+}
