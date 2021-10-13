@@ -11,6 +11,7 @@ library(shiny)
 library(ggplot2)
 library(gt)
 library(tidyverse)
+library(lubridate)
 
 source("mostRecentDataDate.R")
 source("assemblePlotObject.R")

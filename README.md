@@ -27,7 +27,9 @@ Other TODO
 
 Open Branches
 -------------
->FullTestCoverage: 
+>FullTestCoverage:
+
+> NOTE! The large tables generate huge output in the JSON files which take prohibitively long to diff. Before it is practical to create tests which cover these table outputs, it is imperative to create and use a small set of static data. As of Oct 13 I am checkpointing progress on the FullTestCoverage branch and opening a new branch, based on the master branch at a point where there are known bugs to exhibit errors to exercise the test system, to create and use such small data.
 
 > 1. Added tests, per main tab, which go through all subtabs of each of
 vaccination, new case, total case, new deaths, total deaths, test growth,
