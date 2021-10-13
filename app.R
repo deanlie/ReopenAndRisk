@@ -367,7 +367,10 @@ server <- function(input, output, session) {
                                                           input$timeWindow)})
   output$totalCaseBoxplotHeaderHTML <- renderUI({boxplotHeaderHTML(input$countyChoices,
                                                                    input$stateChoices)})
-  output$totalCaseGtData <- render_gt(presentTotalCaseData(input$movingAvg),
+  output$totalCaseGtData <- render_gt(presentTotalCaseData(input$movingAvg,
+                                                           input$countyChoices,
+                                                           input$stateChoices,
+                                                           input$timeWindow),
                                       width = px(1000))
   
   # "New Deaths" tab    

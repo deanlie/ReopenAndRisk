@@ -143,6 +143,11 @@ presentNewCaseData <- function(movingAvg, countyChoices,
   } else {
     theData <- dataForNewCasePlots(TRUE, countyChoices, movingAvg, stateChoices)
   }
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "theData names:",
+        paste(names(theData[c(1:5)]), sep = " "), "\n")
+  }
 
   theData <- cleanDataForPresentation(theData,
                                       stateChoices,

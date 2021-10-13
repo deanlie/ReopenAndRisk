@@ -16,7 +16,7 @@
   },
   "output": {
     "newCaseBox": {
-      "src": "[image data sha1: 937b26ce21bcdeaa70a17944c8c896a1086ec65c]",
+      "src": "[image data sha1: 4c2ad9f409bc2e41236a5294c3fdf84eb654a4b4]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -57,7 +57,7 @@
       ]
     },
     "newCaseGtData": {
-      "message": "ERROR",
+      "message": "Problem with `mutate()` column `State`.\nℹ `State = Province_State`.\n✖ object 'Province_State' not found",
       "call": "NULL",
       "type": [
         "dplyr:::mutate_error",
@@ -78,7 +78,7 @@
       ]
     },
     "vaccRBox": {
-      "src": "[image data sha1: 115bb7b105e37e170941d8669df830aa3de03219]",
+      "src": "[image data sha1: 605347b7d8a794964dc6602e3e583a09021a349d]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",

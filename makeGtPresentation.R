@@ -1,17 +1,43 @@
 cleanDataForPresentation <- function(theData,
                                      stateChoices,
-                                     countyChoices) {
-  if (is.null(countyChoices) || length(countyChoices) == 0) {
+                                     countyChoices,
+                                     traceThisRoutine = FALSE,
+                                     prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  traceFlagOnEntry <- traceThisRoutine
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Entered cleanDataForPresentation\n")
+  }
+
+  if (is.null(countyChoices) || is.null(stateChoices)) {
     theData <- theData %>%
-      mutate(State = Province_State, .before = 1, .keep = "unused") %>%
-      select(-Combined_Key, -Population)
+      mutate(State = str_replace(Combined_Key, ", US", ""), .before = 1, .keep = "unused") %>%
+      select(-Population)
   } else {
     admin1 <- admin1TypeFor(stateChoices[1])$UC_S
+    selectedState <- stateLookup[stateChoices[1]]
+    state_US <- paste(", ", selectedState, ", US", sep = "")
+    if (traceThisRoutine) {
+      cat(file = stderr(), myPrepend, "state_US match string is '", state_US, "'\n")
+    }
     theData <- theData %>%
-      mutate({{admin1}} := Admin2,
+      mutate({{admin1}} := str_replace(Combined_Key, {{state_US}}, ""),
              .before = 1, .keep = "unused") %>%
-      select(-Combined_Key, -Population, -Province_State)
+      select(-Population)
+    if ("Admin2" %in% names(theData)) {
+      theData <- theData %>%
+        select(-Admin2)
+    }
   }
+  if ("Province_State" %in% names(theData)) {
+    theData <- theData %>%
+      select(-Province_State)
+  }
+
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Leaving cleanDataForPresentation\n")
+  }
+
   return(theData)
 }
 

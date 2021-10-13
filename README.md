@@ -19,7 +19,7 @@ Bugs
 maybe by a factor of 10000, or maybe two data points are way off,
 throwing the whole plot scale off. Hold off on debugging until tables are
 displayed!
- * 2021-10-11: Run errorsOct11.R to see bugs in data display for 
+ * 2021-10-11: Run errorsOct11.R to see some bugs in data display
 
 Other TODO
 ----------
@@ -35,6 +35,7 @@ and test results tabs
 > 2. TODO: Upgrade mytest.R so it goes through all of the above in one test
 > 3. TODO: Remove BackOutCounties; it was to detect a particular bug
 > 4. TODO: Remove newCasesTest, totalCasesTest, newDeathsTest, totalDeathsTest
+> 5. TODO: Make sure that newCasesTabTest etc can do comparisons with expected; you may have to remove and reconstruct expected files
   
 Notes to self:
 --------------

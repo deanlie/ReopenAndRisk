@@ -51,12 +51,6 @@ totalCaseYLabel <- function() {
 
 selectPlotData <- function(selectorRoutine, chooseCounty,
                            forBoxplot, countyChoices, movingAvg, stateChoices) {
-  # if (!chooseCounty) {
-  #   countyChoices <- NULL
-  # }
-  cat(file = stderr(), "selectPlotData: countyChoices = *",
-      paste(countyChoices, sep = " "), "*\n", sep = "")
-
   if (is.null(stateChoices)) {
     theData <- selectorRoutine(forBoxplot, NULL, movingAvg, stateChoices)
   } else {
