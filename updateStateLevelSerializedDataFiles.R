@@ -179,7 +179,7 @@ updatePopulationEstimateData <- function(aDate, dailyStateData,
   # could not be computed for it. I therefore decided to eliminate
   # estimate 1 and estimate the population of all items as
   # 100000 * Total_Test_Results / Testing_Rate.
-  
+
   myPrepend = paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered updatePopulationEstimateData\n")
@@ -209,7 +209,6 @@ updatePopulationEstimateData <- function(aDate, dailyStateData,
 
 makeInitialStateLevelData <- function(nDates = 60,
                                       traceThisRoutine = FALSE, prepend = "") {
-  # stop("Per request!")
   myPrepend = paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered makeInitialStateLevelData\n")
@@ -267,12 +266,22 @@ makeInitialStateLevelData <- function(nDates = 60,
     # Test Puerto Rico and DC carefully in all paths of UI interaction
     
     write_csv(newTibble, paste("./DATA/US_State_", aType, ".csv", sep=""))
+    if (traceThisRoutine) {
+      cat(file = stderr(), myPrepend, "Wrote",
+          paste("./DATA/US_State_", aType, ".csv", sep=""), "\n")
+      cat(file = stderr(), myPrepend, "It had", dim(newTibble)[2], "columns\n")
+    }
     
     newUSTibble <- newTibble %>%
       summarise(Province_State = "", Combined_Key = "US",
                 across(matches("^Pop|^[1-9]+/"), sumIgnoreNA))
 
     write_csv(newUSTibble, paste("./DATA/US_", aType, ".csv", sep=""))
+    if (traceThisRoutine) {
+      cat(file = stderr(), myPrepend, "Wrote",
+          paste("./DATA/US_", aType, ".csv", sep=""), "\n")
+      cat(file = stderr(), myPrepend, "It had", dim(newUSTibble)[2], "columns\n")
+    }
   }
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving makeInitialStateLevelData\n")
@@ -280,6 +289,7 @@ makeInitialStateLevelData <- function(nDates = 60,
 }
 
 updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = TRUE, prepend = "CALLER??") {
+  traceThisRoutine <- TRUE
   myPrepend <- paste("  ", prepend)
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered updateStateLevelSerializedDataFilesAsNecessary\n")
@@ -294,6 +304,9 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = TR
     # Update is required
     if (class(US_Testing_Rate)[1] == "try-error") {
       # There's no old data of the type we want.
+      if (traceThisRoutine) {
+        cat(file = stderr(), myPrepend, "No US_Testing_Rate.csv found on entry\n")
+      }
       makeInitialStateLevelData(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
       # Now we should be able to get some data
       options(show.error.messages = TRUE)
@@ -302,13 +315,13 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = TR
     } 
     # We have US_Testing_Rate for that type -- but it may not be up-to-date
     if (traceThisRoutine) {
-      cat(file = stderr(), myPrepend, "We have a data file, but it may not be current.\n")
+      cat(file = stderr(), myPrepend, "We have a US_Testing_Rate file, but it may not be current.\n")
     }
     # Get date range needed
     colNames <- names(US_Testing_Rate)
     lastName <- colNames[length(colNames)]
     if (traceThisRoutine) {
-      cat(file = stderr(), myPrepend, "Latest data is from", lastName, "\n")
+      cat(file = stderr(), myPrepend, "Latest column is", lastName, "\n")
     }
 
     lastDate <- mdy(lastName)
@@ -401,7 +414,7 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = TR
             mutate(Combined_Key = paste(Province_State, ", US", sep=""),
                    "{columnDate}" := .data[[thatType]],
                    .keep = "none")
-          newData <- left_join(oldData, joinTibble, by="Combined_Key")
+          newData <- left_join(oldData, joinTibble, by="Combined_Key") # HERE??
           write_csv(newData, newLocalDataPath)
         
           newUSData <- newData %>%
