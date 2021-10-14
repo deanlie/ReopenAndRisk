@@ -15,6 +15,7 @@ Updated, Redeployed Oct 7, 2021
 
 Bugs
 ----
+ * 2021-10-14: US_State_Testing_Rate.csv, US_State_Total_Test_Results, US_State_Case_Fatality_Ratio, and US_State_Incident_Rate were rewritten to eliminate bad column names. See DEVELOPMENT/zapStateTestingRate.R. There is a bug in computation of the corresponding US_ data files.
  * 2021-10-08: Test Positivity boxplots have a bug! Scale is off,
 maybe by a factor of 10000, or maybe two data points are way off,
 throwing the whole plot scale off. Hold off on debugging until tables are

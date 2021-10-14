@@ -1,4 +1,4 @@
-# Rebuild US and State data files forUS_State_Total_Test_Results.csv data file
+# Rebuild US and State data files for US_State_Total_Test_Results.csv data file
 
 # Daily update data is still available in ReopenAndRisk/DATA/mm-dd-2021.csv
 # from 04-01-2021 through 07-21-2021
@@ -235,7 +235,13 @@ checkComputableForDateRange <- function(startDateString, stopDateString, MaxErro
   }
 }
   
-rebuildTotalTestResultsFile <- function() {
+rebuildTotalTestResultsFile <- function(traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  traceThisRoutine <- TRUE
+  traceFlagOnEntry <- traceThisRoutine
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Entered rebuildTotalTestResultsFile\n")
+  }
   # First, let's be sure we have the dates in the format we need
   nDates = 60
   firstDate <- Sys.Date() - nDates
@@ -290,6 +296,12 @@ rebuildTotalTestResultsFile <- function() {
   write_csv(buildingStateTibble, "./DATA/US_State_Total_Test_Results.csv")
   write_csv(buildingUSTibble, "./DATA/US_Total_Test_Results.csv")
 
-  list(US = buildingUSTibble, States = buildingStateTibble)
+  result <- list(US = buildingUSTibble, States = buildingStateTibble)
+  
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Leaving rebuildTotalTestResultsFile\n")
+  }
+  
+  return(re)
 }
 

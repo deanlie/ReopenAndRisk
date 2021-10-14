@@ -275,6 +275,7 @@ addDateRangeToStateDataFilesForTypes <- function(newST, firstDate, lastDate,
 
 rebuildStateDataFilesForTypes <- function(nDates = 60, stopNDaysBeforePresent = 1,
                                           traceThisRoutine = FALSE, prepend = "") {
+  traceThisRoutine <- TRUE
   myPrepend = paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered rebuildStateDataFilesForTypes\n")
@@ -348,6 +349,7 @@ rebuildStateDataFilesForTypes <- function(nDates = 60, stopNDaysBeforePresent = 
 
 rebuildUSDataFileForTypeAsSummary <- function(stateDataTibble, aType,
                                               traceThisRoutine = FALSE, prepend = "") {
+  traceThisRoutine <- TRUE
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered rebuildUSDataFileForTypeAsSummary\n")
@@ -386,6 +388,7 @@ rebuildUSDataFileForTypeAsSummary <- function(stateDataTibble, aType,
 
 rebuildUSDataFileForTypeAsWeightedAvg <- function(stateTibble, aType,
                                                   traceThisRoutine = FALSE, prepend = "") {
+  traceThisRoutine <- TRUE
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered rebuildUSDataFileForTypeAsWeightedAvg\n")
@@ -425,6 +428,7 @@ rebuildUSDataFileForTypeFromProperData <- function(USNumeratorTibble,
                                                    USDenominatorTibble,
                                                    aType,
                                                    traceThisRoutine = FALSE, prepend = "") {
+  traceThisRoutine <- TRUE
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered rebuildUSDataFileForTypeFromProperData\n")
@@ -433,6 +437,7 @@ rebuildUSDataFileForTypeFromProperData <- function(USNumeratorTibble,
   commonColumns <- intersect(names(USNumeratorTibble), names(USDenominatorTibble))
 
   if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "aTypen is", aType, "\n")
     cat(file = stderr(), myPrepend, "commonColumns", paste(commonColumns, sep = ", "), "\n")
   }
 
