@@ -437,7 +437,7 @@ rebuildUSDataFileForTypeFromProperData <- function(USNumeratorTibble,
   commonColumns <- intersect(names(USNumeratorTibble), names(USDenominatorTibble))
 
   if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "aTypen is", aType, "\n")
+    cat(file = stderr(), myPrepend, "aType is", aType, "\n")
     cat(file = stderr(), myPrepend, "commonColumns", paste(commonColumns, sep = ", "), "\n")
   }
 
