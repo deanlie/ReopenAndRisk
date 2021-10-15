@@ -109,8 +109,8 @@ loadATypeOfData <- function(staticDataQ, theType, colTypes, stateColTypes,
     }
   }
 
-  if (isTRUE(getOption("shiny.testmode"))) {
-    getNAvgs <- 7
+  if (staticDataQ) {
+    getNAvgs <- 8
     nDaysData <- 15
   } else {
     getNAvgs <- 28
