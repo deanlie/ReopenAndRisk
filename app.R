@@ -32,7 +32,7 @@ manualStaticData <- function() {
 }
 
 manualTraceModeQ <- function() {
-  TRUE
+ FALSE
 }
 
 testModeQ <- function() {

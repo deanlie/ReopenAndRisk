@@ -237,7 +237,6 @@ checkComputableForDateRange <- function(startDateString, stopDateString, MaxErro
   
 rebuildTotalTestResultsFile <- function(traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
-  traceThisRoutine <- TRUE
   traceFlagOnEntry <- traceThisRoutine
   if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Entered rebuildTotalTestResultsFile\n")

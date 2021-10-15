@@ -17,14 +17,14 @@ loadATypeOfData <- function(staticDataQ, theType, colTypes, stateColTypes,
   #####################################
   #  Functions local to this routine  #
   #####################################
-  readLeaf <- function(staticDataQ, aLeaf, colTypes) {
+  readLeaf <- function(staticDataQ, aLeaf) {
     if (staticDataQ) {
       theDirectory <- "./DATA/STATIC/"
     } else {
       theDirectory <- "./DATA/"
     }
     aPath <- paste(theDirectory, aLeaf, sep = "")
-    aTibble <- read_csv(aPath, col_types = colTypes) %>%
+    aTibble <- read_csv(aPath, show_col_types = FALSE) %>%
       filter(!str_detect(Combined_Key, "Princess"))
   }
 
@@ -95,14 +95,14 @@ loadATypeOfData <- function(staticDataQ, theType, colTypes, stateColTypes,
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "before readLeaf", US_leaf, "...\n")
   }
-  results$US <- readLeaf(staticDataQ, US_leaf, colTypes) # US_Cumulative
+  results$US <- readLeaf(staticDataQ, US_leaf) # US_Cumulative
   
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "before readLeaf", State_leaf, "...\n")
   }
-  results$State <- readLeaf(staticDataQ, State_leaf, stateColTypes)
+  results$State <- readLeaf(staticDataQ, State_leaf)
   if (computeCounty) {
-    results$County <- readLeaf(staticDataQ, County_leaf, myCountyTSColTypes())
+    results$County <- readLeaf(staticDataQ, County_leaf)
     if (traceThisRoutine) {
       names_p <- paste(names(results$County)[1:5])
       cat(file = stderr(), myPrepend, "results$County names:", names_p, "...\n")
@@ -126,9 +126,6 @@ loadATypeOfData <- function(staticDataQ, theType, colTypes, stateColTypes,
                                    "State", theType, nDaysData,
                                    traceThisRoutine = traceThisRoutine,
                                    prepend = myPrepend)
-
-    # OUCH
-    traceThisRoutine <- FALSE
 
     if (traceThisRoutine) {
       conciseEndsOfTibbleRow(results$State_New, "results$State_New",
@@ -330,7 +327,6 @@ loadUSConfirmedData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, p
     staticDataQ <- TRUE
   }
 
-  traceThisRoutine <- FALSE
   allConfirmedData <- loadATypeOfData(staticDataQ, "Confirmed",
                                       myTSColTypes(), myTSColTypes(),
                                       computeCounty = TRUE,
@@ -387,7 +383,6 @@ loadUSDeathsData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prep
     staticDataQ <- TRUE
   }
 
-  traceThisRoutine <-  FALSE
   allDeathsData <- loadATypeOfData(staticDataQ, "Deaths",
                                    myTSColTypes(), myTSColTypes(),
                                    computeCounty = TRUE,
@@ -442,7 +437,6 @@ loadUSTestResultsData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE,
     staticDataQ <- TRUE
   }
 
-  traceThisRoutine <- FALSE
   allTestResultsData <- loadATypeOfData(staticDataQ, "Total_Test_Results",
                                         justCKColTypes(), justCKColTypes(),
                                         computeNew = TRUE,
@@ -476,7 +470,6 @@ loadUSVaccinationData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE,
     staticDataQ <- TRUE
   }
 
-  traceThisRoutine <- FALSE
   allVaccinationData <- loadATypeOfData(staticDataQ, "Vaccinations",
                                         vaccColTypes(), vaccColTypes(),
                                         computeAvg = TRUE,
@@ -508,7 +501,6 @@ loadUSIncidentRateData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE
     staticDataQ <- TRUE
   }
 
-  traceThisRoutine <- FALSE
   allIncidentRateData <- loadATypeOfData(staticDataQ, "Incident_Rate",
                                          myTSColTypes(), justCKColTypes(),
                                          computeNew = TRUE,
@@ -581,8 +573,6 @@ loadUSMortalityRateData <- function(staticDataQ = FALSE,
     staticDataQ <- TRUE
   }
   
-  traceThisRoutine <- FALSE
-  
   allMortalityRateData <- loadATypeOfData(staticDataQ, "Case_Fatality_Ratio",
                                         myTSColTypes(), justCKColTypes(),
                                         traceThisRoutine = traceThisRoutine,
@@ -629,8 +619,9 @@ loadAllUSData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend
   if (!staticDataQ) {
     updateTimeSeriesDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
                                          prepend = myPrepend)
-    updateStateLevelSerializedDataFilesAsNecessary(traceThisRoutine = TRUE,
-                                                   prepend = myPrepend)
+    updateSerializedDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
+                                         prepend = myPrepend)
+    traceThisRoutine <- traceFlagOnEntry
   }
 
   loadUSVaccinationData(staticDataQ = staticDataQ,

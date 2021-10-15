@@ -275,7 +275,6 @@ addDateRangeToStateDataFilesForTypes <- function(newST, firstDate, lastDate,
 
 rebuildStateDataFilesForTypes <- function(nDates = 60, stopNDaysBeforePresent = 1,
                                           traceThisRoutine = FALSE, prepend = "") {
-  traceThisRoutine <- TRUE
   myPrepend = paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered rebuildStateDataFilesForTypes\n")
@@ -349,7 +348,6 @@ rebuildStateDataFilesForTypes <- function(nDates = 60, stopNDaysBeforePresent = 
 
 rebuildUSDataFileForTypeAsSummary <- function(stateDataTibble, aType,
                                               traceThisRoutine = FALSE, prepend = "") {
-  traceThisRoutine <- TRUE
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered rebuildUSDataFileForTypeAsSummary\n")
@@ -375,7 +373,7 @@ rebuildUSDataFileForTypeAsSummary <- function(stateDataTibble, aType,
 
   newUSDataTibble <- allNumTibble %>%
     summarise(across(.cols = everything(), .fns = sum)) %>%
-    mutate(Combined_Key = "US", .before = Population)
+    mutate(Combined_Key = "US", .before = everything())
 
   write_csv(newUSDataTibble, USDataFileName)
 
@@ -388,10 +386,15 @@ rebuildUSDataFileForTypeAsSummary <- function(stateDataTibble, aType,
 
 rebuildUSDataFileForTypeAsWeightedAvg <- function(stateTibble, aType,
                                                   traceThisRoutine = FALSE, prepend = "") {
-  traceThisRoutine <- TRUE
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered rebuildUSDataFileForTypeAsWeightedAvg\n")
+    cat(file = stderr(), myPrepend, "aType =", aType, "\n")
+  }
+  
+  # if "Population" is not a column of stateTibble, join it
+  if (!("Population" %in% names(stateTibble))) {
+    stateTibble <- right_join(US_State_Population_Est, stateTibble, by = "Combined_Key")
   }
 
   intermedUSTibble1 <- stateTibble %>%
@@ -428,7 +431,6 @@ rebuildUSDataFileForTypeFromProperData <- function(USNumeratorTibble,
                                                    USDenominatorTibble,
                                                    aType,
                                                    traceThisRoutine = FALSE, prepend = "") {
-  traceThisRoutine <- TRUE
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered rebuildUSDataFileForTypeFromProperData\n")
@@ -553,7 +555,7 @@ rebuildUSDataFilesForTypes <- function(stateTibbles, traceThisRoutine = FALSE, p
                                                            traceThisRoutine = traceThisRoutine,
                                                            prepend = myPrepend)
   
-  newUSTibbles <- list(USTTR = US_Total_Test_Results,
+  newUSTibbles <- list(US_TTR = US_Total_Test_Results,
                        US_CFR_i = US_Case_Fatality_Ratio_0$IM,
                        US_CFR_0 = US_Case_Fatality_Ratio_0$FF,
                        US_CFR = US_Case_Fatality_Ratio,
@@ -570,7 +572,51 @@ rebuildUSDataFilesForTypes <- function(stateTibbles, traceThisRoutine = FALSE, p
   
   return(newUSTibbles)
 }
+
+rebuildUSDataFilesForTypes_B <- function(stateTibbles, traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered rebuildUSDataFilesForTypes\n")
+  }
   
+  US_Total_Test_Results <- rebuildUSDataFileForTypeAsSummary(stateTibbles$Total_Test_Results,
+                                                             "Total_Test_Results",
+                                                             traceThisRoutine = traceThisRoutine,
+                                                             prepend = myPrepend)
+  
+  US_Deaths <- read_csv("./DATA/US_Deaths.csv",
+                        col_types = myTSColTypes())
+  US_Confirmed <- read_csv("./DATA/US_Confirmed.csv",
+                           col_types = myTSColTypes())
+
+  US_Case_Fatality_Ratio <- rebuildUSDataFileForTypeFromProperData(US_Deaths,
+                                                                   US_Confirmed,
+                                                                   "Case_Fatality_Ratio",
+                                                                   traceThisRoutine = traceThisRoutine,
+                                                                   prepend = myPrepend)
+  
+  US_Incident_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Confirmed,
+                                                            "Incident_Rate",
+                                                            traceThisRoutine = traceThisRoutine,
+                                                            prepend = myPrepend)
+  
+  US_Testing_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Total_Test_Results,
+                                                           "Testing_Rate",
+                                                           traceThisRoutine = traceThisRoutine,
+                                                           prepend = myPrepend)
+  
+  newUSTibbles <- list(US_TTR = US_Total_Test_Results,
+                       US_CFR = US_Case_Fatality_Ratio,
+                       US_IR = US_Incident_Rate,
+                       US_TR = US_Testing_Rate)
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving rebuildUSDataFilesForTypes\n")
+  }
+  
+  return(newUSTibbles)
+}
+
 rebuildFourTypes <-  function(traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {

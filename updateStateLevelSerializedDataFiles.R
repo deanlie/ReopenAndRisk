@@ -8,6 +8,7 @@ source("pathnameFunctions.R")
 source("URLFunctions.R")
 source("downloadJHUData.R")
 source("columnUtilities.R")
+source("rebuildDataFileForType.R")
 
 typesStateLevelData <- function(aDate) {
   newTypes <- c("Incident_Rate", "Case_Fatality_Ratio",
@@ -59,20 +60,6 @@ discardTooNewDataFromStateTibbles <- function(existingStateTibbles,
                                                             firstDateToDelete,
                                                             traceThisRoutine = traceThisRoutine,
                                                             prepend = myPrepend)
-  
-  # for (aType in c("Total_Test_Results", "Case_Fatality_Ratio", "Incident_Rate", "Testing_Rate")) {
-  #   theNames <- names(existingStateTibbles[[aType]])
-  #   newNames <- c("Combined_Key", "Population")
-  #   for (aName in theNames) {
-  #     if (aName != "Combined_Key" & aName != "Population") {
-  #       if (mdy(aName) < firstDateToDelete) {
-  #         newNames <- c(newNames, aName)
-  #       }
-  #     }
-  #   }
-  #   existingStateTibbles[[aType]] <- existingStateTibbles[[aType]] %>%
-  #     select(any_of({newNames}))
-  # }
   
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving discardTooNewDataFromStateTibbles\n")
@@ -288,11 +275,10 @@ makeInitialStateLevelData <- function(nDates = 60,
   }
 }
 
-updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = TRUE, prepend = "CALLER??") {
-  traceThisRoutine <- TRUE
+updateSerializedDataFilesAsNecessary <- function(traceThisRoutine = FALSE, prepend = "CALLER??") {
   myPrepend <- paste("  ", prepend)
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered updateStateLevelSerializedDataFilesAsNecessary\n")
+    cat(file = stderr(), prepend, "Entered updateSerializedDataFilesAsNecessary\n")
   }
 
   # Check the last state level serialized data file for last date;
@@ -387,14 +373,15 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = TR
           thatType <- aList$thatDateTypes[i]
           prevType <- aList$prevDateTypes[i]
           oldLocalDataPath <- paste("./DATA/US_State_", prevType, ".csv", sep = "")
-          newLocalDataPath <- paste("./DATA/US_State_", thatType, ".csv", sep = "")
-          newLocalUSDataPath <- paste("./DATA/US_", thatType, ".csv", sep = "")
+          newLocalStateDataPath <- paste("./DATA/US_State_", thatType, ".csv", sep = "")
           if (traceThisRoutine) {
-            cat(file = stderr(), myPrepend, "Updating ", oldLocalDataPath, "to", newLocalDataPath,"\n")
+            cat(file = stderr(), myPrepend, "Updating ", oldLocalDataPath,
+                "to", newLocalStateDataPath,"\n")
             cat(file = stderr(), myPrepend,
                 paste("before try(read_csv(", oldLocalDataPath, ")\n", sep = ""))
           }
           options(show.error.messages = traceThisRoutine)
+          
           oldData <- try(read_csv(oldLocalDataPath,
                                   col_types = justCKColTypes()))
           if (traceThisRoutine) {
@@ -407,20 +394,16 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = TR
             if (class(oldData)[1] == "try-error") {
               cat(file = stderr(), myPrepend,
                   paste("read_csv(", oldLocalDataPath,") failed\n", sep=""))
-              cat(file = stderr(), myPrepend, "newLocalDataPath = ", newLocalDataPath, "\n")
+              cat(file = stderr(), myPrepend,
+                  "newLocalStateDataPath = ", newLocalStateDataPath, "\n")
             }
           }
           joinTibble <- updateTibble %>%
             mutate(Combined_Key = paste(Province_State, ", US", sep=""),
                    "{columnDate}" := .data[[thatType]],
                    .keep = "none")
-          newData <- left_join(oldData, joinTibble, by="Combined_Key") # HERE??
-          write_csv(newData, newLocalDataPath)
-        
-          newUSData <- newData %>%
-            summarise(Province_State = "", Combined_Key = "US",
-                      across(matches("^Pop|^[1-9]+/"), sumIgnoreNA))
-          write_csv(newUSData, newLocalUSDataPath)
+          newData <- left_join(oldData, joinTibble, by="Combined_Key")
+          write_csv(newData, newLocalStateDataPath)
         }
         updateDate <- updateDate + 1
       } else {
@@ -428,7 +411,41 @@ updateStateLevelSerializedDataFilesAsNecessary <- function(traceThisRoutine = TR
       }
     }
   }
+
+  US_State_Total_Test_Results <- read_csv("./DATA/US_State_Total_Test_Results.csv",
+                                          show_col_types = FALSE)
+  US_Total_Test_Results <- rebuildUSDataFileForTypeAsSummary(US_State_Total_Test_Results,
+                                                             "Total_Test_Results",
+                                                             traceThisRoutine = traceThisRoutine,
+                                                             prepend = myPrepend)
+  write_csv(US_Total_Test_Results, "./DATA/US_Total_Test_Results.csv")
+
+  US_Deaths <- read_csv("./DATA/US_Deaths.csv",
+                        show_col_types = FALSE)
+  US_Confirmed <- read_csv("./DATA/US_Confirmed.csv",
+                           show_col_types = FALSE)
+  
+  US_Case_Fatality_Ratio <- rebuildUSDataFileForTypeFromProperData(US_Deaths,
+                                                                   US_Confirmed,
+                                                                   "Case_Fatality_Ratio",
+                                                                   traceThisRoutine = traceThisRoutine,
+                                                                   prepend = myPrepend)
+  write_csv(US_Case_Fatality_Ratio, "./DATA/US_Case_Fatality_Ratio.csv")
+  
+  US_Incident_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Confirmed,
+                                                            "Incident_Rate",
+                                                            traceThisRoutine = traceThisRoutine,
+                                                            prepend = myPrepend)
+  write_csv(US_Incident_Rate, "./DATA/US_Incident_Rate.csv")
+  
+  US_Testing_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Total_Test_Results,
+                                                           "Testing_Rate",
+                                                           traceThisRoutine = traceThisRoutine,
+                                                           prepend = myPrepend)
+
+  write_csv(US_Testing_Rate, "./DATA/US_Testing_Rate.csv")
+
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving updateStateLevelSerializedDataFilesAsNecessary\n")
+    cat(file = stderr(), prepend, "Leaving updateSerializedDataFilesAsNecessary\n")
   }
 }
