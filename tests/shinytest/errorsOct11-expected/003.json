@@ -1,0 +1,227 @@
+{
+  "input": {
+    "chooseCounty": false,
+    "mainTabsetPanel": "New Deaths",
+    "movingAvg": false,
+    "newCaseTabsetPanel": "Data",
+    "newDeathsTabsetPanel": "Data",
+    "stateChoices": null,
+    "testGrowthTabsetPanel": "Boxplot",
+    "testResultsTabsetPanel": "Boxplot",
+    "timeWindow": 7,
+    "totalCaseTabsetPanel": "Data",
+    "totalDeathsTabsetPanel": "Boxplot",
+    "Vaccination": "People Fully Vaccinated",
+    "vaccinationTabsetPanel": "Boxplot"
+  },
+  "output": {
+    "newCaseBox": {
+      "src": "[image data sha1: 40c7c54cb3cba21df962d4782e0773d1030e55f1]",
+      "width": 714,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 714,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 714,
+          "height": 400
+        }
+      }
+    },
+    "newCaseBoxplotHeaderHTML": {
+      "html": "<p><\/p> <p>How to interpret these charts: The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box, a quarter above it and a quarter below it. Dots in a horizontal line near the top of the graph are not real data, but mean there is a data point at that level or higher (if the graph were scaled to show everything, the interesting part of the graph would be all squished at the bottom)<\/p> <p><\/p> <p><\/p>",
+      "deps": [
+
+      ]
+    },
+    "newCaseGtData": {
+      "message": "Problem with `mutate()` column `State`.\nℹ `State = Province_State`.\n✖ object 'Province_State' not found",
+      "call": "NULL",
+      "type": [
+        "dplyr:::mutate_error",
+        "dplyr_error",
+        "rlang_error"
+      ]
+    },
+    "newCaseHeaderHTML": {
+      "html": "<h4>Trends of new cases<\/h4><p>We are hoping to see a steady downward trend of new cases.<\/p><p>A 7-day moving average often shows trends more clearly.<\/p><p>Without averaging, states which do not report on Sundays, e.g.,\n                make the data look less uniform than it is.<\/p><p><\/p>",
+      "deps": [
+
+      ]
+    },
+    "newDeathsBox": {
+      "src": "[image data sha1: c8a045e63e8a5708e5c00fb2f0b81d0a25086cd6]",
+      "width": 714,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 714,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 714,
+          "height": 400
+        }
+      }
+    },
+    "newDeathsBoxplotHeaderHTML": {
+      "html": "<p><\/p> <p>How to interpret these charts: The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box, a quarter above it and a quarter below it. Dots in a horizontal line near the top of the graph are not real data, but mean there is a data point at that level or higher (if the graph were scaled to show everything, the interesting part of the graph would be all squished at the bottom)<\/p> <p><\/p> <p><\/p>",
+      "deps": [
+
+      ]
+    },
+    "newDeathsGtData": {
+      "message": "Problem with `mutate()` column `State`.\nℹ `State = Province_State`.\n✖ object 'Province_State' not found",
+      "call": "NULL",
+      "type": [
+        "dplyr:::mutate_error",
+        "dplyr_error",
+        "rlang_error"
+      ]
+    },
+    "newDeathsHeaderHTML": {
+      "html": "<h4>Deaths<\/h4><p>The number of deaths from COVID-19 is unlikely to reach zero, but the fewer the better.<\/p>",
+      "deps": [
+
+      ]
+    },
+    "totalCaseBox": {
+      "src": "[image data sha1: ea2bc7fa666633572787f91396898c56d25e94ba]",
+      "width": 714,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 714,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 714,
+          "height": 400
+        }
+      }
+    },
+    "totalCaseBoxplotHeaderHTML": {
+      "html": "<p><\/p> <p>How to interpret these charts: The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box, a quarter above it and a quarter below it. Dots in a horizontal line near the top of the graph are not real data, but mean there is a data point at that level or higher (if the graph were scaled to show everything, the interesting part of the graph would be all squished at the bottom)<\/p> <p><\/p> <p><\/p>",
+      "deps": [
+
+      ]
+    },
+    "totalCaseGtData": {
+      "message": "argument \"countyChoices\" is missing, with no default",
+      "call": "paste(countyChoices, sep = \" \")",
+      "type": null
+    },
+    "totalCaseHeaderHTML": {
+      "html": "<h4>Trends of total cases<\/h4><p>Let's hope total number of total cases curve continues to flatten.<\/p><p>A 7-day moving average often shows trends more clearly.<\/p><p>Without averaging, states which do not report on Sundays, e.g.,\n                make the data look less uniform than it is.<\/p><p><\/p>",
+      "deps": [
+
+      ]
+    },
+    "vaccHeaderHTML": {
+      "html": "<h4>Vaccinations, People Fully Vaccinated<\/h4><p>Vaccination data is shown by percent of state or of US as a whole.<\/p><p>Highest People Fully Vaccinated rate: Puerto Rico with 64.9 percent<\/p><p>Next highest rate: Massachusetts with 62.5 percent<\/p><p>Lowest People Fully Vaccinated rate: Alabama with 38.6 percent<\/p><p>Next lowest rate: Louisiana with 41.3 percent<\/p><p>Note that 'Total Doses' will be above 100% when close to 50% of the population\n                            has had a second dose!<\/p>",
+      "deps": [
+
+      ]
+    },
+    "vaccRBox": {
+      "src": "[image data sha1: c3847a7fc9cda8e63ec3fe36914c783e8bc1a831]",
+      "width": 506,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 506,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 506,
+          "height": 400
+        }
+      }
+    }
+  },
+  "export": {
+
+  }
+}
