@@ -629,7 +629,7 @@ loadAllUSData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend
   if (!staticDataQ) {
     updateTimeSeriesDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
                                          prepend = myPrepend)
-    updateStateLevelSerializedDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
+    updateStateLevelSerializedDataFilesAsNecessary(traceThisRoutine = TRUE,
                                                    prepend = myPrepend)
   }
 
