@@ -28,7 +28,7 @@ source("doTestGrowthTab.R")
 source("doTestResultsTab.R")
 source("doSummaryTab.R")
 
-manualTestModeQ <- function() {
+manualStaticData <- function() {
   FALSE
 }
 
@@ -36,24 +36,20 @@ manualTraceModeQ <- function() {
   FALSE
 }
 
-currentlyTestingCountiesQ <- function() {
-  manualTestModeQ() & TRUE
+testModeQ <- function() {
+  manualStaticData() || isTRUE(getOption("shiny.testmode"))
 }
 
-defaultStateChoices <- function() {
-  if (manualTestModeQ()) {
-    c("MA", "ME")
-  } else {
-    NULL
-  }
-}
-
-loadAllUSData(staticDataQ = manualTestModeQ(),
+loadAllUSData(staticDataQ = testModeQ(),
               traceThisRoutine = manualTraceModeQ(),
               prepend = "")
 
 defaultTimeWindowValue <- function() {
-  14
+  if (testModeQ()) {
+    7
+  } else {
+    14
+  }
 }
 
 defaultSelectedTab <- function() {
@@ -87,11 +83,11 @@ ui <- fluidPage(
             selectInput("stateChoices",
                         "Select up to six states",
                         names(stateLookup),
-                        selected = defaultStateChoices(),
+                        selected = NULL,
                         multiple = TRUE),
             tags$p("County data is available on the New Cases, New Deaths, and Summary tabs."),
             checkboxInput("chooseCounty", "Select up to six counties",
-                          value = currentlyTestingCountiesQ()), # "Select County(ies)"),
+                          value = FALSE), # "Select County(ies)"),
             # Without the spacer, the County dropbox overwrote the
             #  caption "Select County/Counties.
             tags$p("", id="Spacer"),
@@ -240,15 +236,15 @@ server <- function(input, output, session) {
   
   useCounty <- reactive({input$chooseCounty})
 
-  testModeQ <- manualTestModeQ() || isTRUE(getOption("shiny.testmode"))
+  isTestModeQ <- testModeQ()
 
   # OUCH for development
-  if (testModeQ || manualTraceModeQ()) {
+  if (isTestModeQ || manualTraceModeQ()) {
     if (isTRUE(getOption("shiny.testmode"))) {
-      cat(file = stderr(), "in Server: Shiny TEST MODE\n")
+      cat(file = stderr(), "in Server: Shiny test mode\n")
     } else {
-      if (manualTestModeQ()) {
-        cat(file = stderr(), "in Server: manual TEST mode\n")
+      if (manualStaticData()) {
+        cat(file = stderr(), "in Server: manual static data mode\n")
       } else {
         cat(file = stderr(), "in Server: not test mode\n")
       }

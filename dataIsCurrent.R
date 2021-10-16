@@ -25,9 +25,7 @@ dataIsCurrent <- function(testDataPath) {
   if (traceThisRoutine) {
     print("before try(read_csv(testDataPath.. in dataIsCurrent")
   }
-  testData <- try(read_csv(testDataPath, col_types=cols(.default = col_double(),
-                                                        Province_State = col_logical(),
-                                                        Combined_Key = col_character())))
+  testData <- try(read_csv(testDataPath, show_col_types = FALSE))
   if (traceThisRoutine) {
     print("after try(read_csv(testDataPath.. in dataIsCurrent")
   }
