@@ -1,18 +1,14 @@
 {
   "input": {
-    "chooseCounty": true,
-    "countyChoices": null,
+    "chooseCounty": false,
     "mainTabsetPanel": "Total Deaths",
     "movingAvg": true,
     "newCaseTabsetPanel": "Boxplot",
     "newDeathsTabsetPanel": "Boxplot",
-    "stateChoices": [
-      "MA",
-      "ME"
-    ],
+    "stateChoices": null,
     "testGrowthTabsetPanel": "Boxplot",
     "testResultsTabsetPanel": "Boxplot",
-    "timeWindow": 14,
+    "timeWindow": 7,
     "totalCaseTabsetPanel": "Boxplot",
     "totalDeathsTabsetPanel": "Boxplot",
     "Vaccination": "People Fully Vaccinated",
@@ -20,7 +16,7 @@
   },
   "output": {
     "totalDeathsBox": {
-      "src": "[image data sha1: 3963cf85e183e10cd35ee16a2fdf334bd661112f]",
+      "src": "[image data sha1: 97d7a7304a74612fa01c880ee65553137404bcfc]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -67,13 +63,13 @@
       ]
     },
     "vaccHeaderHTML": {
-      "html": "<h4>Vaccinations, People Fully Vaccinated<\/h4><p>Vaccination data is shown by percent of state or of US as a whole.<\/p><p>Highest People Fully Vaccinated rate: Montana with 74.6 percent<\/p><p>Next highest rate: Puerto Rico with 63.9 percent<\/p><p>Lowest People Fully Vaccinated rate: Wyoming with 36.8 percent<\/p><p>Next lowest rate: Idaho with 37 percent<\/p><p>Note that 'Total Doses' will be above 100% when close to 50% of the population\n                            has had a second dose!<\/p>",
+      "html": "<h4>Vaccinations, People Fully Vaccinated<\/h4><p>Vaccination data is shown by percent of state or of US as a whole.<\/p><p>Highest People Fully Vaccinated rate: Puerto Rico with 63.9 percent<\/p><p>Next highest rate: Massachusetts with 62.3 percent<\/p><p>Lowest People Fully Vaccinated rate: Alabama with 38.1 percent<\/p><p>Next lowest rate: Louisiana with 40.8 percent<\/p><p>Note that 'Total Doses' will be above 100% when close to 50% of the population\n                            has had a second dose!<\/p>",
       "deps": [
 
       ]
     },
     "vaccRBox": {
-      "src": "[image data sha1: c9692679f0bf1c5a99cc38415e7f0482de396327]",
+      "src": "[image data sha1: 370e1f6faab36118053ed683b7be014bf72ae06b]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
