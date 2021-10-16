@@ -3,15 +3,21 @@
     "chooseCounty": false,
     "mainTabsetPanel": "Test Growth",
     "movingAvg": true,
+    "newCaseTabsetPanel": "Boxplot",
+    "newDeathsTabsetPanel": "Boxplot",
     "stateChoices": null,
-    "timeWindow": 14,
+    "testGrowthTabsetPanel": "Boxplot",
+    "testResultsTabsetPanel": "Boxplot",
+    "timeWindow": 7,
+    "totalCaseTabsetPanel": "Boxplot",
+    "totalDeathsTabsetPanel": "Boxplot",
     "Vaccination": "People Fully Vaccinated",
     "vaccinationTabsetPanel": "Boxplot"
   },
   "output": {
     "newCaseBox": {
-      "src": "[image data sha1: 9d166fc877ae811aacdef8d5d0aba34137819547]",
-      "width": 506,
+      "src": "[image data sha1: 62a9052ecfe281f6f49bfabeb78a4d69aefad835]",
+      "width": 714,
       "height": 400,
       "alt": "Plot object",
       "coordmap": {
@@ -25,7 +31,7 @@
             },
             "range": {
               "left": 0,
-              "right": 506,
+              "right": 714,
               "bottom": 399,
               "top": -1
             },
@@ -39,55 +45,26 @@
           }
         ],
         "dims": {
-          "width": 506,
+          "width": 714,
           "height": 400
         }
       }
+    },
+    "newCaseBoxplotHeaderHTML": {
+      "html": "<p><\/p> <p>How to interpret these charts: The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box, a quarter above it and a quarter below it. Dots in a horizontal line near the top of the graph are not real data, but mean there is a data point at that level or higher (if the graph were scaled to show everything, the interesting part of the graph would be all squished at the bottom)<\/p> <p><\/p> <p><\/p>",
+      "deps": [
+
+      ]
     },
     "newCaseHeaderHTML": {
-      "html": "<h4>Trends of new cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p><\/p>",
+      "html": "<h4>Trends of new cases<\/h4><p>We are hoping to see a steady downward trend of new cases.<\/p><p><\/p>",
       "deps": [
 
       ]
-    },
-    "newCaseTrend": {
-      "src": "[image data sha1: c401e0ffc9d515a9d813194ea27d7d1b8736f371]",
-      "width": 506,
-      "height": 400,
-      "alt": "Plot object",
-      "coordmap": {
-        "panels": [
-          {
-            "domain": {
-              "left": -0.04,
-              "right": 1.04,
-              "bottom": -0.04,
-              "top": 1.04
-            },
-            "range": {
-              "left": 0,
-              "right": 506,
-              "bottom": 399,
-              "top": -1
-            },
-            "log": {
-              "x": null,
-              "y": null
-            },
-            "mapping": {
-
-            }
-          }
-        ],
-        "dims": {
-          "width": 506,
-          "height": 400
-        }
-      }
     },
     "newDeathsBox": {
-      "src": "[image data sha1: 469ebe0123ecf2267e6d2e49077778957837b004]",
-      "width": 506,
+      "src": "[image data sha1: 2502441c6684b89646fa467d4a242e7235a8cc9b]",
+      "width": 714,
       "height": 400,
       "alt": "Plot object",
       "coordmap": {
@@ -101,7 +78,7 @@
             },
             "range": {
               "left": 0,
-              "right": 506,
+              "right": 714,
               "bottom": 399,
               "top": -1
             },
@@ -115,20 +92,26 @@
           }
         ],
         "dims": {
-          "width": 506,
+          "width": 714,
           "height": 400
         }
       }
     },
-    "newDeathsHeaderHTML": {
-      "html": "<h4>Deaths<\/h4><p>The CDC does not base reopening recommendations directly on \n                             COVID-19 deaths, but we have the statistics and the graphing\n                             programs, so here you go:<\/p>",
+    "newDeathsBoxplotHeaderHTML": {
+      "html": "<p><\/p> <p>How to interpret these charts: The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box, a quarter above it and a quarter below it. Dots in a horizontal line near the top of the graph are not real data, but mean there is a data point at that level or higher (if the graph were scaled to show everything, the interesting part of the graph would be all squished at the bottom)<\/p> <p><\/p> <p><\/p>",
       "deps": [
 
       ]
     },
-    "newDeathsTrend": {
-      "src": "[image data sha1: 7feb1040f0b9c981a4c7fbd8f67b152d3851dbb5]",
-      "width": 506,
+    "newDeathsHeaderHTML": {
+      "html": "<h4>Deaths<\/h4><p>The number of deaths from COVID-19 is unlikely to reach zero, but the fewer the better.<\/p>",
+      "deps": [
+
+      ]
+    },
+    "testGBox": {
+      "src": "[image data sha1: 8d05ef9850d38cf582ee4663483d4ec9efdb6655]",
+      "width": 714,
       "height": 400,
       "alt": "Plot object",
       "coordmap": {
@@ -142,7 +125,7 @@
             },
             "range": {
               "left": 0,
-              "right": 506,
+              "right": 714,
               "bottom": 399,
               "top": -1
             },
@@ -156,45 +139,16 @@
           }
         ],
         "dims": {
-          "width": 506,
+          "width": 714,
           "height": 400
         }
       }
     },
-    "testGBox": {
-      "src": "[image data sha1: 3af72ab5d7035439bd839e6aa808ec52cc13947c]",
-      "width": 506,
-      "height": 400,
-      "alt": "Plot object",
-      "coordmap": {
-        "panels": [
-          {
-            "domain": {
-              "left": -0.04,
-              "right": 1.04,
-              "bottom": -0.04,
-              "top": 1.04
-            },
-            "range": {
-              "left": 0,
-              "right": 506,
-              "bottom": 399,
-              "top": -1
-            },
-            "log": {
-              "x": null,
-              "y": null
-            },
-            "mapping": {
+    "testGBoxplotHeaderHTML": {
+      "html": "<p><\/p> <p>How to interpret these charts: The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box, a quarter above it and a quarter below it. Dots in a horizontal line near the top of the graph are not real data, but mean there is a data point at that level or higher (if the graph were scaled to show everything, the interesting part of the graph would be all squished at the bottom)<\/p> <p><\/p> <p><\/p>",
+      "deps": [
 
-            }
-          }
-        ],
-        "dims": {
-          "width": 506,
-          "height": 400
-        }
-      }
+      ]
     },
     "testGrowthHeaderHTML": {
       "html": "<h4>Changes in Amount of Testing<\/h4><p>The data used for this tab is not updated as regularly as the\n                            data for cases and mortality, and is not always reliable. Uneven updates\n                            can result in numbers which change the scale so much that the resulting\n                            chart is unreadable. To prevent that, these graphs do not display data\n                            which is far outside the range of the bulk of the data. Dots along the\n                            top or bottom of the chart are not real data.<\/p><p>The amount of testing should generally not be decreasing.<\/p><p>A downward sloping trend line is not necessarily a problem. It just means\n                            that the amount of testing is not growing as fast as it used to be.\n                            So long as the growth rate is above 0 the number of tests is increasing.<\/p>",
@@ -202,9 +156,9 @@
 
       ]
     },
-    "testGTrend": {
-      "src": "[image data sha1: f2bf5bf50e60e69e2fc0a1b68762fa3737998b3e]",
-      "width": 506,
+    "totalCaseBox": {
+      "src": "[image data sha1: ffc3621a8c6fa1440b7536566e9b1fed9bdb0c51]",
+      "width": 714,
       "height": 400,
       "alt": "Plot object",
       "coordmap": {
@@ -218,7 +172,7 @@
             },
             "range": {
               "left": 0,
-              "right": 506,
+              "right": 714,
               "bottom": 399,
               "top": -1
             },
@@ -232,90 +186,26 @@
           }
         ],
         "dims": {
-          "width": 506,
+          "width": 714,
           "height": 400
         }
       }
     },
-    "totalCaseBox": {
-      "src": "[image data sha1: f2de98595a307b822883802ffafc2f7e5f14e1cf]",
-      "width": 506,
-      "height": 400,
-      "alt": "Plot object",
-      "coordmap": {
-        "panels": [
-          {
-            "domain": {
-              "left": -0.04,
-              "right": 1.04,
-              "bottom": -0.04,
-              "top": 1.04
-            },
-            "range": {
-              "left": 0,
-              "right": 506,
-              "bottom": 399,
-              "top": -1
-            },
-            "log": {
-              "x": null,
-              "y": null
-            },
-            "mapping": {
+    "totalCaseBoxplotHeaderHTML": {
+      "html": "<p><\/p> <p>How to interpret these charts: The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box, a quarter above it and a quarter below it. Dots in a horizontal line near the top of the graph are not real data, but mean there is a data point at that level or higher (if the graph were scaled to show everything, the interesting part of the graph would be all squished at the bottom)<\/p> <p><\/p> <p><\/p>",
+      "deps": [
 
-            }
-          }
-        ],
-        "dims": {
-          "width": 506,
-          "height": 400
-        }
-      }
+      ]
     },
     "totalCaseHeaderHTML": {
-      "html": "<h4>Trends of total cases<\/h4><p>The CDC's recommendation was that a state not begin reopening\n                   after the initial lockdown until it had a downward trajectory or\n                   near-zero incidence of documented cases over a 14 day period.\n                   The trend of cases is still an important measure.<\/p><p>How to interpret these charts:\n The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box,\n a quarter above it and a quarter below it. Dots in a horizontal line\n near the top of the graph are not real data, but mean there is a data point\n at that level or higher (if the graph were scaled to show everything,\n the interesting part of the graph would be all squished at the bottom)<\/p><p><\/p>",
+      "html": "<h4>Trends of total cases<\/h4><p>Let's hope total number of total cases curve continues to flatten.<\/p><p><\/p>",
       "deps": [
 
       ]
-    },
-    "totalCaseTrend": {
-      "src": "[image data sha1: b38a00508828578d78c14230b5ba47bb1e5b916b]",
-      "width": 506,
-      "height": 400,
-      "alt": "Plot object",
-      "coordmap": {
-        "panels": [
-          {
-            "domain": {
-              "left": -0.04,
-              "right": 1.04,
-              "bottom": -0.04,
-              "top": 1.04
-            },
-            "range": {
-              "left": 0,
-              "right": 506,
-              "bottom": 399,
-              "top": -1
-            },
-            "log": {
-              "x": null,
-              "y": null
-            },
-            "mapping": {
-
-            }
-          }
-        ],
-        "dims": {
-          "width": 506,
-          "height": 400
-        }
-      }
     },
     "totalDeathsBox": {
-      "src": "[image data sha1: 53b8ce8be6adeae1ee7409a37b2709938dc1b9fa]",
-      "width": 506,
+      "src": "[image data sha1: 97d7a7304a74612fa01c880ee65553137404bcfc]",
+      "width": 714,
       "height": 400,
       "alt": "Plot object",
       "coordmap": {
@@ -329,7 +219,7 @@
             },
             "range": {
               "left": 0,
-              "right": 506,
+              "right": 714,
               "bottom": 399,
               "top": -1
             },
@@ -343,60 +233,31 @@
           }
         ],
         "dims": {
-          "width": 506,
+          "width": 714,
           "height": 400
         }
       }
     },
-    "totalDeathsHeaderHTML": {
-      "html": "<h4>Deaths<\/h4><p>The CDC does not base reopening recommendations directly on \n                             COVID-19 deaths, but we have the statistics and the graphing\n                             programs, so here you go:<\/p>",
+    "totalDeathsBoxplotHeaderHTML": {
+      "html": "<p><\/p> <p>How to interpret these charts: The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box, a quarter above it and a quarter below it. Dots in a horizontal line near the top of the graph are not real data, but mean there is a data point at that level or higher (if the graph were scaled to show everything, the interesting part of the graph would be all squished at the bottom)<\/p> <p><\/p> <p><\/p>",
       "deps": [
 
       ]
     },
-    "totalDeathsTrend": {
-      "src": "[image data sha1: 83de5531a8a4310aeda414b51594bab326a2c953]",
-      "width": 506,
-      "height": 400,
-      "alt": "Plot object",
-      "coordmap": {
-        "panels": [
-          {
-            "domain": {
-              "left": -0.04,
-              "right": 1.04,
-              "bottom": -0.04,
-              "top": 1.04
-            },
-            "range": {
-              "left": 0,
-              "right": 506,
-              "bottom": 399,
-              "top": -1
-            },
-            "log": {
-              "x": null,
-              "y": null
-            },
-            "mapping": {
+    "totalDeathsHeaderHTML": {
+      "html": "<h4>Deaths<\/h4><p>By the present time, these totals change very slowly. Don't expect to see much change in this plot.<\/p>",
+      "deps": [
 
-            }
-          }
-        ],
-        "dims": {
-          "width": 506,
-          "height": 400
-        }
-      }
+      ]
     },
     "vaccHeaderHTML": {
-      "html": "<h4>Vaccinations, People Fully Vaccinated<\/h4><p>Vaccination data is shown by percent of state or of US as a whole.<\/p><p>Highest People Fully Vaccinated rate: Montana with 74.6 percent<\/p><p>Next highest rate: Puerto Rico with 63.9 percent<\/p><p>Lowest People Fully Vaccinated rate: Wyoming with 36.8 percent<\/p><p>Next lowest rate: Idaho with 37 percent<\/p><p>Note that 'Total Doses' will be above 100% when close to 50% of the population\n                            has had a second dose!<\/p>",
+      "html": "<h4>Vaccinations, People Fully Vaccinated<\/h4><p>Vaccination data is shown by percent of state or of US as a whole.<\/p><p>Highest People Fully Vaccinated rate: Puerto Rico with 63.9 percent<\/p><p>Next highest rate: Massachusetts with 62.3 percent<\/p><p>Lowest People Fully Vaccinated rate: Alabama with 38.1 percent<\/p><p>Next lowest rate: Louisiana with 40.8 percent<\/p><p>Note that 'Total Doses' will be above 100% when close to 50% of the population\n                            has had a second dose!<\/p>",
       "deps": [
 
       ]
     },
     "vaccRBox": {
-      "src": "[image data sha1: 70d2b9a608493ac5c341686f111aa6c8b66d38c2]",
+      "src": "[image data sha1: 370e1f6faab36118053ed683b7be014bf72ae06b]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
