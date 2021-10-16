@@ -1,7 +1,6 @@
 {
   "input": {
-    "chooseCounty": true,
-    "countyChoices": null,
+    "chooseCounty": false,
     "mainTabsetPanel": "Total Cases",
     "movingAvg": false,
     "newCaseTabsetPanel": "Boxplot",
@@ -12,7 +11,7 @@
     ],
     "testGrowthTabsetPanel": "Boxplot",
     "testResultsTabsetPanel": "Boxplot",
-    "timeWindow": 14,
+    "timeWindow": 7,
     "totalCaseTabsetPanel": "Boxplot",
     "totalDeathsTabsetPanel": "Boxplot",
     "Vaccination": "People Fully Vaccinated",
@@ -20,7 +19,7 @@
   },
   "output": {
     "totalCaseBox": {
-      "src": "[image data sha1: 06252e594c0f82850acb57b7dd86ce39acd2000f]",
+      "src": "[image data sha1: 8cb47b1b8bd846ae4dd469faf5740f1385bf1b98]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -61,19 +60,19 @@
       ]
     },
     "totalCaseHeaderHTML": {
-      "html": "<h4>Trends of total cases<\/h4><p>Let's hope total number of total cases curve continues to flatten.<\/p><p>A 7-day moving average often shows trends more clearly.<\/p><p>Without averaging, states which do not report on Sundays, e.g.,\n                    make the data look less uniform than it is.<\/p><p><\/p>",
+      "html": "<h4>Trends of total cases<\/h4><p>Let's hope total number of total cases curve continues to flatten.<\/p><p>A 7-day moving average often shows trends more clearly.<\/p><p>Without averaging, states which do not report on Sundays, e.g.,\n                make the data look less uniform than it is.<\/p><p><\/p>",
       "deps": [
 
       ]
     },
     "vaccHeaderHTML": {
-      "html": "<h4>Vaccinations, People Fully Vaccinated<\/h4><p>Vaccination data is shown by percent of state or of US as a whole.<\/p><p>Highest People Fully Vaccinated rate: Montana with 74.6 percent<\/p><p>Next highest rate: Puerto Rico with 63.9 percent<\/p><p>Lowest People Fully Vaccinated rate: Wyoming with 36.8 percent<\/p><p>Next lowest rate: Idaho with 37 percent<\/p><p>Note that 'Total Doses' will be above 100% when close to 50% of the population\n                            has had a second dose!<\/p>",
+      "html": "<h4>Vaccinations, People Fully Vaccinated<\/h4><p>Vaccination data is shown by percent of state or of US as a whole.<\/p><p>Highest People Fully Vaccinated rate: Puerto Rico with 63.9 percent<\/p><p>Next highest rate: Massachusetts with 62.3 percent<\/p><p>Lowest People Fully Vaccinated rate: Alabama with 38.1 percent<\/p><p>Next lowest rate: Louisiana with 40.8 percent<\/p><p>Note that 'Total Doses' will be above 100% when close to 50% of the population\n                            has had a second dose!<\/p>",
       "deps": [
 
       ]
     },
     "vaccRBox": {
-      "src": "[image data sha1: c9692679f0bf1c5a99cc38415e7f0482de396327]",
+      "src": "[image data sha1: 370e1f6faab36118053ed683b7be014bf72ae06b]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
