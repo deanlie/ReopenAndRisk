@@ -1,0 +1,67 @@
+{
+  "input": {
+    "chooseCounty": true,
+    "countyChoices": "Plaquemines",
+    "mainTabsetPanel": "Vaccination Progress",
+    "movingAvg": true,
+    "newCaseTabsetPanel": "Boxplot",
+    "newDeathsTabsetPanel": "Boxplot",
+    "stateChoices": [
+      "LA",
+      "MA"
+    ],
+    "testGrowthTabsetPanel": "Boxplot",
+    "testResultsTabsetPanel": "Boxplot",
+    "timeWindow": 7,
+    "totalCaseTabsetPanel": "Boxplot",
+    "totalDeathsTabsetPanel": "Boxplot",
+    "Vaccination": "People Fully Vaccinated",
+    "vaccinationTabsetPanel": "Boxplot"
+  },
+  "output": {
+    "vaccHeaderHTML": {
+      "html": "<h4>Vaccinations, People Fully Vaccinated<\/h4><p>Vaccination data is shown by percent of state or of US as a whole.<\/p><p>Highest People Fully Vaccinated rate: Puerto Rico with 63.9 percent<\/p><p>Next highest rate: Massachusetts with 62.3 percent<\/p><p>Lowest People Fully Vaccinated rate: Alabama with 38.1 percent<\/p><p>Next lowest rate: Louisiana with 40.8 percent<\/p><p>Note that 'Total Doses' will be above 100% when close to 50% of the population\n                            has had a second dose!<\/p>",
+      "deps": [
+
+      ]
+    },
+    "vaccRBox": {
+      "src": "[image data sha1: 08f8370d58a77093e1c1211720134a2455053b37]",
+      "width": 506,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 506,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 506,
+          "height": 400
+        }
+      }
+    }
+  },
+  "export": {
+
+  }
+}
