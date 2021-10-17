@@ -1,0 +1,109 @@
+{
+  "input": {
+    "chooseCounty": false,
+    "mainTabsetPanel": "Vaccination Progress",
+    "movingAvg": true,
+    "newCaseTabsetPanel": "Boxplot",
+    "newDeathsTabsetPanel": "Boxplot",
+    "stateChoices": [
+      "MA",
+      "ME"
+    ],
+    "testGrowthTabsetPanel": "Boxplot",
+    "testResultsTabsetPanel": "Boxplot",
+    "timeWindow": 7,
+    "totalCaseTabsetPanel": "Boxplot",
+    "totalDeathsTabsetPanel": "Boxplot",
+    "Vaccination": "People Fully Vaccinated",
+    "vaccinationTabsetPanel": "Boxplot"
+  },
+  "output": {
+    "vaccDataHTML": null,
+    "vaccGtData": {
+      "html": "<div id=\"vaccData\" style=\"overflow-x:auto;overflow-y:auto;width:1000px;height:auto;\">\n  <style>html {\n  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;\n}\n\n#vaccData .gt_table {\n  display: table;\n  border-collapse: collapse;\n  margin-left: auto;\n  margin-right: auto;\n  color: #333333;\n  font-size: 16px;\n  font-weight: normal;\n  font-style: normal;\n  background-color: #FFFFFF;\n  width: auto;\n  border-top-style: solid;\n  border-top-width: 2px;\n  border-top-color: #A8A8A8;\n  border-right-style: none;\n  border-right-width: 2px;\n  border-right-color: #D3D3D3;\n  border-bottom-style: solid;\n  border-bottom-width: 2px;\n  border-bottom-color: #A8A8A8;\n  border-left-style: none;\n  border-left-width: 2px;\n  border-left-color: #D3D3D3;\n}\n\n#vaccData .gt_heading {\n  background-color: #FFFFFF;\n  text-align: center;\n  border-bottom-color: #FFFFFF;\n  border-left-style: none;\n  border-left-width: 1px;\n  border-left-color: #D3D3D3;\n  border-right-style: none;\n  border-right-width: 1px;\n  border-right-color: #D3D3D3;\n}\n\n#vaccData .gt_title {\n  color: #333333;\n  font-size: 125%;\n  font-weight: initial;\n  padding-top: 4px;\n  padding-bottom: 4px;\n  border-bottom-color: #FFFFFF;\n  border-bottom-width: 0;\n}\n\n#vaccData .gt_subtitle {\n  color: #333333;\n  font-size: 85%;\n  font-weight: initial;\n  padding-top: 0;\n  padding-bottom: 6px;\n  border-top-color: #FFFFFF;\n  border-top-width: 0;\n}\n\n#vaccData .gt_bottom_border {\n  border-bottom-style: solid;\n  border-bottom-width: 2px;\n  border-bottom-color: #D3D3D3;\n}\n\n#vaccData .gt_col_headings {\n  border-top-style: solid;\n  border-top-width: 2px;\n  border-top-color: #D3D3D3;\n  border-bottom-style: solid;\n  border-bottom-width: 2px;\n  border-bottom-color: #D3D3D3;\n  border-left-style: none;\n  border-left-width: 1px;\n  border-left-color: #D3D3D3;\n  border-right-style: none;\n  border-right-width: 1px;\n  border-right-color: #D3D3D3;\n}\n\n#vaccData .gt_col_heading {\n  color: #333333;\n  background-color: #FFFFFF;\n  font-size: 100%;\n  font-weight: normal;\n  text-transform: inherit;\n  border-left-style: none;\n  border-left-width: 1px;\n  border-left-color: #D3D3D3;\n  border-right-style: none;\n  border-right-width: 1px;\n  border-right-color: #D3D3D3;\n  vertical-align: bottom;\n  padding-top: 5px;\n  padding-bottom: 6px;\n  padding-left: 5px;\n  padding-right: 5px;\n  overflow-x: hidden;\n}\n\n#vaccData .gt_column_spanner_outer {\n  color: #333333;\n  background-color: #FFFFFF;\n  font-size: 100%;\n  font-weight: normal;\n  text-transform: inherit;\n  padding-top: 0;\n  padding-bottom: 0;\n  padding-left: 4px;\n  padding-right: 4px;\n}\n\n#vaccData .gt_column_spanner_outer:first-child {\n  padding-left: 0;\n}\n\n#vaccData .gt_column_spanner_outer:last-child {\n  padding-right: 0;\n}\n\n#vaccData .gt_column_spanner {\n  border-bottom-style: solid;\n  border-bottom-width: 2px;\n  border-bottom-color: #D3D3D3;\n  vertical-align: bottom;\n  padding-top: 5px;\n  padding-bottom: 5px;\n  overflow-x: hidden;\n  display: inline-block;\n  width: 100%;\n}\n\n#vaccData .gt_group_heading {\n  padding: 8px;\n  color: #333333;\n  background-color: #FFFFFF;\n  font-size: 100%;\n  font-weight: initial;\n  text-transform: inherit;\n  border-top-style: solid;\n  border-top-width: 2px;\n  border-top-color: #D3D3D3;\n  border-bottom-style: solid;\n  border-bottom-width: 2px;\n  border-bottom-color: #D3D3D3;\n  border-left-style: none;\n  border-left-width: 1px;\n  border-left-color: #D3D3D3;\n  border-right-style: none;\n  border-right-width: 1px;\n  border-right-color: #D3D3D3;\n  vertical-align: middle;\n}\n\n#vaccData .gt_empty_group_heading {\n  padding: 0.5px;\n  color: #333333;\n  background-color: #FFFFFF;\n  font-size: 100%;\n  font-weight: initial;\n  border-top-style: solid;\n  border-top-width: 2px;\n  border-top-color: #D3D3D3;\n  border-bottom-style: solid;\n  border-bottom-width: 2px;\n  border-bottom-color: #D3D3D3;\n  vertical-align: middle;\n}\n\n#vaccData .gt_from_md > :first-child {\n  margin-top: 0;\n}\n\n#vaccData .gt_from_md > :last-child {\n  margin-bottom: 0;\n}\n\n#vaccData .gt_row {\n  padding-top: 8px;\n  padding-bottom: 8px;\n  padding-left: 5px;\n  padding-right: 5px;\n  margin: 10px;\n  border-top-style: solid;\n  border-top-width: 1px;\n  border-top-color: #D3D3D3;\n  border-left-style: none;\n  border-left-width: 1px;\n  border-left-color: #D3D3D3;\n  border-right-style: none;\n  border-right-width: 1px;\n  border-right-color: #D3D3D3;\n  vertical-align: middle;\n  overflow-x: hidden;\n}\n\n#vaccData .gt_stub {\n  color: #333333;\n  background-color: #FFFFFF;\n  font-size: 100%;\n  font-weight: initial;\n  text-transform: inherit;\n  border-right-style: solid;\n  border-right-width: 2px;\n  border-right-color: #D3D3D3;\n  padding-left: 12px;\n}\n\n#vaccData .gt_summary_row {\n  color: #333333;\n  background-color: #FFFFFF;\n  text-transform: inherit;\n  padding-top: 8px;\n  padding-bottom: 8px;\n  padding-left: 5px;\n  padding-right: 5px;\n}\n\n#vaccData .gt_first_summary_row {\n  padding-top: 8px;\n  padding-bottom: 8px;\n  padding-left: 5px;\n  padding-right: 5px;\n  border-top-style: solid;\n  border-top-width: 2px;\n  border-top-color: #D3D3D3;\n}\n\n#vaccData .gt_grand_summary_row {\n  color: #333333;\n  background-color: #FFFFFF;\n  text-transform: inherit;\n  padding-top: 8px;\n  padding-bottom: 8px;\n  padding-left: 5px;\n  padding-right: 5px;\n}\n\n#vaccData .gt_first_grand_summary_row {\n  padding-top: 8px;\n  padding-bottom: 8px;\n  padding-left: 5px;\n  padding-right: 5px;\n  border-top-style: double;\n  border-top-width: 6px;\n  border-top-color: #D3D3D3;\n}\n\n#vaccData .gt_striped {\n  background-color: rgba(128, 128, 128, 0.05);\n}\n\n#vaccData .gt_table_body {\n  border-top-style: solid;\n  border-top-width: 2px;\n  border-top-color: #D3D3D3;\n  border-bottom-style: solid;\n  border-bottom-width: 2px;\n  border-bottom-color: #D3D3D3;\n}\n\n#vaccData .gt_footnotes {\n  color: #333333;\n  background-color: #FFFFFF;\n  border-bottom-style: none;\n  border-bottom-width: 2px;\n  border-bottom-color: #D3D3D3;\n  border-left-style: none;\n  border-left-width: 2px;\n  border-left-color: #D3D3D3;\n  border-right-style: none;\n  border-right-width: 2px;\n  border-right-color: #D3D3D3;\n}\n\n#vaccData .gt_footnote {\n  margin: 0px;\n  font-size: 90%;\n  padding: 4px;\n}\n\n#vaccData .gt_sourcenotes {\n  color: #333333;\n  background-color: #FFFFFF;\n  border-bottom-style: none;\n  border-bottom-width: 2px;\n  border-bottom-color: #D3D3D3;\n  border-left-style: none;\n  border-left-width: 2px;\n  border-left-color: #D3D3D3;\n  border-right-style: none;\n  border-right-width: 2px;\n  border-right-color: #D3D3D3;\n}\n\n#vaccData .gt_sourcenote {\n  font-size: 90%;\n  padding: 4px;\n}\n\n#vaccData .gt_left {\n  text-align: left;\n}\n\n#vaccData .gt_center {\n  text-align: center;\n}\n\n#vaccData .gt_right {\n  text-align: right;\n  font-variant-numeric: tabular-nums;\n}\n\n#vaccData .gt_font_normal {\n  font-weight: normal;\n}\n\n#vaccData .gt_font_bold {\n  font-weight: bold;\n}\n\n#vaccData .gt_font_italic {\n  font-style: italic;\n}\n\n#vaccData .gt_super {\n  font-size: 65%;\n}\n\n#vaccData .gt_footnote_marks {\n  font-style: italic;\n  font-weight: normal;\n  font-size: 65%;\n}\n<\/style>\n  <table class=\"gt_table\">\n  <thead class=\"gt_header\">\n    <tr>\n      <th colspan=\"9\" class=\"gt_heading gt_title gt_font_normal\" style>Vaccinations<\/th>\n    <\/tr>\n    <tr>\n      <th colspan=\"9\" class=\"gt_heading gt_subtitle gt_font_normal gt_bottom_border\" style>Percent of state population fully vaccinated , 7 day moving average<\/th>\n    <\/tr>\n  <\/thead>\n  <thead class=\"gt_col_headings\">\n    <tr>\n      <th class=\"gt_col_heading gt_columns_bottom_border gt_left\" rowspan=\"1\" colspan=\"1\" style=\"font-size: small;\">State<\/th>\n      <th class=\"gt_col_heading gt_columns_bottom_border gt_right\" rowspan=\"1\" colspan=\"1\" style=\"font-size: small;\">9/13/21<\/th>\n      <th class=\"gt_col_heading gt_columns_bottom_border gt_right\" rowspan=\"1\" colspan=\"1\" style=\"font-size: small;\">9/14/21<\/th>\n      <th class=\"gt_col_heading gt_columns_bottom_border gt_right\" rowspan=\"1\" colspan=\"1\" style=\"font-size: small;\">9/15/21<\/th>\n      <th class=\"gt_col_heading gt_columns_bottom_border gt_right\" rowspan=\"1\" colspan=\"1\" style=\"font-size: small;\">9/16/21<\/th>\n      <th class=\"gt_col_heading gt_columns_bottom_border gt_right\" rowspan=\"1\" colspan=\"1\" style=\"font-size: small;\">9/17/21<\/th>\n      <th class=\"gt_col_heading gt_columns_bottom_border gt_right\" rowspan=\"1\" colspan=\"1\" style=\"font-size: small;\">9/18/21<\/th>\n      <th class=\"gt_col_heading gt_columns_bottom_border gt_right\" rowspan=\"1\" colspan=\"1\" style=\"font-size: small;\">9/19/21<\/th>\n      <th class=\"gt_col_heading gt_columns_bottom_border gt_right\" rowspan=\"1\" colspan=\"1\" style=\"font-size: small;\">9/20/21<\/th>\n    <\/tr>\n  <\/thead>\n  <tbody class=\"gt_table_body\">\n    <tr><td class=\"gt_row gt_left\" style=\"font-size: small;\">Alabama<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">37.1<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">37.2<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">37.3<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">37.5<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">37.7<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">37.8<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">38.0<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">38.1<\/td><\/tr>\n    <tr><td class=\"gt_row gt_left\" style=\"font-size: small;\">Florida<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">49.2<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">49.4<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">49.6<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">49.7<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">49.9<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">50.0<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">50.1<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">50.3<\/td><\/tr>\n    <tr><td class=\"gt_row gt_left\" style=\"font-size: small;\">Louisiana<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">39.8<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">39.9<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">40.1<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">40.2<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">40.4<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">40.5<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">40.7<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">40.8<\/td><\/tr>\n    <tr><td class=\"gt_row gt_left\" style=\"font-size: small;\">Maine<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">58.2<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">58.3<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">58.4<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">58.5<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">58.6<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">58.7<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">58.7<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">58.8<\/td><\/tr>\n    <tr><td class=\"gt_row gt_left\" style=\"font-size: small;\">Massachusetts<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">61.9<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">62.0<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">62.0<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">62.1<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">62.1<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">62.2<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">62.2<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">62.3<\/td><\/tr>\n    <tr><td class=\"gt_row gt_left\" style=\"font-size: small;\">Texas<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">44.7<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">44.8<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">45.0<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">45.1<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">45.2<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">45.4<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">45.5<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">45.7<\/td><\/tr>\n    <tr><td class=\"gt_row gt_left\" style=\"font-size: small;\">Puerto Rico<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">61.7<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">62.1<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">62.4<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">62.7<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">63.1<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">63.4<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">63.6<\/td>\n<td class=\"gt_row gt_right\" style=\"font-size: small;\">63.9<\/td><\/tr>\n  <\/tbody>\n  \n  \n<\/table>\n<\/div>",
+      "deps": [
+
+      ]
+    },
+    "vaccHeaderHTML": {
+      "html": "<h4>Vaccinations, People Fully Vaccinated<\/h4><p>Vaccination data is shown by percent of state or of US as a whole.<\/p><p>Highest People Fully Vaccinated rate: Puerto Rico with 63.9 percent<\/p><p>Next highest rate: Massachusetts with 62.3 percent<\/p><p>Lowest People Fully Vaccinated rate: Alabama with 38.1 percent<\/p><p>Next lowest rate: Louisiana with 40.8 percent<\/p><p>Note that 'Total Doses' will be above 100% when close to 50% of the population\n                            has had a second dose!<\/p>",
+      "deps": [
+
+      ]
+    },
+    "vaccRBox": {
+      "src": "[image data sha1: 7e98868340825ec082065eddaebcef58b915ddbd]",
+      "width": 506,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 506,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 506,
+          "height": 400
+        }
+      }
+    },
+    "vaccRTrend": {
+      "src": "[image data sha1: 204083f505eb6fd6d949a243c98cf4199b5c5ef8]",
+      "width": 506,
+      "height": 400,
+      "alt": "Plot object",
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": -0.04,
+              "right": 1.04,
+              "bottom": -0.04,
+              "top": 1.04
+            },
+            "range": {
+              "left": 0,
+              "right": 506,
+              "bottom": 399,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 506,
+          "height": 400
+        }
+      }
+    },
+    "vaccRTrendHTML": null
+  },
+  "export": {
+
+  }
+}

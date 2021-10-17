@@ -230,7 +230,8 @@ presentVaccData <- function(movingAvg, vaccChoice, stateChoices, timeWindow,
                                stateChoices,
                                character(0),
                                "Vaccinations",
-                               vaccDataSubtitle(vaccChoice, movingAvg)) %>%
+                               vaccDataSubtitle(vaccChoice, movingAvg),
+                               theID = "vaccData") %>%
     styleSelectedLines(stateChoices, character(0))
 
   if (traceThisRoutine) {

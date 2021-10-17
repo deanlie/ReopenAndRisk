@@ -51,12 +51,6 @@ totalCaseYLabel <- function() {
 
 selectPlotData <- function(selectorRoutine, chooseCounty,
                            forBoxplot, countyChoices, movingAvg, stateChoices) {
-  # if (!chooseCounty) {
-  #   countyChoices <- NULL
-  # }
-  cat(file = stderr(), "selectPlotData: countyChoices = *",
-      paste(countyChoices, sep = " "), "*\n", sep = "")
-
   if (is.null(stateChoices)) {
     theData <- selectorRoutine(forBoxplot, NULL, movingAvg, stateChoices)
   } else {
@@ -117,7 +111,8 @@ presentTotalCaseData <- function(movingAvg, countyChoices,
                                stateChoices,
                                countyChoices,
                                "Total Cases",
-                               "total number of cases per 100,000 population") %>%
+                               "total number of cases per 100,000 population",
+                               theID = "totCases") %>%
     styleSelectedLines(stateChoices, countyChoices)
     
     if (traceThisRoutine) {

@@ -180,7 +180,8 @@ presentNewDeathsData <- function(movingAvg, countyChoices,
                                stateChoices,
                                countyChoices,
                                "New Deaths",
-                               "number of single day deaths per 100,000 population") %>%
+                               "number of single day deaths per 100,000 population",
+                               theID = "newDeaths") %>%
     styleSelectedLines(stateChoices, countyChoices)
   
   if (traceThisRoutine) {

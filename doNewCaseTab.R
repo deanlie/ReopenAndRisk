@@ -143,6 +143,11 @@ presentNewCaseData <- function(movingAvg, countyChoices,
   } else {
     theData <- dataForNewCasePlots(TRUE, countyChoices, movingAvg, stateChoices)
   }
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "theData names:",
+        paste(names(theData[c(1:5)]), sep = " "), "\n")
+  }
 
   theData <- cleanDataForPresentation(theData,
                                       stateChoices,
@@ -152,7 +157,8 @@ presentNewCaseData <- function(movingAvg, countyChoices,
                                stateChoices,
                                countyChoices,
                                "New Cases",
-                               "number of new cases per 100,000 population") %>%
+                               "number of new cases per 100,000 population",
+                               theID = "newCases") %>%
     styleSelectedLines(stateChoices, countyChoices)
   
   if (traceThisRoutine) {

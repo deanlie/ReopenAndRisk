@@ -190,7 +190,8 @@ presentTotalDeathsData <- function(movingAvg, countyChoices,
                                stateChoices,
                                countyChoices,
                                "Total Deaths",
-                               "total number of deaths per 100,000 population") %>%
+                               "total number of deaths per 100,000 population",
+                               theID = "totDeaths") %>%
     styleSelectedLines(stateChoices, countyChoices)
   
   if (traceThisRoutine) {

@@ -1,27 +1,53 @@
 cleanDataForPresentation <- function(theData,
                                      stateChoices,
-                                     countyChoices) {
-  if (is.null(countyChoices) || length(countyChoices) == 0) {
+                                     countyChoices,
+                                     traceThisRoutine = FALSE,
+                                     prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  traceFlagOnEntry <- traceThisRoutine
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Entered cleanDataForPresentation\n")
+  }
+
+  if (is.null(countyChoices) || is.null(stateChoices)) {
     theData <- theData %>%
-      mutate(State = Province_State, .before = 1, .keep = "unused") %>%
-      select(-Combined_Key, -Population)
+      mutate(State = str_replace(Combined_Key, ", US", ""), .before = 1, .keep = "unused") %>%
+      select(-Population)
   } else {
     admin1 <- admin1TypeFor(stateChoices[1])$UC_S
+    selectedState <- stateLookup[stateChoices[1]]
+    state_US <- paste(", ", selectedState, ", US", sep = "")
+    if (traceThisRoutine) {
+      cat(file = stderr(), myPrepend, "state_US match string is '", state_US, "'\n")
+    }
     theData <- theData %>%
-      mutate({{admin1}} := Admin2,
+      mutate({{admin1}} := str_replace(Combined_Key, {{state_US}}, ""),
              .before = 1, .keep = "unused") %>%
-      select(-Combined_Key, -Population, -Province_State)
+      select(-Population)
+    if ("Admin2" %in% names(theData)) {
+      theData <- theData %>%
+        select(-Admin2)
+    }
   }
+  if ("Province_State" %in% names(theData)) {
+    theData <- theData %>%
+      select(-Province_State)
+  }
+
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Leaving cleanDataForPresentation\n")
+  }
+
   return(theData)
 }
 
 makeGtPresentation <- function(theData, stateChoices, countyChoices,
-                               theTitle, theSubtitle) {
+                               theTitle, theSubtitle, theID = "aTable") {
   # write_csv(theData, "../ShinyPart1/presentThis.csv")
   # cat(theTitle, "\n", file = "../ShinyPart1/aTitle.txt")
   
   theData %>%
-    gt() %>%
+    gt(id = theID) %>%
     tab_header(title = theTitle,
                subtitle = theSubtitle) %>%
     fmt_number(columns = matches("^[1-9]"), decimals = 1) %>%
@@ -43,9 +69,18 @@ bogusGtDisplay <- function(caller = "unimplemented routine") {
                                   C = c(2, 11, 7, 14),
                                   D = c(13, 8, 12, 1)))
   
+  placeholderTitle <- function() {
+    expectedFailure <- FALSE # Set TRUE to generate reference .json, .png for test
+    if (expectedFailure) {
+      return("expected FAILURE in")
+    } else {
+      return("PLACEHOLDER for")      
+    }
+  }
+  
   theData <- as.tibble(theDataFrame) %>%
-    gt() %>%
-    tab_header(title = paste("PLACEHOLDER for", caller, sep = " "), 
+    gt(id = "bogustbl") %>%
+    tab_header(title = paste(placeholderTitle(), caller, sep = " "), 
                subtitle = "Magic square from Albrecht Durer's 'Melancholia'") %>%
     cols_label(A = "", B = "", C = "", D = "") %>%
     fmt_number(columns = matches("^[1-9]"), decimals = 1) %>%
