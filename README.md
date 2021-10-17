@@ -34,13 +34,13 @@ FullTestCoverage:
 
 > Upgrade test suite to cover all program features with a single test, but have tests for limited sets of features for quick checking. 
 
-> 1. TODO: Don't recreate existing, up-to-date data files every time you open the program. Most of this was done in SmallSetOfStaticData, but US_Testing_Rate, US_Incident_Rate, US_Case_Fatality_Ratio, and US_Total_Test_Results are still updated redundantly.
+> 1. App no longer recreates existing, up-to-date data files every time you open the program.
 > 2. Added tests, per main tab, which go through all subtabs of each of
 vaccination, new case, total case, new deaths, total deaths, test growth,
 and test results tabs
 > 3. My original design for this branch specified "Upgrade mytest.R so it goes through all of the above in one test", however the command "testApp()" [note! no arguments] runs all tests in one command, apparently one startup of the app; so there is no need to duplicate tests in a "tests" directory 
 > 4. Removed newCasesTest, totalCasesTest, newDeathsTest, totalDeathsTest; they are replaced by newCaseTabTest, totalCaseTabtest, newDeathsTabTest, and totalDeathsTestTab respectively (see (2.) above)
-> 6. TODO: Make sure that newCasesTabTest etc can do comparisons with expected; you may have to remove and reconstruct expected files
+> 6. App now provides an id parameter to gt() calls so random table IDs no longer cause comparison failures for json files
 
 Closed branches:
 ----------------
