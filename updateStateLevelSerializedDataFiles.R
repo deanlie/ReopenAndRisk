@@ -410,41 +410,41 @@ updateSerializedDataFilesAsNecessary <- function(traceThisRoutine = FALSE, prepe
         break;
       }
     }
-  }
+    US_State_Total_Test_Results <- read_csv("./DATA/US_State_Total_Test_Results.csv",
+                                            show_col_types = FALSE)
+    US_Total_Test_Results <- rebuildUSDataFileForTypeAsSummary(US_State_Total_Test_Results,
+                                                               "Total_Test_Results",
+                                                               traceThisRoutine = traceThisRoutine,
+                                                               prepend = myPrepend)
+    write_csv(US_Total_Test_Results, "./DATA/US_Total_Test_Results.csv")
 
-  US_State_Total_Test_Results <- read_csv("./DATA/US_State_Total_Test_Results.csv",
-                                          show_col_types = FALSE)
-  US_Total_Test_Results <- rebuildUSDataFileForTypeAsSummary(US_State_Total_Test_Results,
-                                                             "Total_Test_Results",
+    US_Deaths <- read_csv("./DATA/US_Deaths.csv",
+                          show_col_types = FALSE)
+    US_Confirmed <- read_csv("./DATA/US_Confirmed.csv",
+                             show_col_types = FALSE)
+  
+    US_Case_Fatality_Ratio <- rebuildUSDataFileForTypeFromProperData(US_Deaths,
+                                                                     US_Confirmed,
+                                                                     "Case_Fatality_Ratio",
+                                                                     traceThisRoutine = traceThisRoutine,
+                                                                     prepend = myPrepend)
+    write_csv(US_Case_Fatality_Ratio, "./DATA/US_Case_Fatality_Ratio.csv")
+  
+    US_Incident_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Confirmed,
+                                                              "Incident_Rate",
+                                                              traceThisRoutine = traceThisRoutine,
+                                                              prepend = myPrepend)
+    write_csv(US_Incident_Rate, "./DATA/US_Incident_Rate.csv")
+  
+    US_Testing_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Total_Test_Results,
+                                                             "Testing_Rate",
                                                              traceThisRoutine = traceThisRoutine,
                                                              prepend = myPrepend)
-  write_csv(US_Total_Test_Results, "./DATA/US_Total_Test_Results.csv")
 
-  US_Deaths <- read_csv("./DATA/US_Deaths.csv",
-                        show_col_types = FALSE)
-  US_Confirmed <- read_csv("./DATA/US_Confirmed.csv",
-                           show_col_types = FALSE)
-  
-  US_Case_Fatality_Ratio <- rebuildUSDataFileForTypeFromProperData(US_Deaths,
-                                                                   US_Confirmed,
-                                                                   "Case_Fatality_Ratio",
-                                                                   traceThisRoutine = traceThisRoutine,
-                                                                   prepend = myPrepend)
-  write_csv(US_Case_Fatality_Ratio, "./DATA/US_Case_Fatality_Ratio.csv")
-  
-  US_Incident_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Confirmed,
-                                                            "Incident_Rate",
-                                                            traceThisRoutine = traceThisRoutine,
-                                                            prepend = myPrepend)
-  write_csv(US_Incident_Rate, "./DATA/US_Incident_Rate.csv")
-  
-  US_Testing_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Total_Test_Results,
-                                                           "Testing_Rate",
-                                                           traceThisRoutine = traceThisRoutine,
-                                                           prepend = myPrepend)
+    write_csv(US_Testing_Rate, "./DATA/US_Testing_Rate.csv")
 
-  write_csv(US_Testing_Rate, "./DATA/US_Testing_Rate.csv")
-
+  }
+  
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving updateSerializedDataFilesAsNecessary\n")
   }

@@ -157,7 +157,8 @@ presentNewCaseData <- function(movingAvg, countyChoices,
                                stateChoices,
                                countyChoices,
                                "New Cases",
-                               "number of new cases per 100,000 population") %>%
+                               "number of new cases per 100,000 population",
+                               theID = "newCases") %>%
     styleSelectedLines(stateChoices, countyChoices)
   
   if (traceThisRoutine) {
