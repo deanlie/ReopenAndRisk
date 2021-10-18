@@ -62,6 +62,38 @@ makeGtPresentation <- function(theData, stateChoices, countyChoices,
       locations = cells_column_labels())
 }
 
+makeGtPresentationForTab <- function(dataSelectionRtn, movingAvg,
+                                     stateChoices, countyChoices,
+                                     theTitle, theSubtitle, theID,
+                                     traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  traceFlagOnEntry <- traceThisRoutine
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Entered makeGtPresentationForTab\n")
+  }
+
+  if (is.null(stateChoices)) {
+    theData <- dataSelectionRtn(NULL, movingAvg, stateChoices)
+  } else {
+    theData <- dataSelectionRtn(countyChoices, movingAvg, stateChoices)
+  }
+  
+  theData <- cleanDataForPresentation(theData,
+                                      stateChoices,
+                                      countyChoices)
+  
+  result <- makeGtPresentation(theData, stateChoices, countyChoices,
+                               theTitle, theSubtitle, theID) %>%
+    styleSelectedLines(stateChoices, countyChoices)
+  
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Leaving makeGtPresentationForTab\n")
+  }
+
+  return(result)
+}
+  
+
 styleSelectedLines <- function(theData, stateChoices, countyChoices) {
   return(theData)
 }
