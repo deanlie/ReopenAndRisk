@@ -21,7 +21,6 @@ Bugs
 maybe by a factor of 10000, or maybe two data points are way off,
 throwing the whole plot scale off. Hold off on debugging until tables are
 displayed!
- * 2021-10-11: Run errorsOct11.R to see some bugs in data display
 
 Other TODO
 ----------
@@ -29,6 +28,13 @@ Other TODO
 
 Open Branches
 -------------
+
+FixTestingDataComputations
+
+> 1. Bug of 2021-10-08: Test Positivity boxplots have a bug! Scale is off,
+maybe by a factor of 10000, or maybe two data points are way off,
+throwing the whole plot scale off. Hold off on debugging until tables are
+displayed! Display those tables!
 
 Closed branches:
 ----------------
