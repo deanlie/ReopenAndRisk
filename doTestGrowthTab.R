@@ -81,5 +81,31 @@ presentTestGrowthData <- function(movingAvg, countyChoices,
                                   stateChoices, timeWindow,
                                   traceThisRoutine = FALSE,
                                   prepend = "") {
-  return(bogusGtDisplay("presentTestGrowthData"))
+  myPrepend <- paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered presentTestGrowthData\n")
+  }
+  if (is.null(stateChoices)) {
+    theData <- dataForTestGrowthPlots(NULL, movingAvg, stateChoices)
+  } else {
+    theData <- dataForTestGrowthPlots(countyChoices, movingAvg, stateChoices)
+  }
+
+  theData <- cleanDataForPresentation(theData,
+                                      stateChoices,
+                                      countyChoices)
+
+  result <- makeGtPresentation(theData,
+                               stateChoices,
+                               countyChoices,
+                               "Testing Rate",
+                               "Percent of population tested that day",
+                               theID = "testRate") %>%
+    styleSelectedLines(stateChoices, countyChoices)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered presentTestGrowthData\n")
+  }
+
+  return(result) # was: bogusGtDisplay("presentTestGrowthData"))
 }
