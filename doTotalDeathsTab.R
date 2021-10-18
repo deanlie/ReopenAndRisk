@@ -171,7 +171,6 @@ presentTotalDeathsData <- function(movingAvg, countyChoices,
                                  stateChoices, timeWindow,
                                  traceThisRoutine = FALSE,
                                  prepend = "") {
-#  return(bogusGtDisplay("presentTotalDeathsData"))
   myPrepend <- paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered presentTotalDeathsData\n")
