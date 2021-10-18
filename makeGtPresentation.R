@@ -9,10 +9,10 @@ cleanDataForPresentation <- function(theData,
     cat(file = stderr(), prepend, "Entered cleanDataForPresentation\n")
   }
 
+  theNames <- names(theData)
   if (is.null(countyChoices) || is.null(stateChoices)) {
     theData <- theData %>%
-      mutate(State = str_replace(Combined_Key, ", US", ""), .before = 1, .keep = "unused") %>%
-      select(-Population)
+      mutate(State = str_replace(Combined_Key, ", US", ""), .before = 1, .keep = "unused")
   } else {
     admin1 <- admin1TypeFor(stateChoices[1])$UC_S
     selectedState <- stateLookup[stateChoices[1]]
@@ -22,14 +22,17 @@ cleanDataForPresentation <- function(theData,
     }
     theData <- theData %>%
       mutate({{admin1}} := str_replace(Combined_Key, {{state_US}}, ""),
-             .before = 1, .keep = "unused") %>%
-      select(-Population)
-    if ("Admin2" %in% names(theData)) {
+             .before = 1, .keep = "unused")
+    if ("Admin2" %in% theNames) {
       theData <- theData %>%
         select(-Admin2)
     }
   }
-  if ("Province_State" %in% names(theData)) {
+  if ("Population" %in% theNames) {
+    theData <- theData %>%
+      select(-Population)
+  }
+  if ("Province_State" %in% theNames) {
     theData <- theData %>%
       select(-Province_State)
   }
