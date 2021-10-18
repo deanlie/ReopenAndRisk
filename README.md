@@ -35,6 +35,8 @@ FixTestingDataComputations
 maybe by a factor of 10000, or maybe two data points are way off,
 throwing the whole plot scale off. Hold off on debugging until tables are
 displayed! Display those tables!
+> 2. TestGrowth tab should change to TestingRate
+> 3. More decimals for small percents, please!
 
 Closed branches:
 ----------------

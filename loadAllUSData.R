@@ -307,17 +307,35 @@ loadATypeOfData <- function(staticDataQ, theType, colTypes, stateColTypes,
   return(results)
 }
 
-normalizeByPopulation <- function(aTibble) {
+perWhatOfPopulation <- function(aTibble, perWhat) {
   if ("Combined_Key" %in% names(aTibble)) {
     returnMe <- US_Population %>%
       select(Combined_Key, Population) %>%
       inner_join(aTibble, by = "Combined_Key") %>%
-      mutate(across(matches(".*2.$"), ~ .x * 100000 / Population))
+      mutate(across(matches(".*2.$"), ~ .x * perWhat / Population))
   } else {
     errorCondition("no 'Combined_Key' column in aTibble??")
     returnMe <- aTibble
   }
   return(returnMe)
+  }
+
+normalizeByPopulation <- function(aTibble) {
+  # if ("Combined_Key" %in% names(aTibble)) {
+  #   returnMe <- US_Population %>%
+  #     select(Combined_Key, Population) %>%
+  #     inner_join(aTibble, by = "Combined_Key") %>%
+  #     mutate(across(matches(".*2.$"), ~ .x * 100000 / Population))
+  # } else {
+  #   errorCondition("no 'Combined_Key' column in aTibble??")
+  #   returnMe <- aTibble
+  # }
+  # return(returnMe)
+  return(perWhatOfPopulation(aTibble, 100000))
+}
+
+percentOfPopulation <- function(aTibble) {
+  return(perWhatOfPopulation(aTibble, 100))
 }
 
 loadUSConfirmedData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend = "") {
@@ -456,6 +474,11 @@ loadUSTestResultsData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE,
   US_People_Tested_Avg <<- allTestResultsData$US_Avg
   US_State_People_Tested_Avg <<- allTestResultsData$State_Avg
 
+  US_People_Tested_Per100_New <<- percentOfPopulation(allTestResultsData$US_New)
+  US_State_People_Tested_Per100_New <<- percentOfPopulation(allTestResultsData$State_Avg)
+  US_People_Tested_Per100_NewAvg <<- percentOfPopulation(allTestResultsData$US_NewAvg)
+  US_State_People_Tested_Per100_NewAvg <<- percentOfPopulation(allTestResultsData$State_NewAvg)
+  
   if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Leaving loadUSTestResultsData\n")
   }

@@ -34,6 +34,23 @@ dataForTestGrowthPlots <- function(countyChoices, movingAvg, stateChoices) {
   theData
 }
 
+dataForTestGrowthPlots_B <- function(countyChoices, movingAvg, stateChoices) {
+  if (is.null(stateChoices)) {
+    if (movingAvg) {
+      theData <- US_People_Tested_Per100_NewAvg
+    } else {
+      theData <- US_People_Tested_Per100_New
+    }
+  } else {
+    if (movingAvg) {
+      theData <- US_State_People_Tested_Per100_NewAvg
+    } else {
+      theData <- US_State_People_Tested_Per100_New
+    }
+  }
+  theData
+}
+
 plotTestGrowthBoxplots <- function(chooseCounty, movingAvg, countyChoices,
                                    stateChoices, timeWindow) {
   if (is.null(stateChoices)) {
@@ -86,7 +103,7 @@ presentTestGrowthData <- function(movingAvg, countyChoices,
     cat(file = stderr(), prepend, "Entered presentTestGrowthData\n")
   }
   
-  result <- makeGtPresentationForTab(dataForTestGrowthPlots, movingAvg,
+  result <- makeGtPresentationForTab(dataForTestGrowthPlots_B, movingAvg,
                                      stateChoices, countyChoices,
                                      "Testing Rate",
                                      "Percent of population tested that day",
@@ -98,5 +115,5 @@ presentTestGrowthData <- function(movingAvg, countyChoices,
     cat(file = stderr(), prepend, "Entered presentTestGrowthData\n")
   }
 
-  return(result) # was: bogusGtDisplay("presentTestGrowthData"))
+  return(result)
 }
