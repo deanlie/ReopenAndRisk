@@ -17,7 +17,7 @@ testGrowthHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
   HTML(theText)
 }
 
-dataForTestGrowthPlots <- function(countyChoices, movingAvg, stateChoices) {
+dataForTestGrowthPlots_A <- function(countyChoices, movingAvg, stateChoices) {
   if (is.null(stateChoices)) {
     if (movingAvg) {
       theData <- US_People_Tested_Avg
@@ -34,7 +34,7 @@ dataForTestGrowthPlots <- function(countyChoices, movingAvg, stateChoices) {
   theData
 }
 
-dataForTestGrowthPlots_B <- function(countyChoices, movingAvg, stateChoices) {
+dataForTestGrowthPlots <- function(countyChoices, movingAvg, stateChoices) {
   if (is.null(stateChoices)) {
     if (movingAvg) {
       theData <- US_People_Tested_Per100_NewAvg
@@ -103,7 +103,7 @@ presentTestGrowthData <- function(movingAvg, countyChoices,
     cat(file = stderr(), prepend, "Entered presentTestGrowthData\n")
   }
   
-  result <- makeGtPresentationForTab(dataForTestGrowthPlots_B, movingAvg,
+  result <- makeGtPresentationForTab(dataForTestGrowthPlots, movingAvg,
                                      stateChoices, countyChoices,
                                      "Testing Rate",
                                      "Percent of population tested that day",
