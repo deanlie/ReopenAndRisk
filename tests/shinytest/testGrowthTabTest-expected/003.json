@@ -16,7 +16,7 @@
   },
   "output": {
     "testGBox": {
-      "src": "[image data sha1: 5e961a047db143b59f4757aaf6aeea34f710ce25]",
+      "src": "[image data sha1: 56bb7925da20021041aea6467563650d165333e6]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -63,13 +63,13 @@
       ]
     },
     "testGrowthHeaderHTML": {
-      "html": "<h4>Changes in Amount of Testing<\/h4><p>The data used for this tab is not updated as regularly as the\n                            data for cases and mortality, and is not always reliable. Uneven updates\n                            can result in numbers which change the scale so much that the resulting\n                            chart is unreadable. To prevent that, these graphs do not display data\n                            which is far outside the range of the bulk of the data. Dots along the\n                            top or bottom of the chart are not real data.<\/p><p>The amount of testing should generally not be decreasing.<\/p><p>A downward sloping trend line is not necessarily a problem. It just means\n                            that the amount of testing is not growing as fast as it used to be.\n                            So long as the growth rate is above 0 the number of tests is increasing.<\/p>",
+      "html": "<h4>Trends in Testing<\/h4><p>The data used for this tab is not updated as regularly as the\n                            data for cases and mortality, and is not always reliable. Uneven updates\n                            can result in numbers which change the scale so much that the resulting\n                            chart is unreadable. To prevent that, these graphs do not display data\n                            which is far outside the range of the bulk of the data. Dots along the\n                            top or bottom of the chart are not real data.<\/p><p>Data displayed here can vary rapidly depending on local outbreaks and\n                          testing requirements<\/p>",
       "deps": [
 
       ]
     },
     "testGTrend": {
-      "src": "[image data sha1: 8778549b6c6225b81a8fd7315a40cba2c22088c2]",
+      "src": "[image data sha1: da8f979502fe8160ede7e6e7dfeb31bdcee6775d]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",

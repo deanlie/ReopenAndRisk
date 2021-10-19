@@ -16,63 +16,100 @@ testGrowthHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
   HTML(theText)
 }
 
-dataForTestingRateTab <- function(countyChoices, movingAvg, stateChoices) {
-  if (is.null(stateChoices)) {
+dataForTestingRateTab <- function(forBoxplots, countyChoices, movingAvg, stateChoices) {
+  if ((!forBoxplots) && is.null(stateChoices)) {
     if (movingAvg) {
       theData <- US_People_Tested_Per100_NewAvg
     } else {
       theData <- US_People_Tested_Per100_New
     }
   } else {
-    if (movingAvg) {
-      theData <- US_State_People_Tested_Per100_NewAvg
+    if (is.null(countyChoices)) {
+      if (movingAvg) {
+        theData <- US_State_People_Tested_Per100_NewAvg
+      } else {
+        theData <- US_State_People_Tested_Per100_New
+      }
     } else {
-      theData <- US_State_People_Tested_Per100_New
+      if (movingAvg) {
+        dataTibble <- US_County_People_Tested_Per100_NewAvg
+      } else {
+        dataTibble <- US_County_People_Tested_Per100_New
+      }
+      theData <- filterToStateChoice(dataTibble, stateChoices[1], countyChoices)
     }
   }
   theData
 }
 
-plotTestGrowthBoxplots <- function(chooseCounty, movingAvg, countyChoices,
-                                   stateChoices, timeWindow) {
-  if (is.null(stateChoices)) {
-    theData <- dataForTestingRateTab(NULL, movingAvg, "AK")
-  } else {
-    theData <- dataForTestingRateTab(countyChoices, movingAvg, stateChoices)
+testingRatePlotTitle <- function(forBoxplot, justUS, movingAvg, justStates, state1) {
+  title <- plotTitle("Testing Rate", forBoxplot, justUS, movingAvg, justStates, state1)
+}
+
+testingRateYLabel <- function() {
+  "Testing rate, percent of population"
+}
+
+plotTestingRateBoxplots <- function(chooseCounty,
+                                    movingAvg,
+                                    countyChoices,
+                                    stateChoices,
+                                    timeWindow,
+                                    traceThisRoutine = FALSE,
+                                    prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  traceFlagOnEntry <- traceThisRoutine
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Entered plotTestingRateBoxplots\n")
+  }
+
+  theData <- dataForTestingRateTab(TRUE, countyChoices, movingAvg, stateChoices)
+  
+  result <- assembleDirectBoxPlot(theData, chooseCounty,
+                                  countyChoices, stateChoices,
+                                  testingRatePlotTitle(TRUE, is.null(stateChoices), movingAvg,
+                                                   is.null(countyChoices), stateChoices[1]),
+                                  timeWindowXLabel(timeWindow),
+                                  testingRateYLabel(),
+                                  clampFactor = 3, timeWindow = timeWindow,
+                                  traceThisRoutine = traceThisRoutine,
+                                  prepend = myPrepend)
+
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Leaving plotTestingRateBoxplots\n")
   }
   
-  if (movingAvg) {
-    title <- "COVID Testing Growth Distribution, 7 day moving average"
-  } else {
-    title <- "COVID Testing Growth Distribution"
-  }
+  return(result)
+}
+
+plotTestGrowthBoxplots <- function(chooseCounty, movingAvg, countyChoices,
+                                   stateChoices, timeWindow) {
+  theData <- dataForTestingRateTab(TRUE, countyChoices, movingAvg, stateChoices)
+
   # County data is not available, passing data to plot routine just
   #   results in loss of dots for selected states
   assembleGrowthBoxPlot(theData,
                         FALSE, # chooseCounty,
                         NULL, # countyChoices,
                         stateChoices,
-                        title,
-                        paste("Last", timeWindow, "days"),
-                        "Daily growth rate: new day's number of tests as percent of previous number",
+                        testingRatePlotTitle(TRUE, is.null(stateChoices), movingAvg,
+                                             is.null(countyChoices), stateChoices[1]),
+                        timeWindowXLabel(timeWindow),
+                        testingRateYLabel(),
                         clampFactor = 1, timeWindow = timeWindow)
 }
 
 plotTestGrowthTrend <- function(chooseCounty, movingAvg, countyChoices,
                                 stateChoices, timeWindow) {
-  # OUCH more logic here to get US_County... sometimes
-  if (is.null(stateChoices)) {
-    title <- "COVID Testing Growth Trend for US as a Whole"
-  } else {
-    title <- "COVID Testing Growth Trends for Selected States"
-  }
-  theData <- dataForTestingRateTab(countyChoices, movingAvg, stateChoices)
-  assembleGrowthTrendPlot(theData, FALSE, # OUCH chooseCounty,
-                          NULL, # OUCH countyChoices,
+  theData <- dataForTestingRateTab(FALSE, countyChoices, movingAvg, stateChoices)
+  assembleDirectTrendPlot(theData,
+                          FALSE, # chooseCounty,
+                          NULL, # countyChoices,
                           stateChoices,
-                          title,
-                          paste("Last", timeWindow, "days"),
-                          "Daily growth rate: new day's number of tests as percent of previous number",
+                          testingRatePlotTitle(TRUE, is.null(stateChoices), movingAvg,
+                                               is.null(countyChoices), stateChoices[1]),
+                          timeWindowXLabel(timeWindow),
+                          testingRateYLabel(),
                           timeWindow)
 }
 
@@ -85,7 +122,7 @@ presentTestGrowthData <- function(movingAvg, countyChoices,
     cat(file = stderr(), prepend, "Entered presentTestGrowthData\n")
   }
   
-  result <- makeGtPresentationForTab(dataForTestingRateTab, movingAvg,
+  result <- makeGtPresentationForTab(dataForTestingRateTab, FALSE, movingAvg,
                                      stateChoices, countyChoices,
                                      "Testing Rate",
                                      "Percent of population tested that day",

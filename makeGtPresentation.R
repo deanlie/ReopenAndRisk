@@ -63,7 +63,7 @@ makeGtPresentation <- function(theData, stateChoices, countyChoices,
       locations = cells_column_labels())
 }
 
-makeGtPresentationForTab <- function(dataSelectionRtn, movingAvg,
+makeGtPresentationForTab <- function(dataSelectionRtn, forBoxplots, movingAvg,
                                      stateChoices, countyChoices,
                                      theTitle, theSubtitle,
                                      theID = "Missing_ID",
@@ -75,12 +75,8 @@ makeGtPresentationForTab <- function(dataSelectionRtn, movingAvg,
     cat(file = stderr(), prepend, "Entered makeGtPresentationForTab\n")
   }
 
-  if (is.null(stateChoices)) {
-    theData <- dataSelectionRtn(NULL, movingAvg, stateChoices)
-  } else {
-    theData <- dataSelectionRtn(countyChoices, movingAvg, stateChoices)
-  }
-  
+  theData <- dataSelectionRtn(forBoxplots, countyChoices, movingAvg, stateChoices)
+
   theData <- cleanDataForPresentation(theData,
                                       stateChoices,
                                       countyChoices)
