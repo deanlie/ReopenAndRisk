@@ -107,7 +107,8 @@ presentTestGrowthData <- function(movingAvg, countyChoices,
                                      stateChoices, countyChoices,
                                      "Testing Rate",
                                      "Percent of population tested that day",
-                                     "testRate",
+                                     theID = "testRate",
+                                     nDecimals = 3,
                                      traceThisRoutine = traceThisRoutine,
                                      prepend = myPrepend) 
 

@@ -45,7 +45,8 @@ cleanDataForPresentation <- function(theData,
 }
 
 makeGtPresentation <- function(theData, stateChoices, countyChoices,
-                               theTitle, theSubtitle, theID = "aTable") {
+                               theTitle, theSubtitle, theID = "aTable",
+                               nDecimals = 1) {
   # write_csv(theData, "../ShinyPart1/presentThis.csv")
   # cat(theTitle, "\n", file = "../ShinyPart1/aTitle.txt")
   
@@ -53,7 +54,7 @@ makeGtPresentation <- function(theData, stateChoices, countyChoices,
     gt(id = theID) %>%
     tab_header(title = theTitle,
                subtitle = theSubtitle) %>%
-    fmt_number(columns = matches("^[1-9]"), decimals = 1) %>%
+    fmt_number(columns = matches("^[1-9]"), decimals = nDecimals) %>%
     tab_style(
       style = list(cell_text(size = "small")),
       locations = cells_body()) %>%
@@ -64,7 +65,9 @@ makeGtPresentation <- function(theData, stateChoices, countyChoices,
 
 makeGtPresentationForTab <- function(dataSelectionRtn, movingAvg,
                                      stateChoices, countyChoices,
-                                     theTitle, theSubtitle, theID,
+                                     theTitle, theSubtitle,
+                                     theID = "Missing_ID",
+                                     nDecimals = 1,
                                      traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
   traceFlagOnEntry <- traceThisRoutine
@@ -83,7 +86,8 @@ makeGtPresentationForTab <- function(dataSelectionRtn, movingAvg,
                                       countyChoices)
   
   result <- makeGtPresentation(theData, stateChoices, countyChoices,
-                               theTitle, theSubtitle, theID) %>%
+                               theTitle, theSubtitle,
+                               theID, nDecimals = nDecimals) %>%
     styleSelectedLines(stateChoices, countyChoices)
   
   if (traceFlagOnEntry) {
