@@ -2,39 +2,21 @@ source("./state_abbrev_lookup.R")
 source("./assemblePlotObject.R")
 
 testGrowthHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
-  theText <- paste(tags$h4("Changes in Amount of Testing"),
+  theText <- paste(tags$h4("Trends in Testing"),
                    tags$p("The data used for this tab is not updated as regularly as the
                             data for cases and mortality, and is not always reliable. Uneven updates
                             can result in numbers which change the scale so much that the resulting
                             chart is unreadable. To prevent that, these graphs do not display data
                             which is far outside the range of the bulk of the data. Dots along the
                             top or bottom of the chart are not real data."),
-                   tags$p("The amount of testing should generally not be decreasing."),
-                   tags$p("A downward sloping trend line is not necessarily a problem. It just means
-                            that the amount of testing is not growing as fast as it used to be.
-                            So long as the growth rate is above 0 the number of tests is increasing."),
+                   tags$p("Data displayed here can vary rapidly depending on local outbreaks and
+                          testing requirements"
+                          ),
                    sep="")
   HTML(theText)
 }
 
-dataForTestGrowthPlots_A <- function(countyChoices, movingAvg, stateChoices) {
-  if (is.null(stateChoices)) {
-    if (movingAvg) {
-      theData <- US_People_Tested_Avg
-    } else {
-      theData <- US_People_Tested
-    }
-  } else {
-    if (movingAvg) {
-      theData <- US_State_People_Tested_Avg
-    } else {
-      theData <- US_State_People_Tested
-    }
-  }
-  theData
-}
-
-dataForTestGrowthPlots <- function(countyChoices, movingAvg, stateChoices) {
+dataForTestingRateTab <- function(countyChoices, movingAvg, stateChoices) {
   if (is.null(stateChoices)) {
     if (movingAvg) {
       theData <- US_People_Tested_Per100_NewAvg
@@ -54,9 +36,9 @@ dataForTestGrowthPlots <- function(countyChoices, movingAvg, stateChoices) {
 plotTestGrowthBoxplots <- function(chooseCounty, movingAvg, countyChoices,
                                    stateChoices, timeWindow) {
   if (is.null(stateChoices)) {
-    theData <- dataForTestGrowthPlots(NULL, movingAvg, "AK")
+    theData <- dataForTestingRateTab(NULL, movingAvg, "AK")
   } else {
-    theData <- dataForTestGrowthPlots(countyChoices, movingAvg, stateChoices)
+    theData <- dataForTestingRateTab(countyChoices, movingAvg, stateChoices)
   }
   
   if (movingAvg) {
@@ -84,7 +66,7 @@ plotTestGrowthTrend <- function(chooseCounty, movingAvg, countyChoices,
   } else {
     title <- "COVID Testing Growth Trends for Selected States"
   }
-  theData <- dataForTestGrowthPlots(countyChoices, movingAvg, stateChoices)
+  theData <- dataForTestingRateTab(countyChoices, movingAvg, stateChoices)
   assembleGrowthTrendPlot(theData, FALSE, # OUCH chooseCounty,
                           NULL, # OUCH countyChoices,
                           stateChoices,
@@ -103,7 +85,7 @@ presentTestGrowthData <- function(movingAvg, countyChoices,
     cat(file = stderr(), prepend, "Entered presentTestGrowthData\n")
   }
   
-  result <- makeGtPresentationForTab(dataForTestGrowthPlots, movingAvg,
+  result <- makeGtPresentationForTab(dataForTestingRateTab, movingAvg,
                                      stateChoices, countyChoices,
                                      "Testing Rate",
                                      "Percent of population tested that day",
