@@ -45,6 +45,12 @@ totalCasePlotTitle <- function(forBoxplot, justUS, movingAvg, justStates, state1
   title <- plotTitle("Total Covid Cases", forBoxplot, justUS, movingAvg, justStates, state1)
 }
 
+totalCasePlotTitle_B <- function(forBoxplot, countiesAvailable, movingAvg,
+                                 stateChoices, countyChoices) {
+  title <- plotTitle_B("Total Covid Cases", forBoxplot, FALSE, movingAvg,
+                        stateChoices, NULL)
+}
+  
 totalCaseYLabel <- function() {
   "Total cases per 100,000 population"
 }
@@ -66,10 +72,10 @@ plotTotalCaseBoxplots <- function(chooseCounty,
   theData <- selectPlotData(dataForTotalCasePlots, chooseCounty,
                             TRUE, countyChoices, movingAvg, stateChoices)
 
-  assembleDirectBoxPlot(theData, chooseCounty,
+  assembleDirectBoxPlot_B(theData, chooseCounty,
                         countyChoices, stateChoices,
-                        totalCasePlotTitle(TRUE, is.null(stateChoices), movingAvg,
-                                           is.null(countyChoices), stateChoices[1]),
+                        totalCasePlotTitle_B(TRUE, FALSE, movingAvg,
+                                             stateChoices, countyChoices),
                         timeWindowXLabel(timeWindow),
                         totalCaseYLabel(),
                         clampFactor = 3, timeWindow = timeWindow)
@@ -84,8 +90,8 @@ plotTotalCaseTrend <- function(chooseCounty,
 
   assembleDirectTrendPlot(theData, chooseCounty,
                           countyChoices, stateChoices,
-                          totalCasePlotTitle(FALSE, is.null(stateChoices), movingAvg,
-                                             is.null(countyChoices), stateChoices[1]),
+                          totalCasePlotTitle_B(FALSE, FALSE, movingAvg,
+                                               stateChoices, countyChoices),
                           timeWindowXLabel(timeWindow),
                           totalCaseYLabel(),
                           timeWindow)

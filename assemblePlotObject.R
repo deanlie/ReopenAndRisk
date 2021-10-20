@@ -371,6 +371,33 @@ assembleDirectBoxPlot <- function(aFrame, chooseCounty,
   return(result)
 }
 
+assembleDirectBoxPlot_B <- function(aFrame, chooseCounty,
+                                  countyChoices, stateChoices,
+                                  theTitle, xlabel, ylabel,
+                                  clampFactor = 3, timeWindow = 14,
+                                  tibbleName = "from assembleDirectBoxPlot_B",
+                                  traceThisRoutine = FALSE, prepend = "") {
+  myPrepend <- paste(prepend, "  ", sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered assembleDirectBoxPlot_B\n")
+    cat(file = stderr(), myPrepend, "dim(aFrame) = (", paste(dim(aFrame)), ")\n")
+  }
+  
+  dataToPlot <- computePlotDataFromFrame(aFrame, chooseCounty, countyChoices, stateChoices,
+                                     traceThisRoutine = traceThisRoutine,
+                                     prepend = myPrepend)
+  
+  result <- assembleSomeBoxPlot(dataToPlot, theTitle, xlabel, ylabel, clampFactor,
+                                traceThisRoutine = traceThisRoutine,
+                                prepend = myPrepend)
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving assembleDirectBoxPlot_B\n")
+  }
+  
+  return(result)
+}
+
 assembleGrowthBoxPlot <- function(aFrame, chooseCounty,
                                   countyChoices, stateChoices,
                                   theTitle, xlabel, ylabel,

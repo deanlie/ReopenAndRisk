@@ -43,12 +43,7 @@ plotTitle_B <- function(baseTitle, forBoxplot, countiesAvailable, movingAvg,
     if (is.null(stateChoices)) {
       title <- paste(title, ", US Overall", sep = "")
     } else {
-      title <- paste(title, ", Selected", sep = "")
-      if (is.null(countyChoices)) {
-        title <- paste(title, "States")
-      } else {
-        title <- paste(title, admin1TypeFor(state1)$UC_PL)
-      }
+      title <- paste(title, ", Selected States", sep = "")
     }
   }
   if (movingAvg) {
