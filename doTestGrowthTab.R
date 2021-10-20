@@ -24,28 +24,24 @@ dataForTestingRateTab <- function(forBoxplots, countyChoices, movingAvg, stateCh
       theData <- US_People_Tested_Per100_New
     }
   } else {
-    if (is.null(countyChoices)) {
-      if (movingAvg) {
-        theData <- US_State_People_Tested_Per100_NewAvg
-      } else {
-        theData <- US_State_People_Tested_Per100_New
-      }
+    if (movingAvg) {
+      theData <- US_State_People_Tested_Per100_NewAvg
     } else {
-      if (movingAvg) {
-        dataTibble <- US_County_People_Tested_Per100_NewAvg
-      } else {
-        dataTibble <- US_County_People_Tested_Per100_New
-      }
-      theData <- filterToStateChoice(dataTibble, stateChoices[1], countyChoices)
+      theData <- US_State_People_Tested_Per100_New
     }
   }
   theData
 }
 
+testingRatePlotTitle_B <- function(forBoxplot, movingAvg, stateChoices) {
+  title <- plotTitle_B("Testing Rate", forBoxplot, FALSE, movingAvg,
+                          stateChoices, NULL)
+}
+
 testingRatePlotTitle <- function(forBoxplot, justUS, movingAvg, justStates, state1) {
   title <- plotTitle("Testing Rate", forBoxplot, justUS, movingAvg, justStates, state1)
 }
-
+  
 testingRateYLabel <- function() {
   "Testing rate, percent of population"
 }
@@ -65,10 +61,9 @@ plotTestingRateBoxplots <- function(chooseCounty,
 
   theData <- dataForTestingRateTab(TRUE, countyChoices, movingAvg, stateChoices)
   
-  result <- assembleDirectBoxPlot(theData, chooseCounty,
+  result <- assembleDirectBoxPlot(theData, FALSE,
                                   countyChoices, stateChoices,
-                                  testingRatePlotTitle(TRUE, is.null(stateChoices), movingAvg,
-                                                   is.null(countyChoices), stateChoices[1]),
+                                  testingRatePlotTitle_B(TRUE, movingAvg, stateChoices),
                                   timeWindowXLabel(timeWindow),
                                   testingRateYLabel(),
                                   clampFactor = 3, timeWindow = timeWindow,
@@ -82,23 +77,6 @@ plotTestingRateBoxplots <- function(chooseCounty,
   return(result)
 }
 
-plotTestGrowthBoxplots <- function(chooseCounty, movingAvg, countyChoices,
-                                   stateChoices, timeWindow) {
-  theData <- dataForTestingRateTab(TRUE, countyChoices, movingAvg, stateChoices)
-
-  # County data is not available, passing data to plot routine just
-  #   results in loss of dots for selected states
-  assembleGrowthBoxPlot(theData,
-                        FALSE, # chooseCounty,
-                        NULL, # countyChoices,
-                        stateChoices,
-                        testingRatePlotTitle(TRUE, is.null(stateChoices), movingAvg,
-                                             is.null(countyChoices), stateChoices[1]),
-                        timeWindowXLabel(timeWindow),
-                        testingRateYLabel(),
-                        clampFactor = 1, timeWindow = timeWindow)
-}
-
 plotTestGrowthTrend <- function(chooseCounty, movingAvg, countyChoices,
                                 stateChoices, timeWindow) {
   theData <- dataForTestingRateTab(FALSE, countyChoices, movingAvg, stateChoices)
@@ -106,7 +84,7 @@ plotTestGrowthTrend <- function(chooseCounty, movingAvg, countyChoices,
                           FALSE, # chooseCounty,
                           NULL, # countyChoices,
                           stateChoices,
-                          testingRatePlotTitle(TRUE, is.null(stateChoices), movingAvg,
+                          testingRatePlotTitle(FALSE, is.null(stateChoices), movingAvg,
                                                is.null(countyChoices), stateChoices[1]),
                           timeWindowXLabel(timeWindow),
                           testingRateYLabel(),

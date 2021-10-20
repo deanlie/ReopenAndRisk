@@ -420,11 +420,11 @@ server <- function(input, output, session) {
                                                                 input$stateChoices)})
   output$testGBoxplotHeaderHTML <- renderUI({boxplotHeaderHTML(input$countyChoices,
                                                                input$stateChoices)})
-  output$testGBox <- renderPlot({plotTestGrowthBoxplots(input$chooseCounty,
-                                                        input$movingAvg,
-                                                        input$countyChoices,
-                                                        input$stateChoices,
-                                                        input$timeWindow)})
+  output$testGBox <- renderPlot({plotTestingRateBoxplots(input$chooseCounty,
+                                                         input$movingAvg,
+                                                         input$countyChoices,
+                                                         input$stateChoices,
+                                                         input$timeWindow)})
   output$testGTrend <- renderPlot({plotTestGrowthTrend(input$chooseCounty,
                                                        input$movingAvg,
                                                        input$countyChoices,

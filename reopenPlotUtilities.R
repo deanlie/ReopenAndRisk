@@ -27,6 +27,36 @@ plotTitle <- function(baseTitle, forBoxplot, justUS, movingAvg,
   title
 }
 
+plotTitle_B <- function(baseTitle, forBoxplot, countiesAvailable, movingAvg,
+                        stateChoices, countyChoices) {
+  title <- baseTitle
+  if (forBoxplot) {
+    if (countiesAvailable && (!is.null(countyChoices))) {
+      title <- paste(title, ", ",
+                     admin1TypeFor(state1)$UC_PL,
+                     ", Distribution",
+                     sep = "")
+    } else {
+      title <- paste(title, ", State Distribution", sep = "")
+    }
+  } else {
+    if (is.null(stateChoices)) {
+      title <- paste(title, ", US Overall", sep = "")
+    } else {
+      title <- paste(title, ", Selected", sep = "")
+      if (is.null(countyChoices)) {
+        title <- paste(title, "States")
+      } else {
+        title <- paste(title, admin1TypeFor(state1)$UC_PL)
+      }
+    }
+  }
+  if (movingAvg) {
+    title <- paste(title, ", 7 Day Moving Average", sep = "")
+  }
+  title
+}
+
 timeWindowXLabel <- function(timeWindow) {
   paste("Last", timeWindow, "days")
 }
