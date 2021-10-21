@@ -113,7 +113,7 @@ bogusGtDisplay <- function(caller = "unimplemented routine") {
     }
   }
   
-  theData <- as.tibble(theDataFrame) %>%
+  theData <- as_tibble(theDataFrame) %>%
     gt(id = "bogustbl") %>%
     tab_header(title = paste(placeholderTitle(), caller, sep = " "), 
                subtitle = "Magic square from Albrecht Durer's 'Melancholia'") %>%

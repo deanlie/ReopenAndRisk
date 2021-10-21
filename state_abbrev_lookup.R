@@ -65,5 +65,50 @@ makeCombinedKeys <- function(theCounty, stateAbbrev) {
   list(spaced = theLocaleKey, spaceless = theSpacelessLocaleKey)
 }
 
+stateNames <- function(useStaticData = FALSE) {
+  if (useStaticData) {
+    c("AL"="Alabama", "FL"="Florida", "LA"="Louisiana", "ME"="Maine",
+      "MA"="Massachusetts", "PR"="Puerto Rico",  "TX"="Texas")
+  } else {
+    stateLookup
+  }
+}
+
+countyChoices <- reactive({
+  allChoices <- input$stateChoices
+  theStateAbbrev <- allChoices[1]
+  # print(paste("input State[1] is", theStateAbbrev))
+  list(stAbv = theStateAbbrev,
+       choices = CountiesByState$County[CountiesByState$State ==
+                                          unname(stateLookup[allChoices[1]])])
+})
+
+countiesForState <- function(stateAbbrev, useStaticData = FALSE) {
+  if (useStaticData) {
+    staticCSTable <- data.frame(State = c("Alabama", "Louisiana", "Louisiana",   
+                                          "Puerto Rico", "Puerto Rico",
+                                          "Massachusetts", "Massachusetts",
+                                          "Massachusetts", "Massachusetts",
+                                          "Massachusetts", "Massachusetts",
+                                          "Massachusetts", "Maine", "Florida",      
+                                          "Texas", "Texas", "Texas"),
+                                County = c("Autauga", "Natchitoches",
+                                           "Plaquemines", "Arecibo",
+                                           "Barceloneta", "Barnstable",
+                                           "Berkshire", "Dukes", 
+                                           "Middlesex", "Nantucket", 
+                                           "Suffolk", "Worcester",
+                                           "Penobscot", "Broward",
+                                           "Brazoria", "Deaf Smith",
+                                           "Harris"))
+    staticCSTable$County[staticCSTable$State ==
+                    unname(stateLookup[stateAbbrev])]
+
+  } else {
+    CountiesByState$County[CountiesByState$State ==
+                             unname(stateLookup[stateAbbrev])]
+  }
+}
+
 
 

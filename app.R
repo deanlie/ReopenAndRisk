@@ -82,7 +82,7 @@ ui <- fluidPage(
                         step = 1),
             selectInput("stateChoices",
                         "Select up to six states",
-                        names(stateLookup),
+                        names(stateNames(testModeQ())),
                         selected = NULL,
                         multiple = TRUE),
             tags$p("County data is available on the New Cases, New Deaths, and Summary tabs."),
@@ -230,8 +230,9 @@ server <- function(input, output, session) {
     theStateAbbrev <- allChoices[1]
     # print(paste("input State[1] is", theStateAbbrev))
     list(stAbv = theStateAbbrev,
-         choices = CountiesByState$County[CountiesByState$State ==
-                                            unname(stateLookup[allChoices[1]])])
+         # choices = CountiesByState$County[CountiesByState$State ==
+         #                                    unname(stateLookup[allChoices[1]])])
+         choices = countiesForState(theStateAbbrev, testModeQ()))
   })
   
   useCounty <- reactive({input$chooseCounty})
