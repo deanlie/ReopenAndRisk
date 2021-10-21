@@ -12,6 +12,7 @@ DATA/*.csv
 DATA/*.tar
 DATA/*.csv.icloud
 DATA/DATA
+DATA/ClipDates
 tests/shinytest/*-current/
 DEVELOPMENT/
 CACHE/
