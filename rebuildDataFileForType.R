@@ -475,26 +475,27 @@ rebuildUSDataFileForTypeFromProperData <- function(USNumeratorTibble,
 
 rebuildUSDataFileForTypeByNormalizing <- function(USNumeratorTibble,
                                                    aType,
+                                                  perHowMany = 100000,
                                                   traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered rebuildUSDataFileForTypeByNormalizing\n")
   }
   
-  popby100k <- as.double(US_Population %>%
+  popDivByHowMany <- as.double(US_Population %>%
                            filter(Combined_Key == "US") %>%
-                           select(Population)) / 100000
+                           select(Population)) / perHowMany
   
   if (traceThisRoutine) {
   #   cat(file = stderr(), myPrepend, "names(USNumeratorTibble):",
   #       paste(names(USNumeratorTibble), sep = ", "), "\n")
-    cat(file = stderr(), myPrepend, "popby100k =", round(popby100k, digits = 5), "\n")
+    cat(file = stderr(), myPrepend, "popDivByHowMany =", round(popDivByHowMany, digits = 5), "\n")
   }
 
   UNTNonNum <- select(USNumeratorTibble, !matches("^[1-9]"))
   UNTNumeric <- select(USNumeratorTibble, matches("^[1-9]"))
   
-  NormNumeric <- UNTNumeric / popby100k
+  NormNumeric <- UNTNumeric / popDivByHowMany
   
   newUSTibble <- bind_cols(UNTNonNum, NormNumeric)
   
@@ -542,6 +543,7 @@ rebuildUSDataFilesForTypes <- function(stateTibbles, traceThisRoutine = FALSE, p
                                                               prepend = myPrepend)
   US_Incident_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Confirmed,
                                                             "Incident_Rate",
+                                                            perHowMany = 100000,
                                                             traceThisRoutine = traceThisRoutine,
                                                             prepend = myPrepend)
   
@@ -552,6 +554,7 @@ rebuildUSDataFilesForTypes <- function(stateTibbles, traceThisRoutine = FALSE, p
                                                              prepend = myPrepend)
   US_Testing_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Total_Test_Results,
                                                            "Testing_Rate",
+                                                           perHowMany = 100,
                                                            traceThisRoutine = traceThisRoutine,
                                                            prepend = myPrepend)
   
@@ -597,11 +600,13 @@ rebuildUSDataFilesForTypes_B <- function(stateTibbles, traceThisRoutine = FALSE,
   
   US_Incident_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Confirmed,
                                                             "Incident_Rate",
+                                                            perHowMany = 100000,
                                                             traceThisRoutine = traceThisRoutine,
                                                             prepend = myPrepend)
   
   US_Testing_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Total_Test_Results,
                                                            "Testing_Rate",
+                                                           perHowMany = 100,
                                                            traceThisRoutine = traceThisRoutine,
                                                            prepend = myPrepend)
   
@@ -665,6 +670,7 @@ rebuildFourTypes <-  function(traceThisRoutine = FALSE, prepend = "") {
   # # Hypothesis: Testing_Rate <- Total_Test_Results / Population * 100000
   # US_Testing_Rate_0 <- rebuildUSDataFileForTypeAsWeightedAvg(newStateTibbles$Testing_Rate,
   #                                                            "Testing_Rate",
+  #                                                            perHowMany = 100,
   #                                                            traceThisRoutine = traceThisRoutine,
   #                                                            prepend = myPrepend)
   # US_Testing_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Total_Test_Results,
