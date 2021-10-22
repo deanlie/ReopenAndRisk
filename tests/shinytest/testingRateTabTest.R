@@ -1,7 +1,7 @@
 app <- ShinyDriver$new("../../", loadTimeout = 100000)
-app$snapshotInit("testGrowthTabTest")
+app$snapshotInit("testingRateTabTest")
 
-app$setInputs(mainTabsetPanel = "Test Growth")
+app$setInputs(mainTabsetPanel = "Testing Rate")
 app$snapshot()
 app$setInputs(testGrowthTabsetPanel = "Trend Line")
 app$snapshot()
