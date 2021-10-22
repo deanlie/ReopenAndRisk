@@ -11,10 +11,8 @@ source("columnUtilities.R")
 source("rebuildDataFileForType.R")
 
 typesStateLevelData <- function(aDate) {
-  newTypes <- c("Incident_Rate", "Case_Fatality_Ratio",
-                "Total_Test_Results", "Testing_Rate")
-
-  list(thatDateTypes = newTypes, prevDateTypes = newTypes)
+  c("Incident_Rate", "Case_Fatality_Ratio",
+    "Total_Test_Results", "Testing_Rate")
 }
 
 sumIgnoreNA <- function(x) {
@@ -154,7 +152,7 @@ updateStateDataFilesForTypes <- function(nDates = 60, stopNDaysBeforePresent = 0
   return(newStateTibbles)
 }
 
-updatePopulationEstimateData <- function(aDate, dailyStateData,
+updatePopulationEstimateData <- function(dailyStateData,
                                          traceThisRoutine = FALSE, prepend = "") {
   # The data set I worked from allowed estimating population two ways.
   # Population Estimate 1 = 100000 * Confirmed / Incident_Rate
@@ -236,13 +234,12 @@ makeInitialStateLevelData <- function(nDates = 60,
     }
   }
   
-  popEstimate <- updatePopulationEstimateData(firstDate, updateTibble,
+  popEstimate <- updatePopulationEstimateData(updateTibble,
                                               traceThisRoutine = traceThisRoutine,
                                               prepend = myPrepend)
 
-  aList <- typesStateLevelData(firstDate)
-  for (i in 1:length(aList$thatDateTypes)) {
-    aType <- aList$thatDateTypes[i]
+  aList <- typesStateLevelData()
+  for (aType in aList) {
     newTibble <- updateTibble %>%
       mutate(Combined_Key = paste(Province_State, ", US", sep=""),
              Population = as.integer(100000 * Confirmed / Incident_Rate),
@@ -275,6 +272,17 @@ makeInitialStateLevelData <- function(nDates = 60,
   }
 }
 
+updateSerializedDataFilesAsNecessary_B <- function(traceThisRoutine = FALSE, prepend = "CALLER??") {
+  myPrepend <- paste("  ", prepend)
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered updateSerializedDataFilesAsNecessary_B\n")
+  }
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving updateSerializedDataFilesAsNecessary_B\n")
+  }
+}
+  
 updateSerializedDataFilesAsNecessary <- function(traceThisRoutine = FALSE, prepend = "CALLER??") {
   myPrepend <- paste("  ", prepend)
   if (traceThisRoutine) {
@@ -363,15 +371,15 @@ updateSerializedDataFilesAsNecessary <- function(traceThisRoutine = FALSE, prepe
       }
 
       if ("tbl" %in% class(updateTibble)) {
-        popEstimate <- updatePopulationEstimateData(updateDate, updateTibble,
+        popEstimate <- updatePopulationEstimateData(updateTibble,
                                                     traceThisRoutine = traceThisRoutine,
                                                     prepend = myPrepend)
         
         # We need two lists as in createUSNewTypeDataTimeSeries.R
-        aList <- typesStateLevelData(updateDate)
-        for (i in 1:length(aList$thatDateTypes)) {
-          thatType <- aList$thatDateTypes[i]
-          prevType <- aList$prevDateTypes[i]
+        aList <- typesStateLevelData()
+        for (i in 1:length(aList)) {
+          thatType <- aList[i]
+          prevType <- aList[i]
           oldLocalDataPath <- paste("./DATA/US_State_", prevType, ".csv", sep = "")
           newLocalStateDataPath <- paste("./DATA/US_State_", thatType, ".csv", sep = "")
           if (traceThisRoutine) {
@@ -432,12 +440,14 @@ updateSerializedDataFilesAsNecessary <- function(traceThisRoutine = FALSE, prepe
   
     US_Incident_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Confirmed,
                                                               "Incident_Rate",
+                                                              perHowMany = 100000,
                                                               traceThisRoutine = traceThisRoutine,
                                                               prepend = myPrepend)
     write_csv(US_Incident_Rate, "./DATA/US_Incident_Rate.csv")
   
     US_Testing_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Total_Test_Results,
                                                              "Testing_Rate",
+                                                             perHowMany = 100,
                                                              traceThisRoutine = traceThisRoutine,
                                                              prepend = myPrepend)
 
