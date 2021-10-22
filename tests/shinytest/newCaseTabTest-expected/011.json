@@ -19,7 +19,7 @@
   },
   "output": {
     "newCaseBox": {
-      "src": "[image data sha1: d5644b769dba425018d939799685fd5eec9807e4]",
+      "src": "[image data sha1: 27afca8dfea085a7fc036555c51ee45c00a7d342]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -72,7 +72,7 @@
       ]
     },
     "newCaseTrend": {
-      "src": "[image data sha1: cf236ef8ffb162f34df7e29122cef28b07d6a63d]",
+      "src": "[image data sha1: 1c371de5a7044ef0f8748b6fc336b3c83ccdfcb1]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -113,7 +113,7 @@
       ]
     },
     "vaccRBox": {
-      "src": "[image data sha1: 370e1f6faab36118053ed683b7be014bf72ae06b]",
+      "src": "[image data sha1: 1105ee0bfd91e2774e9ca8d7543dbbb31dad2340]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
