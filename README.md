@@ -15,6 +15,36 @@ Updated, Redeployed Oct 7, 2021
 
 Bugs
 ----
+ * 2021-10-21: error in leastSquaresTrendParams computed for total cases boxplots
+  with trend lines (which I'm not sure why are being computed then, but anyway...):
+  Suspect change in "Corrected a couple of plot titles", commit 3b395af, Oct 19
+  Time for git bisect, review how to use it. The data used has a population number,
+  county name, and state name used in the least-squares computation!
+
+  Warning: Error in *: non-numeric argument to binary operator
+  172: leastSquaresTrendParams [./assemblePlotObject.R#18]
+  171: computePlotDataFromFrame [./assemblePlotObject.R#111]
+->  170: assembleDirectBoxPlot_B [./assemblePlotObject.R#386]
+  169: plotTotalCaseBoxplots [doTotalCaseTab.R#75]
+  168: renderPlot [/Users/deanb/Documents/R_Stuff/Shiny/RefactorAndRisk/app.R#356]
+  166: func
+  126: drawPlot
+  112: <reactive:plotObj>
+   96: drawReactive
+   83: renderFunc
+   82: output$totalCaseBox
+    1: runApp
+Called from: eval(expr, p)
+Browse[1]> n
+debug at ./assemblePlotObject.R#18: xy <- x * y
+Browse[2]> x
+ [1]  2  3  4  5  6  7  8  9 10 11 12
+Browse[2]> y
+ [1] "38158"            "Natchitoches"     "Louisiana"        "15464.6469940773"
+ [5] "15538.026101997"  "15615.5234251571" "15705.3753940383" "15794.1042133086"
+ [9] "15882.8330325788" "15971.5618518491" "16079.0098313029"
+ 
+ 
  * 2021-10-14: updatePopulationEstimateData should be modified to check date of current population estimate files, only update if they're old (say, older than 1 month)
  * 2021-10-14: US_State_Testing_Rate.csv, US_State_Total_Test_Results, US_State_Case_Fatality_Ratio, and US_State_Incident_Rate were rewritten to eliminate bad column names. See DEVELOPMENT/zapStateTestingRate.R. There is a bug in computation of the corresponding US_ data files.
  * 2021-10-08: Test Positivity boxplots have a bug! Scale is off,
