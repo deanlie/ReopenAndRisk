@@ -382,7 +382,7 @@ assembleDirectBoxPlot_B <- function(aFrame, chooseCounty,
     cat(file = stderr(), prepend, "Entered assembleDirectBoxPlot_B\n")
     cat(file = stderr(), myPrepend, "dim(aFrame) = (", paste(dim(aFrame)), ")\n")
   }
-  res <- computePlotDataDirectFromCumulative(aFrame, chooseCounty,
+  dataToPlot <- computePlotDataDirectFromCumulative(aFrame, chooseCounty,
                                              countyChoices, stateChoices,
                                              timeWindow, tibbleName = tibbleName,
                                              traceThisRoutine = traceThisRoutine,

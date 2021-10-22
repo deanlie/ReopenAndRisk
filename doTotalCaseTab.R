@@ -72,7 +72,7 @@ plotTotalCaseBoxplots <- function(chooseCounty,
   theData <- selectPlotData(dataForTotalCasePlots, chooseCounty,
                             TRUE, countyChoices, movingAvg, stateChoices)
   
-  useB <- FALSE
+  useB <- TRUE
   
   if (useB) {
     assembleDirectBoxPlot_B(theData, chooseCounty,
