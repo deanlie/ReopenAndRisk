@@ -25,7 +25,7 @@
   },
   "output": {
     "newCaseBox": {
-      "src": "[image data sha1: 207cf994867b4d3c071b06980425d5b54899694f]",
+      "src": "[image data sha1: 3ddd31fb342f6c2f264b07c7725a16d0f31a2542]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -72,7 +72,7 @@
       ]
     },
     "newDeathsBox": {
-      "src": "[image data sha1: 8267a6a0869f12dfd22e7f74f9ef248262d40a45]",
+      "src": "[image data sha1: 3d5ae8d67ac730a148d2652bb93ab7a073f42f01]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -125,7 +125,7 @@
       ]
     },
     "testGBox": {
-      "src": "[image data sha1: b5afe7af672d3a92ba2d098945c9c83c51118215]",
+      "src": "[image data sha1: 43c83a917666a3520868b6daaae184bc2cfaa185]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -166,13 +166,13 @@
       ]
     },
     "testGrowthHeaderHTML": {
-      "html": "<h4>Changes in Amount of Testing<\/h4><p>The data used for this tab is not updated as regularly as the\n                            data for cases and mortality, and is not always reliable. Uneven updates\n                            can result in numbers which change the scale so much that the resulting\n                            chart is unreadable. To prevent that, these graphs do not display data\n                            which is far outside the range of the bulk of the data. Dots along the\n                            top or bottom of the chart are not real data.<\/p><p>The amount of testing should generally not be decreasing.<\/p><p>A downward sloping trend line is not necessarily a problem. It just means\n                            that the amount of testing is not growing as fast as it used to be.\n                            So long as the growth rate is above 0 the number of tests is increasing.<\/p>",
+      "html": "<h4>Trends in Testing<\/h4><p>The data used for this tab is not updated as regularly as the\n                            data for cases and mortality, and is not always reliable. Uneven updates\n                            can result in numbers which change the scale so much that the resulting\n                            chart is unreadable. To prevent that, these graphs do not display data\n                            which is far outside the range of the bulk of the data. Dots along the\n                            top or bottom of the chart are not real data.<\/p><p>Data displayed here can vary rapidly depending on local outbreaks and\n                          testing requirements<\/p>",
       "deps": [
 
       ]
     },
     "testRBox": {
-      "src": "[image data sha1: a95882d144263e5e0a4b22938ecb15c722f7e207]",
+      "src": "[image data sha1: 40abb5c4f0cadbc44b51c9321dbd9c5592b88ae7]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -219,7 +219,7 @@
       ]
     },
     "totalCaseBox": {
-      "src": "[image data sha1: a72200a3543f2f48e6e05ebacfeae2a769e4666c]",
+      "src": "[image data sha1: fbafcc62d7feedb35d642736f23fc33bf9667f27]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -266,7 +266,7 @@
       ]
     },
     "totalDeathsBox": {
-      "src": "[image data sha1: ad049b75977788549453aae7a067a54ba24fa789]",
+      "src": "[image data sha1: 01e1397f2c3fccd5ac377f8d805a31aa247534ca]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -319,7 +319,7 @@
       ]
     },
     "vaccRBox": {
-      "src": "[image data sha1: 7e98868340825ec082065eddaebcef58b915ddbd]",
+      "src": "[image data sha1: 788a073e1842150a34a19850959c54cf7ead8012]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
