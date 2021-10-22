@@ -300,7 +300,7 @@ assembleSomeBoxPlot <- function(res, theTitle, xlabel, ylabel,
     cat(file = stderr(), prepend, "Entered assembleSomeBoxPlot\n")
   }
 
-  if (!is.na(res)["plotData"]) {
+  if (!is.na(res["plotData"])) {
     finitizedPlotData <- res$plotData %>%
       mutate(nums = ifelse(is.na(nums), 50., nums), 
              .keep="unused",
@@ -382,11 +382,11 @@ assembleDirectBoxPlot_B <- function(aFrame, chooseCounty,
     cat(file = stderr(), prepend, "Entered assembleDirectBoxPlot_B\n")
     cat(file = stderr(), myPrepend, "dim(aFrame) = (", paste(dim(aFrame)), ")\n")
   }
-  
-  dataToPlot <- computePlotDataFromFrame(aFrame, chooseCounty, countyChoices, stateChoices,
-                                     traceThisRoutine = traceThisRoutine,
-                                     prepend = myPrepend)
-  
+  res <- computePlotDataDirectFromCumulative(aFrame, chooseCounty,
+                                             countyChoices, stateChoices,
+                                             timeWindow, tibbleName = tibbleName,
+                                             traceThisRoutine = traceThisRoutine,
+                                             prepend = myPrepend)
   result <- assembleSomeBoxPlot(dataToPlot, theTitle, xlabel, ylabel, clampFactor,
                                 traceThisRoutine = traceThisRoutine,
                                 prepend = myPrepend)

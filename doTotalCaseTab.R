@@ -71,24 +71,28 @@ plotTotalCaseBoxplots <- function(chooseCounty,
                                 timeWindow) {
   theData <- selectPlotData(dataForTotalCasePlots, chooseCounty,
                             TRUE, countyChoices, movingAvg, stateChoices)
-
-  # assembleDirectBoxPlot_B(theData, chooseCounty,
-  #                       countyChoices, stateChoices,
-  #                       totalCasePlotTitle_B(TRUE, FALSE, movingAvg,
-  #                                            stateChoices, countyChoices),
-  #                       timeWindowXLabel(timeWindow),
-  #                       totalCaseYLabel(),
-  #                       clampFactor = 3, timeWindow = timeWindow)
-  assembleDirectBoxPlot(theData, chooseCounty,
-                        countyChoices, stateChoices,
-                        totalCasePlotTitle_B(TRUE, FALSE, movingAvg,
-                                             stateChoices, countyChoices),
-                        # theTitle,
-                        timeWindowXLabel(timeWindow),
-                        totalCaseYLabel(),
-                        clampFactor = 3, timeWindow = timeWindow,
-                        tibbleName = "from assembleDirectBoxPlot",
-                        traceThisRoutine = FALSE, prepend = "")
+  
+  useB <- FALSE
+  
+  if (useB) {
+    assembleDirectBoxPlot_B(theData, chooseCounty,
+                            countyChoices, stateChoices,
+                            totalCasePlotTitle_B(TRUE, FALSE, movingAvg,
+                                                 stateChoices, countyChoices),
+                            timeWindowXLabel(timeWindow),
+                            totalCaseYLabel(),
+                            clampFactor = 3, timeWindow = timeWindow)
+  } else {
+    assembleDirectBoxPlot(theData, chooseCounty,
+                          countyChoices, stateChoices,
+                          totalCasePlotTitle_B(TRUE, FALSE, movingAvg,
+                                               stateChoices, countyChoices),
+                          timeWindowXLabel(timeWindow),
+                          totalCaseYLabel(),
+                          clampFactor = 3, timeWindow = timeWindow,
+                          tibbleName = "from assembleDirectBoxPlot",
+                          traceThisRoutine = FALSE, prepend = "")
+  }
 }
 
 plotTotalCaseTrend <- function(chooseCounty,
