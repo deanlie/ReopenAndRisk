@@ -185,7 +185,7 @@ ui <- fluidPage(
                              # htmlOutput("totalDeathsDataHTML"),
                              gt_output("totalDeathsGtData")
                            ))))),
-            tabPanel("Test Growth",
+            tabPanel("Testing Rate",
               verticalLayout(
                 htmlOutput("testGrowthHeaderHTML"),
                 tabsetPanel(id = "testGrowthTabsetPanel",
@@ -415,7 +415,7 @@ server <- function(input, output, session) {
                                                                input$timeWindow),
                                  width = px(1000))
   
-  # "Test Growth" tab
+  # "Testing Rate" tab
   output$testGrowthHeaderHTML <- renderUI({testGrowthHeaderHTML(input$chooseCounty,
                                                                 input$countyChoices,
                                                                 input$stateChoices)})

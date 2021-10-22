@@ -35,12 +35,8 @@ FixTestingDataComputations
 maybe by a factor of 10000, or maybe two data points are way off,
 throwing the whole plot scale off. Hold off on debugging until tables are
 displayed! Display those tables!
-> 2. TestGrowth tab should change to TestingRate
-> 3. DONE: More decimals for small percents, please! fixed in table display
-
-  NOTES: computations for Testing_Rate are in rebuildTestResultsData.R,
-  rebuildDataFileForType.R, and updateStateLevelSerializedDataFiles.R.
-  loadAllUSData.R looks as though it gets a file.
+> 2. DONE: TestGrowth tab changes to TestingRate
+> 3. DONE: Three decimal places are shown in testing rate table display
 
 Closed branches:
 ----------------
