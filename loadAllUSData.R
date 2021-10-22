@@ -475,7 +475,7 @@ loadUSTestResultsData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE,
   US_State_People_Tested_Avg <<- allTestResultsData$State_Avg
 
   US_People_Tested_Per100_New <<- percentOfPopulation(allTestResultsData$US_New)
-  US_State_People_Tested_Per100_New <<- percentOfPopulation(allTestResultsData$State_Avg)
+  US_State_People_Tested_Per100_New <<- percentOfPopulation(allTestResultsData$State_New)
   US_People_Tested_Per100_NewAvg <<- percentOfPopulation(allTestResultsData$US_NewAvg)
   US_State_People_Tested_Per100_NewAvg <<- percentOfPopulation(allTestResultsData$State_NewAvg)
   
