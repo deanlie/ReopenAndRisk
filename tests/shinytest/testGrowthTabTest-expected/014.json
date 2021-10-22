@@ -7,7 +7,7 @@
       "Suffolk",
       "Worcester"
     ],
-    "mainTabsetPanel": "Test Growth",
+    "mainTabsetPanel": "Testing Rate",
     "movingAvg": true,
     "newCaseTabsetPanel": "Boxplot",
     "newDeathsTabsetPanel": "Boxplot",
@@ -25,7 +25,7 @@
   },
   "output": {
     "testGBox": {
-      "src": "[image data sha1: 1fd2c16a50be1e7e9fbf30af0e6166d385e9810f]",
+      "src": "[image data sha1: 43c83a917666a3520868b6daaae184bc2cfaa185]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -72,13 +72,13 @@
       ]
     },
     "testGrowthHeaderHTML": {
-      "html": "<h4>Changes in Amount of Testing<\/h4><p>The data used for this tab is not updated as regularly as the\n                            data for cases and mortality, and is not always reliable. Uneven updates\n                            can result in numbers which change the scale so much that the resulting\n                            chart is unreadable. To prevent that, these graphs do not display data\n                            which is far outside the range of the bulk of the data. Dots along the\n                            top or bottom of the chart are not real data.<\/p><p>The amount of testing should generally not be decreasing.<\/p><p>A downward sloping trend line is not necessarily a problem. It just means\n                            that the amount of testing is not growing as fast as it used to be.\n                            So long as the growth rate is above 0 the number of tests is increasing.<\/p>",
+      "html": "<h4>Trends in Testing<\/h4><p>The data used for this tab is not updated as regularly as the\n                            data for cases and mortality, and is not always reliable. Uneven updates\n                            can result in numbers which change the scale so much that the resulting\n                            chart is unreadable. To prevent that, these graphs do not display data\n                            which is far outside the range of the bulk of the data. Dots along the\n                            top or bottom of the chart are not real data.<\/p><p>Data displayed here can vary rapidly depending on local outbreaks and\n                          testing requirements<\/p>",
       "deps": [
 
       ]
     },
     "testGTrend": {
-      "src": "[image data sha1: 6c225497fb113923f56438ab861db6714644cd68]",
+      "src": "[image data sha1: cd3288cf36f389f34c5d97b74ec0fbdf7670df8a]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",

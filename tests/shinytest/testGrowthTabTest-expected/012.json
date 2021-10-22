@@ -1,7 +1,7 @@
 {
   "input": {
     "chooseCounty": false,
-    "mainTabsetPanel": "Test Growth",
+    "mainTabsetPanel": "Testing Rate",
     "movingAvg": true,
     "newCaseTabsetPanel": "Boxplot",
     "newDeathsTabsetPanel": "Boxplot",

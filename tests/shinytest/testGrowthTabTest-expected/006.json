@@ -1,7 +1,7 @@
 {
   "input": {
     "chooseCounty": false,
-    "mainTabsetPanel": "Test Growth",
+    "mainTabsetPanel": "Testing Rate",
     "movingAvg": false,
     "newCaseTabsetPanel": "Boxplot",
     "newDeathsTabsetPanel": "Boxplot",
@@ -16,7 +16,7 @@
   },
   "output": {
     "testGBox": {
-      "src": "[image data sha1: 0901ebc192bf8b615c42844b4644e5b8443862c6]",
+      "src": "[image data sha1: d85e72f56d6f5cf8f6eed1c0e3918f64fb94b77f]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
