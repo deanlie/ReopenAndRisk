@@ -72,18 +72,7 @@ plotTotalCaseBoxplots <- function(chooseCounty,
   theData <- selectPlotData(dataForTotalCasePlots, chooseCounty,
                             TRUE, countyChoices, movingAvg, stateChoices)
   
-  useB <- TRUE
-  
-  if (useB) {
-    assembleDirectBoxPlot_B(theData, chooseCounty,
-                            countyChoices, stateChoices,
-                            totalCasePlotTitle_B(TRUE, FALSE, movingAvg,
-                                                 stateChoices, countyChoices),
-                            timeWindowXLabel(timeWindow),
-                            totalCaseYLabel(),
-                            clampFactor = 3, timeWindow = timeWindow)
-  } else {
-    assembleDirectBoxPlot(theData, chooseCounty,
+  assembleDirectBoxPlot_B(theData, chooseCounty,
                           countyChoices, stateChoices,
                           totalCasePlotTitle_B(TRUE, FALSE, movingAvg,
                                                stateChoices, countyChoices),
@@ -92,7 +81,6 @@ plotTotalCaseBoxplots <- function(chooseCounty,
                           clampFactor = 3, timeWindow = timeWindow,
                           tibbleName = "from assembleDirectBoxPlot",
                           traceThisRoutine = FALSE, prepend = "")
-  }
 }
 
 plotTotalCaseTrend <- function(chooseCounty,
