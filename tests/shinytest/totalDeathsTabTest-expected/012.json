@@ -19,7 +19,7 @@
   },
   "output": {
     "totalDeathsBox": {
-      "src": "[image data sha1: a0c1fef8183111d91349105bc873fc76db1c4c46]",
+      "src": "[image data sha1: de017be6c2bcab2e6ff4fa9f52b30a052c610698]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -72,7 +72,7 @@
       ]
     },
     "totalDeathsTrend": {
-      "src": "[image data sha1: ca02710c24af302dccde0b43da4398ee76c60b3d]",
+      "src": "[image data sha1: df0df14a0f62aaeea1f1a3816320974f06aad17b]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -113,7 +113,7 @@
       ]
     },
     "vaccRBox": {
-      "src": "[image data sha1: 370e1f6faab36118053ed683b7be014bf72ae06b]",
+      "src": "[image data sha1: 1105ee0bfd91e2774e9ca8d7543dbbb31dad2340]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
