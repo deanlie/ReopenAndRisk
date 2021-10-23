@@ -382,16 +382,19 @@ assembleDirectBoxPlot_B <- function(aFrame, chooseCounty,
     cat(file = stderr(), prepend, "Entered assembleDirectBoxPlot_B\n")
     cat(file = stderr(), myPrepend, "dim(aFrame) = (", paste(dim(aFrame)), ")\n")
   }
-  dataToPlot = computePlotDataFromFrame(computeNewOnDayAndGrowthRate(aFrame,
-                                                                 today("EST"),
-                                                                 timeWindow,
-                                                                 tibbleName = tibbleName,
-                                                                 traceThisRoutine = traceThisRoutine,
-                                                                 prepend = myPrepend)$d2,
-                                    chooseCounty,
-                                    countyChoices,
-                                    stateChoices, traceThisRoutine = traceThisRoutine,
-                                    prepend = myPrepend)
+  
+  newAndGrowth <- computeNewOnDayAndGrowthRate(aFrame,
+                                               today("EST"),
+                                               timeWindow,
+                                               tibbleName = tibbleName,
+                                               traceThisRoutine = traceThisRoutine,
+                                               prepend = myPrepend)
+  dataToPlot = computePlotDataFromFrame(newAndGrowth$d2,
+                                        chooseCounty,
+                                        countyChoices,
+                                        stateChoices,
+                                        traceThisRoutine = traceThisRoutine,
+                                        prepend = myPrepend)
 
   result <- assembleSomeBoxPlot(dataToPlot, theTitle, xlabel, ylabel, clampFactor,
                                 traceThisRoutine = traceThisRoutine,

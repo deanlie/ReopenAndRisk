@@ -120,6 +120,32 @@ computeNewOnDayAndGrowthRate <- function(aTibble, aDate,
   list(growth = GrowthRate, new = NewOnDay, d2 = NewerData)
 }
 
+selectDataNDaysToDate <- function(aTibble, aDate, nDays = 10,
+                                  tibbleName = "<?>",
+                                  traceThisRoutine = FALSE,
+                                  prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  traceFlagOnEntry <- traceThisRoutine
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Entered selectNDaysToDate\n")
+  }
+  
+  if (traceThisRoutine) {
+    # cat(file = stderr(), myPrepend, "\n")    
+  }
+  nDGR <- computeNewOnDayAndGrowthRate(aTibble, aDate,
+                                       nDays = 10,
+                                       getGrowthRate = FALSE, nonzeroOnly = FALSE,
+                                       tibbleName = tibbleName,
+                                       traceThisRoutine = traceThisRoutine,
+                                       prepend = myPrepend)
+  
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Leaving selectNDaysToDate\n")
+  }
+  return(nDGR$d2)
+}
+
 # Make an n-day moving average of a time series
 movingAverageData <- function(aTibble, aDate, mAvgs, nDayAvg,
                               tibbleName="TIBBLE NAME??",
