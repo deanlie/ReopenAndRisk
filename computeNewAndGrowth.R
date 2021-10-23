@@ -134,7 +134,7 @@ selectDataNDaysToDate <- function(aTibble, aDate, nDays = 10,
     # cat(file = stderr(), myPrepend, "\n")    
   }
   nDGR <- computeNewOnDayAndGrowthRate(aTibble, aDate,
-                                       nDays = 10,
+                                       nDays = nDays,
                                        getGrowthRate = FALSE, nonzeroOnly = FALSE,
                                        tibbleName = tibbleName,
                                        traceThisRoutine = traceThisRoutine,
