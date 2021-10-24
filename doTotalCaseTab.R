@@ -119,7 +119,7 @@ presentTotalCaseData <- function(movingAvg, countyChoices,
                                stateChoices,
                                countyChoices,
                                "Total Cases",
-                               "total number of cases per 100,000 population",
+                               totalCaseYLabel(),
                                theID = "totCases") %>%
     styleSelectedLines(stateChoices, countyChoices)
     
