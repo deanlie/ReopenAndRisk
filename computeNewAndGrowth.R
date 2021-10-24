@@ -130,18 +130,15 @@ selectDataNDaysToDate <- function(aTibble, aDate, nDays = 10,
     cat(file = stderr(), prepend, "Entered selectNDaysToDate\n")
   }
   
-  if (traceThisRoutine) {
-    # cat(file = stderr(), myPrepend, "\n")    
-  }
-  nDGR <- computeNewOnDayAndGrowthRate(aTibble, aDate,
-                                       nDays = nDays,
-                                       getGrowthRate = FALSE, nonzeroOnly = FALSE,
-                                       tibbleName = tibbleName,
-                                       traceThisRoutine = traceThisRoutine,
-                                       prepend = myPrepend)
-  #START
+  # nDGR <- computeNewOnDayAndGrowthRate(aTibble, aDate,
+  #                                      nDays = nDays,
+  #                                      getGrowthRate = FALSE, nonzeroOnly = FALSE,
+  #                                      tibbleName = tibbleName,
+  #                                      traceThisRoutine = traceThisRoutine,
+  #                                      prepend = myPrepend)
+
   # Get a range of nDays + 1 so you can compute nDays growth
-  nonzeroOnly <- FALSE
+  # nonzeroOnly <- FALSE
   theRange <- findColumnRangeForDate(aTibble, aDate, nDays + 1,
                                      tibbleName = tibbleName,
                                      traceThisRoutine = traceThisRoutine, prepend = myPrepend)
@@ -150,16 +147,16 @@ selectDataNDaysToDate <- function(aTibble, aDate, nDays = 10,
                                   Combined_Key,
                                   {theRange$startColumn}:{theRange$endColumn})
   
-  if (nonzeroOnly) {  
-    # Find potential zero divisors within column range
-    nonzero_data <- zerolessRowIndices(aTibble, theRange)
-    
-    # Limit data to nonzero rows within range of dates of interest
-    # Maybe fewer leading columns! Depends where Combined_Key is.  
-    theData <- as.data.frame(combinedKeyAndNumbers)[nonzero_data,]
-  } else {
-    theData <- as.data.frame(combinedKeyAndNumbers)
-  }
+  # if (nonzeroOnly) {  
+  #   # Find potential zero divisors within column range
+  #   nonzero_data <- zerolessRowIndices(aTibble, theRange)
+  #   
+  #   # Limit data to nonzero rows within range of dates of interest
+  #   # Maybe fewer leading columns! Depends where Combined_Key is.  
+  #   theData <- as.data.frame(combinedKeyAndNumbers)[nonzero_data,]
+  # } else {
+  theData <- as.data.frame(combinedKeyAndNumbers)
+  # }
   
   # Thinking: I can't plot boxplots if there are any NAs, Infs, NaNs
   # But I don't want to discard whole rows just because of one zero
@@ -171,15 +168,14 @@ selectDataNDaysToDate <- function(aTibble, aDate, nDays = 10,
   #  nDays + 1 of data. Therefore, we have to use theRange to get
   #  NewerData and OlderData.
   NewerData <- theData[, 3:(2 + theRange$endColumn - theRange$startColumn)]
-  OlderData <- theData[, 2:(1 + theRange$endColumn - theRange$startColumn)]
+  # OlderData <- theData[, 2:(1 + theRange$endColumn - theRange$startColumn)]
   
-  Diff       <- NewerData - OlderData
+  # Diff       <- NewerData - OlderData
   
   JustKey    <- select(as_tibble(theData), Combined_Key)
   
   NewerData  <- bind_cols(JustKey, as_tibble(NewerData))
-  #STOP
-  
+
   if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Leaving selectNDaysToDate\n")
   }
