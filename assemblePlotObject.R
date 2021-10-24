@@ -385,10 +385,7 @@ assembleDirectBoxPlot_B <- function(aFrame, chooseCounty,
   
   newData <- selectDataNDaysToDate(aFrame,
                                    today("EST"),
-                                   nDays = timeWindow,
-                                   tibbleName = tibbleName,
-                                   traceThisRoutine = traceThisRoutine,
-                                   prepend = myPrepend)
+                                   nDays = timeWindow)
   dataToPlot = computePlotDataFromFrame(newData,
                                         chooseCounty,
                                         countyChoices,

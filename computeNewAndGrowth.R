@@ -103,25 +103,13 @@ computeNewOnDayAndGrowthRate <- function(aTibble, aDate,
   list(growth = GrowthRate, new = NewOnDay, d2 = NewerData)
 }
 
-selectDataNDaysToDate <- function(aTibble, aDate, nDays = 10,
-                                  tibbleName = "<?>",
-                                  traceThisRoutine = FALSE,
-                                  prepend = "") {
-  myPrepend = paste("  ", prepend, sep = "")
-  traceFlagOnEntry <- traceThisRoutine
-  if (traceFlagOnEntry) {
-    cat(file = stderr(), prepend, "Entered selectNDaysToDate\n")
-  }
-
+selectDataNDaysToDate <- function(aTibble, aDate, nDays = 10) {
   theRange <- findColumnRangeForDate(aTibble, aDate, nDays)
   
   selectedData <- select(aTibble,
                          Combined_Key,
                          {theRange$startColumn}:{theRange$endColumn})
   
-  if (traceFlagOnEntry) {
-    cat(file = stderr(), prepend, "Leaving selectNDaysToDate\n")
-  }
   return(selectedData)
 }
 
