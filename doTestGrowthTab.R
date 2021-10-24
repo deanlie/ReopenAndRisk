@@ -33,15 +33,11 @@ dataForTestingRateTab <- function(forBoxplots, countyChoices, movingAvg, stateCh
   theData
 }
 
-testingRatePlotTitle_B <- function(forBoxplot, movingAvg, stateChoices) {
+testingRatePlotTitle <- function(forBoxplot, movingAvg, stateChoices) {
   title <- plotTitle_B("Testing Rate", forBoxplot, FALSE, movingAvg,
                           stateChoices, NULL)
 }
 
-testingRatePlotTitle <- function(forBoxplot, justUS, movingAvg, justStates, state1) {
-  title <- plotTitle("Testing Rate", forBoxplot, justUS, movingAvg, justStates, state1)
-}
-  
 testingRateYLabel <- function() {
   "Testing rate, percent of population"
 }
@@ -63,7 +59,7 @@ plotTestingRateBoxplots <- function(chooseCounty,
   
   result <- assembleDirectBoxPlot(theData, FALSE,
                                   countyChoices, stateChoices,
-                                  testingRatePlotTitle_B(TRUE, movingAvg, stateChoices),
+                                  testingRatePlotTitle(TRUE, movingAvg, stateChoices),
                                   timeWindowXLabel(timeWindow),
                                   testingRateYLabel(),
                                   clampFactor = 3, timeWindow = timeWindow,
@@ -84,7 +80,7 @@ plotTestGrowthTrend <- function(chooseCounty, movingAvg, countyChoices,
                           FALSE, # chooseCounty,
                           NULL, # countyChoices,
                           stateChoices,
-                          testingRatePlotTitle_B(FALSE, movingAvg, stateChoices),
+                          testingRatePlotTitle(FALSE, movingAvg, stateChoices),
                           timeWindowXLabel(timeWindow),
                           testingRateYLabel(),
                           timeWindow)

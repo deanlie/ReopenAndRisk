@@ -1,3 +1,21 @@
+
+dataForTestPositivityTab <- function(forBoxplots, countyChoices, movingAvg, stateChoices) {
+  if ((!forBoxplots) && is.null(stateChoices)) {
+    if (movingAvg) {
+      theData <- US_Test_Positivity_Avg
+    } else {
+      theData <- US_Test_Positivity
+    }
+  } else {
+    if (movingAvg) {
+      theData <- US_State_Test_Positivity_Avg
+    } else {
+      theData <- US_State_Test_Positivity
+    }
+  }
+  theData
+}
+
 testResultsHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
   theText <- paste(tags$h4("Changes in Test Results"),
                    tags$p("A decreasing percentage of positive tests is good;

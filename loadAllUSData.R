@@ -8,6 +8,22 @@ source("updateStateLevelSerializedDataFiles.R")
 source("columnUtilities.R")
 source("diagnosticRoutines.R")
 
+getNAvgsF <- function(staticDataQ) {
+  if (staticDataQ) {
+    8
+  } else {
+    28
+  }
+}
+
+nDaysDataF <- function(staticDataQ) {
+  if (staticDataQ) {
+    15
+  } else {
+    35
+  }
+}
+
 loadATypeOfData <- function(staticDataQ, theType, colTypes, stateColTypes,
                             computeCounty = FALSE,
                             computeNew = FALSE,
@@ -108,14 +124,10 @@ loadATypeOfData <- function(staticDataQ, theType, colTypes, stateColTypes,
       cat(file = stderr(), myPrepend, "results$County names:", names_p, "...\n")
     }
   }
+  
+  getNAvgs <- getNAvgsF(staticDataQ)
+  nDaysData <- nDaysDataF(staticDataQ)
 
-  if (staticDataQ) {
-    getNAvgs <- 8
-    nDaysData <- 15
-  } else {
-    getNAvgs <- 28
-    nDaysData <- 35
-  }
   averageOverDays <- 7
 
   if (traceThisRoutine) {
@@ -614,6 +626,50 @@ loadUSMortalityRateData <- function(staticDataQ = FALSE,
   US_State_Mortality_Rate <<- allMortalityRateData$State
 }
 
+computeAndLoadTestPositivityData <- function(staticDataQ = FALSE,
+                                             traceThisRoutine = TRUE,
+                                             prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  traceFlagOnEntry <- traceThisRoutine
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Entered computeAndLoadTestPositivityData\n")
+  }
+  
+  nDaysData <- nDaysDataF(staticDataQ)
+  
+  US_Numerator <- US_Confirmed
+  US_State_Numerator <- US_State_Confirmed
+  US_Denominator <- US_People_Tested
+  US_State_Denominator <- US_State_People_Tested
+
+  US_Numerator_Avg <- US_Confirmed_Avg
+  US_State_Numerator_Avg <- US_State_Confirmed_Avg
+  US_Denominator_Avg <- US_People_Tested_Avg
+  US_State_Denominator_Avg <- US_State_People_Tested_Avg
+
+  US_Test_Positivity <<- ratioDeltaFrame(US_Confirmed,
+                                         US_People_Tested,
+                                         nDaysData)
+  US_Test_Positivity_Avg <<- ratioDeltaFrame(US_Confirmed_Avg,
+                                             US_People_Tested_Avg,
+                                             nDaysData)
+  US_State_Test_Positivity <<- ratioDeltaFrame(US_State_Confirmed,
+                                               US_State_People_Tested,
+                                               nDaysData)
+  US_State_Test_Positivity_Avg <<- ratioDeltaFrame(US_State_Confirmed_Avg,
+                                                   US_State_People_Tested_Avg,
+                                                   nDaysData)
+  
+  if (traceThisRoutine) {
+    # cat(file = stderr(), myPrepend, "\n")    
+  }
+  
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Leaving computeAndLoadTestPositivityData\n")
+  }
+  
+}
+
 loadAllUSData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
   traceFlagOnEntry <- traceThisRoutine
@@ -679,6 +735,10 @@ loadAllUSData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend
   loadUSTestingRateData(staticDataQ = staticDataQ,
                         traceThisRoutine = traceThisRoutine,
                         prepend = myPrepend)
+
+  computeAndLoadTestPositivityData(staticDataQ,
+                                   traceThisRoutine = traceThisRoutine,
+                                   prepend = myPrepend)
 
   CountiesByState <<- US_County_Confirmed %>%
     mutate(State = Province_State, County = Admin2, .keep="none") %>%
