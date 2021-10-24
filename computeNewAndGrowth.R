@@ -129,17 +129,13 @@ selectDataNDaysToDate <- function(aTibble, aDate, nDays = 10,
   if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Entered selectNDaysToDate\n")
   }
-  
-  # nDGR <- computeNewOnDayAndGrowthRate(aTibble, aDate,
-  #                                      nDays = nDays,
-  #                                      getGrowthRate = FALSE, nonzeroOnly = FALSE,
-  #                                      tibbleName = tibbleName,
-  #                                      traceThisRoutine = traceThisRoutine,
-  #                                      prepend = myPrepend)
 
   # Get a range of nDays + 1 so you can compute nDays growth
   # nonzeroOnly <- FALSE
   theRange <- findColumnRangeForDate(aTibble, aDate, nDays + 1,
+                                     tibbleName = tibbleName,
+                                     traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+  theRange_B <- findColumnRangeForDate(aTibble, aDate, nDays,
                                      tibbleName = tibbleName,
                                      traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   
@@ -147,25 +143,11 @@ selectDataNDaysToDate <- function(aTibble, aDate, nDays = 10,
                                   Combined_Key,
                                   {theRange$startColumn}:{theRange$endColumn})
   
-  # if (nonzeroOnly) {  
-  #   # Find potential zero divisors within column range
-  #   nonzero_data <- zerolessRowIndices(aTibble, theRange)
-  #   
-  #   # Limit data to nonzero rows within range of dates of interest
-  #   # Maybe fewer leading columns! Depends where Combined_Key is.  
-  #   theData <- as.data.frame(combinedKeyAndNumbers)[nonzero_data,]
-  # } else {
+  lookThisIsTheEasyWay <- select(aTibble,
+                                 Combined_Key,
+                                 {theRange_B$startColumn}:{theRange_B$endColumn})
+  
   theData <- as.data.frame(combinedKeyAndNumbers)
-  # }
-  
-  # Thinking: I can't plot boxplots if there are any NAs, Infs, NaNs
-  # But I don't want to discard whole rows just because of one zero
-  # Keep the real values (including NA, Inf, -Inf, NaN) as long as
-  # possible, filter them out just before plotting (clamp the ratios
-  # to something really high like [-100%, +50%] growth/day)
-  
-  # There may not be enough columns with per-date data to get
-  #  nDays + 1 of data. Therefore, we have to use theRange to get
   #  NewerData and OlderData.
   NewerData <- theData[, 3:(2 + theRange$endColumn - theRange$startColumn)]
   # OlderData <- theData[, 2:(1 + theRange$endColumn - theRange$startColumn)]
@@ -179,7 +161,7 @@ selectDataNDaysToDate <- function(aTibble, aDate, nDays = 10,
   if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Leaving selectNDaysToDate\n")
   }
-  return(NewerData)
+  return(lookThisIsTheEasyWay)
 }
 
 # Make an n-day moving average of a time series
