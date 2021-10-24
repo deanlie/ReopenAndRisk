@@ -480,11 +480,13 @@ loadUSTestResultsData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE,
                                         prepend = myPrepend)
 
   US_People_Tested <<- allTestResultsData$US
-  US_State_People_Tested <<- allTestResultsData$State
-  US_People_Tested_NewAvg <<- allTestResultsData$US_NewAvg
-  US_State_People_Tested_NewAvg <<- allTestResultsData$State_NewAvg
+  US_People_Tested_New <<- allTestResultsData$US_New
   US_People_Tested_Avg <<- allTestResultsData$US_Avg
+  US_People_Tested_NewAvg <<- allTestResultsData$US_NewAvg
+  US_State_People_Tested <<- allTestResultsData$State
+  US_State_People_Tested_New <<- allTestResultsData$State_New
   US_State_People_Tested_Avg <<- allTestResultsData$State_Avg
+  US_State_People_Tested_NewAvg <<- allTestResultsData$State_NewAvg
 
   US_People_Tested_Per100_New <<- percentOfPopulation(allTestResultsData$US_New)
   US_State_People_Tested_Per100_New <<- percentOfPopulation(allTestResultsData$State_New)
@@ -647,17 +649,17 @@ computeAndLoadTestPositivityData <- function(staticDataQ = FALSE,
   US_Denominator_Avg <- US_People_Tested_Avg
   US_State_Denominator_Avg <- US_State_People_Tested_Avg
 
-  US_Test_Positivity <<- ratioDeltaFrame(US_Confirmed,
-                                         US_People_Tested,
+  US_Test_Positivity <<- ratioDeltaFrame(US_Confirmed_New,
+                                         US_People_Tested_New,
                                          nDaysData)
-  US_Test_Positivity_Avg <<- ratioDeltaFrame(US_Confirmed_Avg,
-                                             US_People_Tested_Avg,
+  US_Test_Positivity_Avg <<- ratioDeltaFrame(US_Confirmed_NewAvg,
+                                             US_People_Tested_NewAvg,
                                              nDaysData)
-  US_State_Test_Positivity <<- ratioDeltaFrame(US_State_Confirmed,
-                                               US_State_People_Tested,
+  US_State_Test_Positivity <<- ratioDeltaFrame(US_State_Confirmed_New,
+                                               US_State_People_Tested_New,
                                                nDaysData)
-  US_State_Test_Positivity_Avg <<- ratioDeltaFrame(US_State_Confirmed_Avg,
-                                                   US_State_People_Tested_Avg,
+  US_State_Test_Positivity_Avg <<- ratioDeltaFrame(US_State_Confirmed_NewAvg,
+                                                   US_State_People_Tested_NewAvg,
                                                    nDaysData)
   
   if (traceThisRoutine) {
