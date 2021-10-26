@@ -200,7 +200,7 @@ ui <- fluidPage(
                              # htmlOutput("testGrowthDataHTML"),
                              gt_output("testGrowthGtData")
                            ))))),
-            tabPanel("Test Results",
+            tabPanel("Test Positivity",
               verticalLayout(
                 htmlOutput("testResultsHeaderHTML"),
                 tabsetPanel(id = "testResultsTabsetPanel",

@@ -64,6 +64,9 @@ countyTimeSeries_to_peopleTested <- function(staticDataQ) {
                              formatDateForColumnName(firstDate)) 
   
   for (n in 1:(nDaysData - 1)) {
+    cat(file = stderr(), "Before n =", n,
+        "dim(buildingTibble)[1] =",
+        dim(buildingTibble)[1], "\n")
     newDateTibble <- CountyTimeSeries_B %>%
       filter(date == as.character(firstDate + n)) %>%
       select(combined_key, tests_combined_total)
@@ -84,10 +87,105 @@ countyTimeSeries_to_peopleTested <- function(staticDataQ) {
   return(buildingTibble)
 }
 
+howMuchCountyData <- function() {
+  # Get date range ()
+  nDaysData <- nDaysDataF(TRUE)
+  
+  aDate <- as.Date("2021-09-20")
+  firstDate <- (aDate - nDaysData) + 1
+  
+  CountyTimeSeries_B <- CountyTimeSeries %>%
+    select(combined_key, date, tests_combined_total)
+  
+  buildingTibble <- CountyTimeSeries_B %>%
+    filter(date == as.character(firstDate)) %>%
+    select(combined_key, tests_combined_total)
+  
+  names(buildingTibble) <- c("Combined_Key",
+                             formatDateForColumnName(firstDate)) 
+  
+  buildingTibble <- buildingTibble %>%
+    filterStaticCountyData()
+
+  for (n in 1:(nDaysData - 1)) {
+    cat(file = stderr(), "Before n =", n,
+        "dim(buildingTibble)[1] =",
+        dim(buildingTibble)[1], "\n")
+    newDateTibble <- CountyTimeSeries_B %>%
+      filter(date == as.character(firstDate + n)) %>%
+      select(combined_key, tests_combined_total)
+    
+    names(newDateTibble) <- c("Combined_Key",
+                              formatDateForColumnName(firstDate + n))
+    
+    buildingTibble <- buildingTibble %>%
+      left_join(newDateTibble, by = "Combined_Key") %>%
+      filterStaticCountyData()
+    
+    # print(as.character(firstDate + n,"%Y-%m-%d"))
+  }
+  cat(file = stderr(), "After loop dim(buildingTibble)[1] =",
+      dim(buildingTibble)[1], "\n")
+  
+  return(buildingTibble)
+}
+
+#START
+filterMAData <- function(aTibble) {
+  outputData <- aTibble %>%
+    filter(str_detect(combined_key, "Massachusetts"))
+}
+                         
+howMuchMAData <- function() {
+  # Get date range ()
+  nDaysData <- nDaysDataF(TRUE)
+  
+  aDate <- as.Date("2021-09-20")
+  firstDate <- (aDate - nDaysData) + 1
+  
+  myResult <- CountyTimeSeries %>%
+    select(combined_key, date, tests_combined_total) %>%
+    filterMAData()
+  
+  # buildingTibble <- CountyTimeSeries_B %>%
+  #   filter(date == as.character(firstDate)) %>%
+  #   select(combined_key, tests_combined_total)
+  # 
+  # names(buildingTibble) <- c("Combined_Key",
+  #                            formatDateForColumnName(firstDate)) 
+  # 
+  # buildingTibble <- buildingTibble %>%
+  #   filterMAData()
+  # 
+  # for (n in 1:(nDaysData - 1)) {
+  #   cat(file = stderr(), "Before n =", n,
+  #       "dim(buildingTibble)[1] =",
+  #       dim(buildingTibble)[1], "\n")
+  #   newDateTibble <- CountyTimeSeries_B %>%
+  #     filter(date == as.character(firstDate + n)) %>%
+  #     select(combined_key, tests_combined_total)
+  #   
+  #   names(newDateTibble) <- c("Combined_Key",
+  #                             formatDateForColumnName(firstDate + n))
+  #   
+  #   buildingTibble <- buildingTibble %>%
+  #     left_join(newDateTibble, by = "Combined_Key") %>%
+  #     filterMAData()
+  #   
+  #   # print(as.character(firstDate + n,"%Y-%m-%d"))
+  # }
+  cat(file = stderr(), "After loop dim(myResult)[1] =",
+      dim(myResult)[1], "\n")
+  
+  return(myResult)
+}
+#STOP
+
 makeStaticData <- function() {
   timeLimitedData <- countyTimeSeries_to_peopleTested(TRUE)
   write_csv(timeLimitedData,
             file = "./DATA/STATIC/US_County_Test_Positivity.csv")
 }
+
   
   
