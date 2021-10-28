@@ -139,6 +139,15 @@ presentTestResultsData <- function(movingAvg, countyChoices,
                                   stateChoices, timeWindow,
                                   traceThisRoutine = FALSE,
                                   prepend = "") {
-  return(bogusGtDisplay("presentTestResultsData"))
+  theData <- dataForTestPositivityTab(FALSE, NULL, movingAvg, stateChoices)
+  result <- makeGtPresentation(theData,
+                               stateChoices,
+                               NULL,
+                               testPositivityPlotTitle(FALSE, movingAvg, stateChoices),
+                               "Percent of tests returning positive",
+                               theID = "testPositivityData") %>%
+    styleSelectedLines(stateChoices, NULL)
+  
+  return(result)
 }
 

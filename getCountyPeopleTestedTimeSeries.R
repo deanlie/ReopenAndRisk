@@ -179,12 +179,49 @@ howMuchMAData <- function() {
   
   return(myResult)
 }
-#STOP
 
 makeStaticData <- function() {
   timeLimitedData <- countyTimeSeries_to_peopleTested(TRUE)
   write_csv(timeLimitedData,
             file = "./DATA/STATIC/US_County_Test_Positivity.csv")
+}
+
+makeTestResultWorksheet <- function() {
+  formatNextDayForColumnName <- function(aString) {
+    nextDay <- str_replace_all(as.character(as.Date(aString) + 1,
+                                            format = "%m/%d/%y"),
+                               "0([1-9])",
+                               "\\1")
+  }
+  
+  # Compute new on date
+  USTestsToDate <- read_csv("./DATA/STATIC/US_Total_Test_Results.csv",
+                            show_col_types = FALSE)
+  NewerUSTests <- USTestsToDate[, 4:dim(USTestsToDate)[2]]
+  OlderUSTests <- USTestsToDate[, 3:(dim(USTestsToDate)[2] - 1)]
+  names(OlderUSTests) <- names(NewerUSTests)
+  
+  bind_cols(select(USTestsToDate, Province_State, Combined_Key),
+            (NewerUSTests - OlderUSTests))          
+
+  USConfirmedToDate <- read_csv("./DATA/STATIC/US_Confirmed.csv",
+                                show_col_types = FALSE)
+  NewerUSConfirmed <- USConfirmedToDate[, 4:dim(USConfirmedToDate)[2]]
+  OlderUSConfirmed <- USConfirmedToDate[, 3:(dim(USConfirmedToDate)[2] - 1)]
+  names(OlderUSConfirmed) <- names(NewerUSConfirmed)
+  
+  bind_cols(select(USConfirmedToDate, Province_State, Combined_Key),
+            (NewerUSConfirmed - OlderUSConfirmed))          
+
+  USTestsToYesterday <- USTestsToDate %>%
+    select(-dim(USTestsToDate)[2])
+  
+  names(USTestsToYesterday) <- oldUSConfirmedColNames[c(1, 2, 4:(length(oldColNames)))]
+
+  # NewerData <- theData[, 3:(2 + theRange$endColumn - theRange$startColumn)]
+  # OlderData <- theData[, 2:(1 + theRange$endColumn - theRange$startColumn)]
+  
+  return(TestsToYesterday)
 }
 
   
