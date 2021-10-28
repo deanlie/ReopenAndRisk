@@ -10,7 +10,6 @@ testPositivityHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) 
 }
 
 dataForTestPositivityTab <- function(forBoxplots, countyChoices, movingAvg, stateChoices) {
-  browser()
   if ((!forBoxplots) && is.null(stateChoices)) {
     if (movingAvg) {
       theData <- US_Test_Positivity_Avg

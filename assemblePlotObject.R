@@ -576,7 +576,6 @@ ratioFrame <- function(numeratorFrame, denominatorFrame,
   theColNames <- names(denominatorGoodData)
   for (i in 2:dim(denominatorGoodData)[2]) {
     theColName <- theColNames[i]
-    cat(file = stderr(), "theColName =", theColName, "\n")
     denominatorGoodData <- denominatorGoodData %>%
       filter(.data[[theColName]] > 0)
   }
@@ -584,7 +583,7 @@ ratioFrame <- function(numeratorFrame, denominatorFrame,
   denominatorNZKeys <- denominatorGoodData %>%
     select(Combined_Key)
 
-  numeratorUsable <- left_join(denominatorGoodData,
+  numeratorUsable <- left_join(denominatorNZKeys,
                                numeratorFrame %>%
                                  select(Combined_Key, matches("^[0-9]+")),
                                by = "Combined_Key")
@@ -594,9 +593,9 @@ ratioFrame <- function(numeratorFrame, denominatorFrame,
   
   # Do the division:
   if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "Dim numeratorData =", dim(numeratorData)[1], dim(numeratorData[2], "\n"))
+    cat(file = stderr(), myPrepend, "Dim numeratorData =", dim(numeratorData)[1], dim(numeratorData)[2], "\n")
     cat(file = stderr(), myPrepend, "NumeratorData name[2] =", names(numeratorData)[2], "\n")
-    cat(file = stderr(), myPrepend, "Dim denominatorData =", dim(denominatorData)[1], dim(denominatorData[2], "\n"))
+    cat(file = stderr(), myPrepend, "Dim denominatorData =", dim(denominatorData)[1], dim(denominatorData)[2], "\n")
     cat(file = stderr(), myPrepend, "DenominatorData name[2] =", names(denominatorData)[2], "\n")
   }
   
