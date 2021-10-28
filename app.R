@@ -202,7 +202,7 @@ ui <- fluidPage(
                            ))))),
             tabPanel("Test Positivity",
               verticalLayout(
-                htmlOutput("testResultsHeaderHTML"),
+                htmlOutput("testPositivityHeaderHTML"),
                 tabsetPanel(id = "testResultsTabsetPanel",
                   tabPanel("Boxplot",
                     verticalLayout(
@@ -438,9 +438,9 @@ server <- function(input, output, session) {
                                  width = px(1000))
   
   # "Test Results" tab
-  output$testResultsHeaderHTML <- renderUI({testResultsHeaderHTML(input$chooseCounty,
-                                                                  input$countyChoices,
-                                                                  input$stateChoices)})
+  output$testPositivityHeaderHTML <- renderUI({testPositivityHeaderHTML(input$chooseCounty,
+                                                                        input$countyChoices,
+                                                                        input$stateChoices)})
   output$testRBoxplotHeaderHTML <- renderUI({boxplotHeaderHTML(input$countyChoices,
                                                                input$stateChoices)})
   output$testRBox <- renderPlot({plotTestResultBoxplots(input$chooseCounty,

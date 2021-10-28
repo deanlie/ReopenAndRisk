@@ -1,6 +1,6 @@
 
-testResultsHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
-  theText <- paste(tags$h4("Changes in Test Results"),
+testPositivityHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) {
+  theText <- paste(tags$h4("Test Positivity"),
                    tags$p("A decreasing percentage of positive tests is good;
                             it means that tests are becoming more widely available."),
                    tags$p("Think of the extreme case: if everyone were tested,
