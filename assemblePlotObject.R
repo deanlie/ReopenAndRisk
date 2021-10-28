@@ -558,6 +558,60 @@ assembleGrowthTrendPlot <- function(aFrame, chooseCounty,
                       boxplotStats = NA))
 }
 
+ratioFrame <- function(numeratorFrame, denominatorFrame,
+                       timeWindow,
+                       numTibbleName = "<?>",
+                       denomTibbleName = "<?>",
+                       traceThisRoutine = FALSE, prepend = "") {
+  myPrepend <- paste("  ", prepend, sep = "")
+  traceThisRoutine <- TRUE
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered ratioFrame")
+  }
+  
+  # Filter zeros out of denominator
+  denominatorGoodData <- denominatorFrame %>%
+    select(Combined_Key, matches("^[0-9]+"))
+  
+  theColNames <- names(denominatorGoodData)
+  for (i in 2:dim(denominatorGoodData)[2]) {
+    theColName <- theColNames[i]
+    cat(file = stderr(), "theColName =", theColName, "\n")
+    denominatorGoodData <- denominatorGoodData %>%
+      filter(.data[[theColName]] > 0)
+  }
+
+  denominatorNZKeys <- denominatorGoodData %>%
+    select(Combined_Key)
+
+  numeratorUsable <- left_join(denominatorGoodData,
+                               numeratorFrame %>%
+                                 select(Combined_Key, matches("^[0-9]+")),
+                               by = "Combined_Key")
+  
+  numeratorData <- select(numeratorUsable, matches("^[0-9]+"))
+  denominatorData <- select(denominatorGoodData, matches("^[0-9]+"))
+  
+  # Do the division:
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "Dim numeratorData =", dim(numeratorData)[1], dim(numeratorData[2], "\n"))
+    cat(file = stderr(), myPrepend, "NumeratorData name[2] =", names(numeratorData)[2], "\n")
+    cat(file = stderr(), myPrepend, "Dim denominatorData =", dim(denominatorData)[1], dim(denominatorData[2], "\n"))
+    cat(file = stderr(), myPrepend, "DenominatorData name[2] =", names(denominatorData)[2], "\n")
+  }
+  
+  pctPosTests <- as_tibble((100.0 * numeratorData) / denominatorData)
+  
+  # Put the "Combined_Key" column back in front (bind_cols)
+  result <- bind_cols(denominatorNZKeys, pctPosTests)
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving ratioFrame")
+  }
+  
+  return(result)
+}
+
 ratioDeltaFrame <- function(numeratorFrame, denominatorFrame,
                             timeWindow,
                             numTibbleName = "<?>",

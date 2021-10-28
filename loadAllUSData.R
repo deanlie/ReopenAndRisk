@@ -649,18 +649,18 @@ computeAndLoadTestPositivityData <- function(staticDataQ = FALSE,
   US_Denominator_Avg <- US_People_Tested_Avg
   US_State_Denominator_Avg <- US_State_People_Tested_Avg
 
-  US_Test_Positivity <<- ratioDeltaFrame(US_Confirmed_New,
-                                         US_People_Tested_New,
-                                         nDaysData)
-  US_Test_Positivity_Avg <<- ratioDeltaFrame(US_Confirmed_NewAvg,
-                                             US_People_Tested_NewAvg,
-                                             nDaysData)
-  US_State_Test_Positivity <<- ratioDeltaFrame(US_State_Confirmed_New,
-                                               US_State_People_Tested_New,
-                                               nDaysData)
-  US_State_Test_Positivity_Avg <<- ratioDeltaFrame(US_State_Confirmed_NewAvg,
-                                                   US_State_People_Tested_NewAvg,
-                                                   nDaysData)
+  US_Test_Positivity <<- ratioFrame(US_Confirmed_New,
+                                    US_People_Tested_New,
+                                    nDaysData)
+  US_Test_Positivity_Avg <<- ratioFrame(US_Confirmed_NewAvg,
+                                        US_People_Tested_NewAvg,
+                                        nDaysData)
+  US_State_Test_Positivity <<- ratioFrame(US_State_Confirmed_New,
+                                          US_State_People_Tested_New,
+                                          nDaysData)
+  US_State_Test_Positivity_Avg <<- ratioFrame(US_State_Confirmed_NewAvg,
+                                              US_State_People_Tested_NewAvg,
+                                              nDaysData)
   
   if (traceThisRoutine) {
     # cat(file = stderr(), myPrepend, "\n")    

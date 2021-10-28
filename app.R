@@ -203,7 +203,7 @@ ui <- fluidPage(
             tabPanel("Test Positivity",
               verticalLayout(
                 htmlOutput("testPositivityHeaderHTML"),
-                tabsetPanel(id = "testResultsTabsetPanel",
+                tabsetPanel(id = "testPositivityTabsetPanel",
                   tabPanel("Boxplot",
                     verticalLayout(
                       htmlOutput("testRBoxplotHeaderHTML"),
@@ -452,7 +452,8 @@ server <- function(input, output, session) {
                                                        input$movingAvg,
                                                        input$countyChoices,
                                                        input$stateChoices,
-                                                       input$timeWindow)})
+                                                       input$timeWindow,
+                                                       traceThisRoutine = TRUE)})
   output$testResultsGtData <- render_gt(presentTestResultsData(input$movingAvg,
                                                                input$countyChoices,
                                                                input$stateChoices,

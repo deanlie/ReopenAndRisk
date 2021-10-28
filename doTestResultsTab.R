@@ -10,6 +10,7 @@ testPositivityHeaderHTML <- function(chooseCounty, countyChoices, stateChoices) 
 }
 
 dataForTestPositivityTab <- function(forBoxplots, countyChoices, movingAvg, stateChoices) {
+  browser()
   if ((!forBoxplots) && is.null(stateChoices)) {
     if (movingAvg) {
       theData <- US_Test_Positivity_Avg
@@ -89,36 +90,39 @@ plotTestResultBoxplots <- function(chooseCounty, movingAvg, countyChoices,
 }
 
 plotTestResultTrend <- function(chooseCounty, movingAvg, countyChoices,
-                                stateChoices, timeWindow) {
-  prepend <- ""
-  traceThisRoutine <- FALSE
+                                stateChoices, timeWindow,
+                                traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste("  ", prepend, sep = "")
+  traceFlagOnEntry <- traceThisRoutine
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Entered ROUTINE_NAME\n")
+  }
   
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered plotTestResultTrend\n")
   }
 
   theData <- dataForTestPositivityTab(FALSE, countyChoices, movingAvg, stateChoices)
-  # updateDataForUSTypeIfNeeded("Confirmed")
   title <- testResultPlotTitle(FALSE, length(stateChoices) == 0, movingAvg)
 
-  if (is.null(stateChoices)) {
-    if (movingAvg) {
-      theCaseData <- US_Confirmed_Avg
-      theTestData <- US_People_Tested_Avg
-    } else {
-      theCaseData <- US_Confirmed
-      theTestData <- US_People_Tested
-    }
-  } else {
-    if (movingAvg) {
-      theCaseData <- US_State_Confirmed_Avg
-      theTestData <- US_State_People_Tested_Avg
-    } else {
-      theCaseData <- US_State_Confirmed
-      theTestData <- US_State_People_Tested
-    }
-  }
+  # updateDataForUSTypeIfNeeded("Confirmed")
+  # if (is.null(stateChoices)) {
+  #   if (movingAvg) {
+  #     theCaseData <- US_Confirmed_Avg
+  #     theTestData <- US_People_Tested_Avg
+  #   } else {
+  #     theCaseData <- US_Confirmed
+  #     theTestData <- US_People_Tested
+  #   }
+  # } else {
+  #   if (movingAvg) {
+  #     theCaseData <- US_State_Confirmed_Avg
+  #     theTestData <- US_State_People_Tested_Avg
+  #   } else {
+  #     theCaseData <- US_State_Confirmed
+  #     theTestData <- US_State_People_Tested
+  #   }
+  # }
   
   result <- assembleDirectTrendPlot(theData,
                                     FALSE,
@@ -127,7 +131,9 @@ plotTestResultTrend <- function(chooseCounty, movingAvg, countyChoices,
                                     testPositivityPlotTitle(FALSE, movingAvg, stateChoices),
                                     timeWindowXLabel(timeWindow),
                                     testPositivityYLabel(),
-                                    timeWindow)
+                                    timeWindow,
+                                    traceThisRoutine = traceThisRoutine,
+                                    prepend = myPrepend)
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving plotTestResultTrend\n")
   }
