@@ -94,10 +94,6 @@ plotTestResultTrend <- function(chooseCounty, movingAvg, countyChoices,
   myPrepend <- paste("  ", prepend, sep = "")
   traceFlagOnEntry <- traceThisRoutine
   if (traceFlagOnEntry) {
-    cat(file = stderr(), prepend, "Entered ROUTINE_NAME\n")
-  }
-  
-  if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered plotTestResultTrend\n")
   }
 

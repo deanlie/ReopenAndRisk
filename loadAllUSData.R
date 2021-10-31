@@ -651,16 +651,24 @@ computeAndLoadTestPositivityData <- function(staticDataQ = FALSE,
 
   US_Test_Positivity <<- ratioFrame(US_Confirmed_New,
                                     US_People_Tested_New,
-                                    nDaysData)
+                                    nDaysData,
+                                    numTibbleName = "US_Confirmed_New",
+                                    denomTibbleName = "US_People_Tested_New")
   US_Test_Positivity_Avg <<- ratioFrame(US_Confirmed_NewAvg,
                                         US_People_Tested_NewAvg,
-                                        nDaysData)
+                                        nDaysData,
+                                        numTibbleName = "US_Confirmed_NewAvg",
+                                        denomTibbleName = "US_People_Tested_NewAvg")
   US_State_Test_Positivity <<- ratioFrame(US_State_Confirmed_New,
                                           US_State_People_Tested_New,
-                                          nDaysData)
+                                          nDaysData,
+                                          numTibbleName = "US_State_Confirmed_New",
+                                          denomTibbleName = "US_State_People_Tested_New")
   US_State_Test_Positivity_Avg <<- ratioFrame(US_State_Confirmed_NewAvg,
                                               US_State_People_Tested_NewAvg,
-                                              nDaysData)
+                                              nDaysData,
+                                              numTibbleName = "US_State_Confirmed_NewAvg",
+                                              denomTibbleName = "US_State_People_Tested_NewAvg")
   
   if (traceThisRoutine) {
     # cat(file = stderr(), myPrepend, "\n")    

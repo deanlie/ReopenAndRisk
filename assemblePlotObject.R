@@ -566,7 +566,12 @@ ratioFrame <- function(numeratorFrame, denominatorFrame,
   myPrepend <- paste("  ", prepend, sep = "")
   traceThisRoutine <- TRUE
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered ratioFrame")
+    cat(file = stderr(), prepend, "Entered ratioFrame\n")
+    cat(file = stderr(), myPrepend, "Numerator", numTibbleName, "\n")
+    cat(file = stderr(), myPrepend, "Denominator", denomTibbleName, "\n")
+    dD <- dim(denominatorFrame)
+    cat(file = stderr(), myPrepend,
+        "Dim denominatorFrame =", dD[1], dD[2], "\n")
   }
   
   # Filter zeros out of denominator
@@ -593,19 +598,32 @@ ratioFrame <- function(numeratorFrame, denominatorFrame,
   
   # Do the division:
   if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "Dim numeratorData =", dim(numeratorData)[1], dim(numeratorData)[2], "\n")
-    cat(file = stderr(), myPrepend, "NumeratorData name[2] =", names(numeratorData)[2], "\n")
-    cat(file = stderr(), myPrepend, "Dim denominatorData =", dim(denominatorData)[1], dim(denominatorData)[2], "\n")
-    cat(file = stderr(), myPrepend, "DenominatorData name[2] =", names(denominatorData)[2], "\n")
-  }
-  
+    dN <- dim(numeratorData)
+    dD <- dim(denominatorData)
+    if ((dN[1] == dD[1]) && (dN[2] == dD[2]) &&
+        (names(numeratorData)[2] == names(denominatorData)[2]))
+    {
+      cat(file = stderr(), myPrepend,
+          "Dim denominatorData =", dD[1], dD[2], "\n")
+      cat(file = stderr(), myPrepend, "dims & col name[2]s match\n")
+    } else {
+      cat(file = stderr(), myPrepend,
+          "Dim numeratorData =", dN[1], dN[2], "\n")
+      cat(file = stderr(), myPrepend,
+          "NumeratorData name[2] =", names(numeratorData)[2], "\n")
+      cat(file = stderr(), myPrepend,
+          "Dim denominatorData =", dD[1], dD[2], "\n")
+      cat(file = stderr(), myPrepend,
+          "DenominatorData name[2] =", names(denominatorData)[2], "\n")
+    }
+  }  
   pctPosTests <- as_tibble((100.0 * numeratorData) / denominatorData)
   
   # Put the "Combined_Key" column back in front (bind_cols)
   result <- bind_cols(denominatorNZKeys, pctPosTests)
   
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving ratioFrame")
+    cat(file = stderr(), prepend, "Leaving ratioFrame\n")
   }
   
   return(result)

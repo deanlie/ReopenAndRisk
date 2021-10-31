@@ -452,8 +452,7 @@ server <- function(input, output, session) {
                                                        input$movingAvg,
                                                        input$countyChoices,
                                                        input$stateChoices,
-                                                       input$timeWindow,
-                                                       traceThisRoutine = TRUE)})
+                                                       input$timeWindow)})
   output$testResultsGtData <- render_gt(presentTestResultsData(input$movingAvg,
                                                                input$countyChoices,
                                                                input$stateChoices,

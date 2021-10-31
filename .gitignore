@@ -14,7 +14,9 @@ DATA/*.csv.icloud
 DATA/DATA
 DATA/ClipDates
 tests/shinytest/*-current/
-DEVELOPMENT/
+DEVELOPMENT/scratchPaper.txt
+DEVELOPMENT/Tests20210728.R
+DEVELOPMENT/TODO_updateStateDataFiles.R
 CACHE/
 BACKUPS/
 UNDER\ LOCAL\ GIT\ CONTROL/
