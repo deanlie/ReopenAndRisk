@@ -5,6 +5,10 @@ testWorkDir <- function() {
   return("./DATA/STATIC2/US_State_Total_Test_Results_Work/")
 }
 
+dataDir <- function() {
+  return("./DATA/")
+}
+
 diffTibblePath <- function() {
   return(paste(testWorkDir(), "DiffTibble.csv", sep = ""))
 }
@@ -15,6 +19,14 @@ testDataPath <- function() {
 
 expectedDataPath <- function() {
   return(paste(testWorkDir(), "ExpectedTestResult.csv", sep = ""))
+}
+
+testDataPath2 <- function() {
+  return(paste(testWorkDir(), "US_State_TTR_Bad.csv", sep = ""))
+}
+
+expectedDataPath2 <- function() {
+  return(paste(testWorkDir(), "US_State_TTR_Desired.csv", sep = ""))
 }
 
 identityVectorXform <- function(aVector) {
@@ -34,7 +46,7 @@ smoothVectorZeroSeq <- function(aVector) {
       if (j > theEnd) {
         newVector[i] <- 1
       } else {
-        while ((j <= theEnd) && (!is.na(aVector[j])) && (aVector[j] <= 0)) {
+        while ((j <= theEnd) && ((is.na(aVector[j])) || (aVector[j] <= 0))) {
           j <- j + 1
         }
         # here, either aVector[j] > 0 or j > theEnd
@@ -68,25 +80,6 @@ processZeroDiffs <- function(aTibbleWithZeros) {
     aTibbleWithZeros[i,] <- replacementRow
   }
   return(aTibbleWithZeros)
-}
-
-findZeroDiffs <- function() {
-  TTRA0 <- read_csv(paste(testWorkDir(), "US_State_Total_Test_ResultsA.csv", sep = ""),
-                    show_col_types = FALSE)
-  TTRB0 <- read_csv(paste(testWorkDir(), "US_State_Total_Test_ResultsB.csv", sep = ""),
-                    show_col_types = FALSE)
-  TTRB <- TTRB0[1:56,2:146]
-  TTRA <- TTRA0[,2:146]
-  CK <- select(TTRA0, Combined_Key)
-  Diff <- TTRB - TTRA
-#  DiffTibble <- bind_cols(CK, Diff)
-  
-  estimatedDiff <- processZeroDiffs(Diff)
-  estimatedTTRBData <- TTRA + estimatedDiff
-  estimatedTTRB <- bind_cols(CK, estimatedTTRBData)
-  newPath <- paste(testWorkDir(), "US_State_Total_Test_Results_EST.csv", sep = "")
-  
-  write_csv(estimatedTTRA, newPath)
 }
 
 getStaticTTRFile <- function() {
@@ -143,6 +136,33 @@ processTibbleToEliminateZeroIncrements <- function(aTibble) {
   mungedData <- bind_cols(characterData, olderData[,1], olderDataWithNewDiffs)
   
   return(mungedData)
+}
+
+processRealTTR <- function() {
+  originalPath <- paste(dataDir(), "US_State_Total_Test_Results.csv", sep = "")
+  STTR <- read_csv(originalPath, show_col_types = FALSE)
+  
+  dateLimitedSTTR <- discardDataOutsideDateRangeFromATibble(STTR, 
+                                                            mdy("08/12/2021"),
+                                                            mdy("01/01/2022"),
+                                                            traceThisRoutine = FALSE)
+  estSTTR <- processTibbleToEliminateZeroIncrements(dateLimitedSTTR)
+
+  newPath <- paste(dataDir(), "US_State_Total_Test_Results_EST2.csv", sep = "")
+  write_csv(estSTTR, newPath)
+}
+
+checkTTRModForNA <- function() {
+  newPath1 <- paste(dataDir(), "US_State_Total_Test_Results_EST.csv", sep = "")
+  newPath2 <- paste(dataDir(), "US_State_Total_Test_Results_EST2.csv", sep = "")
+  
+  tibble1 <- read_csv(newPath1, show_col_types = FALSE) %>%
+    select(-Combined_Key)
+  tibble2 <- read_csv(newPath2, show_col_types = FALSE) %>%
+    select(-Combined_Key)
+  
+  diff <- tibble1 - tibble2
+  
 }
 
 rowComparison <- function(testVector, expectedVector, quiet = TRUE) {
@@ -235,44 +255,22 @@ testTibbleComparison <- function(modifiedData, expectedData, expectNFails, quiet
 }
 
 callTests <- function() {
-  expectedData <- read_csv(expectedDataPath(), show_col_types = FALSE)
-  
-  testZeroDetectOnly <- FALSE
+  expectedData <- read_csv(expectedDataPath2(), show_col_types = FALSE)
+  dataToModify <- read_csv(testDataPath2(), show_col_types = FALSE)
+  #    modifiedData <- processTibbleToEliminateZeroIncrements(dataToModify)
+  testRows <- c(1, 2, 3, 4)
+  expectNFails = c(0, 0, 0, 0)
 
-  if (testZeroDetectOnly) {
-    modifiedData <- expectedData
-    modifiedData[2,5] <- 0
-    modifiedData[3,5] <- 0
-    modifiedData[3,7] <- 0
-    testRows = c(1, 2, 3)
-    expectNFails = c(0, 1, 2)
+  cat(file = stderr(), "Test after processTibbleToEliminateZeroIncrements\n")
+  correctedData <- processTibbleToEliminateZeroIncrements(dataToModify)
+  nRowFailures <- testRowComparison(correctedData, expectedData, testRows, expectNFails, quiet = FALSE)
+  if (nRowFailures != sum(expectNFails)) {
+    cat(file = stderr(), "testRowComparison returned", nRowFailures, "failures\n")
   } else {
-    dataToModify <- read_csv(testDataPath(), show_col_types = FALSE)
-    modifiedData <- processZeroDiffs(dataToModify)
-    testRows <- c(1, 2, 3, 4)
-    expectNFails = c(0, 0, 0, 0)
+    cat(file = stderr(), "testRowComparison PASSES\n")
   }
+  nOverallFailures <- testTibbleComparison(modifiedData, expectedData, sum(expectNFails), quiet = FALSE)
 
-  if (testZeroDetectOnly) {
-    cat(file = stderr(), "Test data with zeros\n")  
-    nRowFailures <- testRowComparison(modifiedData, expectedData, testRows, expectNFails, quiet = TRUE)
-    if (nRowFailures != sum(expectNFails)) {
-      cat(file = stderr(), "testRowComparison returned", nRowFailures, "failures\n")
-    } else {
-      cat(file = stderr(), "testRowComparison PASSES\n")
-    }
-    nOverallFailures <- testTibbleComparison(modifiedData, expectedData, sum(expectNFails), quiet = FALSE)
-  } else {  
-    cat(file = stderr(), "Test after processZeroDiffs\n")
-    correctedData <- processZeroDiffs(modifiedData)
-    nRowFailures <- testRowComparison(correctedData, expectedData, testRows, expectNFails, quiet = FALSE)
-    if (nRowFailures != sum(expectNFails)) {
-      cat(file = stderr(), "testRowComparison returned", nRowFailures, "failures\n")
-    } else {
-      cat(file = stderr(), "testRowComparison PASSES\n")
-    }
-    nOverallFailures <- testTibbleComparison(modifiedData, expectedData, sum(expectNFails), quiet = FALSE)
-  }
   return(list(OLD = dataToModify, EXP = expectedData, NEW = modifiedData))
 }
 

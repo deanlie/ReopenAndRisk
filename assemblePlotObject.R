@@ -564,7 +564,7 @@ ratioFrame <- function(numeratorFrame, denominatorFrame,
                        denomTibbleName = "<?>",
                        traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste("  ", prepend, sep = "")
-  traceThisRoutine <- TRUE
+  # traceThisRoutine <- TRUE
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered ratioFrame\n")
     cat(file = stderr(), myPrepend, "Numerator", numTibbleName, "\n")
