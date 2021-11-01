@@ -41,18 +41,20 @@ smoothVectorZeroSeq <- function(aVector) {
         if (j <= theEnd) {
           # We found a non-zero value. Divvy it up into
           #   (j - i) parts;
-          share <- as.integer(aVector[j]) / (1 + j - i)
+          share <- aVector[j] / (1 + j - i)
           usedUp <- 0
           for (k in i:(j - 1)) {
-            newVector[k] <- share
+            newVector[k] <- round(share * (1 + k - i))
             usedUp <- usedUp + share
           }
-          newVector[j] <- aVector[j] - usedUp
+          newVector[j] <- aVector[j]
+        } else {
+          # Here j > theEnd.
+          # Increment by 1 more in each position
+          for (k in i:theEnd) {
+            newVector[k] <- 1 + k - i
+          }
         }
-        # else (j > theEnd)
-        # Then everything in aVector[i:theEnd] == 0.
-        #   newVector already has 1s by default.
-        #   We're done.
       }
       i <- j + 1
     }
@@ -114,6 +116,33 @@ processDiffTibble <- function() {
                          show_col_types = FALSE)
   
   return(processZeroDiffs(DiffTibble))
+}
+
+processTibbleToEliminateZeroIncrements <- function(aTibble) {
+  # Separate date data, character data
+  dateData <- select(aTibble, matches("^[0-9]+/"))
+  characterData <- select(aTibble, -matches("^[0-9]+/"))
+  
+  # Separate newer data, previous data
+  nCols <- dim(dateData)[2]
+  newerData <- dateData[,2:nCols]
+  olderData <- dateData[,1:(nCols - 1)]
+
+  # Subtract: diff data <- newer data - previous data
+  diffData <- newerData - olderData
+
+  # Process diff data to eliminate zero increments
+  newDiffData <- processZeroDiffs(diffData)
+  
+  # Add new diff data to former previous data
+  # Note! newDiffData has the column names we want.
+  # Addition preserves column names of the first addend.
+  olderDataWithNewDiffs <- newDiffData + olderData
+  
+  # Desired result has character data, first date data, updated newer data
+  mungedData <- bind_cols(characterData, olderData[,1], olderDataWithNewDiffs)
+  
+  return(mungedData)
 }
 
 rowComparison <- function(testVector, expectedVector, quiet = TRUE) {
