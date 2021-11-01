@@ -77,10 +77,7 @@ smoothVectorZeroSeq <- function(aVector, subtrahendVector, minuendVector, dateDa
   return(newVector)
 }
 
-processZeroDiffs <- function(aTibbleWithZeros,
-                             subtrahendTibbleUNUSED,
-                             minuendTibbleUNUSED,
-                             dateData) {
+processZeroDiffs <- function(aTibbleWithZeros, dateData) {
   nCols <- dim(dateData)[2]
   minuendTibble <- dateData[,2:nCols]
   subtrahendTibble <- dateData[,1:(nCols - 1)]
@@ -132,7 +129,7 @@ processTibbleToEliminateZeroIncrements <- function(aTibble) {
   diffData <- newerData - olderData
 
   # Process diff data to eliminate zero increments
-  newDiffData <- processZeroDiffs(diffData, olderData, newerData, dateData)
+  newDiffData <- processZeroDiffs(diffData, dateData)
   
   # Add new diff data to former previous data
   # Note! newDiffData has the column names we want.
