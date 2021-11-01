@@ -33,7 +33,7 @@ identityVectorXform <- function(aVector) {
   return(aVector)
 }
 
-smoothVectorZeroSeq <- function(aVector) {
+smoothVectorZeroSeq <- function(aVector, subtrahendVector, minuendVector) {
   theEnd = length(aVector)
   i <- 1
   newVector <- rep(1, theEnd)
@@ -77,9 +77,11 @@ smoothVectorZeroSeq <- function(aVector) {
   return(newVector)
 }
 
-processZeroDiffs <- function(aTibbleWithZeros) {
+processZeroDiffs <- function(aTibbleWithZeros, subtrahendTibble, minuendTibble) {
   for (i in 1:dim(aTibbleWithZeros)[1]) {
-    replacementRow <- smoothVectorZeroSeq(aTibbleWithZeros[i,])
+    replacementRow <- smoothVectorZeroSeq(aTibbleWithZeros[i,],
+                                          subtrahendTibble[i,],
+                                          minuendTibble[i,])
     aTibbleWithZeros[i,] <- replacementRow
   }
   return(aTibbleWithZeros)
@@ -107,13 +109,6 @@ getStaticTTRFile <- function() {
   return(outputData)
 }
 
-processDiffTibble <- function() {
-  DiffTibble <- read_csv(diffTibblePath(),
-                         show_col_types = FALSE)
-  
-  return(processZeroDiffs(DiffTibble))
-}
-
 processTibbleToEliminateZeroIncrements <- function(aTibble) {
   # Separate date data, character data
   dateData <- select(aTibble, matches("^[0-9]+/"))
@@ -128,7 +123,7 @@ processTibbleToEliminateZeroIncrements <- function(aTibble) {
   diffData <- newerData - olderData
 
   # Process diff data to eliminate zero increments
-  newDiffData <- processZeroDiffs(diffData)
+  newDiffData <- processZeroDiffs(diffData, olderData, newerData)
   
   # Add new diff data to former previous data
   # Note! newDiffData has the column names we want.
@@ -260,7 +255,6 @@ testTibbleComparison <- function(modifiedData, expectedData, expectNFails, quiet
 callTests <- function() {
   expectedData <- read_csv(expectedDataPath2(), show_col_types = FALSE)
   dataToModify <- read_csv(testDataPath2(), show_col_types = FALSE)
-  #    modifiedData <- processTibbleToEliminateZeroIncrements(dataToModify)
   testRows <- c(1, 2, 3, 4)
   expectNFails = c(0, 0, 0, 0)
 
