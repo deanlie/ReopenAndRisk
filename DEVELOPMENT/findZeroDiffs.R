@@ -49,23 +49,26 @@ smoothVectorZeroSeq <- function(aVector) {
         while ((j <= theEnd) && ((is.na(aVector[j])) || (aVector[j] <= 0))) {
           j <- j + 1
         }
-        # here, either aVector[j] > 0 or j > theEnd
-        if (j <= theEnd) {
-          # We found a non-zero value. Divvy it up into
-          #   (j - i) parts;
-          share <- aVector[j] / (1 + j - i)
-          usedUp <- 0
-          for (k in i:(j - 1)) {
-            newVector[k] <- round(share * (1 + k - i))
-            usedUp <- usedUp + share
-          }
-          newVector[j] <- aVector[j]
-        } else {
-          # Here j > theEnd.
+        # here, either is.na(aVector[j]) or aVector[j] > 0 or j > theEnd
+        if (j > theEnd) {
           # Increment by 1 more in each position
           for (k in i:theEnd) {
             newVector[k] <- 1 + k - i
           }
+        } else {
+          if (!is.na(aVector[j])) {
+            # We found a non-zero value. Divvy it up into
+            #   (j - i) parts;
+            share <- aVector[j] / (1 + j - i)
+            usedUp <- 0
+            for (k in i:(j - 1)) {
+              newVector[k] <- round(share * (1 + k - i))
+              usedUp <- usedUp + share
+            }
+            newVector[j] <- aVector[j]
+          } else {
+            # is.na(aVector[j])
+          }            
         }
       }
       i <- j + 1
@@ -263,14 +266,18 @@ callTests <- function() {
 
   cat(file = stderr(), "Test after processTibbleToEliminateZeroIncrements\n")
   correctedData <- processTibbleToEliminateZeroIncrements(dataToModify)
-  nRowFailures <- testRowComparison(correctedData, expectedData, testRows, expectNFails, quiet = FALSE)
+  nRowFailures <- testRowComparison(select(correctedData, -Combined_Key),
+                                    select(expectedData, -Combined_Key),
+                                    testRows, expectNFails, quiet = FALSE)
   if (nRowFailures != sum(expectNFails)) {
     cat(file = stderr(), "testRowComparison returned", nRowFailures, "failures\n")
   } else {
     cat(file = stderr(), "testRowComparison PASSES\n")
   }
-  nOverallFailures <- testTibbleComparison(modifiedData, expectedData, sum(expectNFails), quiet = FALSE)
+  nOverallFailures <- testTibbleComparison(select(correctedData, -Combined_Key),
+                                           select(expectedData, -Combined_Key),
+                                           sum(expectNFails), quiet = FALSE)
 
-  return(list(OLD = dataToModify, EXP = expectedData, NEW = modifiedData))
+  return(list(OLD = dataToModify, EXP = expectedData, NEW = correctedData))
 }
 
