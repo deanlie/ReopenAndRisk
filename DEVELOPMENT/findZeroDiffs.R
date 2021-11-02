@@ -33,48 +33,50 @@ identityVectorXform <- function(aVector) {
   return(aVector)
 }
 
-smoothVectorZeroSeq <- function(subtrahendVector, minuendVector, dateDataVectorUNUSED) {
-  # replacementRow <- smoothVectorZeroSeq(dateData[i, 2:nCols] - dateData[i, 1:(nCols - 1)],
-  #                                       dateData[i, 1:(nCols - 1)],
+smoothVectorZeroSeq <- function(subtrahendVectorUNUSED, minuendVectorUNUSED, dateDataVector) {
+  # replacementRow <- smoothVectorZeroSeq(dateData[i, 1:(nCols - 1)],
   #                                       dateData[i, 2:nCols],
   #                                       dateData[i,])
+  nCols <- dim(dateDataVector)[2]
+  
+  subtrahendVector <- dateDataVector[1:(nCols - 1)]
+  minuendVector <- dateDataVector[2:nCols]
+  differenceVector <- minuendVector - subtrahendVector
 
-  aVector <- minuendVector - subtrahendVector
-
-  theEnd = length(aVector)
+  theEnd = length(differenceVector)
   i <- 1
   newVector <- rep(1, theEnd)
   while (i <= theEnd) {
     j <- i + 1
-    if ((!is.na(aVector[i])) && (aVector[i] > 0)) {
-      newVector[i] <- aVector[i]
+    if ((!is.na(differenceVector[i])) && (differenceVector[i] > 0)) {
+      newVector[i] <- differenceVector[i]
       i <- i + 1
     } else {
       if (j > theEnd) {
         newVector[i] <- 1
       } else {
-        while ((j <= theEnd) && ((is.na(aVector[j])) || (aVector[j] <= 0))) {
+        while ((j <= theEnd) && ((is.na(differenceVector[j])) || (differenceVector[j] <= 0))) {
           j <- j + 1
         }
-        # here, either is.na(aVector[j]) or aVector[j] > 0 or j > theEnd
+        # here, either is.na(differenceVector[j]) or differenceVector[j] > 0 or j > theEnd
         if (j > theEnd) {
           # Increment by 1 more in each position
           for (k in i:theEnd) {
             newVector[k] <- 1 + k - i
           }
         } else {
-          if (!is.na(aVector[j])) {
+          if (!is.na(differenceVector[j])) {
             # We found a non-zero value. Divvy it up into
             #   (j - i) parts;
-            share <- aVector[j] / (1 + j - i)
+            share <- differenceVector[j] / (1 + j - i)
             usedUp <- 0
             for (k in i:(j - 1)) {
               newVector[k] <- round(share * (1 + k - i))
               usedUp <- usedUp + share
             }
-            newVector[j] <- aVector[j]
+            newVector[j] <- differenceVector[j]
           } else {
-            # is.na(aVector[j])
+            # is.na(differenceVector[j])
           }            
         }
       }
