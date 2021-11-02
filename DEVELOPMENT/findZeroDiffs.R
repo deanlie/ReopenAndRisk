@@ -33,7 +33,14 @@ identityVectorXform <- function(aVector) {
   return(aVector)
 }
 
-smoothVectorZeroSeq <- function(aVector, subtrahendVector, minuendVector, dateDataVectorUNUSED) {
+smoothVectorZeroSeq <- function(subtrahendVector, minuendVector, dateDataVectorUNUSED) {
+  # replacementRow <- smoothVectorZeroSeq(dateData[i, 2:nCols] - dateData[i, 1:(nCols - 1)],
+  #                                       dateData[i, 1:(nCols - 1)],
+  #                                       dateData[i, 2:nCols],
+  #                                       dateData[i,])
+
+  aVector <- minuendVector - subtrahendVector
+
   theEnd = length(aVector)
   i <- 1
   newVector <- rep(1, theEnd)
@@ -80,13 +87,9 @@ smoothVectorZeroSeq <- function(aVector, subtrahendVector, minuendVector, dateDa
 processZeroDiffs <- function(dateData) {
   returnMe <- dateData
   nCols <- dim(dateData)[2]
-  # minuendTibble <- dateData[,2:nCols]
-  # subtrahendTibble <- dateData[,1:(nCols - 1)]
-  
+
   for (i in 1:dim(dateData)[1]) {
-    # testRow <- minuendTibble[i,] - subtrahendTibble[i,]
-    replacementRow <- smoothVectorZeroSeq(dateData[i, 2:nCols] - dateData[i, 1:(nCols - 1)],
-                                          dateData[i, 1:(nCols - 1)],
+    replacementRow <- smoothVectorZeroSeq(dateData[i, 1:(nCols - 1)],
                                           dateData[i, 2:nCols],
                                           dateData[i,])
     returnMe[i,2:nCols] <- dateData[i,1:(nCols - 1)] + replacementRow
