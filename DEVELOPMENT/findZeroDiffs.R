@@ -83,6 +83,10 @@ smoothVectorZeroSeq <- function(dateDataVector) {
 }
 
 smoothVectorZeroSeq2 <- function(dateDataVector) {
+  computeShare <- function(dataVector, lastGoodIx, nextGoodIx) {
+    return((as.integer(dataVector[nextGoodIx]) - as.integer(dataVector[lastGoodIx])) / (nextGoodIx - lastGoodIx))
+  }
+
   nCols <- dim(dateDataVector)[2]
   theEnd <- nCols
   i <- 1
@@ -100,7 +104,7 @@ smoothVectorZeroSeq2 <- function(dateDataVector) {
       if (lastBeforeNAString > 0) {
         if (i <= theEnd) {
           # DDV[lastBeforeNAString] and DDV[i] are both good values. Interpolate
-          share <- (dateDataVector[i] - dateDataVector[lastBeforeNAString]) / (i - lastBeforeNAString)
+          share <- computeShare(dateDataVector, lastBeforeNAString, i)
           for (k in (lastBeforeNAString + 1):(i - 1)) {
             newVector[k] <- newVector[lastBeforeNAString] + round(share * (k - lastBeforeNAString))
           }
@@ -135,11 +139,32 @@ smoothVectorZeroSeq2 <- function(dateDataVector) {
              (dateDataVector[i] == dateDataVector[i + 1])) {
         i <- i + 1
       }
+      if ((i < theEnd) && (!is.na(dateDataVector[i + 1]))) {
+        i <- i + 1
+      }
       if (i > lastBeforeNonIncrement) {
-        if (i <= theEnd) {
-          cat(file = stderr(), "There is", i - lastBeforeNonIncrement, "slot to interpolate into\n")
+        if (i < theEnd) {
+          share <- computeShare(dateDataVector, lastBeforeNonIncrement, i)
+          for (k in (lastBeforeNonIncrement + 1):(i - 1)) {
+            newVector[k] <- newVector[lastBeforeNonIncrement] + round(share * (k - lastBeforeNonIncrement))
+          }
+          
+          cat(file = stderr(), "Interpolate from", lastBeforeNonIncrement + 1, "to", i, "\n")
+          cat(file = stderr(),
+              "Endpoints are", as.integer(newVector[lastBeforeNonIncrement]),
+              "and", as.integer(newVector[i]), "\n")
+          cat(file = stderr(), "share is", share, "\n")
+          if ((i - lastBeforeNonIncrement) > 1) {
+            cat(file = stderr(), "There are", i - lastBeforeNonIncrement, "slots to interpolate into\n")
+          } else {
+            cat(file = stderr(), "There is", i - lastBeforeNonIncrement, "slot to interpolate into\n")
+          }
         } else {
-          cat(file = stderr(), "There is", i - lastBeforeNonIncrement, "slot to extrapolate into\n")
+          if ((i - lastBeforeNonIncrement) > 1) {
+            cat(file = stderr(), "There are", i - lastBeforeNonIncrement, "slots to extrapolate into\n")
+          } else {
+            cat(file = stderr(), "There is", i - lastBeforeNonIncrement, "slot to extrapolate into\n")
+          }
         }
       }
       i <- i + 1
