@@ -84,7 +84,7 @@ smoothVectorZeroSeq <- function(dateDataVector) {
 
 smoothVectorZeroSeq2 <- function(dateDataVector) {
   nCols <- dim(dateDataVector)[2]
-  theEnd <- nCols - 1
+  theEnd <- nCols
   i <- 1
   newVector <- dateDataVector
 
