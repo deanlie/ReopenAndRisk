@@ -78,6 +78,7 @@ smoothVectorZeroSeq <- function(aVector, subtrahendVector, minuendVector, dateDa
 }
 
 processZeroDiffs <- function(aTibbleWithZeros, dateData) {
+  returnMe <- dateData
   nCols <- dim(dateData)[2]
   minuendTibble <- dateData[,2:nCols]
   subtrahendTibble <- dateData[,1:(nCols - 1)]
@@ -88,9 +89,10 @@ processZeroDiffs <- function(aTibbleWithZeros, dateData) {
                                           subtrahendTibble[i,],
                                           minuendTibble[i,],
                                           dateData[i,])
+    returnMe[i,2:nCols] <- dateData[i,1:(nCols - 1)] + replacementRow
     aTibbleWithZeros[i,] <- replacementRow
   }
-  return(aTibbleWithZeros)
+  return(returnMe)
 }
 
 getStaticTTRFile <- function() {
@@ -129,15 +131,15 @@ processTibbleToEliminateZeroIncrements <- function(aTibble) {
   diffData <- newerData - olderData
 
   # Process diff data to eliminate zero increments
-  newDiffData <- processZeroDiffs(diffData, dateData)
+  newDateData <- processZeroDiffs(diffData, dateData)
   
   # Add new diff data to former previous data
   # Note! newDiffData has the column names we want.
   # Addition preserves column names of the first addend.
-  olderDataWithNewDiffs <- newDiffData + olderData
+  # olderDataWithNewDiffs <- newDiffData + olderData
   
   # Desired result has character data, first date data, updated newer data
-  mungedData <- bind_cols(characterData, olderData[,1], olderDataWithNewDiffs)
+  mungedData <- bind_cols(characterData, newDateData)
   
   return(mungedData)
 }
