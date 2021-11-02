@@ -77,21 +77,21 @@ smoothVectorZeroSeq <- function(aVector, subtrahendVector, minuendVector, dateDa
   return(newVector)
 }
 
-processZeroDiffs <- function(aTibbleWithZeros, dateData) {
+processZeroDiffs <- function(dateData) {
   returnMe <- dateData
   nCols <- dim(dateData)[2]
-  minuendTibble <- dateData[,2:nCols]
-  subtrahendTibble <- dateData[,1:(nCols - 1)]
+  # minuendTibble <- dateData[,2:nCols]
+  # subtrahendTibble <- dateData[,1:(nCols - 1)]
   
-  for (i in 1:dim(minuendTibble)[1]) {
-    testRow <- minuendTibble[i,] - subtrahendTibble[i,]
-    replacementRow <- smoothVectorZeroSeq(testRow,
-                                          subtrahendTibble[i,],
-                                          minuendTibble[i,],
+  for (i in 1:dim(dateData)[1]) {
+    # testRow <- minuendTibble[i,] - subtrahendTibble[i,]
+    replacementRow <- smoothVectorZeroSeq(dateData[i, 2:nCols] - dateData[i, 1:(nCols - 1)],
+                                          dateData[i, 1:(nCols - 1)],
+                                          dateData[i, 2:nCols],
                                           dateData[i,])
     returnMe[i,2:nCols] <- dateData[i,1:(nCols - 1)] + replacementRow
-    aTibbleWithZeros[i,] <- replacementRow
   }
+
   return(returnMe)
 }
 
@@ -121,22 +121,9 @@ processTibbleToEliminateZeroIncrements <- function(aTibble) {
   # Separate date data, character data
   dateData <- select(aTibble, matches("^[0-9]+/"))
   characterData <- select(aTibble, -matches("^[0-9]+/"))
-  
-  # Separate newer data, previous data
-  nCols <- dim(dateData)[2]
-  newerData <- dateData[,2:nCols]
-  olderData <- dateData[,1:(nCols - 1)]
 
-  # Subtract: diff data <- newer data - previous data
-  diffData <- newerData - olderData
-
-  # Process diff data to eliminate zero increments
-  newDateData <- processZeroDiffs(diffData, dateData)
-  
-  # Add new diff data to former previous data
-  # Note! newDiffData has the column names we want.
-  # Addition preserves column names of the first addend.
-  # olderDataWithNewDiffs <- newDiffData + olderData
+  # Process date data to eliminate zero increments
+  newDateData <- processZeroDiffs(dateData)
   
   # Desired result has character data, first date data, updated newer data
   mungedData <- bind_cols(characterData, newDateData)
