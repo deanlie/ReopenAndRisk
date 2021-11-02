@@ -33,17 +33,12 @@ identityVectorXform <- function(aVector) {
   return(aVector)
 }
 
-smoothVectorZeroSeq <- function(subtrahendVectorUNUSED, minuendVectorUNUSED, dateDataVector) {
-  # replacementRow <- smoothVectorZeroSeq(dateData[i, 1:(nCols - 1)],
-  #                                       dateData[i, 2:nCols],
-  #                                       dateData[i,])
+smoothVectorZeroSeq <- function(dateDataVector) {
   nCols <- dim(dateDataVector)[2]
   
-  subtrahendVector <- dateDataVector[1:(nCols - 1)]
-  minuendVector <- dateDataVector[2:nCols]
-  differenceVector <- minuendVector - subtrahendVector
+  differenceVector <- dateDataVector[2:nCols] - dateDataVector[1:(nCols - 1)]
 
-  theEnd = length(differenceVector)
+  theEnd <- nCols - 1
   i <- 1
   newVector <- rep(1, theEnd)
   while (i <= theEnd) {
@@ -76,7 +71,8 @@ smoothVectorZeroSeq <- function(subtrahendVectorUNUSED, minuendVectorUNUSED, dat
             }
             newVector[j] <- differenceVector[j]
           } else {
-            # is.na(differenceVector[j])
+            # differenceVector[j] is NA so either dateDataVector[j] or dataDataVector[j + 1] is NA
+            #  (or both)
           }            
         }
       }
@@ -86,14 +82,95 @@ smoothVectorZeroSeq <- function(subtrahendVectorUNUSED, minuendVectorUNUSED, dat
   return(newVector)
 }
 
+smoothVectorZeroSeq2 <- function(dateDataVector) {
+  nCols <- dim(dateDataVector)[2]
+  theEnd <- nCols - 1
+  i <- 1
+  newVector <- dateDataVector
+
+  while (i <= theEnd) {
+    if (is.na(dateDataVector[i])) {
+      lastBeforeNAString <- i - 1
+      while (i <= theEnd && is.na(dateDataVector[i]) ) {
+        i <- i + 1
+        if (i > theEnd) {
+          break
+        }
+      }
+      if (lastBeforeNAString > 0) {
+        if (i <= theEnd) {
+          # DDV[lastBeforeNAString] and DDV[i] are both good values. Interpolate
+          share <- (dateDataVector[i] - dateDataVector[lastBeforeNAString]) / (i - lastBeforeNAString)
+          for (k in (lastBeforeNAString + 1):(i - 1)) {
+            newVector[k] <- newVector[k - 1] + round(share * (k - lastBeforeNAString))
+          }
+        } else {
+          # DDV[lastBeforeNAString] is a good value. Count up from it to the end
+          for (k in (lastBeforeNAString + 1):theEnd) {
+            newVector[k] <- newVector[k - 1] + 1
+          }
+        }
+      } else {
+        if (i <= theEnd) {
+          # DDV[i] is a good value. Count down from it to the start
+          for (k in 1:(i - 1)) {
+            newVector[k] <- dateDataVector[i] - (i - k)
+          }
+        }
+      }
+    } else {
+      i <- i + 1
+    }
+  }
+
+  while (i <= theEnd) {
+    j <- i + 1
+    if ((!is.na(differenceVector[i])) && (differenceVector[i] > 0)) {
+      newVector[i] <- differenceVector[i]
+      i <- i + 1
+    } else {
+      if (j > theEnd) {
+        newVector[i] <- 1
+      } else {
+        while ((j <= theEnd) && ((is.na(differenceVector[j])) || (differenceVector[j] <= 0))) {
+          j <- j + 1
+        }
+        # here, either is.na(differenceVector[j]) or differenceVector[j] > 0 or j > theEnd
+        if (j > theEnd) {
+          # Increment by 1 more in each position
+          for (k in i:theEnd) {
+            newVector[k] <- 1 + k - i
+          }
+        } else {
+          if (!is.na(differenceVector[j])) {
+            # We found a non-zero value. Divvy it up into
+            #   (j - i) parts;
+            share <- differenceVector[j] / (1 + j - i)
+            usedUp <- 0
+            for (k in i:(j - 1)) {
+              newVector[k] <- round(share * (1 + k - i))
+              usedUp <- usedUp + share
+            }
+            newVector[j] <- differenceVector[j]
+          } else {
+            # differenceVector[j] is NA so either dateDataVector[j] or dataDataVector[j + 1] is NA
+            #  (or both)
+          }            
+        }
+      }
+      i <- j + 1
+    }
+  }
+  return(newVector)
+}
+
+
 processZeroDiffs <- function(dateData) {
   returnMe <- dateData
   nCols <- dim(dateData)[2]
 
   for (i in 1:dim(dateData)[1]) {
-    replacementRow <- smoothVectorZeroSeq(dateData[i, 1:(nCols - 1)],
-                                          dateData[i, 2:nCols],
-                                          dateData[i,])
+    replacementRow <- smoothVectorZeroSeq(dateData[i,])
     returnMe[i,2:nCols] <- dateData[i,1:(nCols - 1)] + replacementRow
   }
 
