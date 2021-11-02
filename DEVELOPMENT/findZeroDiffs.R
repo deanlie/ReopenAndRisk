@@ -102,7 +102,7 @@ smoothVectorZeroSeq2 <- function(dateDataVector) {
           # DDV[lastBeforeNAString] and DDV[i] are both good values. Interpolate
           share <- (dateDataVector[i] - dateDataVector[lastBeforeNAString]) / (i - lastBeforeNAString)
           for (k in (lastBeforeNAString + 1):(i - 1)) {
-            newVector[k] <- newVector[k - 1] + round(share * (k - lastBeforeNAString))
+            newVector[k] <- newVector[lastBeforeNAString] + round(share * (k - lastBeforeNAString))
           }
         } else {
           # DDV[lastBeforeNAString] is a good value. Count up from it to the end
