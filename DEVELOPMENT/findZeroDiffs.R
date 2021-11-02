@@ -21,12 +21,12 @@ expectedDataPath <- function() {
   return(paste(testWorkDir(), "ExpectedTestResult.csv", sep = ""))
 }
 
-testDataPath2 <- function() {
-  return(paste(testWorkDir(), "US_State_TTR_Bad.csv", sep = ""))
+testDataPathNA2 <- function() {
+  return(paste(testWorkDir(), "US_State_TTR_BadNA2.csv", sep = ""))
 }
 
-expectedDataPath2 <- function() {
-  return(paste(testWorkDir(), "US_State_TTR_Desired.csv", sep = ""))
+expectedDataPathNA2 <- function() {
+  return(paste(testWorkDir(), "US_State_TTR_DesiredNA2.csv", sep = ""))
 }
 
 identityVectorXform <- function(aVector) {
@@ -116,6 +116,12 @@ smoothVectorZeroSeq2 <- function(dateDataVector) {
           for (k in 1:(i - 1)) {
             newVector[k] <- dateDataVector[i] - (i - k)
           }
+        } else {
+          # No good values. All will be phony (or estimates)
+          startEstimate <- 99 # for testing; OUCH do better!
+          for (k in (lastBeforeNAString + 1):theEnd) {
+            newVector[k] <- startEstimate + 1
+          }
         }
       }
     } else {
@@ -123,44 +129,45 @@ smoothVectorZeroSeq2 <- function(dateDataVector) {
     }
   }
 
-  while (i <= theEnd) {
-    j <- i + 1
-    if ((!is.na(differenceVector[i])) && (differenceVector[i] > 0)) {
-      newVector[i] <- differenceVector[i]
-      i <- i + 1
-    } else {
-      if (j > theEnd) {
-        newVector[i] <- 1
-      } else {
-        while ((j <= theEnd) && ((is.na(differenceVector[j])) || (differenceVector[j] <= 0))) {
-          j <- j + 1
-        }
-        # here, either is.na(differenceVector[j]) or differenceVector[j] > 0 or j > theEnd
-        if (j > theEnd) {
-          # Increment by 1 more in each position
-          for (k in i:theEnd) {
-            newVector[k] <- 1 + k - i
-          }
-        } else {
-          if (!is.na(differenceVector[j])) {
-            # We found a non-zero value. Divvy it up into
-            #   (j - i) parts;
-            share <- differenceVector[j] / (1 + j - i)
-            usedUp <- 0
-            for (k in i:(j - 1)) {
-              newVector[k] <- round(share * (1 + k - i))
-              usedUp <- usedUp + share
-            }
-            newVector[j] <- differenceVector[j]
-          } else {
-            # differenceVector[j] is NA so either dateDataVector[j] or dataDataVector[j + 1] is NA
-            #  (or both)
-          }            
-        }
-      }
-      i <- j + 1
-    }
-  }
+  # i <- 1
+  # while (i <= theEnd) {
+  #   j <- i + 1
+  #   if ((!is.na(differenceVector[i])) && (differenceVector[i] > 0)) {
+  #     newVector[i] <- differenceVector[i]
+  #     i <- i + 1
+  #   } else {
+  #     if (j > theEnd) {
+  #       newVector[i] <- 1
+  #     } else {
+  #       while ((j <= theEnd) && ((is.na(differenceVector[j])) || (differenceVector[j] <= 0))) {
+  #         j <- j + 1
+  #       }
+  #       # here, either is.na(differenceVector[j]) or differenceVector[j] > 0 or j > theEnd
+  #       if (j > theEnd) {
+  #         # Increment by 1 more in each position
+  #         for (k in i:theEnd) {
+  #           newVector[k] <- 1 + k - i
+  #         }
+  #       } else {
+  #         if (!is.na(differenceVector[j])) {
+  #           # We found a non-zero value. Divvy it up into
+  #           #   (j - i) parts;
+  #           share <- differenceVector[j] / (1 + j - i)
+  #           usedUp <- 0
+  #           for (k in i:(j - 1)) {
+  #             newVector[k] <- round(share * (1 + k - i))
+  #             usedUp <- usedUp + share
+  #           }
+  #           newVector[j] <- differenceVector[j]
+  #         } else {
+  #           # differenceVector[j] is NA so either dateDataVector[j] or dataDataVector[j + 1] is NA
+  #           #  (or both)
+  #         }            
+  #       }
+  #     }
+  #     i <- j + 1
+  #   }
+  # }
   return(newVector)
 }
 
@@ -170,8 +177,8 @@ processZeroDiffs <- function(dateData) {
   nCols <- dim(dateData)[2]
 
   for (i in 1:dim(dateData)[1]) {
-    replacementRow <- smoothVectorZeroSeq(dateData[i,])
-    returnMe[i,2:nCols] <- dateData[i,1:(nCols - 1)] + replacementRow
+    replacementRow <- smoothVectorZeroSeq2(dateData[i,])
+    returnMe[i,] <- replacementRow
   }
 
   return(returnMe)
@@ -249,13 +256,24 @@ rowComparison <- function(testVector, expectedVector, quiet = TRUE) {
     nFailures <- 1
   } else {
     for (i in 1:vectorLength) {
-      if (as.integer(testVector[i]) != as.integer(expectedVector[i])) {
-        if (!quiet) {
-          cat(file = stderr(), "mismatch at index", i,
-              "found", as.integer(testVector[i]),
-              "expected", as.integer(expectedVector[i]), "\n")
+      if (is.na(testVector[i]) || is.na(expectedVector[i])) {
+        if (is.na(testVector[i])) {
+          cat(file = stderr(), "NA at index", i, " ")
         }
+        if (is.na(expectedVector[i])) {
+          cat(file = stderr(), "NA at index", i)
+        }
+        cat(file = stderr(), "\n")
         nFailures <- nFailures + 1
+      } else {
+        if (as.integer(testVector[i]) != as.integer(expectedVector[i])) {
+          if (!quiet) {
+            cat(file = stderr(), "mismatch at index", i,
+                "found", as.integer(testVector[i]),
+                "expected", as.integer(expectedVector[i]), "\n")
+          }
+          nFailures <- nFailures + 1
+        }
       }
     }
   }
@@ -330,10 +348,10 @@ testTibbleComparison <- function(modifiedData, expectedData, expectNFails, quiet
 }
 
 callTests <- function() {
-  expectedData <- read_csv(expectedDataPath2(), show_col_types = FALSE)
-  dataToModify <- read_csv(testDataPath2(), show_col_types = FALSE)
-  testRows <- c(1, 2, 3, 4)
-  expectNFails = c(0, 0, 0, 0)
+  expectedData <- read_csv(expectedDataPathNA2(), show_col_types = FALSE)
+  dataToModify <- read_csv(testDataPathNA2(), show_col_types = FALSE)
+  testRows <- c(1, 2, 3, 4, 5, 6, 7, 8)
+  expectNFails = c(0, 0, 0, 0, 0, 0, 0, 0)
 
   cat(file = stderr(), "Test after processTibbleToEliminateZeroIncrements\n")
   correctedData <- processTibbleToEliminateZeroIncrements(dataToModify)
