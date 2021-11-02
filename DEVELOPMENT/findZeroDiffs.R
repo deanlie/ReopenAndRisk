@@ -126,6 +126,22 @@ smoothVectorZeroSeq2 <- function(dateDataVector) {
         }
       }
     } else {
+      while ((i < theEnd) && !(is.na(dateDataVector[i + 1])) &&
+             (dateDataVector[i] != dateDataVector[i + 1])) {
+        i <- i + 1
+      }
+      lastBeforeNonIncrement = i
+      while ((i < theEnd) && (!is.na(dateDataVector[i + 1])) &&
+             (dateDataVector[i] == dateDataVector[i + 1])) {
+        i <- i + 1
+      }
+      if (i > lastBeforeNonIncrement) {
+        if (i <= theEnd) {
+          cat(file = stderr(), "There is", i - lastBeforeNonIncrement, "slot to interpolate into\n")
+        } else {
+          cat(file = stderr(), "There is", i - lastBeforeNonIncrement, "slot to extrapolate into\n")
+        }
+      }
       i <- i + 1
     }
   }
@@ -351,8 +367,8 @@ testTibbleComparison <- function(modifiedData, expectedData, expectNFails, quiet
 callTests <- function() {
   expectedData <- read_csv(expectedDataPathNA2(), show_col_types = FALSE)
   dataToModify <- read_csv(testDataPathNA2(), show_col_types = FALSE)
-  testRows <- c(1, 2, 3, 4, 5, 6, 7, 8)
-  expectNFails = c(0, 0, 0, 0, 0, 0, 0, 0)
+  testRows <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
+  expectNFails = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
   cat(file = stderr(), "Test after processTibbleToEliminateZeroIncrements\n")
   correctedData <- processTibbleToEliminateZeroIncrements(dataToModify)
