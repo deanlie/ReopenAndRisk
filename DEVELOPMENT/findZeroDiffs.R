@@ -258,10 +258,10 @@ rowComparison <- function(testVector, expectedVector, quiet = TRUE) {
     for (i in 1:vectorLength) {
       if (is.na(testVector[i]) || is.na(expectedVector[i])) {
         if (is.na(testVector[i])) {
-          cat(file = stderr(), "NA at index", i, " ")
+          cat(file = stderr(), "NA in test vector at index", i, " ")
         }
         if (is.na(expectedVector[i])) {
-          cat(file = stderr(), "NA at index", i)
+          cat(file = stderr(), "NA in expected vector at index", i)
         }
         cat(file = stderr(), "\n")
         nFailures <- nFailures + 1
@@ -326,7 +326,7 @@ testRowComparison <- function(modifiedData, expectedData, testRows, expectNFails
         cat(file = stderr(), "PASS\n\n")
       } else {
         cat(file = stderr(), "FAIL, expected", expectNFails[i],
-            "failures, saw", nFailures, "\n\n")
+            "failures, saw", nRowFailures, "\n\n")
       }
     }
     nFailures <- nFailures + nRowFailures
