@@ -118,9 +118,10 @@ smoothVectorZeroSeq2 <- function(dateDataVector) {
           }
         } else {
           # No good values. All will be phony (or estimates)
-          startEstimate <- 99 # for testing; OUCH do better!
+          estimate <- 100 # for testing; OUCH do better!
           for (k in (lastBeforeNAString + 1):theEnd) {
-            newVector[k] <- startEstimate + 1
+            newVector[k] <- estimate
+            estimate <- estimate + 1
           }
         }
       }
