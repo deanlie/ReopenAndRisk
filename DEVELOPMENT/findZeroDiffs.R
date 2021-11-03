@@ -37,162 +37,162 @@ identityVectorXform <- function(aVector) {
   return(aVector)
 }
 
-smoothVectorZeroSeq <- function(dataVector) {
-  computeShare <- function(dataVector, lastGoodIx, nextGoodIx) {
-    return((as.integer(dataVector[nextGoodIx]) - as.integer(dataVector[lastGoodIx])) / (nextGoodIx - lastGoodIx))
-  }
+# smoothVectorZeroSeq0 <- function(dataVector) {
+#   computeShare <- function(dataVector, lastGoodIx, nextGoodIx) {
+#     return((as.integer(dataVector[nextGoodIx]) - as.integer(dataVector[lastGoodIx])) / (nextGoodIx - lastGoodIx))
+#   }
+# 
+#   nCols <- dim(dataVector)[2]
+#   theEnd <- nCols
+#   i <- 1
+#   newVector <- dataVector
+# 
+#   while (i <= theEnd) {
+#     if (is.na(dataVector[i])) {
+#       lastGoodIx <- i - 1
+#       while (i <= theEnd && is.na(dataVector[i]) ) {
+#         i <- i + 1
+#         if (i > theEnd) {
+#           break
+#         }
+#       }
+#       if (lastGoodIx > 0) {
+#         if (i <= theEnd) {
+#           # DDV[lastGoodIx] and DDV[i] are both good values. Interpolate
+#           share <- computeShare(dataVector, lastGoodIx, i)
+#           for (k in (lastGoodIx + 1):(i - 1)) {
+#             newVector[k] <- newVector[lastGoodIx] + round(share * (k - lastGoodIx))
+#           }
+#         } else {
+#           # DDV[lastGoodIx] is a good value. Count up from it to the end
+#           for (k in (lastGoodIx + 1):theEnd) {
+#             newVector[k] <- newVector[k - 1] + 1
+#           }
+#         }
+#       } else {
+#         if (i <= theEnd) {
+#           # DDV[i] is a good value. Count down from it to the start
+#           for (k in 1:(i - 1)) {
+#             newVector[k] <- dataVector[i] - (i - k)
+#           }
+#         } else {
+#           # No good values. All will be phony (or estimates)
+#           estimate <- 100 # for testing; OUCH do better!
+#           for (k in (lastGoodIx + 1):theEnd) {
+#             newVector[k] <- estimate
+#             estimate <- estimate + 1
+#           }
+#         }
+#       }
+#     } else {
+#       while ((i < theEnd) && !(is.na(dataVector[i + 1])) &&
+#              (dataVector[i] != dataVector[i + 1])) {
+#         i <- i + 1
+#       }
+#       lastBeforeNonIncrement = i
+#       while ((i < theEnd) && (!is.na(dataVector[i + 1])) &&
+#              (dataVector[i] == dataVector[i + 1])) {
+#         i <- i + 1
+#       }
+#       if ((i < theEnd) && (!is.na(dataVector[i + 1]))) {
+#         i <- i + 1
+#       }
+#       if (i > lastBeforeNonIncrement) {
+#         if (i < theEnd) {
+#           share <- computeShare(dataVector, lastBeforeNonIncrement, i)
+#           for (k in (lastBeforeNonIncrement + 1):(i - 1)) {
+#             newVector[k] <- newVector[lastBeforeNonIncrement] + round(share * (k - lastBeforeNonIncrement))
+#           }
+#           
+#           cat(file = stderr(), "Interpolate from", lastBeforeNonIncrement + 1, "to", i, "\n")
+#           cat(file = stderr(),
+#               "Endpoints are", as.integer(newVector[lastBeforeNonIncrement]),
+#               "and", as.integer(newVector[i]), "\n")
+#           cat(file = stderr(), "share is", share, "\n")
+#           if ((i - lastBeforeNonIncrement) > 1) {
+#             cat(file = stderr(), "There are", i - lastBeforeNonIncrement, "slots to interpolate into\n")
+#           } else {
+#             cat(file = stderr(), "There is", i - lastBeforeNonIncrement, "slot to interpolate into\n")
+#           }
+#         } else {
+#           if ((i - lastBeforeNonIncrement) > 1) {
+#             cat(file = stderr(), "There are", i - lastBeforeNonIncrement, "slots to extrapolate into\n")
+#           } else {
+#             cat(file = stderr(), "There is", i - lastBeforeNonIncrement, "slot to extrapolate into\n")
+#           }
+#         }
+#       }
+#       i <- i + 1
+#     }
+#   }
+# 
+#   return(newVector)
+# }
 
-  nCols <- dim(dataVector)[2]
-  theEnd <- nCols
-  i <- 1
-  newVector <- dataVector
-
-  while (i <= theEnd) {
-    if (is.na(dataVector[i])) {
-      lastGoodIx <- i - 1
-      while (i <= theEnd && is.na(dataVector[i]) ) {
-        i <- i + 1
-        if (i > theEnd) {
-          break
-        }
-      }
-      if (lastGoodIx > 0) {
-        if (i <= theEnd) {
-          # DDV[lastGoodIx] and DDV[i] are both good values. Interpolate
-          share <- computeShare(dataVector, lastGoodIx, i)
-          for (k in (lastGoodIx + 1):(i - 1)) {
-            newVector[k] <- newVector[lastGoodIx] + round(share * (k - lastGoodIx))
-          }
-        } else {
-          # DDV[lastGoodIx] is a good value. Count up from it to the end
-          for (k in (lastGoodIx + 1):theEnd) {
-            newVector[k] <- newVector[k - 1] + 1
-          }
-        }
-      } else {
-        if (i <= theEnd) {
-          # DDV[i] is a good value. Count down from it to the start
-          for (k in 1:(i - 1)) {
-            newVector[k] <- dataVector[i] - (i - k)
-          }
-        } else {
-          # No good values. All will be phony (or estimates)
-          estimate <- 100 # for testing; OUCH do better!
-          for (k in (lastGoodIx + 1):theEnd) {
-            newVector[k] <- estimate
-            estimate <- estimate + 1
-          }
-        }
-      }
-    } else {
-      while ((i < theEnd) && !(is.na(dataVector[i + 1])) &&
-             (dataVector[i] != dataVector[i + 1])) {
-        i <- i + 1
-      }
-      lastBeforeNonIncrement = i
-      while ((i < theEnd) && (!is.na(dataVector[i + 1])) &&
-             (dataVector[i] == dataVector[i + 1])) {
-        i <- i + 1
-      }
-      if ((i < theEnd) && (!is.na(dataVector[i + 1]))) {
-        i <- i + 1
-      }
-      if (i > lastBeforeNonIncrement) {
-        if (i < theEnd) {
-          share <- computeShare(dataVector, lastBeforeNonIncrement, i)
-          for (k in (lastBeforeNonIncrement + 1):(i - 1)) {
-            newVector[k] <- newVector[lastBeforeNonIncrement] + round(share * (k - lastBeforeNonIncrement))
-          }
-          
-          cat(file = stderr(), "Interpolate from", lastBeforeNonIncrement + 1, "to", i, "\n")
-          cat(file = stderr(),
-              "Endpoints are", as.integer(newVector[lastBeforeNonIncrement]),
-              "and", as.integer(newVector[i]), "\n")
-          cat(file = stderr(), "share is", share, "\n")
-          if ((i - lastBeforeNonIncrement) > 1) {
-            cat(file = stderr(), "There are", i - lastBeforeNonIncrement, "slots to interpolate into\n")
-          } else {
-            cat(file = stderr(), "There is", i - lastBeforeNonIncrement, "slot to interpolate into\n")
-          }
-        } else {
-          if ((i - lastBeforeNonIncrement) > 1) {
-            cat(file = stderr(), "There are", i - lastBeforeNonIncrement, "slots to extrapolate into\n")
-          } else {
-            cat(file = stderr(), "There is", i - lastBeforeNonIncrement, "slot to extrapolate into\n")
-          }
-        }
-      }
-      i <- i + 1
-    }
-  }
-
-  return(newVector)
-}
-
-smoothVectorZeroSeq2 <- function(dataVector) {
-  computeShare <- function(dataVector, lastGoodIx, nextGoodIx) {
-    return((as.double(dataVector[nextGoodIx]) - as.double(dataVector[lastGoodIx])) / (nextGoodIx - lastGoodIx))
-  }
-  
-  nCols <- dim(dataVector)[2]
-  theEnd <- nCols
-  i <- 1
-  newVector <- dataVector
-  
-  while (i <= theEnd) {
-    if (is.na(dataVector[i]) ||
-        ((i < theEnd) && !is.na(dataVector[i + 1]) &&
-         (dataVector[i] == dataVector[i + 1]))) {
-      if (is.na(dataVector[i])) {
-        lastGoodIx <- i - 1
-      } else {
-        # This assumes we went through a string of NAs previously
-        lastGoodIx <- i - 1
-      }
-      while (i <= theEnd && (is.na(dataVector[i]) ||
-                             ((i < theEnd) && 
-                              (is.na(dataVector[i + 1]) ||
-                               ((i > 1) &&
-                                !is.na(dataVector[i - 1]) &&
-                                !is.na(dataVector[i]) &&
-                                (dataVector[i - 1] == dataVector[i])))))) {
-        i <- i + 1
-      }
-      # What's the next good index?
-      # If we are past the end of a string of equal values, it is i + 1.
-      # If we ran off the end of the vector because NAs or equal values
-      #   continue to the end, there is none
-      if (lastGoodIx > 0) {
-        if ((i > 1) && (i <= theEnd)) {
-          # DDV[lastGoodIx] and DDV[i] are both good values. Interpolate
-          share <- computeShare(dataVector, lastGoodIx, i)
-          for (k in (lastGoodIx + 1):(i - 1)) {
-            newVector[k] <- newVector[lastGoodIx] + round(share * (k - lastGoodIx))
-          }
-        } else {
-          # DDV[lastGoodIx] is a good value. Count up from it to the end # OUCH by an estimated increment
-          for (k in (lastGoodIx + 1):theEnd) {
-            newVector[k] <- newVector[k - 1] + 1
-          }
-        }
-      } else {
-        if ((i > 1) && (i <= theEnd)) {
-          # DDV[i] is a good value. Count down from it to the start # OUCH by an estimated increment
-          for (k in 1:(i - 1)) {
-            newVector[k] <- dataVector[i] - (i - k)
-          }
-        } else {
-          # No good values. All will be phony (or estimates)
-          estimate <- 100 # for testing; OUCH do better!
-          for (k in (lastGoodIx + 1):theEnd) {
-            newVector[k] <- estimate
-            estimate <- estimate + 1 # OUCH plus estimated increment
-          }
-        }
-      }
-    }
-    i <- i + 1
-  }
+# smoothVectorZeroSeq2 <- function(dataVector) {
+#   computeShare <- function(dataVector, lastGoodIx, nextGoodIx) {
+#     return((as.double(dataVector[nextGoodIx]) - as.double(dataVector[lastGoodIx])) / (nextGoodIx - lastGoodIx))
+#   }
+#   
+#   nCols <- dim(dataVector)[2]
+#   theEnd <- nCols
+#   i <- 1
+#   newVector <- dataVector
+#   
+#   while (i <= theEnd) {
+#     if (is.na(dataVector[i]) ||
+#         ((i < theEnd) && !is.na(dataVector[i + 1]) &&
+#          (dataVector[i] == dataVector[i + 1]))) {
+#       if (is.na(dataVector[i])) {
+#         lastGoodIx <- i - 1
+#       } else {
+#         # This assumes we went through a string of NAs previously
+#         lastGoodIx <- i - 1
+#       }
+  #     while (i <= theEnd && (is.na(dataVector[i]) ||
+  #                            ((i < theEnd) && 
+  #                             (is.na(dataVector[i + 1]) ||
+  #                              ((i > 1) &&
+  #                               !is.na(dataVector[i - 1]) &&
+  #                               !is.na(dataVector[i]) &&
+  #                               (dataVector[i - 1] == dataVector[i])))))) {
+  #       i <- i + 1
+  #     }
+  #     # What's the next good index?
+  #     # If we are past the end of a string of equal values, it is i + 1.
+  #     # If we ran off the end of the vector because NAs or equal values
+  #     #   continue to the end, there is none
+  #     if (lastGoodIx > 0) {
+  #       if ((i > 1) && (i <= theEnd)) {
+  #         # DDV[lastGoodIx] and DDV[i] are both good values. Interpolate
+  #         share <- computeShare(dataVector, lastGoodIx, i)
+  #         for (k in (lastGoodIx + 1):(i - 1)) {
+  #           newVector[k] <- newVector[lastGoodIx] + round(share * (k - lastGoodIx))
+  #         }
+  #       } else {
+  #         # DDV[lastGoodIx] is a good value. Count up from it to the end # OUCH by an estimated increment
+  #         for (k in (lastGoodIx + 1):theEnd) {
+  #           newVector[k] <- newVector[k - 1] + 1
+  #         }
+  #       }
+  #     } else {
+  #       if ((i > 1) && (i <= theEnd)) {
+  #         # DDV[i] is a good value. Count down from it to the start # OUCH by an estimated increment
+  #         for (k in 1:(i - 1)) {
+  #           newVector[k] <- dataVector[i] - (i - k)
+  #         }
+  #       } else {
+  #         # No good values. All will be phony (or estimates)
+  #         estimate <- 100 # for testing; OUCH do better!
+  #         for (k in (lastGoodIx + 1):theEnd) {
+  #           newVector[k] <- estimate
+  #           estimate <- estimate + 1 # OUCH plus estimated increment
+  #         }
+  #       }
+  #     }
+  #   }
+  #   i <- i + 1
+  # }
   #     while ((i < theEnd) && !(is.na(dataVector[i + 1])) &&
   #            (dataVector[i] != dataVector[i + 1])) {
   #       i <- i + 1
@@ -233,11 +233,11 @@ smoothVectorZeroSeq2 <- function(dataVector) {
   #     i <- i + 1
   #   }
   # }
-  
-  return(newVector)
-}
+#   
+#   return(newVector)
+# }
 
-smoothVectorZeroSeq3 <- function(dataVector) {
+smoothVectorZeroSeq <- function(dataVector) {
   shareAround <- function(newVector, dataVector, lastGoodIx, nextGoodIx) {
     share <- (as.double(dataVector[nextGoodIx]) - as.double(newVector[lastGoodIx])) /
       (nextGoodIx - lastGoodIx)
@@ -300,15 +300,25 @@ smoothVectorZeroSeq3 <- function(dataVector) {
             }
           } else {
             newVector <- shareAround(newVector, dataVector, lastGoodIx, i)
-            lastGoodIx <- i
           }
+          lastGoodIx <- i
         }
       }
     }
     i <- i + 1
   }
   
-  # OUCH if we haven't yet, fill in the blanks
+  # If we haven't yet, fill in the blanks
+  if (lastGoodIx < nCols) {
+    if (lastGoodIx == 0) {
+      newVector[1] = 100 # OUCH do better
+      lastGoodIx <- 1
+    }
+    for (k in (lastGoodIx + 1):nCols) {
+      increment <- 1 # OUCH do better
+      newVector[k] <- newVector[k - 1] + increment
+    }
+  }
 
   return(newVector)
 }
@@ -318,7 +328,7 @@ processZeroDiffs <- function(dateData) {
   nCols <- dim(dateData)[2]
 
   for (i in 1:dim(dateData)[1]) {
-    replacementRow <- smoothVectorZeroSeq3(dateData[i,])
+    replacementRow <- smoothVectorZeroSeq(dateData[i,])
     returnMe[i,] <- replacementRow
   }
 
@@ -499,7 +509,7 @@ callTests <- function() {
   cat(file = stderr(), "Test after processTibbleToEliminateZeroIncrements\n")
   correctedData <- processTibbleToEliminateZeroIncrements(dataToModify)
 
-  compareProgress <- TRUE
+  compareProgress <- FALSE
   if (compareProgress) {
     cat(file = stderr(), "Comparison with 'best so far'\n")
     cat(file = stderr(), "=============================\n")
