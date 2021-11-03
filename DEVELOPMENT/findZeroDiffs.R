@@ -237,12 +237,88 @@ smoothVectorZeroSeq2 <- function(dataVector) {
   return(newVector)
 }
 
+smoothVectorZeroSeq3 <- function(dataVector) {
+  shareAround <- function(newVector, dataVector, lastGoodIx, nextGoodIx) {
+    share <- (as.double(dataVector[nextGoodIx]) - as.double(newVector[lastGoodIx])) /
+      (nextGoodIx - lastGoodIx)
+    for (k in (lastGoodIx + 1):(nextGoodIx - 1)) {
+      newVector[k] <- newVector[lastGoodIx] + round(share * (k - lastGoodIx))
+    }
+    return(newVector)
+  }
+  
+  nCols <- dim(dataVector)[2]
+  newVector <- dataVector
+  
+  if (is.na(dataVector[1])) {
+    lastGoodIx <- 0
+  } else {
+    lastGoodIx <- 1
+  }
+  
+  i <- 2
+  
+  while (i <= nCols) {
+    # Always loop through good values
+    if ((!is.na(dataVector[i])) && (!is.na(newVector[i - 1])) &&
+        (dataVector[i] > newVector[i - 1])) {
+      if (lastGoodIx < (i - 1)) {
+        if (lastGoodIx > 0) {
+          # We just came off a sequence of equal values; must interpolate.
+          newVector <- shareAround(newVector, dataVector, lastGoodIx, i)
+          lastGoodIx <- i
+        } else {
+          
+        }
+      }
+      lastGoodIx <- i
+    } else {
+      if (is.na(dataVector[i])) {
+        # We can't use this datum.
+        # If it's the last, fill 'em all out. If not, skip it.
+        if (i == nCols) {
+          if (lastGoodIx == 0) {
+            newVector[1] <- 100
+            lastGoodIx <- 1
+          }
+          for (k in (lastGoodIx + 1):nCols) {
+            increment <- 1 # OUCH do better
+            newVector[k] <- newVector[k - 1] + increment
+          }
+          lastGoodIx <- nCols
+        }
+      } else {
+        # This is a number;
+        # either is.na(newVector[i - 1]) or dataVector[i] <= newVector[i - 1]
+        if (is.na(newVector[i - 1])) {
+          # If the previous entry was NA, we can interpolate up
+          #  to this one (or extrapolate if there was nothing before)
+          if (lastGoodIx == 0) {
+            decrement <- 1 # OUCH do better
+            for (k in (i - 1):1) {
+              newVector[k] <- newVector[k + 1] - decrement
+            }
+          } else {
+            newVector <- shareAround(newVector, dataVector, lastGoodIx, i)
+            lastGoodIx <- i
+          }
+        }
+      }
+    }
+    i <- i + 1
+  }
+  
+  # OUCH if we haven't yet, fill in the blanks
+
+  return(newVector)
+}
+
 processZeroDiffs <- function(dateData) {
   returnMe <- dateData
   nCols <- dim(dateData)[2]
 
   for (i in 1:dim(dateData)[1]) {
-    replacementRow <- smoothVectorZeroSeq2(dateData[i,])
+    replacementRow <- smoothVectorZeroSeq3(dateData[i,])
     returnMe[i,] <- replacementRow
   }
 
