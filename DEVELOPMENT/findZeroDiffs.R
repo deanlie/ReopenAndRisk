@@ -29,88 +29,43 @@ expectedDataPathNA2 <- function() {
   return(paste(testWorkDir(), "US_State_TTR_DesiredNA2.csv", sep = ""))
 }
 
+prevBestDPathNA2 <- function() {
+  return(paste(testWorkDir(), "US_State_TTR_PrevBestNA2.csv", sep = ""))
+}
+
 identityVectorXform <- function(aVector) {
   return(aVector)
 }
 
-smoothVectorZeroSeq <- function(dateDataVector) {
-  nCols <- dim(dateDataVector)[2]
-  
-  differenceVector <- dateDataVector[2:nCols] - dateDataVector[1:(nCols - 1)]
-
-  theEnd <- nCols - 1
-  i <- 1
-  newVector <- rep(1, theEnd)
-  while (i <= theEnd) {
-    j <- i + 1
-    if ((!is.na(differenceVector[i])) && (differenceVector[i] > 0)) {
-      newVector[i] <- differenceVector[i]
-      i <- i + 1
-    } else {
-      if (j > theEnd) {
-        newVector[i] <- 1
-      } else {
-        while ((j <= theEnd) && ((is.na(differenceVector[j])) || (differenceVector[j] <= 0))) {
-          j <- j + 1
-        }
-        # here, either is.na(differenceVector[j]) or differenceVector[j] > 0 or j > theEnd
-        if (j > theEnd) {
-          # Increment by 1 more in each position
-          for (k in i:theEnd) {
-            newVector[k] <- 1 + k - i
-          }
-        } else {
-          if (!is.na(differenceVector[j])) {
-            # We found a non-zero value. Divvy it up into
-            #   (j - i) parts;
-            share <- differenceVector[j] / (1 + j - i)
-            usedUp <- 0
-            for (k in i:(j - 1)) {
-              newVector[k] <- round(share * (1 + k - i))
-              usedUp <- usedUp + share
-            }
-            newVector[j] <- differenceVector[j]
-          } else {
-            # differenceVector[j] is NA so either dateDataVector[j] or dataDataVector[j + 1] is NA
-            #  (or both)
-          }            
-        }
-      }
-      i <- j + 1
-    }
-  }
-  return(newVector)
-}
-
-smoothVectorZeroSeq2 <- function(dateDataVector) {
+smoothVectorZeroSeq <- function(dataVector) {
   computeShare <- function(dataVector, lastGoodIx, nextGoodIx) {
     return((as.integer(dataVector[nextGoodIx]) - as.integer(dataVector[lastGoodIx])) / (nextGoodIx - lastGoodIx))
   }
 
-  nCols <- dim(dateDataVector)[2]
+  nCols <- dim(dataVector)[2]
   theEnd <- nCols
   i <- 1
-  newVector <- dateDataVector
+  newVector <- dataVector
 
   while (i <= theEnd) {
-    if (is.na(dateDataVector[i])) {
-      lastBeforeNAString <- i - 1
-      while (i <= theEnd && is.na(dateDataVector[i]) ) {
+    if (is.na(dataVector[i])) {
+      lastGoodIx <- i - 1
+      while (i <= theEnd && is.na(dataVector[i]) ) {
         i <- i + 1
         if (i > theEnd) {
           break
         }
       }
-      if (lastBeforeNAString > 0) {
+      if (lastGoodIx > 0) {
         if (i <= theEnd) {
-          # DDV[lastBeforeNAString] and DDV[i] are both good values. Interpolate
-          share <- computeShare(dateDataVector, lastBeforeNAString, i)
-          for (k in (lastBeforeNAString + 1):(i - 1)) {
-            newVector[k] <- newVector[lastBeforeNAString] + round(share * (k - lastBeforeNAString))
+          # DDV[lastGoodIx] and DDV[i] are both good values. Interpolate
+          share <- computeShare(dataVector, lastGoodIx, i)
+          for (k in (lastGoodIx + 1):(i - 1)) {
+            newVector[k] <- newVector[lastGoodIx] + round(share * (k - lastGoodIx))
           }
         } else {
-          # DDV[lastBeforeNAString] is a good value. Count up from it to the end
-          for (k in (lastBeforeNAString + 1):theEnd) {
+          # DDV[lastGoodIx] is a good value. Count up from it to the end
+          for (k in (lastGoodIx + 1):theEnd) {
             newVector[k] <- newVector[k - 1] + 1
           }
         }
@@ -118,33 +73,33 @@ smoothVectorZeroSeq2 <- function(dateDataVector) {
         if (i <= theEnd) {
           # DDV[i] is a good value. Count down from it to the start
           for (k in 1:(i - 1)) {
-            newVector[k] <- dateDataVector[i] - (i - k)
+            newVector[k] <- dataVector[i] - (i - k)
           }
         } else {
           # No good values. All will be phony (or estimates)
           estimate <- 100 # for testing; OUCH do better!
-          for (k in (lastBeforeNAString + 1):theEnd) {
+          for (k in (lastGoodIx + 1):theEnd) {
             newVector[k] <- estimate
             estimate <- estimate + 1
           }
         }
       }
     } else {
-      while ((i < theEnd) && !(is.na(dateDataVector[i + 1])) &&
-             (dateDataVector[i] != dateDataVector[i + 1])) {
+      while ((i < theEnd) && !(is.na(dataVector[i + 1])) &&
+             (dataVector[i] != dataVector[i + 1])) {
         i <- i + 1
       }
       lastBeforeNonIncrement = i
-      while ((i < theEnd) && (!is.na(dateDataVector[i + 1])) &&
-             (dateDataVector[i] == dateDataVector[i + 1])) {
+      while ((i < theEnd) && (!is.na(dataVector[i + 1])) &&
+             (dataVector[i] == dataVector[i + 1])) {
         i <- i + 1
       }
-      if ((i < theEnd) && (!is.na(dateDataVector[i + 1]))) {
+      if ((i < theEnd) && (!is.na(dataVector[i + 1]))) {
         i <- i + 1
       }
       if (i > lastBeforeNonIncrement) {
         if (i < theEnd) {
-          share <- computeShare(dateDataVector, lastBeforeNonIncrement, i)
+          share <- computeShare(dataVector, lastBeforeNonIncrement, i)
           for (k in (lastBeforeNonIncrement + 1):(i - 1)) {
             newVector[k] <- newVector[lastBeforeNonIncrement] + round(share * (k - lastBeforeNonIncrement))
           }
@@ -171,48 +126,116 @@ smoothVectorZeroSeq2 <- function(dateDataVector) {
     }
   }
 
-  # i <- 1
-  # while (i <= theEnd) {
-  #   j <- i + 1
-  #   if ((!is.na(differenceVector[i])) && (differenceVector[i] > 0)) {
-  #     newVector[i] <- differenceVector[i]
-  #     i <- i + 1
-  #   } else {
-  #     if (j > theEnd) {
-  #       newVector[i] <- 1
-  #     } else {
-  #       while ((j <= theEnd) && ((is.na(differenceVector[j])) || (differenceVector[j] <= 0))) {
-  #         j <- j + 1
-  #       }
-  #       # here, either is.na(differenceVector[j]) or differenceVector[j] > 0 or j > theEnd
-  #       if (j > theEnd) {
-  #         # Increment by 1 more in each position
-  #         for (k in i:theEnd) {
-  #           newVector[k] <- 1 + k - i
-  #         }
-  #       } else {
-  #         if (!is.na(differenceVector[j])) {
-  #           # We found a non-zero value. Divvy it up into
-  #           #   (j - i) parts;
-  #           share <- differenceVector[j] / (1 + j - i)
-  #           usedUp <- 0
-  #           for (k in i:(j - 1)) {
-  #             newVector[k] <- round(share * (1 + k - i))
-  #             usedUp <- usedUp + share
-  #           }
-  #           newVector[j] <- differenceVector[j]
-  #         } else {
-  #           # differenceVector[j] is NA so either dateDataVector[j] or dataDataVector[j + 1] is NA
-  #           #  (or both)
-  #         }            
-  #       }
-  #     }
-  #     i <- j + 1
-  #   }
-  # }
   return(newVector)
 }
 
+smoothVectorZeroSeq2 <- function(dataVector) {
+  computeShare <- function(dataVector, lastGoodIx, nextGoodIx) {
+    return((as.double(dataVector[nextGoodIx]) - as.double(dataVector[lastGoodIx])) / (nextGoodIx - lastGoodIx))
+  }
+  
+  nCols <- dim(dataVector)[2]
+  theEnd <- nCols
+  i <- 1
+  newVector <- dataVector
+  
+  while (i <= theEnd) {
+    if (is.na(dataVector[i]) ||
+        ((i < theEnd) && !is.na(dataVector[i + 1]) &&
+         (dataVector[i] == dataVector[i + 1]))) {
+      if (is.na(dataVector[i])) {
+        lastGoodIx <- i - 1
+      } else {
+        # This assumes we went through a string of NAs previously
+        lastGoodIx <- i - 1
+      }
+      while (i <= theEnd && (is.na(dataVector[i]) ||
+                             ((i < theEnd) && 
+                              (is.na(dataVector[i + 1]) ||
+                               ((i > 1) &&
+                                !is.na(dataVector[i - 1]) &&
+                                !is.na(dataVector[i]) &&
+                                (dataVector[i - 1] == dataVector[i])))))) {
+        i <- i + 1
+      }
+      # What's the next good index?
+      # If we are past the end of a string of equal values, it is i + 1.
+      # If we ran off the end of the vector because NAs or equal values
+      #   continue to the end, there is none
+      if (lastGoodIx > 0) {
+        if ((i > 1) && (i <= theEnd)) {
+          # DDV[lastGoodIx] and DDV[i] are both good values. Interpolate
+          share <- computeShare(dataVector, lastGoodIx, i)
+          for (k in (lastGoodIx + 1):(i - 1)) {
+            newVector[k] <- newVector[lastGoodIx] + round(share * (k - lastGoodIx))
+          }
+        } else {
+          # DDV[lastGoodIx] is a good value. Count up from it to the end # OUCH by an estimated increment
+          for (k in (lastGoodIx + 1):theEnd) {
+            newVector[k] <- newVector[k - 1] + 1
+          }
+        }
+      } else {
+        if ((i > 1) && (i <= theEnd)) {
+          # DDV[i] is a good value. Count down from it to the start # OUCH by an estimated increment
+          for (k in 1:(i - 1)) {
+            newVector[k] <- dataVector[i] - (i - k)
+          }
+        } else {
+          # No good values. All will be phony (or estimates)
+          estimate <- 100 # for testing; OUCH do better!
+          for (k in (lastGoodIx + 1):theEnd) {
+            newVector[k] <- estimate
+            estimate <- estimate + 1 # OUCH plus estimated increment
+          }
+        }
+      }
+    }
+    i <- i + 1
+  }
+  #     while ((i < theEnd) && !(is.na(dataVector[i + 1])) &&
+  #            (dataVector[i] != dataVector[i + 1])) {
+  #       i <- i + 1
+  #     }
+  #     lastBeforeNonIncrement = i
+  #     while ((i < theEnd) && (!is.na(dataVector[i + 1])) &&
+  #            (dataVector[i] == dataVector[i + 1])) {
+  #       i <- i + 1
+  #     }
+  #     if ((i < theEnd) && (!is.na(dataVector[i + 1]))) {
+  #       i <- i + 1
+  #     }
+  #     if (i > lastBeforeNonIncrement) {
+  #       if (i < theEnd) {
+  #         share <- computeShare(dataVector, lastBeforeNonIncrement, i)
+  #         for (k in (lastBeforeNonIncrement + 1):(i - 1)) {
+  #           newVector[k] <- newVector[lastBeforeNonIncrement] + round(share * (k - lastBeforeNonIncrement))
+  #         }
+  #         
+  #         cat(file = stderr(), "Interpolate from", lastBeforeNonIncrement + 1, "to", i, "\n")
+  #         cat(file = stderr(),
+  #             "Endpoints are", as.integer(newVector[lastBeforeNonIncrement]),
+  #             "and", as.integer(newVector[i]), "\n")
+  #         cat(file = stderr(), "share is", share, "\n")
+  #         if ((i - lastBeforeNonIncrement) > 1) {
+  #           cat(file = stderr(), "There are", i - lastBeforeNonIncrement, "slots to interpolate into\n")
+  #         } else {
+  #           cat(file = stderr(), "There is", i - lastBeforeNonIncrement, "slot to interpolate into\n")
+  #         }
+  #       } else {
+  #         if ((i - lastBeforeNonIncrement) > 1) {
+  #           cat(file = stderr(), "There are", i - lastBeforeNonIncrement, "slots to extrapolate into\n")
+  #         } else {
+  #           cat(file = stderr(), "There is", i - lastBeforeNonIncrement, "slot to extrapolate into\n")
+  #         }
+  #       }
+  #     }
+  #     i <- i + 1
+  #   }
+  # }
+  
+  return(newVector)
+}
 
 processZeroDiffs <- function(dateData) {
   returnMe <- dateData
@@ -365,9 +388,9 @@ testRowComparison <- function(modifiedData, expectedData, testRows, expectNFails
                                quiet = FALSE)
     if (!quiet) {
       if (nRowFailures == expectNFails[i]) {
-        cat(file = stderr(), "PASS\n\n")
+        cat(file = stderr(), "ROW PASS\n\n")
       } else {
-        cat(file = stderr(), "FAIL, expected", expectNFails[i],
+        cat(file = stderr(), "ROW FAIL, expected", expectNFails[i],
             "failures, saw", nRowFailures, "\n\n")
       }
     }
@@ -380,9 +403,9 @@ testTibbleComparison <- function(modifiedData, expectedData, expectNFails, quiet
   nFailures <- tibbleComparison(modifiedData, expectedData, quiet = quiet)
   if (!quiet) {
     if (nFailures == expectNFails) {
-      cat(file = stderr(), "PASS\n\n")
+      cat(file = stderr(), "TIBBLE PASS\n\n")
     } else {
-      cat(file = stderr(), "FAIL, expected", expectNFails,
+      cat(file = stderr(), "TIBBLE FAIL, expected", expectNFails,
           "failures, saw", nFailures, "\n\n")
     }
   }
@@ -391,24 +414,50 @@ testTibbleComparison <- function(modifiedData, expectedData, expectNFails, quiet
 
 callTests <- function() {
   expectedData <- read_csv(expectedDataPathNA2(), show_col_types = FALSE)
+  prevBestData <- read_csv(prevBestDPathNA2(), show_col_types = FALSE)
   dataToModify <- read_csv(testDataPathNA2(), show_col_types = FALSE)
   testRows <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
+  prevBestNFails <- c(0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 3)
   expectNFails = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
   cat(file = stderr(), "Test after processTibbleToEliminateZeroIncrements\n")
   correctedData <- processTibbleToEliminateZeroIncrements(dataToModify)
-  nRowFailures <- testRowComparison(select(correctedData, -Combined_Key),
-                                    select(expectedData, -Combined_Key),
-                                    testRows, expectNFails, quiet = FALSE)
-  if (nRowFailures != sum(expectNFails)) {
-    cat(file = stderr(), "testRowComparison returned", nRowFailures, "failures\n")
-  } else {
-    cat(file = stderr(), "testRowComparison PASSES\n")
-  }
-  nOverallFailures <- testTibbleComparison(select(correctedData, -Combined_Key),
-                                           select(expectedData, -Combined_Key),
-                                           sum(expectNFails), quiet = FALSE)
 
-  return(list(OLD = dataToModify, EXP = expectedData, NEW = correctedData))
+  compareProgress <- TRUE
+  if (compareProgress) {
+    cat(file = stderr(), "Comparison with 'best so far'\n")
+    cat(file = stderr(), "=============================\n")
+    nRowFailures <- testRowComparison(select(correctedData, -Combined_Key),
+                                      select(prevBestData, -Combined_Key),
+                                      testRows, prevBestNFails, quiet = FALSE)
+    if (nRowFailures != sum(expectNFails)) {
+      cat(file = stderr(), "testRowComparison returned", nRowFailures, "failures\n")
+    } else {
+      cat(file = stderr(), "testRowComparison PASSES\n")
+    }
+    nOverallFailures <- testTibbleComparison(select(correctedData, -Combined_Key),
+                                             select(prevBestData, -Combined_Key),
+                                             sum(prevBestNFails), quiet = FALSE)
+    cat(file = stderr(), "\n")
+  }
+  
+  compareDesired <- TRUE
+  if (compareDesired) {
+    cat(file = stderr(), "Comparison with correct data\n")
+    cat(file = stderr(), "============================\n")
+    nRowFailures <- testRowComparison(select(correctedData, -Combined_Key),
+                                      select(expectedData, -Combined_Key),
+                                      testRows, expectNFails, quiet = FALSE)
+    if (nRowFailures != sum(expectNFails)) {
+      cat(file = stderr(), "testRowComparison returned", nRowFailures, "failures\n")
+    } else {
+      cat(file = stderr(), "testRowComparison PASSES\n")
+    }
+    nOverallFailures <- testTibbleComparison(select(correctedData, -Combined_Key),
+                                             select(expectedData, -Combined_Key),
+                                             sum(expectNFails), quiet = FALSE)
+  }
+  
+  return(correctedData)
 }
 
