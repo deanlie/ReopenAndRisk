@@ -3,7 +3,7 @@
 library(tidyverse)
 library(lubridate)
 library(stringi)
-library(curl)
+library(RCurl)
 
 source("dateFormatRoutines.R")
 source("mostRecentDataDate.R")
@@ -129,14 +129,14 @@ updateDataFilesForUSTimeSeriesTypeIfNeeded <- function(aType,
     # The file exists. is it up to date?
     if (names(US_data[dim(US_data)[2]]) != desiredLatestDateSlashes) {
       # It's not up to date. Is newer data available?
-      # if (url.exists(updateData_URL())) {
+      if (url.exists(updateData_URL())) {
         # Better create all data files!
         updateDataForUSTimeSeriesType(aType, traceThisRoutine = traceThisRoutine,
                                       prepend = myPrepend)
-      # } else {
-      #   cat(file = stderr(), myPrepend,
-      #       paste("Time series data for", desiredLatestDateSlashes, "is not available\n", sep = " "))
-      # }
+      } else {
+        cat(file = stderr(), myPrepend,
+            paste("Time series data for", desiredLatestDateSlashes, "is not available\n", sep = " "))
+      }
     }
   }
 
@@ -452,15 +452,15 @@ updateDataFilesForUSVaccTimeSeriesIfNeeded <- function(traceThisRoutine = FALSE,
         cat(file=stderr(), myPrepend, "desiredLatestDateSlashes:", desiredLatestDateSlashes, "\n")
       }
       # It's not up to date. Is newer data available?
-      # if (url.exists(VaccTimeline_URL()) && url.exists(peopleVacc_URL())) {
+      if (url.exists(VaccTimeline_URL()) && url.exists(peopleVacc_URL())) {
         # Better create all data files!
         updateDataForUSVaccTimeSeries(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
-      # } else {
-      #   if (traceThisRoutine) {
-      #     cat(file=stderr(), myPrepend, "Vaccination data for",
-      #         desiredLatestDateSlashes, "is not available", "\n")
-      #   }
-      # }
+      } else {
+        if (traceThisRoutine) {
+          cat(file=stderr(), myPrepend, "Vaccination data for",
+              desiredLatestDateSlashes, "is not available", "\n")
+        }
+      }
     }
   }
 

@@ -2,7 +2,7 @@
 library(tidyverse)
 library(lubridate)
 library(stringi)
-library(curl)
+library(RCurl)
 
 source("pathnameFunctions.R")
 source("URLFunctions.R")
