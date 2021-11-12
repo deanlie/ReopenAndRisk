@@ -12,6 +12,8 @@ DATA/*.csv
 DATA/*.tar
 DATA/*.csv.icloud
 DATA/DATA
+DATA/STATIC2
+DATA/STATIC/*.numbers
 DATA/ClipDates
 tests/shinytest/*-current/
 DEVELOPMENT/scratchPaper.txt
