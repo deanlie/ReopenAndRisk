@@ -458,7 +458,7 @@ server <- function(input, output, session) {
                                                                input$stateChoices,
                                                                input$timeWindow),
                                         width = px(1000))
-  
+
   # "Summary" tab
   output$summaryHTML <- renderUI({
     summaryHTMLAny(input$chooseCounty,

@@ -84,7 +84,10 @@ loadATypeOfData <- function(staticDataQ, theType, colTypes, stateColTypes,
 
   myPrepend <- paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered loadATypeOfData, staticDataQ =", staticDataQ, "\n")
+    cat(file = stderr(), prepend,
+        "Entered loadATypeOfData, staticDataQ =", staticDataQ,
+        "theType =", theType,
+        "\n")
   }
   
   traceFlagOnEntry <- traceThisRoutine

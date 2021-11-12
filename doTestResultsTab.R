@@ -47,7 +47,7 @@ plotTestResultBoxplots <- function(chooseCounty, movingAvg, countyChoices,
 
   theData <- dataForTestPositivityTab(TRUE, countyChoices, movingAvg, stateChoices)
   # updateDataForUSTypeIfNeeded("Confirmed")
-  title <- testResultPlotTitle(TRUE, length(stateChoices) == 0, movingAvg)
+  title <- testPositivityPlotTitle(TRUE, length(stateChoices) == 0, movingAvg)
   
   # if (movingAvg) {
   #   theCaseData <- US_State_Confirmed_Avg
@@ -98,7 +98,7 @@ plotTestResultTrend <- function(chooseCounty, movingAvg, countyChoices,
   }
 
   theData <- dataForTestPositivityTab(FALSE, countyChoices, movingAvg, stateChoices)
-  title <- testResultPlotTitle(FALSE, length(stateChoices) == 0, movingAvg)
+  title <- testPositivityPlotTitle(FALSE, length(stateChoices) == 0, movingAvg)
 
   # updateDataForUSTypeIfNeeded("Confirmed")
   # if (is.null(stateChoices)) {
