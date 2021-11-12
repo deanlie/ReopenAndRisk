@@ -123,20 +123,37 @@ smoothVectorZeroSeq <- function(dataVector) {
   return(newVector)
 }
 
-processZeroDiffs <- function(dateData) {
+processZeroDiffs <- function(dateData, quiet = TRUE) {
   returnMe <- dateData
-  nCols <- dim(dateData)[2]
+  dims <- dim(dateData)
+  nCols <- dims[2]
+  nRows <- dims[1]
+  
+  if (!quiet) {
+    cat(file = stderr(), "Entered processZeroDiffs\n")
+    for (i in 1:nRows) {
+      cat(file = stderr(), ".")
+    }
+    cat(file = stderr(), "\n")
+  }
 
   for (i in 1:dim(dateData)[1]) {
     replacementRow <- smoothVectorZeroSeq(dateData[i,])
     returnMe[i,] <- replacementRow
+    if (!quiet) {
+      cat(file = stderr(), ".")
+    }
   }
 
+  if (!quiet) {
+    cat(file = stderr(), "\nFinished processZeroDiffs\n\n")
+  }
+  
   return(returnMe)
 }
 
 getStaticTTRFile <- function() {
-  inputData <- read_csv(paste(testWorkDir(), "US_State_Total_Test_Results_EST.csv", sep = ""),
+  inputData <- read_csv(paste(dataDir(), "US_State_Total_Test_Results_EST3.csv", sep = ""),
                         show_col_types = FALSE)
   
   dateLimitedData <- discardDataOutsideDateRangeFromATibble(inputData, 
@@ -157,13 +174,13 @@ getStaticTTRFile <- function() {
   return(outputData)
 }
 
-processTibbleToEliminateZeroIncrements <- function(aTibble) {
+processTibbleToEliminateZeroIncrements <- function(aTibble, quiet = FALSE) {
   # Separate date data, character data
   dateData <- select(aTibble, matches("^[0-9]+/"))
   characterData <- select(aTibble, -matches("^[0-9]+/"))
 
   # Process date data to eliminate zero increments
-  newDateData <- processZeroDiffs(dateData)
+  newDateData <- processZeroDiffs(round(dateData), quiet = quiet)
   
   # Desired result has character data, first date data, updated newer data
   mungedData <- bind_cols(characterData, newDateData)
@@ -179,15 +196,15 @@ processRealTTR <- function() {
                                                             mdy("08/12/2021"),
                                                             mdy("01/01/2022"),
                                                             traceThisRoutine = FALSE)
-  estSTTR <- processTibbleToEliminateZeroIncrements(dateLimitedSTTR)
+  estSTTR <- processTibbleToEliminateZeroIncrements(dateLimitedSTTR, quiet = FALSE)
 
-  newPath <- paste(dataDir(), "US_State_Total_Test_Results_EST2.csv", sep = "")
+  newPath <- paste(dataDir(), "US_State_Total_Test_Results_EST3.csv", sep = "")
   write_csv(estSTTR, newPath)
 }
 
 checkTTRModForNA <- function() {
   newPath1 <- paste(dataDir(), "US_State_Total_Test_Results_EST.csv", sep = "")
-  newPath2 <- paste(dataDir(), "US_State_Total_Test_Results_EST2.csv", sep = "")
+  newPath2 <- paste(dataDir(), "US_State_Total_Test_Results_EST3.csv", sep = "")
   
   tibble1 <- read_csv(newPath1, show_col_types = FALSE) %>%
     select(-Combined_Key)
@@ -307,7 +324,7 @@ callTests <- function() {
   expectNFails = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
   cat(file = stderr(), "Test after processTibbleToEliminateZeroIncrements\n")
-  correctedData <- processTibbleToEliminateZeroIncrements(dataToModify)
+  correctedData <- processTibbleToEliminateZeroIncrements(dataToModify, quiet = FALSE)
 
   compareProgress <- FALSE
   if (compareProgress) {
