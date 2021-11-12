@@ -2,7 +2,7 @@
 library(tidyverse)
 library(lubridate)
 library(stringi)
-library(RCurl)
+library(curl)
 
 source("URLFunctions.R")
 source("dateFormatRoutines.R")

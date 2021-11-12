@@ -6,7 +6,7 @@
 # from 04-01-2021 through 07-21-2021
 
 library(tidyverse)
-library(RCurl)
+library(curl)
 library(glue)
 
 source("dateFormatRoutines.R")

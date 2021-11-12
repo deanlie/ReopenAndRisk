@@ -66,7 +66,7 @@
 library(tidyverse)
 # library(lubridate)
 # library(stringi)
-library(RCurl)
+library(curl)
 
 source("dateFormatRoutines.R")
 source("URLFunctions.R")
@@ -175,7 +175,7 @@ tryToReadURL <- function(aURL, col_types,
     cat(file = stderr(), prepend, "Entered tryToReadURL\n")
   }
   
-  if (url.exists(aURL)) {
+  # if (url.exists(aURL)) {
     rawData <- try(read_csv(aURL,
                             col_types = col_types))
     if (class(rawData)[1] == "try-error") {
@@ -187,12 +187,12 @@ tryToReadURL <- function(aURL, col_types,
       }
       return(simpleError(paste("Unable to read_csv:", aURL)))
     } 
-  } else {
-    if (traceThisRoutine) {
-      cat(file = stderr(), prepend, "Early return from tryToReadURL\n")
-    }
-    return(simpleError(paste("No such URL:", aURL)))
-  }
+  # } else {
+  #   if (traceThisRoutine) {
+  #     cat(file = stderr(), prepend, "Early return from tryToReadURL\n")
+  #   }
+  #   return(simpleError(paste("No such URL:", aURL)))
+  # }
   
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving tryToReadURL\n")
