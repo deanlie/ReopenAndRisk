@@ -7,7 +7,7 @@
     "newDeathsTabsetPanel": "Boxplot",
     "stateChoices": null,
     "testGrowthTabsetPanel": "Boxplot",
-    "testResultsTabsetPanel": "Boxplot",
+    "testPositivityTabsetPanel": "Boxplot",
     "timeWindow": 7,
     "totalCaseTabsetPanel": "Boxplot",
     "totalDeathsTabsetPanel": "Boxplot",
@@ -16,7 +16,7 @@
   },
   "output": {
     "newCaseBox": {
-      "src": "[image data sha1: 40c7c54cb3cba21df962d4782e0773d1030e55f1]",
+      "src": "[image data sha1: 465fa10c0f294115510054fa11b0e3f19dd6bd23]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -75,7 +75,7 @@
       ]
     },
     "vaccRBox": {
-      "src": "[image data sha1: c3847a7fc9cda8e63ec3fe36914c783e8bc1a831]",
+      "src": "[image data sha1: 3d074f90fb4d96aaebea2065656f90669767111d]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
