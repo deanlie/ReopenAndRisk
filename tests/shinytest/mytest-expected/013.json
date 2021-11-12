@@ -7,7 +7,7 @@
     "newDeathsTabsetPanel": "Boxplot",
     "stateChoices": null,
     "testGrowthTabsetPanel": "Boxplot",
-    "testResultsTabsetPanel": "Boxplot",
+    "testPositivityTabsetPanel": "Boxplot",
     "timeWindow": 7,
     "totalCaseTabsetPanel": "Boxplot",
     "totalDeathsTabsetPanel": "Boxplot",
@@ -16,7 +16,7 @@
   },
   "output": {
     "newCaseBox": {
-      "src": "[image data sha1: f013c661528936dc21734df20671b5c109b320bf]",
+      "src": "[image data sha1: 017b595f6c542e49777d5d14a45c74db80bed6bf]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -63,7 +63,7 @@
       ]
     },
     "newDeathsBox": {
-      "src": "[image data sha1: c8a045e63e8a5708e5c00fb2f0b81d0a25086cd6]",
+      "src": "[image data sha1: 72225ba618dabc001683df2b96fa1cfcbb089d98]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -116,7 +116,7 @@
       ]
     },
     "testGBox": {
-      "src": "[image data sha1: d85e72f56d6f5cf8f6eed1c0e3918f64fb94b77f]",
+      "src": "[image data sha1: 7c0bb61ad9910f358770143099eaa476e82ef613]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -162,55 +162,8 @@
 
       ]
     },
-    "testRBox": {
-      "src": "[image data sha1: 23f89e2e56f54d809ff6c4340ad07984743fbade]",
-      "width": 714,
-      "height": 400,
-      "alt": "Plot object",
-      "coordmap": {
-        "panels": [
-          {
-            "domain": {
-              "left": -0.04,
-              "right": 1.04,
-              "bottom": -0.04,
-              "top": 1.04
-            },
-            "range": {
-              "left": 0,
-              "right": 714,
-              "bottom": 399,
-              "top": -1
-            },
-            "log": {
-              "x": null,
-              "y": null
-            },
-            "mapping": {
-
-            }
-          }
-        ],
-        "dims": {
-          "width": 714,
-          "height": 400
-        }
-      }
-    },
-    "testRBoxplotHeaderHTML": {
-      "html": "<p><\/p> <p>How to interpret these charts: The bar across the middle of the box gives the median of all states on that date. Half the states fall within the box, a quarter above it and a quarter below it. Dots in a horizontal line near the top of the graph are not real data, but mean there is a data point at that level or higher (if the graph were scaled to show everything, the interesting part of the graph would be all squished at the bottom)<\/p> <p><\/p> <p><\/p>",
-      "deps": [
-
-      ]
-    },
-    "testResultsHeaderHTML": {
-      "html": "<h4>Changes in Test Results<\/h4><p>A decreasing percentage of positive tests is good;\n                            it means that tests are becoming more widely available.<\/p><p>Think of the extreme case: if everyone were tested,\n                            and 0 percent of tests were positive, the epidemic would be over.<\/p>",
-      "deps": [
-
-      ]
-    },
     "totalCaseBox": {
-      "src": "[image data sha1: ea2bc7fa666633572787f91396898c56d25e94ba]",
+      "src": "[image data sha1: 4632b821a495a6bbe7bcd1373f079001bd75c87e]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -257,7 +210,7 @@
       ]
     },
     "totalDeathsBox": {
-      "src": "[image data sha1: ec74041b7ea502795bcee0d0bc1d9174c9e5f5db]",
+      "src": "[image data sha1: 0ff3646ea106bf87d525db71197d27ac8da1d319]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -310,7 +263,7 @@
       ]
     },
     "vaccRBox": {
-      "src": "[image data sha1: 1105ee0bfd91e2774e9ca8d7543dbbb31dad2340]",
+      "src": "[image data sha1: 3e8a55f7f2002bbfeff4a2bf7d88eff89731a737]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
