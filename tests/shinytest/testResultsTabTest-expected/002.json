@@ -1,13 +1,13 @@
 {
   "input": {
     "chooseCounty": false,
-    "mainTabsetPanel": "Test Results",
+    "mainTabsetPanel": "Test Positivity",
     "movingAvg": true,
     "newCaseTabsetPanel": "Boxplot",
     "newDeathsTabsetPanel": "Boxplot",
     "stateChoices": null,
     "testGrowthTabsetPanel": "Boxplot",
-    "testResultsTabsetPanel": "Trend Line",
+    "testPositivityTabsetPanel": "Trend Line",
     "timeWindow": 7,
     "totalCaseTabsetPanel": "Boxplot",
     "totalDeathsTabsetPanel": "Boxplot",
@@ -15,8 +15,14 @@
     "vaccinationTabsetPanel": "Boxplot"
   },
   "output": {
+    "testPositivityHeaderHTML": {
+      "html": "<h4>Test Positivity<\/h4><p>A decreasing percentage of positive tests is good;\n                            it means that tests are becoming more widely available.<\/p><p>Think of the extreme case: if everyone were tested,\n                            and 0 percent of tests were positive, the epidemic would be over.<\/p>",
+      "deps": [
+
+      ]
+    },
     "testRBox": {
-      "src": "[image data sha1: 6b68a2a1de89913a7c790364c0d047673286dba8]",
+      "src": "[image data sha1: 98cc6e3a3915fe39586aa1c1b7dd03736e1dd7fa]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -56,14 +62,8 @@
 
       ]
     },
-    "testResultsHeaderHTML": {
-      "html": "<h4>Changes in Test Results<\/h4><p>A decreasing percentage of positive tests is good;\n                            it means that tests are becoming more widely available.<\/p><p>Think of the extreme case: if everyone were tested,\n                            and 0 percent of tests were positive, the epidemic would be over.<\/p>",
-      "deps": [
-
-      ]
-    },
     "testRTrend": {
-      "src": "[image data sha1: ea07ff6ef07e71ee22c6d136de10ac534be49a07]",
+      "src": "[image data sha1: 9ceb1ef952f708c889ae189cacc9cbf6673e0aa4]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -104,7 +104,7 @@
       ]
     },
     "vaccRBox": {
-      "src": "[image data sha1: 1105ee0bfd91e2774e9ca8d7543dbbb31dad2340]",
+      "src": "[image data sha1: 3e8a55f7f2002bbfeff4a2bf7d88eff89731a737]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
