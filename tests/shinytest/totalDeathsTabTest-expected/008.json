@@ -10,7 +10,7 @@
       "ME"
     ],
     "testGrowthTabsetPanel": "Boxplot",
-    "testResultsTabsetPanel": "Boxplot",
+    "testPositivityTabsetPanel": "Boxplot",
     "timeWindow": 7,
     "totalCaseTabsetPanel": "Boxplot",
     "totalDeathsTabsetPanel": "Trend Line",
@@ -19,7 +19,7 @@
   },
   "output": {
     "totalDeathsBox": {
-      "src": "[image data sha1: 5c12cb036ba807d98ade729a95d362ff4535150f]",
+      "src": "[image data sha1: ba1b12ebbea2d5caf846909eff43405663e77d79]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -72,7 +72,7 @@
       ]
     },
     "totalDeathsTrend": {
-      "src": "[image data sha1: b138c3230802aa60538176c7640aa3d1702a01dc]",
+      "src": "[image data sha1: ae4712cf0b62a11dd060bf564a21fa6da8346e2c]",
       "width": 714,
       "height": 400,
       "alt": "Plot object",
@@ -113,7 +113,7 @@
       ]
     },
     "vaccRBox": {
-      "src": "[image data sha1: 1105ee0bfd91e2774e9ca8d7543dbbb31dad2340]",
+      "src": "[image data sha1: 3e8a55f7f2002bbfeff4a2bf7d88eff89731a737]",
       "width": 506,
       "height": 400,
       "alt": "Plot object",
