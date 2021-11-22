@@ -51,15 +51,15 @@ Other TODO
 Open Branches
 -------------
 
+Closed branches:
+----------------
+
 FixTestingDataComputations
 
 > 1. DONE: Test Positivity boxplots on static data look good and corresponding data
       tables are displayed correctly.
 > 2. DONE: TestGrowth tab changes to TestingRate
 > 3. DONE: Three decimal places are shown in testing rate table display
-
-Closed branches:
-----------------
 
 SmallSetOfStaticData
 
