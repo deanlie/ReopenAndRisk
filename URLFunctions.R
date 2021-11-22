@@ -25,14 +25,6 @@ JHU_repository <- function() {
         sep = "")
 }
 
-updateData_URL <- function() {
-  paste(JHU_repository(),
-        "csse_covid_19_daily_reports_us/",
-        jhuFileDateString(expectedLatestUpdateDataDate()),
-        ".csv",
-        sep = "")
-}
-
 updateSansCountyDataForDate_URL <- function(aDate) {
   paste(JHU_repository(),
         "csse_covid_19_daily_reports_us/",
