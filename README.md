@@ -12,6 +12,7 @@ General Features
 
 Available in https://deanlie.shinyapps.io/ReopenAndRisk/ (as of Aug 22, 2021)
 Updated, Redeployed Oct 7, 2021
+Updated, Redeployed Nov 18, 2021 with test positivity page
 
 Bugs
 ----
@@ -44,16 +45,16 @@ displayed!
 Other TODO
 ----------
  * Highlight lines of data tables containing data for selected states or counties
+ * Clean up DATA subdirectory; modify update routines to clean up as you go, that is,
+    delete downloaded data as soon as the needed time series files are updated.
 
 Open Branches
 -------------
 
 FixTestingDataComputations
 
-> 1. Bug of 2021-10-08: Test Positivity boxplots have a bug! Scale is off,
-maybe by a factor of 10000, or maybe two data points are way off,
-throwing the whole plot scale off. Hold off on debugging until tables are
-displayed! Display those tables!
+> 1. DONE: Test Positivity boxplots on static data look good and corresponding data
+      tables are displayed correctly.
 > 2. DONE: TestGrowth tab changes to TestingRate
 > 3. DONE: Three decimal places are shown in testing rate table display
 
