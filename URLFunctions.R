@@ -60,6 +60,10 @@ USDataTS <- function() {
   return("us_data/time_series/")
 }
 
+USDataHourly <- function() {
+  return("us_data/hourly/")
+}
+
 JHU_repository <- function() {
   paste(GithubUserContent(),
         CSSEGICOVID19Master(),
@@ -102,7 +106,6 @@ TS_URL <- function(type, locale) {
                  sep = "")
 }
 
-
 # Most recent vaccination data (typically updated earlier today)
 # Good for daily update, not so much if you lost a day
 #   https://raw.githubusercontent.com/"
@@ -112,18 +115,19 @@ Vacc_URL <- function() {
   U_out <- paste(GithubUserContent(),
                  GovexMaster(),
                  dataTablesVaccData(),
-                 "us_data/hourly/vaccine_data_us.csv",
+                 USDataHourly(),
+                 "vaccine_data_us.csv",
                  sep = "")
 }
 
-VaccTimeline_URL <- function() {
-  U_out <- paste(GithubUserContent(),
-                 GovexMaster(),
-                 dataTablesVaccData(),
-                 USDataTS(),
-                 "vaccine_data_us_timeline.csv",
-                 sep = "")
-}
+# VaccTimeline_URL <- function() {
+#   U_out <- paste(GithubUserContent(),
+#                  GovexMaster(),
+#                  dataTablesVaccData(),
+#                  USDataTS(),
+#                  "vaccine_data_us_timeline.csv",
+#                  sep = "")
+# }
 
 #*************************************************************
 #*
@@ -136,6 +140,16 @@ Vacc_TS_URL <- function() {
                  dataTablesVaccData(),
                  USDataTS(),
                  "vaccine_data_us_timeline.csv",
+                 sep = "")
+}
+
+#* US People vacinated time series data. Big but not so big as above
+PVacc_TS_URL <- function() {
+  U_out <- paste(GithubUserContent(),
+                 GovexMaster(),
+                 dataTablesVaccData(),
+                 USDataTS(),
+                 "people_vaccinated_data_us_timeline.csv",
                  sep = "")
 }
 
@@ -224,4 +238,13 @@ peopleVacc_URL_OLD <-  function() {
                  "people_vaccinated_us_timeline.csv",
                  sep = "")
   
+}
+
+#* US People vacinated time series data. Big but not so big as above
+PVacc_TS_URL_OLD <- function() {
+  U_out <- paste(GithubUserContent(),
+                 GovexMaster(),
+                 GxTablesUSData(),
+                 "time_series/people_vaccinated_data_us_timeline.csv",
+                 sep = "")
 }

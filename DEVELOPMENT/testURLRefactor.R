@@ -39,6 +39,7 @@ testURLRefactor <- function() {
   names <- c("JHU_repository",
              "Vacc_URL",
              "Vacc_TS_URL",
+             "PVacc_TS_URL",
              "peopleVacc_URL")
   routinesWithDate <- c("updateSansCountyDataForDate_URL",
                         "updateStateLevelDataForDate_URL",

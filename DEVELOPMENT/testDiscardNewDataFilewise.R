@@ -207,9 +207,10 @@ clipDates <- function(sourceTibble) {
 
 processTibble <- function(sourceTibble) {
   resultTibble <- sourceTibble %>%
-    discardPopCol() %>%
-    discardDotY() %>%
-    renameDot1016x()
+    discardDataOutsideDateRangeFromATibble(mdy("06/02/2021"),
+                                           mdy("11/19/2021"),
+                                           traceThisRoutine = FALSE,
+                                           prepend = "")
 }
 
 zapFiles <- function(traceThisRoutine = FALSE, prepend = "") {
@@ -218,12 +219,19 @@ zapFiles <- function(traceThisRoutine = FALSE, prepend = "") {
     cat(file = stderr(), prepend, "Entered zapFiles\n")
   }
   
-  for (aName in c("US_Confirmed.csv",
+  for (aName in c("US_Case_Fatality_Ratio.csv",
+                  "US_Confirmed.csv",
                   "US_County_Confirmed.csv",
+                  "US_Incident_Rate.csv",
+                  "US_State_Case_Fatality_Ratio.csv",
                   "US_County_Deaths.csv",
                   "US_Deaths.csv",
                   "US_State_Confirmed.csv",
                   "US_State_Deaths.csv",
+                  "US_Incident_Rate.csv",
+                  "US_State_Case_Fatality_Ratio.csv",
+                  "US_State_Incident_Rate.csv",
+                  "US_State_Population_Est.csv",
                   "US_State_Testing_Rate.csv",
                   "US_State_Total_Test_Results.csv",
                   "US_State_Vaccinations.csv",
@@ -268,7 +276,7 @@ zapFiles <- function(traceThisRoutine = FALSE, prepend = "") {
 # TESTS below this point
 #####################################################
 testSourceDir <- function() {
-  "/Users/deanb/Documents/R_Stuff/Shiny/RefactorAndRisk/DATA/"
+  "/Users/deanb/Documents/R_Stuff/Shiny/RefactorAndRisk/DATA/ClipDates/Original/"
 }
 
 testDestDir <- function() {
