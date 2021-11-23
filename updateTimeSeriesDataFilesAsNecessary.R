@@ -452,7 +452,7 @@ updateDataFilesForUSVaccTimeSeriesIfNeeded <- function(traceThisRoutine = FALSE,
         cat(file=stderr(), myPrepend, "desiredLatestDateSlashes:", desiredLatestDateSlashes, "\n")
       }
       # It's not up to date. Is newer data available?
-      if (url.exists(VaccTimeline_URL()) && url.exists(peopleVacc_URL())) {
+      if (url.exists(Vacc_TS_URL()) && url.exists(peopleVacc_URL())) {
         # Better create all data files!
         updateDataForUSVaccTimeSeries(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
       } else {
