@@ -59,7 +59,12 @@ CleanDataDirAsYouGo
       c. Put 'em in a single module (URLFunctions.R will do)
       c. Put in tracing
       
-    2. Create tests to update by one day; verify that updates are only called once
+    2. Create tests to update by one day; verify that updates are
+        only called once.
+        NOTE that DATA/STATIC is under version control AS ARE TESTS
+        so I can have a separate set of tests and test data for this
+        branch! Tests which display the updated, non-averaged, data
+        arr all I need as regression tests.
     3. Create tests to update by two days; verify that they work
     4. Implement cleanups
     5. Test to ensure that nothing is left over

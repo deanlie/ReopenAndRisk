@@ -9,13 +9,14 @@
 RefactorAndRisk.Rproj
 BackupScripts*
 DATA/*.csv
-DATA/*.tar
 DATA/*.csv.icloud
+DATA/*.sh
+DATA/*.tar
 DATA/ARCHIVE
+DATA/ClipDates
 DATA/DATA
 DATA/STATIC2
 DATA/STATIC/*.numbers
-DATA/ClipDates
 tests/shinytest/*-current/
 DEVELOPMENT/scratchPaper.txt
 DEVELOPMENT/Tests20210728.R

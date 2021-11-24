@@ -265,6 +265,28 @@ zapFiles <- function(traceThisRoutine = FALSE, prepend = "") {
   }
 }
 
+clipOneVariousEnd <- function(theFileName, lastDateToKeep) {
+  theDirectory <- "./DATA/ClipDates/VariousEnds/"
+
+  discardDataOutsideDateRangeFromAFile(paste(theDirectory,
+                                             theFileName,
+                                             ".csv",
+                                             sep = ""),
+                                       as.Date("2021-09-20"),
+                                       lastDateToKeep,
+                                       traceThisRoutine = TRUE,
+                                       prepend = "")
+}
+
+clipSeveralEnds <- function() {
+  clipOneVariousEnd("US_County_Confirmed", as.Date("2021-11-17"))
+  clipOneVariousEnd("US_Deaths", as.Date("2021-11-17"))
+  clipOneVariousEnd("US_State_Vaccinations", as.Date("2021-11-17"))
+  clipOneVariousEnd("US_County_Deaths", as.Date("2021-11-16"))
+  clipOneVariousEnd("US_Vaccinations", as.Date("2021-11-16"))
+  clipOneVariousEnd("US_Total_Test_Results", as.Date("2021-11-18"))
+}
+
 #####################################################
 # For FillVaccDates:
 # source downloadJHUData.R
