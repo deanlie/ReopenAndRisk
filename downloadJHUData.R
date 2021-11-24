@@ -25,11 +25,13 @@ Vacc_TS_Path <- function() {
                  sep = "")
 }
 
+# OUCH default tracing to TRUE for development work
 tryToReadURL <- function(aURL, col_types,
                          traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered tryToReadURL\n")
+    cat(file = stderr(), myPrepend, "Reading ", aURL, "\n")
   }
   
   if (url.exists(aURL)) {
@@ -58,10 +60,12 @@ tryToReadURL <- function(aURL, col_types,
   return(rawData)
 }
 
+# OUCH default tracing to TRUE for development work
 getURLOrStop <- function(aURL, col_types, traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend)
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered getURLOrStop\n")
+    cat(file = stderr(), myPrepend, "Trying ", aURL, "\n")
   }
   rawData <- tryToReadURL(aURL, col_types, traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   
@@ -77,10 +81,12 @@ getURLOrStop <- function(aURL, col_types, traceThisRoutine = FALSE, prepend = ""
   return(rawData)
 }
 
+# OUCH default tracing to TRUE for development work
 getURLFromSpecsOrStop <- function(theSpecs, traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend)
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered getURLFromSpecsOrStop\n")
+    cat(file = stderr(), myPrepend, "Trying ", aURL, "\n")
   }
   
   theData <- getURLOrStop(theSpecs$URL, theSpecs$COLS,
@@ -123,6 +129,7 @@ getFileFromSpecsOrStop <- function(theSpecs, traceThisRoutine = FALSE, prepend =
   return(rawData)
 }
 
+# OUCH default tracing to TRUE for development work
 getDataFromSpecsMaybeSave  <- function(theSpecs,
                                        traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend)
@@ -226,12 +233,21 @@ downloadAndSaveStateLevelUpdateData <- function(aDate,
   }
 }
 
+# OUCH default tracing to TRUE for development work
 processFileForDate <- function(aDate, traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")  
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered processFileForDate\n")
+  }
   # Download the data
    
   desiredURL <- JHUDailyStateDataURLForDate(aDate)
 
   # Get the data
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "Reading ", desiredURL, "\n")
+  }
+
   fullDaysData <- read_csv(desiredURL,
                            col_types = dailyJHUFileColTypes())
   
@@ -248,9 +264,12 @@ processFileForDate <- function(aDate, traceThisRoutine = FALSE, prepend = "") {
   savePath <- saveJHUHereForDate(aDate)
   
   write_csv(requiredData, savePath)
-  
-  print(paste("OK, we downloaded", desiredURL,
-              "and wrote", savePath))
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "OK, we downloaded", desiredURL, "\n")
+    cat(file = stderr(), myPrepend, "  and wrote", savePath, "\n")
+    cat(file = stderr(), prepend, "Leaving processFileForDate\n")
+  }
 }
  
 # firstDate <- as.Date("2021-04-01")
