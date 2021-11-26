@@ -683,12 +683,97 @@ computeAndLoadTestPositivityData <- function(staticDataQ = FALSE,
   
 }
 
+# OUCH NEW STUFF I'M WORKING ON
+updateDataGroupAndCleanUp <- function(vectorOfFiles, lastUpdateDate) {
+  # First, verify existence of each vector in list; create if necessary
+  # (get start date from lastUpdateDate)
+
+  # Once you have at least one date in each file:
+  updateStatus <- verifyDataUpdate(vectorOfFiles, lastUpdateDate)
+  
+  if (dim(updateStatus)[1] > 0) { # Else nothing to do, everybody's au courant
+    sortedStatus <- arrange(updateStatus, date)
+    # Or maybe I don't have to sort it -- just find smallest date
+    min(updateStatus$date) ???
+    # I think I want to loop on date from (sortedStatus$date[1] + 1) 
+    # to lastUpdateDate, filtering out lines with date <= that and updating
+    # those files
+    
+    needOldestData <- filter(sortedStatus, date == sortedStatus$date[1])
+    # OUCH download the data
+    # OUCH update the listed files from it
+  }
+}
+
+updateAllDataAsNecessary <- function(staticDataQ,
+                                     traceThisRoutine = FALSE,
+                                     prepend = "") {
+  myPrepend <- paste(prepend, "  ", sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered updateAllDataAsNecessary\n")
+  }
+  if (!staticDataQ) {
+    stop()
+    updateTimeSeriesDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
+                                         prepend = myPrepend)
+    updateSerializedDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
+                                         prepend = myPrepend)
+  } else {
+    # The following call updated the following:
+    filesUpdatedInTimeSeriesCall <- c("US_Confirmed.csv",
+                                      "US_State_Confirmed.csv",
+                                      "US_County_Confirmed.csv",
+                                      "US_Deaths.csv",
+                                      "US_State_Deaths.csv",
+                                      "US_County_Deaths.csv",
+                                      "US_Vaccinations.csv",
+                                      "US_State_Vaccinations.csv")
+    # ... and left behind VaccTS_<today's date>.csv [VaccTS_11-24-2021.csv]
+    updateTimeSeriesDataFilesAsNecessaryB(staticDataQ,
+                                          traceThisRoutine = traceThisRoutine,
+                                          prepend = myPrepend)
+
+    # ******************************************************************* #
+    # The following call updated the following:
+    filesUpdatedInSerializedCall <- c("US_Testing_Rate.csv",
+                                      "US_State_Testing_Rate.csv",
+                                      "US_Incident_Rate.csv",
+                                      "US_State_Incident_Rate.csv",
+                                      "US_Case_Fatality_Ratio.csv",
+                                      "US_State_Case_Fatality_Ratio.csv",
+                                      "US_Total_Test_Results.csv",
+                                      "US_State_Total_Test_Results.csv")
+    # ... and left behind <yesterday's date>.csv [11-23-2021.csv]
+    # updateSerializedDataFilesAsNecessaryB(staticDataQ,
+    #                                       traceThisRoutine = traceThisRoutine,
+    #                                       prepend = myPrepend)
+
+    # For testing clean as you go updates
+    # filesNeedingDailyData <- c("US_Confirmed.csv",
+    #                            "US_State_Confirmed.csv",
+    #                            "US_County_Confirmed.csv",
+    #                            "US_Confirmed.csv",
+    #                            "US_State_Confirmed.csv",
+    #                            "US_County_Confirmed.csv",
+    #                            "US_Confirmed.csv",
+    #                            "US_State_Confirmed.csv",
+    #                            "US_County_Confirmed.csv")
+    # updateDataGroupAndCleanUp(filesNeedingDailyData, today - 1)
+  }
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving updateAllDataAsNecessary\n")
+  }
+  stop()
+}
+
 loadAllUSData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
   traceFlagOnEntry <- traceThisRoutine
   if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Entered loadAllUSData\n")
   }
+  traceThisRoutine <- FALSE # OUCH
 
   aDate = today("EST")
   
@@ -703,7 +788,6 @@ loadAllUSData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend
   US_State_Population_Est <<- read_csv(paste(dataDir, "US_State_Population_Est.csv", sep = ""),
                                        col_types = estPopulationColTypes())
 
-  traceThisRoutine <- FALSE
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "after read US_State_Population_Est\n")
   }
@@ -713,13 +797,9 @@ loadAllUSData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend
     staticDataQ <- TRUE
   }
   
-  if (!staticDataQ) {
-    updateTimeSeriesDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
-                                         prepend = myPrepend)
-    updateSerializedDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
-                                         prepend = myPrepend)
-    traceThisRoutine <- traceFlagOnEntry
-  }
+  updateAllDataAsNecessary(staticDataQ,
+                           traceThisRoutine = TRUE, # OUCH
+                           prepend = myPrepend)
 
   loadUSVaccinationData(staticDataQ = staticDataQ,
                         traceThisRoutine = traceThisRoutine,

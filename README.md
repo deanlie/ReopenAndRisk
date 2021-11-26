@@ -50,6 +50,7 @@ Open Branches
 -------------
 
 CleanDataDirAsYouGo
+ * Redo static data with spaces in combined keys
  * Clean up DATA subdirectory; modify update routines to clean up as you go, that is,
     delete downloaded data as soon as the needed time series files are updated.
 

@@ -67,8 +67,8 @@ makeCombinedKeys <- function(theCounty, stateAbbrev) {
 
 stateNames <- function(useStaticData = FALSE) {
   if (useStaticData) {
-    c("AL"="Alabama", "FL"="Florida", "LA"="Louisiana", "ME"="Maine",
-      "MA"="Massachusetts", "PR"="Puerto Rico",  "TX"="Texas")
+    c("AL"="Alabama", "DE"="Delaware", "HI"="Hawaii", "OH"="Ohio",
+      "WV"="West Virginia")
   } else {
     stateLookup
   }
@@ -85,22 +85,17 @@ countyChoices <- reactive({
 
 countiesForState <- function(stateAbbrev, useStaticData = FALSE) {
   if (useStaticData) {
-    staticCSTable <- data.frame(State = c("Alabama", "Louisiana", "Louisiana",   
-                                          "Puerto Rico", "Puerto Rico",
-                                          "Massachusetts", "Massachusetts",
-                                          "Massachusetts", "Massachusetts",
-                                          "Massachusetts", "Massachusetts",
-                                          "Massachusetts", "Maine", "Florida",      
-                                          "Texas", "Texas", "Texas"),
-                                County = c("Autauga", "Natchitoches",
-                                           "Plaquemines", "Arecibo",
-                                           "Barceloneta", "Barnstable",
-                                           "Berkshire", "Dukes", 
-                                           "Middlesex", "Nantucket", 
-                                           "Suffolk", "Worcester",
-                                           "Penobscot", "Broward",
-                                           "Brazoria", "Deaf Smith",
-                                           "Harris"))
+    staticCSTable <- data.frame(State = c("Alabama","Alabama",
+                                          "Delaware","Delaware","Delaware",
+                                          "Hawaii", "Hawaii","Hawaii",
+                                          "Ohio","Ohio","Ohio","Ohio",
+                                          "West Virginia","West Virginia"),
+                                County = c("Autauga","Escambia",
+                                           "Kent","New Castle","Sussex",
+                                           "Honolulu","Kalawao","Maui",
+                                           "Coshocton","Cuyahoga","Gallia","Greene",
+                                           "Boone","Monongalia"))
+
     staticCSTable$County[staticCSTable$State ==
                     unname(stateLookup[stateAbbrev])]
 

@@ -266,7 +266,7 @@ zapFiles <- function(traceThisRoutine = FALSE, prepend = "") {
 }
 
 clipOneVariousEnd <- function(theFileName, lastDateToKeep) {
-  theDirectory <- "./DATA/ClipDates/VariousEnds/"
+  theDirectory <- "./DATA/STATIC/VariousEnds/"
 
   discardDataOutsideDateRangeFromAFile(paste(theDirectory,
                                              theFileName,
