@@ -29,11 +29,11 @@ source("doTestResultsTab.R")
 source("doSummaryTab.R")
 
 manualStaticData <- function() {
-  FALSE
+  TRUE
 }
 
 manualTraceModeQ <- function() {
-  FALSE
+  TRUE
 }
 
 testModeQ <- function() {
