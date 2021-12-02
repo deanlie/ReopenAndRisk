@@ -61,7 +61,6 @@ dataFilePaths <- function(fileBaseList, theDirectory) {
 }
 
 createTestEnvironmentTarFile <- function(fileBaseList, sourceDirectory, archiveDirectory) {
-  thePaths <- dataFilePaths(fileBaseList, sourceDirectory)
   argumentList = c("cvf")
   argumentList = append(argumentList,
                         paste(archiveDirectory,
@@ -70,28 +69,7 @@ createTestEnvironmentTarFile <- function(fileBaseList, sourceDirectory, archiveD
   argumentList = append(argumentList,
                         dataFilePaths(fileBaseList, sourceDirectory))
   
-  # OUCH
-  return(argumentList)
-
-  system2("tar",
-          c("cvf",
-            "./DATA/UpdateTestData.tar",
-            "./DATA/US_Confirmed.csv",
-            "./DATA/US_State_Confirmed.csv",
-            "./DATA/US_County_Confirmed.csv",
-            "./DATA/US_Deaths.csv",
-            "./DATA/US_State_Deaths.csv",
-            "./DATA/US_County_Deaths.csv",
-            "./DATA/US_Case_Fatality_Ratio.csv",
-            "./DATA/US_State_Case_Fatality_Ratio.csv",
-            "./DATA/US_Incident_Rate.csv",
-            "./DATA/US_State_Incident_Rate.csv",
-            "./DATA/US_Testing_Rate.csv",
-            "./DATA/US_State_Testing_Rate.csv",
-            "./DATA/US_Total_Test_Results.csv",
-            "./DATA/US_State_Total_Test_Results.csv",
-            "./DATA/US_Vaccinations.csv",
-            "./DATA/US_State_Vaccinations.csv"))
+  system2("tar", argumentList)
 }
 
 restoreTestEnvironment <- function(staticDataQ = FALSE,
