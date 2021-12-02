@@ -1,160 +1,184 @@
 library(tidyverse)
 
 source("downloadJHUData.R")
-source("testDiscardNewDataFilewise.R")
 source("updateTimeSeriesDataFilesAsNecessary.R")
-source("columnUtilities.R")
 
-getAndSaveVaccDailyData <- function(traceThisRoutine = FALSE) {
-   rawData <- getDataFromSpecsMaybeSave(vaccDailyUpdateDataSpecs(),
-                                traceThisRoutine = traceThisRoutine,
-                                prepend = "VaccDailyUpdate")
-
-   return(rawData)
-}
-
-getAndSaveVaccTimelineData <- function(traceThisRoutine = FALSE) {
-  rawData <- getDataFromSpecsMaybeSave(vaccTimeSeriesDataSpecs(),
-                               traceThisRoutine = traceThisRoutine,
-                               prepend = "VaccTimeline")
-
-  return(rawData)
-}
-
-recreateVaccFilesFor829And830 <- function(traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend)
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered recreateVaccFilesFor829And830\n")
-  }
-
-  system("cp ./DATA/CACHE/US_V_Test_RR.csv ./DATA/US_Vaccinations.csv")
-  system("cp ./DATA/CACHE/US_S_V_Test_RR.csv ./DATA/US_State_Vaccinations.csv")
-
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "after first copies\n")
-  }
-
-  updateDataForUSVaccTimeSeries(traceThisRoutine = traceThisRoutine,
-                                prepend = myPrepend)
-  
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "after first updateDataForUSVaccTimeSeries\n")
-  }
-  
-  discardDataOutsideDateRangeFromAFile("./DATA/US_Vaccinations.csv",
-                                       vaccColTypes(),
-                                       mdy("06-15-2021"),
-                                       mdy("09-01-2021"),
-                                       "US_Vaccinations.csv",
-                                       traceThisRoutine = traceThisRoutine,
-                                       prepend = myPrepend)
-  discardDataOutsideDateRangeFromAFile("./DATA/US_State_Vaccinations.csv",
-                                       vaccColTypes(),
-                                       mdy("06-15-2021"),
-                                       mdy("09-01-2021"),
-                                       "US_State_Vaccinations.csv",
-                                       traceThisRoutine = traceThisRoutine,
-                                       prepend = myPrepend)
-  
-  system("cp ./DATA/US_Vaccinations.csv ./DATA/CACHE/US_Vaccinations_30.csv")
-  system("cp ./DATA/US_State_Vaccinations.csv ./DATA/CACHE/US_State_Vaccinations_30.csv")
-  
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "after first 2 discards\n")
-  }
-  
-  discardDataOutsideDateRangeFromAFile("./DATA/US_Vaccinations.csv",
-                                       vaccColTypes(),
-                                       mdy("06-15-2021"),
-                                       mdy("08-28-2021"),
-                                       "CACHE/US_V_Test_RR.csv",
-                                       traceThisRoutine = traceThisRoutine,
-                                       prepend = myPrepend)
-  
-  discardDataOutsideDateRangeFromAFile("./DATA/US_State_Vaccinations.csv",
-                                       vaccColTypes(),
-                                       mdy("06-15-2021"),
-                                       mdy("08-28-2021"),
-                                       "CACHE/US_S_V_Test_RR.csv",
-                                       traceThisRoutine = traceThisRoutine,
-                                       prepend = myPrepend)
-  
-  system("cp ./DATA/US_Vaccinations.csv ./DATA/CACHE/US_Vaccinations_29.csv")
-  system("cp ./DATA/US_State_Vaccinations.csv ./DATA/CACHE/US_State_Vaccinations_29.csv")
-  
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "after 2nd two discards\n")
-  }
-  
-  discardDataOutsideDateRangeFromAFile("./DATA/US_Vaccinations.csv",
-                                       vaccColTypes(),
-                                       mdy("06-15-2021"),
-                                       mdy("08-27-2021"),
-                                       "CACHE/US_V_Test_RR.csv",
-                                       traceThisRoutine = traceThisRoutine,
-                                       prepend = myPrepend)
-  
-  discardDataOutsideDateRangeFromAFile("./DATA/US_State_Vaccinations.csv",
-                                       vaccColTypes(),
-                                       mdy("06-15-2021"),
-                                       mdy("08-27-2021"),
-                                       "CACHE/US_S_V_Test_RR.csv",
-                                       traceThisRoutine = traceThisRoutine,
-                                       prepend = myPrepend)
-  
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "after 3rd 2 discards\n")
-  }
-  
-  system("cp ./DATA/US_Vaccinations.csv ./DATA/CACHE/US_Vaccinations_28.csv")
-  system("cp ./DATA/US_State_Vaccinations.csv ./DATA/CACHE/US_State_Vaccinations_28.csv")
-
-  # US_Res$T0 = originalData, US_Res$T1 = truncatedTibble))
-  # US_Res$T0 = originalData, US_Res$T1 = truncatedTibble))
-
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving recreateVaccFilesFor829And830\n")
+recreateVaccUpdateEnvironment <- function(staticDataQ) {
+  # Remove ./DATA/US{,_State}_Vaccinations.csv
+  if (staticDataQ) {
+    system2("rm",
+            args = c("./DATA/STATIC/US_State_Vaccinations.csv",
+                     "./DATA/STATIC/US_Vaccinations.csv",
+                     "./DATA/US_State_Vaccinations.csv",
+                     "./DATA/US_Vaccinations.csv",
+                     "./DATA/VaccTS_*.csv"))
+    system2("cp",
+            args = c("./DATA/STATIC/VariousEnds/US_*Vaccinations.csv",
+                     "./DATA/STATIC/"))
   }
 }
 
-testSuite <- function(traceThisRoutine = FALSE) {
-  myPrepend <- "  "
-  cat(file = stderr(), "Enter testSuite\n")
+lastColName <- function(fileStemName,
+                        traceThisRoutine = FALSE) {
+  fileName <- paste("./DATA/STATIC/", fileStemName, ".csv",
+                    sep = "")
+  theTibble <- read_csv(fileName, show_col_types = FALSE)
+  theNames <- names(theTibble)
+  lastName <- theNames[length(theNames)]
+  if (traceThisRoutine) {
+    cat(file = stderr(), "last column of ", fileStemName,
+        " is '", lastName, "'\n", sep = "")
+  }
+  return(lastName)
+}
 
-  cat(file = stderr(), "  Process .._28\n")
-  
-  system("cp ./DATA/CACHE/US_Vaccinations_28.csv ./DATA/US_Vaccinations.csv")
-  system("cp ./DATA/CACHE/US_State_Vaccinations_28.csv ./DATA/US_State_Vaccinations.csv")
+dataFileBaseNames <- function() {
+  return(c("US_Confirmed",
+           "US_State_Confirmed",
+           "US_County_Confirmed",
+           "US_Deaths",
+           "US_State_Deaths",
+           "US_County_Deaths",
+           "US_Case_Fatality_Ratio",
+           "US_State_Case_Fatality_Ratio",
+           "US_Incident_Rate",
+           "US_State_Incident_Rate",
+           "US_Testing_Rate",
+           "US_State_Testing_Rate",
+           "US_Total_Test_Results",
+           "US_State_Total_Test_Results",
+           "US_Vaccinations",
+           "US_State_Vaccinations"))
+}
 
-  updateDataForUSVaccTimeSeries(traceThisRoutine = traceThisRoutine,
-                                            prepend = myPrepend)
-  
-  system("cp ./DATA/US_Vaccinations.csv ./DATA/CACHE/US_Vaccinations_From28.csv")
-  system("cp ./DATA/US_State_Vaccinations.csv ./DATA/CACHE/US_State_Vaccinations_From28.csv")
-  
-  cat(file = stderr(), "  Process .._29\n")
+dataFilePaths <- function(fileBaseList, theDirectory) {
+  result <- vector()
+  for (fileBaseName in fileBaseList) {
+    nextName <- paste(theDirectory, fileBaseName, ".csv", sep = "")
+    result <- append(result, nextName)
+  }
+  return(result)
+}
 
-  system("cp ./DATA/CACHE/US_Vaccinations_29.csv ./DATA/US_Vaccinations.csv")
-  system("cp ./DATA/CACHE/US_State_Vaccinations_29.csv ./DATA/US_State_Vaccinations.csv")
+createTestEnvironmentTarFile <- function(fileBaseList, sourceDirectory, archiveDirectory) {
+  thePaths <- dataFilePaths(fileBaseList, sourceDirectory)
+  argumentList = c("cvf")
+  argumentList = append(argumentList,
+                        paste(archiveDirectory,
+                              "UpdateTestData.tar",
+                              sep = ""))
+  argumentList = append(argumentList,
+                        dataFilePaths(fileBaseList, sourceDirectory))
   
-  updateDataForUSVaccTimeSeries(traceThisRoutine = traceThisRoutine,
-                                            prepend = myPrepend)
+  # OUCH
+  return(argumentList)
+
+  system2("tar",
+          c("cvf",
+            "./DATA/UpdateTestData.tar",
+            "./DATA/US_Confirmed.csv",
+            "./DATA/US_State_Confirmed.csv",
+            "./DATA/US_County_Confirmed.csv",
+            "./DATA/US_Deaths.csv",
+            "./DATA/US_State_Deaths.csv",
+            "./DATA/US_County_Deaths.csv",
+            "./DATA/US_Case_Fatality_Ratio.csv",
+            "./DATA/US_State_Case_Fatality_Ratio.csv",
+            "./DATA/US_Incident_Rate.csv",
+            "./DATA/US_State_Incident_Rate.csv",
+            "./DATA/US_Testing_Rate.csv",
+            "./DATA/US_State_Testing_Rate.csv",
+            "./DATA/US_Total_Test_Results.csv",
+            "./DATA/US_State_Total_Test_Results.csv",
+            "./DATA/US_Vaccinations.csv",
+            "./DATA/US_State_Vaccinations.csv"))
+}
+
+restoreTestEnvironment <- function(staticDataQ = FALSE,
+                                   traceThisRoutine = FALSE,
+                                   prepend = "") {
+  system2("tar",
+          c("xvf",
+            "./DATA/UpdateTestData.tar"))
+}
+
+filterResultsForTest <- function(fileBaseList,
+                                 sourceDirectory,
+                                 destDirectory = NULL,
+                                 traceThisRoutine = FALSE,
+                                 prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  traceFlagOnEntry <- traceThisRoutine
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Entered filterResultsForTest\n")
+  }
   
-  system("cp ./DATA/US_Vaccinations.csv ./DATA/CACHE/US_Vaccinations_From29.csv")
-  system("cp ./DATA/US_State_Vaccinations.csv ./DATA/CACHE/US_State_Vaccinations_From29.csv")
+  for (fileBase in fileBaseList) {
+    sourcePath <- paste(sourceDirectory, fileBase, ".csv", sep = "")
+    destPath <- paste(destDirectory, fileBase, ".csv", sep = "")
+
+    aTibble <- read_csv(sourcePath, show_col_types = FALSE)
+    nCols <- dim(aTibble)[2]
+    if (traceThisRoutine) {
+      cat(file = stderr(), myPrepend, sourcePath, "has", nCols, "columns\n")    
+    }
+    resTibble <- aTibble %>%
+      select(1:2, last_col(5):last_col())
+  }
+
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Leaving filterResultsForTest\n")
+  }
+  return(resTibble)
+}
+
+evaluateResults <- function(staticDataQ = staticDataQ,
+                            traceThisRoutine = traceThisRoutine,
+                            prepend = myPrepend) {
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Enter evaluateResults\n")
+    myPrepend <- paste("  ", prepend)
+  }
+
+  filterResultsForTest(c("US_Confirmed"),
+                       "./DATA/STATIC/VariousEnds/",
+                       traceThisRoutine = traceThisRoutine)
   
-  cat(file = stderr(), "  Process .._30\n")
+  result <- "INCONCLUSIVE"
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "PFFT!\n")
+    cat(file = stderr(), prepend, "Leaving evaluateResults\n")
+  }
   
-  system("cp ./DATA/CACHE/US_Vaccinations_30.csv ./DATA/US_Vaccinations.csv")
-  system("cp ./DATA/CACHE/US_State_Vaccinations_30.csv ./DATA/US_State_Vaccinations.csv")
+  return(result)
+}
+
+testSuite <- function(staticDataQ = FALSE,
+                      traceThisRoutine = FALSE,
+                      prepend = "") {
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Enter testSuite\n")
+    myPrepend <- paste("  ", prepend)
+  }
+
+  # restoreTestEnvironment(staticDataQ = staticDataQ,
+  #                        traceThisRoutine = traceThisRoutine,
+  #                        prepend = myPrepend)
+  # 
+  # loadAllUSData(staticDataQ = staticDataQ,
+  #               traceThisRoutine = traceThisRoutine,
+  #               prepend = myPrepend)
+
+  result <- evaluateResults(staticDataQ = staticDataQ,
+                            traceThisRoutine = traceThisRoutine,
+                            prepend = myPrepend)
   
-  updateDataForUSVaccTimeSeries(traceThisRoutine = traceThisRoutine,
-                                            prepend = myPrepend)
-  
-  system("cp ./DATA/US_Vaccinations.csv ./DATA/CACHE/US_Vaccinations_From30.csv")
-  system("cp ./DATA/US_State_Vaccinations.csv ./DATA/CACHE/US_State_Vaccinations_From30.csv")
-  
-  return(dataList)
+  cat(file = stderr(), myPrepend, "testSuite", result, "\n")
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving testSuite\n")
+  }
 }
 
   

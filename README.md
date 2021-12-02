@@ -50,6 +50,14 @@ Open Branches
 -------------
 
 CleanDataDirAsYouGo
+ * Set up a test of updating:
+    1. Save current setup
+    2. Update
+    3. Get set of results sufficient for comparison:
+      for each output file
+        select range of output columns (just last few)
+        filter out just a few rows (e.g. those in static set)
+    4. Refactor-wise, make the update limited in date; test as you go
  * Redo static data with spaces in combined keys
  * Clean up DATA subdirectory; modify update routines to clean up as you go, that is,
     delete downloaded data as soon as the needed time series files are updated.
