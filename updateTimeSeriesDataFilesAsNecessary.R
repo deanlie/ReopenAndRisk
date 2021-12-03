@@ -213,6 +213,9 @@ updateDataFilesForUSTimeSeriesTypeIfNeededB <- function(staticDataQ,
   }
 }
 
+# Get vaccination data for one day from EITHER
+# the big TS file OR the daily update file;
+# Make US data as summary of state data
 allGeogVaccDataFromOneDay <- function(rawData,
                                       traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
@@ -540,6 +543,7 @@ updateDataFilesForUSVaccTimeSeriesIfNeeded <- function(traceThisRoutine = FALSE,
 # Refactor this:
 
 updateDataFilesForUSVaccTimeSeriesIfNeededB <- function(staticDataQ,
+                                                        updateDataTibble,
                                                         traceThisRoutine = FALSE,
                                                         prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
@@ -556,40 +560,36 @@ updateDataFilesForUSVaccTimeSeriesIfNeededB <- function(staticDataQ,
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "desiredLatestDateSlashes =", desiredLatestDateSlashes, "\n")
   }
-  US_data_path <- paste("./DATA/", "US_Vaccinations.csv", sep="")
+  if (staticDataQ) {
+    US_data_path <- paste("./DATA/STATIC/", "US_Vaccinations.csv", sep="")
+    
+  } else {
+    US_data_path <- paste("./DATA/", "US_Vaccinations.csv", sep="")
+  }
   US_data <- try(read_csv(US_data_path,
                           col_types = vaccColTypes()))
   if (class(US_data)[1] == "try-error") {
     if (traceThisRoutine) {
-      cat(file = stderr(), myPrepend, "./DATA/US_Vaccinations.csv not read\n")
+      cat(file = stderr(), myPrepend, US_data_path, "not read\n")
     }
     # We couldn't read the file! Creating it gets us all the data we can find.
     makeInitialVaccDataFiles(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   } else {
     if (traceThisRoutine) {
-      cat(file = stderr(), myPrepend, "./DATA/US_Vaccinations.csv was read\n")
+      cat(file = stderr(), myPrepend, US_data_path, "was read\n")
     }
     # The file exists. is it up to date?
     if (names(US_data)[dim(US_data)[2]] == desiredLatestDateSlashes) {
       if (traceThisRoutine) {
-        cat(file=stderr(), myPrepend, "US_Vaccinations.csv is up to date", "\n")
+        cat(file=stderr(), myPrepend, US_data_path, "is up to date", "\n")
       }
     } else {
       if (traceThisRoutine) {
-        cat(file=stderr(), myPrepend, "last date in US_Vaccinations.csv:",
+        cat(file=stderr(), myPrepend, "last date in", US_data_path,
             names(US_data)[dim(US_data)[2]], "\n")
         cat(file=stderr(), myPrepend, "desiredLatestDateSlashes:", desiredLatestDateSlashes, "\n")
       }
-      # It's not up to date. Is newer data available?
-      if (url.exists(Vacc_TS_URL()) && url.exists(peopleVacc_URL())) {
-        # Better create all data files!
-        updateDataForUSVaccTimeSeries(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
-      } else {
-        if (traceThisRoutine) {
-          cat(file=stderr(), myPrepend, "Vaccination data for",
-              desiredLatestDateSlashes, "is not available", "\n")
-        }
-      }
+      updateDataForUSVaccTimeSeries(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
     }
   }
   
