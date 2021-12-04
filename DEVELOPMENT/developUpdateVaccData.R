@@ -17,6 +17,11 @@ lastColName <- function(fileStemName,
   return(lastName)
 }
 
+vaccDataFileBaseNames <- function() {
+  return(c("US_Vaccinations",
+           "US_State_Vaccinations"))
+}
+
 dataFileBaseNames <- function() {
   return(c("US_Confirmed",
            "US_State_Confirmed",
@@ -47,11 +52,13 @@ dataFilePaths <- function(fileBaseList, theDirectory) {
 
 createTestEnvironmentTarFile <- function(fileBaseList,
                                          sourceDirectory,
-                                         archiveDirectory) {
+                                         archiveDirectory,
+                                         archiveBaseName) {
   argumentList = c("cvf")
   argumentList = append(argumentList,
                         paste(archiveDirectory,
-                              "UpdateTestData.tar",
+                              archiveBaseName,
+                              ".tar",
                               sep = ""))
   argumentList = append(argumentList,
                         dataFilePaths(fileBaseList, sourceDirectory))
@@ -65,6 +72,14 @@ restoreTestEnvironment <- function(staticDataQ = FALSE,
   system2("tar",
           c("xvf",
             "./DATA/UpdateTestData.tar"))
+}
+
+restoreVaccFileTestEnvironment <- function(staticDataQ = FALSE,
+                                           traceThisRoutine = FALSE,
+                                           prepend = "") {
+  system2("tar",
+          c("xvf",
+            "./DATA/UpdateVaccineTestData.tar"))
 }
 
 filterATibble <- function(aTibble,
@@ -305,9 +320,10 @@ evaluateResults <- function(staticDataQ = staticDataQ,
     myPrepend <- paste("  ", prepend)
   }
 
-  nFails <- filterMaybeSaveOrCheck(c("US_Confirmed"),
+  nFails <- filterMaybeSaveOrCheck(c("US_Vaccinations",
+                                     "US_State_Vaccinations"),
                                    "./DATA/", # Source
-                                   NULL,      # Dest
+                                   "./DATA/REFERENCE/",      # Dest
                                    NULL,      # Ref
                                    traceThisRoutine = FALSE,
                                    prepend = myPrepend)
@@ -333,7 +349,15 @@ evaluateResults <- function(staticDataQ = staticDataQ,
 howIMadeUpdateTestDataDotTar <- function() {
   createTestEnvironmentTarFile(dataFileBaseNames(),
                                "./DATA/",
-                               "./DATA/ClipDates/TarFiles/")
+                               "./DATA/ClipDates/TarFiles/",
+                               "UpdateTestData")
+}
+
+howIMadeUpdateVaccTestDataDotTar <- function() {
+  createTestEnvironmentTarFile(vaccDataFileBaseNames(),
+                               "./DATA/",
+                               "./DATA/ClipDates/TarFiles/",
+                               "UpdateVaccTestData")
 }
 
 # Test routine for comparison / result evaluation routine
@@ -357,12 +381,29 @@ mungeAndTest <- function(fileBaseName,
   # Modify one or more values
   resTibble[1, 6] <- as.double(resTibble[1,6]) - 5.0
   resTibble[1, 4] <- NA
+  nExpectedFails <- 2
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "munged res to create",
+        nExpectedFails, "failures\n")
+  }
   
   nFails <- checkFilteredFile(resTibble,
                               fileBaseName,
                               sourceDirectory,
                               traceThisRoutine = traceThisRoutine,
                               prepend = myPrepend)
+
+  if (traceThisRoutine) {
+    if (nFails == nExpectedFails) {
+      cat(file = stderr(), myPrepend,
+          "The expected failures were detected properly\n")
+    } else {
+      cat(file = stderr(), myPrepend,
+          "PROBLEM with checkFilteredFile, expected", nExpectedFails,
+          "failures, detected", nFails, "\n")
+    }
+  }
   if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Leaving mungeAndTest\n")
   }
@@ -386,13 +427,13 @@ testSuite <- function(staticDataQ = FALSE,
     cat(file = stderr(), prepend, "Enter testSuite\n")
     myPrepend <- paste("  ", prepend, sep = "")
   }
-  
-  mungeAndTest("US_State_Vaccinations", "./DATA/",
-               traceThisRoutine = traceThisRoutine,
-               prepend = myPrepend)
-  
-  return(0)
 
+  # Test for the file comparison routine. It passed.
+  # mungeAndTest("US_State_Vaccinations", "./DATA/",
+  #              traceThisRoutine = traceThisRoutine,
+  #              prepend = myPrepend)
+
+  # OUCH these two calls are what we really want:
   # restoreTestEnvironment(staticDataQ = staticDataQ,
   #                        traceThisRoutine = traceThisRoutine,
   #                        prepend = myPrepend)
@@ -400,7 +441,13 @@ testSuite <- function(staticDataQ = FALSE,
   # loadAllUSData(staticDataQ = staticDataQ,
   #               traceThisRoutine = traceThisRoutine,
   #               prepend = myPrepend)
-
+  
+  restoreVaccFileTestEnvironment(staticDataQ = staticDataQ,
+                         traceThisRoutine = traceThisRoutine,
+                         prepend = myPrepend)
+  updateDataFilesForUSVaccTimeSeriesIfNeeded(traceThisRoutine = traceThisRoutine,
+                                             prepend = myPrepend)
+    
   result <- evaluateResults(staticDataQ = staticDataQ,
                             traceThisRoutine = traceThisRoutine,
                             prepend = myPrepend)
