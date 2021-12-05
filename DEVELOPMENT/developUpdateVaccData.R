@@ -73,17 +73,17 @@ restoreTestEnvironment <- function(staticDataQ = FALSE,
           c("VaccTS*"))
   system2("tar",
           c("xvf",
-            "./DATA/UpdateTestData.tar"))
+            "./DATA/ClipDates/TarFiles/UpdateTestData.tar"))
 }
 
 restoreVaccFileTestEnvironment <- function(staticDataQ = FALSE,
                                            traceThisRoutine = FALSE,
                                            prepend = "") {
   system2("rm",
-          c("VaccTS*"))
+          c("./DATA/VaccTS*"))
   system2("tar",
           c("xvf",
-            "./DATA/UpdateVaccineTestData.tar"))
+            "./DATA/ClipDates/TarFiles/UpdateVaccTestData.tar"))
 }
 
 filterATibble <- function(aTibble,
