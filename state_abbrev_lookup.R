@@ -73,15 +73,15 @@ stateNames <- function(useStaticData = FALSE) {
     stateLookup
   }
 }
-
-countyChoices <- reactive({
-  allChoices <- input$stateChoices
-  theStateAbbrev <- allChoices[1]
-  # print(paste("input State[1] is", theStateAbbrev))
-  list(stAbv = theStateAbbrev,
-       choices = CountiesByState$County[CountiesByState$State ==
-                                          unname(stateLookup[allChoices[1]])])
-})
+# 
+# countyChoices <- reactive({
+#   allChoices <- input$stateChoices
+#   theStateAbbrev <- allChoices[1]
+#   # print(paste("input State[1] is", theStateAbbrev))
+#   list(stAbv = theStateAbbrev,
+#        choices = CountiesByState$County[CountiesByState$State ==
+#                                           unname(stateLookup[allChoices[1]])])
+# })
 
 countiesForState <- function(stateAbbrev, useStaticData = FALSE) {
   if (useStaticData) {

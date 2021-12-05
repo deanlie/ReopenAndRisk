@@ -16,6 +16,7 @@ DATA/ARCHIVE
 DATA/ClipDates
 DATA/DATA
 DATA/STATIC2
+DATA/STATIC3
 DATA/STATIC/*.numbers
 tests/shinytest/*-current/
 DEVELOPMENT/scratchPaper.txt

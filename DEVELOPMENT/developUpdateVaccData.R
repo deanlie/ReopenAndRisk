@@ -2,6 +2,7 @@ library(tidyverse)
 
 source("downloadJHUData.R")
 source("updateTimeSeriesDataFilesAsNecessary.R")
+source("loadAllUSData.R")
 
 lastColName <- function(fileStemName,
                         traceThisRoutine = FALSE) {
@@ -329,11 +330,10 @@ evaluateResults <- function(staticDataQ = staticDataQ,
     cat(file = stderr(), prepend, "Enter evaluateResults\n")
   }
 
-  nFails <- filterMaybeSaveOrCheck(c("US_Vaccinations",
-                                     "US_State_Vaccinations"),
+  nFails <- filterMaybeSaveOrCheck(dataFileBaseNames(),
                                    "./DATA/", # Source
-                                   NULL,      # Dest
-                                   "./DATA/REFERENCE/",      # Ref
+                                   "./DATA/REFERENCE/",      # Dest
+                                   NULL,      # Ref
                                    traceThisRoutine = TRUE,
                                    prepend = myPrepend)
   
@@ -442,20 +442,21 @@ testSuite <- function(staticDataQ = FALSE,
   #              traceThisRoutine = traceThisRoutine,
   #              prepend = myPrepend)
 
-  # OUCH these two calls are what we really want:
-  # restoreTestEnvironment(staticDataQ = staticDataQ,
-  #                        traceThisRoutine = traceThisRoutine,
-  #                        prepend = myPrepend)
-  # 
-  # loadAllUSData(staticDataQ = staticDataQ,
-  #               traceThisRoutine = traceThisRoutine,
-  #               prepend = myPrepend)
+  # This was enough to allow me to avoid saving the 10M data file every day  
+  # restoreVaccFileTestEnvironment(staticDataQ = staticDataQ,
+  #                                traceThisRoutine = traceThisRoutine,
+  #                                prepend = myPrepend)
+  # updateDataFilesForUSVaccTimeSeriesIfNeeded(traceThisRoutine = traceThisRoutine,
+  #                                            prepend = myPrepend)
   
-  restoreVaccFileTestEnvironment(staticDataQ = staticDataQ,
+  # These two calls are what we really want:
+  restoreTestEnvironment(staticDataQ = staticDataQ,
                          traceThisRoutine = traceThisRoutine,
                          prepend = myPrepend)
-  updateDataFilesForUSVaccTimeSeriesIfNeeded(traceThisRoutine = traceThisRoutine,
-                                             prepend = myPrepend)
+
+  loadAllUSData(staticDataQ = staticDataQ,
+                traceThisRoutine = traceThisRoutine,
+                prepend = myPrepend)
     
   result <- evaluateResults(staticDataQ = staticDataQ,
                             traceThisRoutine = traceThisRoutine,

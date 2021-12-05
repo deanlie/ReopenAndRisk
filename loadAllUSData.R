@@ -7,6 +7,7 @@ source("updateTimeSeriesDataFilesAsNecessary.R")
 source("updateStateLevelSerializedDataFiles.R")
 source("columnUtilities.R")
 source("diagnosticRoutines.R")
+source("assemblePlotObject.R")
 
 getNAvgsF <- function(staticDataQ) {
   if (staticDataQ) {
@@ -713,7 +714,6 @@ updateAllDataAsNecessary <- function(staticDataQ,
     cat(file = stderr(), prepend, "Entered updateAllDataAsNecessary\n")
   }
   if (!staticDataQ) {
-    stop()
     updateTimeSeriesDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
                                          prepend = myPrepend)
     updateSerializedDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
@@ -764,7 +764,6 @@ updateAllDataAsNecessary <- function(staticDataQ,
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving updateAllDataAsNecessary\n")
   }
-  stop()
 }
 
 loadAllUSData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend = "") {
