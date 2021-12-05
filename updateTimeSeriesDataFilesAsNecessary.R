@@ -407,9 +407,9 @@ updateDataForUSVaccTimeSeries <- function(traceThisRoutine = FALSE,
     #  but it is updated multiple times a day and has empty data before all states
     #  have reported. To get a full days data, I have to use the big data timeline URL.
 
-    updateDataSource <- getDataFromSpecsMaybeSave(vaccTimeSeriesDataSpecs(),
-                                                  traceThisRoutine = FALSE,
-                                                  prepend = myPrepend)
+    updateDataSource <- getDataFromSpecs(vaccTimeSeriesDataSpecs(),
+                                         traceThisRoutine = FALSE,
+                                         prepend = myPrepend)
     
     #   Get latest date of state vacc data file
     lastDateWeHave = lastStateDataDateString
