@@ -301,11 +301,15 @@ filterMaybeSaveOrCheck <- function(fileBaseList,
                                              traceThisRoutine,
                                              myPrepend)
     
+    nFails <- nFails + nFileFails
     if (nFileFails > 0) {
       if (traceThisRoutine) {
-        cat(file = stderr(), myPrepend, fileBase, "FAILED\n")
+        cat(file = stderr(), myPrepend, fileBase, "FAILS\n")
       }
-      nFails <- nFails + nFileFails
+    } else {
+      if (traceThisRoutine) {
+        cat(file = stderr(), myPrepend, fileBase, "passes\n")
+      }
     }
   }
 
@@ -320,9 +324,9 @@ filterMaybeSaveOrCheck <- function(fileBaseList,
 evaluateResults <- function(staticDataQ = staticDataQ,
                             traceThisRoutine = FALSE,
                             prepend = "") {
+  myPrepend <- paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Enter evaluateResults\n")
-    myPrepend <- paste("  ", prepend)
   }
 
   nFails <- filterMaybeSaveOrCheck(c("US_Vaccinations",
@@ -428,9 +432,9 @@ thisFails <- function() {
 testSuite <- function(staticDataQ = FALSE,
                       traceThisRoutine = FALSE,
                       prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Enter testSuite\n")
-    myPrepend <- paste("  ", prepend, sep = "")
   }
 
   # Test for the file comparison routine. It passed.
