@@ -156,8 +156,8 @@ getDataFromSpecsMaybeSave  <- function(theSpecs,
     rawData <- getURLFromSpecsOrStop(theSpecs,
                                      traceThisRoutine = traceThisRoutine,
                                      prepend = myPrepend)
-    write_csv(rawData, theSpecs$PATH)
-
+    # write_csv(rawData, theSpecs$PATH)
+    # 
   }
   
   if (traceThisRoutine) {
