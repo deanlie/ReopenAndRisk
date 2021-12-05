@@ -69,6 +69,8 @@ createTestEnvironmentTarFile <- function(fileBaseList,
 restoreTestEnvironment <- function(staticDataQ = FALSE,
                                    traceThisRoutine = FALSE,
                                    prepend = "") {
+  system2("rm",
+          c("VaccTS*"))
   system2("tar",
           c("xvf",
             "./DATA/UpdateTestData.tar"))
@@ -77,6 +79,8 @@ restoreTestEnvironment <- function(staticDataQ = FALSE,
 restoreVaccFileTestEnvironment <- function(staticDataQ = FALSE,
                                            traceThisRoutine = FALSE,
                                            prepend = "") {
+  system2("rm",
+          c("VaccTS*"))
   system2("tar",
           c("xvf",
             "./DATA/UpdateVaccineTestData.tar"))
@@ -250,7 +254,7 @@ filterMaybeSaveOrCheckFile <- function(fileBaseName,
   resTibble <- filterATibble(aTibble,
                              traceThisRoutine = traceThisRoutine,
                              prepend = myPrepend)
-  result <- "PASS"
+  nFails <- 0
 
   if (!is.null(destDirectory)) {
     saveFilteredFile(resTibble,
@@ -260,7 +264,7 @@ filterMaybeSaveOrCheckFile <- function(fileBaseName,
                      myPrepend)
   }
   if (!is.null(referenceDirectory)) {
-    result <- checkFilteredFile(resTibble,
+    nFails <- checkFilteredFile(resTibble,
                                 fileBaseName,
                                 referenceDirectory,
                                 traceThisRoutine,
@@ -268,10 +272,11 @@ filterMaybeSaveOrCheckFile <- function(fileBaseName,
   }
   
   if (traceFlagOnEntry) {
+    cat(file = stderr(), myPrepend, "result =", nFails, "\n")
     cat(file = stderr(), prepend, "Leaving filterMaybeSaveOrCheckFile\n")
   }
   
-  return(result)
+  return(nFails)
 }
   
 filterMaybeSaveOrCheck <- function(fileBaseList,
@@ -286,21 +291,21 @@ filterMaybeSaveOrCheck <- function(fileBaseList,
     cat(file = stderr(), prepend, "Entered filterMaybeSaveOrCheck\n")
   }
   
-  nFails <- -1
+  nFails <- 0
   
   for (fileBase in fileBaseList) {
-    fileResult <- filterMaybeSaveOrCheckFile(fileBase,
+    nFileFails <- filterMaybeSaveOrCheckFile(fileBase,
                                              sourceDirectory,
                                              destDirectory,
                                              referenceDirectory,
                                              traceThisRoutine,
                                              myPrepend)
     
-    if (fileResult == "FAIL") {
+    if (nFileFails > 0) {
       if (traceThisRoutine) {
         cat(file = stderr(), myPrepend, fileBase, "FAILED\n")
       }
-      nFails <- nFails + 1
+      nFails <- nFails + nFileFails
     }
   }
 
@@ -313,8 +318,8 @@ filterMaybeSaveOrCheck <- function(fileBaseList,
 }
 
 evaluateResults <- function(staticDataQ = staticDataQ,
-                            traceThisRoutine = traceThisRoutine,
-                            prepend = myPrepend) {
+                            traceThisRoutine = FALSE,
+                            prepend = "") {
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Enter evaluateResults\n")
     myPrepend <- paste("  ", prepend)
@@ -323,9 +328,9 @@ evaluateResults <- function(staticDataQ = staticDataQ,
   nFails <- filterMaybeSaveOrCheck(c("US_Vaccinations",
                                      "US_State_Vaccinations"),
                                    "./DATA/", # Source
-                                   "./DATA/REFERENCE/",      # Dest
-                                   NULL,      # Ref
-                                   traceThisRoutine = FALSE,
+                                   NULL,      # Dest
+                                   "./DATA/REFERENCE/",      # Ref
+                                   traceThisRoutine = TRUE,
                                    prepend = myPrepend)
   
   if (nFails == 0) {
@@ -339,7 +344,7 @@ evaluateResults <- function(staticDataQ = staticDataQ,
   }  
 
   if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "nFails was", nFails, "returnint", result, "\n")
+    cat(file = stderr(), myPrepend, "nFails was", nFails, "returning", result, "\n")
     cat(file = stderr(), prepend, "Leaving evaluateResults\n")
   }
   
