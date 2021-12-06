@@ -206,11 +206,7 @@ clipDates <- function(sourceTibble) {
 }
 
 processTibble <- function(sourceTibble) {
-  resultTibble <- sourceTibble %>%
-    discardDataOutsideDateRangeFromATibble(mdy("10/25/2021"),
-                                           mdy("12/07/2021"),
-                                           traceThisRoutine = FALSE,
-                                           prepend = "")
+  resultTibble <- clipDates(sourceTibble)
 }
 
 zapFiles <- function(traceThisRoutine = FALSE, prepend = "") {
