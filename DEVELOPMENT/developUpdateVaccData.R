@@ -322,18 +322,27 @@ filterMaybeSaveOrCheck <- function(fileBaseList,
   return(nFails)
 }
 
-evaluateResults <- function(staticDataQ = staticDataQ,
+evaluateResults <- function(firstInDay = FALSE,
+                            staticDataQ = FALSE,
                             traceThisRoutine = FALSE,
                             prepend = "") {
   myPrepend <- paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Enter evaluateResults\n")
   }
+  
+  if (firstInDay) {
+    destDir <- "./DATA/REFERENCE/"
+    refDir <- NULL
+  } else {
+    destDir <- NULL
+    refDir <- "./DATA/REFERENCE/"
+  }
 
   nFails <- filterMaybeSaveOrCheck(dataFileBaseNames(),
                                    "./DATA/", # Source
-                                   "./DATA/REFERENCE/",      # Dest
-                                   NULL,      # Ref
+                                   destDir, 
+                                   refDir,
                                    traceThisRoutine = TRUE,
                                    prepend = myPrepend)
   
@@ -429,7 +438,8 @@ thisFails <- function() {
                                      prepend = "")
 }
 
-testSuite <- function(staticDataQ = FALSE,
+testSuite <- function(firstInDay = FALSE,
+                      staticDataQ = FALSE,
                       traceThisRoutine = FALSE,
                       prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
@@ -458,7 +468,8 @@ testSuite <- function(staticDataQ = FALSE,
                 traceThisRoutine = traceThisRoutine,
                 prepend = myPrepend)
     
-  result <- evaluateResults(staticDataQ = staticDataQ,
+  result <- evaluateResults(firstInDay = firstInDay,
+                            staticDataQ = staticDataQ,
                             traceThisRoutine = traceThisRoutine,
                             prepend = myPrepend)
   
