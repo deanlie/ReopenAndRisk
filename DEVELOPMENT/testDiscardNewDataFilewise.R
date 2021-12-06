@@ -200,15 +200,15 @@ renameDot1016x <- function(sourceTibble) {
 
 clipDates <- function(sourceTibble) {
   resultTibble <- sourceTibble %>%
-    discardDataOutsideDateRangeFromATibble(mdy("06/02/2021"),
-                                           mdy("10/23/2021"),
+    discardDataOutsideDateRangeFromATibble(mdy("10/25/2021"),
+                                           mdy("12/07/2021"),
                                            traceThisRoutine = FALSE, prepend = "")
 }
 
 processTibble <- function(sourceTibble) {
   resultTibble <- sourceTibble %>%
-    discardDataOutsideDateRangeFromATibble(mdy("06/02/2021"),
-                                           mdy("11/19/2021"),
+    discardDataOutsideDateRangeFromATibble(mdy("10/25/2021"),
+                                           mdy("12/07/2021"),
                                            traceThisRoutine = FALSE,
                                            prepend = "")
 }
@@ -219,24 +219,26 @@ zapFiles <- function(traceThisRoutine = FALSE, prepend = "") {
     cat(file = stderr(), prepend, "Entered zapFiles\n")
   }
   
-  for (aName in c("US_Case_Fatality_Ratio.csv",
-                  "US_Confirmed.csv",
-                  "US_County_Confirmed.csv",
-                  "US_Incident_Rate.csv",
-                  "US_State_Case_Fatality_Ratio.csv",
-                  "US_County_Deaths.csv",
-                  "US_Deaths.csv",
-                  "US_State_Confirmed.csv",
-                  "US_State_Deaths.csv",
-                  "US_Incident_Rate.csv",
-                  "US_State_Case_Fatality_Ratio.csv",
-                  "US_State_Incident_Rate.csv",
-                  "US_State_Population_Est.csv",
-                  "US_State_Testing_Rate.csv",
-                  "US_State_Total_Test_Results.csv",
-                  "US_State_Vaccinations.csv",
-                  "US_Testing_Rate.csv",
-                  "US_Total_Test_Results.csv",
+  # for (aName in c("US_Case_Fatality_Ratio.csv",
+  #                 "US_Confirmed.csv",
+  #                 "US_County_Confirmed.csv",
+  #                 "US_Incident_Rate.csv",
+  #                 "US_State_Case_Fatality_Ratio.csv",
+  #                 "US_County_Deaths.csv",
+  #                 "US_Deaths.csv",
+  #                 "US_State_Confirmed.csv",
+  #                 "US_State_Deaths.csv",
+  #                 "US_Incident_Rate.csv",
+  #                 "US_State_Case_Fatality_Ratio.csv",
+  #                 "US_State_Incident_Rate.csv",
+  #                 "US_State_Population_Est.csv",
+  #                 "US_State_Testing_Rate.csv",
+  #                 "US_State_Total_Test_Results.csv",
+  #                 "US_State_Vaccinations.csv",
+  #                 "US_Testing_Rate.csv",
+  #                 "US_Total_Test_Results.csv",
+  #                 "US_Vaccinations.csv")) {
+  for (aName in c("US_State_Vaccinations.csv",
                   "US_Vaccinations.csv")) {
     if (traceThisRoutine) {
       cat(file = stderr(), myPrepend, "Processing", aName, "\n")
@@ -298,11 +300,11 @@ clipSeveralEnds <- function() {
 # TESTS below this point
 #####################################################
 testSourceDir <- function() {
-  "/Users/deanb/Documents/R_Stuff/Shiny/RefactorAndRisk/DATA/ClipDates/Original/"
+  "./DATA/STATIC/"
 }
 
 testDestDir <- function() {
-  "/Users/deanb/Documents/R_Stuff/Shiny/RefactorAndRisk/DATA/ClipDates/Modified/"
+  "./DATA/STATIC/"
 }
 
 reinitTestDataFile <- function(theFileName,
