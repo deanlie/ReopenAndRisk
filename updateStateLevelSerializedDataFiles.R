@@ -215,6 +215,7 @@ makeInitialStateLevelData <- function(nDates = 60,
     cat(file = stderr(), myPrepend,
         paste("before try(read_csv(", pathnameOfStateLevelUpdateDataForDate(firstDate), "))\n", sep = ""))
   }
+  # OUCH don't expect to find this locally, download it. Don't save it!
   updateTibble <- try(read_csv(pathnameOfStateLevelUpdateDataForDate(firstDate)))
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, paste("after try(read_csv(",
@@ -272,7 +273,9 @@ makeInitialStateLevelData <- function(nDates = 60,
   }
 }
 
-updateSerializedDataFilesAsNecessary_B <- function(traceThisRoutine = FALSE, prepend = "CALLER??") {
+updateSerializedDataFilesAsNecessary_B <- function(staticDataQ = FALSE,
+                                                   traceThisRoutine = FALSE,
+                                                   prepend = "CALLER??") {
   myPrepend <- paste("  ", prepend)
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered updateSerializedDataFilesAsNecessary_B\n")
@@ -283,7 +286,9 @@ updateSerializedDataFilesAsNecessary_B <- function(traceThisRoutine = FALSE, pre
   }
 }
   
-updateSerializedDataFilesAsNecessary <- function(traceThisRoutine = FALSE, prepend = "CALLER??") {
+updateSerializedDataFilesAsNecessary <- function(staticDataQ = FALSE,
+                                                 traceThisRoutine = FALSE,
+                                                 prepend = "CALLER??") {
   myPrepend <- paste("  ", prepend)
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered updateSerializedDataFilesAsNecessary\n")
@@ -336,6 +341,7 @@ updateSerializedDataFilesAsNecessary <- function(traceThisRoutine = FALSE, prepe
       
       if (!file.exists(pathnameOfStateLevelUpdateDataForDate(updateDate))) {
         # No local file! Let's see if we can download it...
+        # OUCH Don't save this guy, load it and pass it around
         downloadAndSaveStateLevelUpdateData(updateDate,
                                             traceThisRoutine = traceThisRoutine,
                                             prepend = myPrepend)

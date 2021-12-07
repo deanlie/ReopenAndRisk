@@ -729,9 +729,9 @@ updateAllDataAsNecessary <- function(staticDataQ,
                                       "US_Vaccinations.csv",
                                       "US_State_Vaccinations.csv")
     # ... and left behind VaccTS_<today's date>.csv [VaccTS_11-24-2021.csv]
-    updateTimeSeriesDataFilesAsNecessaryB(staticDataQ,
-                                          traceThisRoutine = traceThisRoutine,
-                                          prepend = myPrepend)
+    updateTimeSeriesDataFilesAsNecessary(staticDataQ,
+                                         traceThisRoutine = traceThisRoutine,
+                                         prepend = myPrepend)
 
     # ******************************************************************* #
     # The following call updated the following:
@@ -744,7 +744,7 @@ updateAllDataAsNecessary <- function(staticDataQ,
                                       "US_Total_Test_Results.csv",
                                       "US_State_Total_Test_Results.csv")
     # ... and left behind <yesterday's date>.csv [11-23-2021.csv]
-    # updateSerializedDataFilesAsNecessaryB(staticDataQ,
+    # updateSerializedDataFilesAsNecessary(staticDataQ,
     #                                       traceThisRoutine = traceThisRoutine,
     #                                       prepend = myPrepend)
 

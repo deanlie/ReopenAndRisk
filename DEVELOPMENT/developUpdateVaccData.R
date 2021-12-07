@@ -464,14 +464,17 @@ testSuite <- function(firstInDay = FALSE,
                          traceThisRoutine = traceThisRoutine,
                          prepend = myPrepend)
 
-  loadAllUSData(staticDataQ = staticDataQ,
-                traceThisRoutine = traceThisRoutine,
-                prepend = myPrepend)
-    
-  result <- evaluateResults(firstInDay = firstInDay,
-                            staticDataQ = staticDataQ,
-                            traceThisRoutine = traceThisRoutine,
-                            prepend = myPrepend)
+  updateTimeSeriesDataFilesAsNecessary(staticDataQ,
+                                       traceThisRoutine = traceThisRoutine,
+                                       prepend = myPrepend)
+  # updateSerializedDataFilesAsNecessary(staticDataQ,
+  #                                      traceThisRoutine = traceThisRoutine,
+  #                                      prepend = myPrepend)
+  
+  # result <- evaluateResults(firstInDay = firstInDay,
+  #                           staticDataQ = staticDataQ,
+  #                           traceThisRoutine = traceThisRoutine,
+  #                           prepend = myPrepend)
   
   cat(file = stderr(), myPrepend, "testSuite", result, "\n")
 

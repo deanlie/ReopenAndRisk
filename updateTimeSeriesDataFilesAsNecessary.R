@@ -598,7 +598,9 @@ updateDataFilesForUSVaccTimeSeriesIfNeededB <- function(staticDataQ,
   }
 }
 
-updateTimeSeriesDataFilesAsNecessary <- function(traceThisRoutine = FALSE, prepend = "") {
+updateTimeSeriesDataFilesAsNecessary <- function(staticDataQ = FALSE,
+                                                 traceThisRoutine = FALSE,
+                                                 prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
 
   # Key point for tracing vaccination data update!
@@ -616,30 +618,5 @@ updateTimeSeriesDataFilesAsNecessary <- function(traceThisRoutine = FALSE, prepe
                                              prepend = myPrepend)
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving updateTimeSeriesDataFilesAsNecessary\n")
-  }
-}
-
-# START Refactor this:
-updateTimeSeriesDataFilesAsNecessaryB <- function(staticDataQ,
-                                                  traceThisRoutine = FALSE,
-                                                  prepend = "") {
-  myPrepend <- paste(prepend, "  ", sep = "")
-  
-  # Key point for tracing vaccination data update!
-  # Set the "traceThisRoutine" to TRUE for debugging
-  
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered updateTimeSeriesDataFilesAsNecessaryB\n")
-  }
-
-  updateDataFilesForUSTimeSeriesTypeIfNeededB(staticDataQ,
-                                              traceThisRoutine = traceThisRoutine,
-                                              prepend = myPrepend)
-
-  updateDataFilesForUSVaccTimeSeriesIfNeededB(staticDataQ,
-                                              traceThisRoutine = traceThisRoutine,
-                                              prepend = myPrepend)
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving updateTimeSeriesDataFilesAsNecessaryB\n")
   }
 }
