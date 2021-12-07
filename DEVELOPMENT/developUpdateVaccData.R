@@ -51,10 +51,101 @@ dataFilePaths <- function(fileBaseList, theDirectory) {
   return(result)
 }
 
+discardDataOutsideDateRangeFromATibble <- function(originalData,
+                                                   firstDateToKeep,
+                                                   lastDateToKeep,
+                                                   traceThisRoutine = FALSE, prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered discardDataOutsideDateRangeFromATibble\n")
+  }
+
+  # We are expecting mdy parse failures, don't tell us about them.
+  warnOption <- getOption("warn")
+  options(warn = -1)
+  dateColMatch <- as.vector(mdy(names(originalData)))
+  options(warn = warnOption)
+  # OK, now report warnings as before
+
+  charNames <- names(originalData)[is.na(dateColMatch)]
+  dateNames <- names(originalData)[!is.na(dateColMatch)]
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "Number of Columns", length(names(originalData)), "\n")
+    cat(file = stderr(), myPrepend, "Number of charNames", length(charNames), "\n")
+    cat(file = stderr(), myPrepend, "Number of dateNames", length(dateNames), "\n")
+  }
+
+  dataCols <- originalData %>%
+    select(any_of(dateNames))
+
+  newNames <- charNames
+  for (aName in dateNames) {
+    aDate <- mdy(aName)
+    if (((firstDateToKeep == 0) | (aDate >= firstDateToKeep)) &
+        ((lastDateToKeep > Sys.Date()) | (aDate <= lastDateToKeep))) {
+      newNames <- c(newNames, aName)
+    }
+  }
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "Number of columns to retain", length(newNames), "\n")
+    cat(file = stderr(), myPrepend, "Retaining cols",
+        newNames[4], "...",
+        newNames[length(newNames)], "\n")
+  }
+
+  truncatedTibble <- originalData %>%
+    select(any_of({newNames}))
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving discardDataOutsideDateRangeFromATibble\n")
+  }
+
+  return(truncatedTibble)
+}
+
+discardDataOutsideDateRangeFromAFile <- function(thePath,
+                                                 firstDateToKeep,
+                                                 lastDateToKeep,
+                                                 traceThisRoutine = FALSE,
+                                                 prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Entered discardDataOutsideDateRangeFrom", thePath, "\n")
+  }
+
+  originalData <- read_csv(thePath, show_col_types = FALSE)
+
+  truncatedTibble <- discardDataOutsideDateRangeFromATibble(originalData,
+                                                            firstDateToKeep,
+                                                            lastDateToKeep,
+                                                            traceThisRoutine = traceThisRoutine,
+                                                            prepend = myPrepend)
+
+  write_csv(truncatedTibble, thePath)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Leaving discardDataOutsideDateRangeFromFile\n")
+  }
+
+  return(truncatedTibble)
+}
+
 createTestEnvironmentTarFile <- function(fileBaseList,
-                                         sourceDirectory,
-                                         archiveDirectory,
-                                         archiveBaseName) {
+                                         sourceDirectory = "./DATA/",
+                                         archiveDirectory = "./DATA/ClipDates/TarFiles/",
+                                         archiveBaseName = "UpdateTestData") {
+  # 1. Clip all files in list to date range.
+  #       Later, clip one at a time more than the rest
+  #       to be sure it gets fully updated.
+  for (aPath in dataFilePaths(fileBaseList, sourceDirectory)) {
+    discardDataOutsideDateRangeFromAFile(aPath,
+                                         today("EST") - 37,
+                                         today("EST") - 2)
+  }
+  
+  # 2. Create tar file
   argumentList = c("cvf")
   argumentList = append(argumentList,
                         paste(archiveDirectory,

@@ -1,124 +1,19 @@
 library(tidyverse)
 library(lubridate)
 
-discardDataOutsideDateRangeFromATibble <- function(originalData,
-                                                   firstDateToKeep,
-                                                   lastDateToKeep,
-                                                   traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend, sep = "")
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered discardDataOutsideDateRangeFromATibble\n")
-  }
+# OUCH See developUpdateVaccData.R for the following:
+# discardDataOutsideDateRangeFromATibble <- function(originalData,
+#                                                    firstDateToKeep,
+#                                                    lastDateToKeep,
+#                                                    traceThisRoutine = FALSE,
+#                                                    prepend = "") {
 
-  # We are expecting mdy parse failures, don't tell us about them.
-  warnOption <- getOption("warn")
-  options(warn = -1) 
-  dateColMatch <- as.vector(mdy(names(originalData)))
-  options(warn = warnOption)
-  # OK, now report warnings as before
-  
-  charNames <- names(originalData)[is.na(dateColMatch)]
-  dateNames <- names(originalData)[!is.na(dateColMatch)]
-  
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "Number of Columns", length(names(originalData)), "\n")
-    cat(file = stderr(), myPrepend, "Number of charNames", length(charNames), "\n")
-    cat(file = stderr(), myPrepend, "Number of dateNames", length(dateNames), "\n")
-  }
-  
-  dataCols <- originalData %>%
-    select(any_of(dateNames))
-  
-  newNames <- charNames
-  for (aName in dateNames) {
-    aDate <- mdy(aName)
-    if (((firstDateToKeep == 0) | (aDate >= firstDateToKeep)) &
-        ((lastDateToKeep > Sys.Date()) | (aDate <= lastDateToKeep))) {
-      newNames <- c(newNames, aName)
-    }
-  }
-  
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "Number of columns to retain", length(newNames), "\n")
-    cat(file = stderr(), myPrepend, "Retaining cols",
-        newNames[4], "...",
-        newNames[length(newNames)], "\n")
-  }
-  
-  truncatedTibble <- originalData %>%
-    select(any_of({newNames}))
-  
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving discardDataOutsideDateRangeFromATibble\n")
-  }
-  
-  return(truncatedTibble)
-}
-
-discardDataOutsideDateRangeFromAFile <- function(thePath,
-                                                 firstDateToKeep,
-                                                 lastDateToKeep,
-                                                 traceThisRoutine = FALSE,
-                                                 prepend = "") {
-  myPrepend = paste("  ", prepend, sep = "")  
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered discardDataOutsideDateRangeFrom", thePath, "\n")
-  }
-  
-  originalData <- read_csv(thePath, show_col_types = FALSE)
-  
-  truncatedData <- discardDataOutsideDateRangeFromATibble(originalData,
-                                                          firstDateToKeep,
-                                                          lastDateToKeep,
-                                                          traceThisRoutine = traceThisRoutine,
-                                                          prepend = myPrepend)
-  
-  # We are expecting mdy parse failures, don't tell us about them.
-  warnOption <- getOption("warn")
-  options(warn = -1) 
-  dateColMatch <- as.vector(mdy(names(originalData)))
-  options(warn = warnOption)
-  # OK, now report warnings as before
-  
-  charNames <- names(originalData)[is.na(dateColMatch)]
-  dateNames <- names(originalData)[!is.na(dateColMatch)]
-  
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "Number of Columns", length(names(originalData)), "\n")
-    cat(file = stderr(), myPrepend, "Number of charNames", length(charNames), "\n")
-    cat(file = stderr(), myPrepend, "Number of dateNames", length(dateNames), "\n")
-  }
-  
-  dataCols <- originalData %>%
-    select(any_of(dateNames))
-  
-  newNames <- charNames
-  for (aName in dateNames) {
-    aDate <- mdy(aName)
-    if (((firstDateToKeep == 0) | (aDate >= firstDateToKeep)) &
-        ((lastDateToKeep > Sys.Date()) | (aDate <= lastDateToKeep))) {
-      newNames <- c(newNames, aName)
-    }
-  }
-
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "Number of columns to retain", length(newNames), "\n")
-    cat(file = stderr(), myPrepend, "Retaining cols",
-        newNames[4], "...",
-        newNames[length(newNames)], "\n")
-  }
-  
-  truncatedTibble <- originalData %>%
-    select(any_of({newNames}))
-  
-  write_csv(truncatedTibble, thePath)
-  
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving discardDataOutsideDateRangeFromFile\n")
-  }
-  
-  return(list(T0 = originalData, T1 = truncatedTibble))
-}
+# OUCH See developUpdateVaccData.R for the following:
+# discardDataOutsideDateRangeFromAFile <- function(thePath,
+#                                                  firstDateToKeep,
+#                                                  lastDateToKeep,
+#                                                  traceThisRoutine = FALSE,
+#                                                  prepend = "") {
 
 # Convenience routines for the above
 discardTooNewDataFromAFile <- function(thePath,
