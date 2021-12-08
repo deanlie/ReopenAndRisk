@@ -337,8 +337,11 @@ filterMaybeSaveOrCheckFile <- function(fileBaseName,
   myPrepend = paste("  ", prepend, sep = "")
   traceFlagOnEntry <- traceThisRoutine
   if (traceFlagOnEntry) {
-    cat(file = stderr(), prepend, "Entered filterMaybeSaveOrCheckFile\n")
+    cat(file = stderr(), prepend,
+        "Entered filterMaybeSaveOrCheckFile for",
+        fileBaseName, "\n")
   }
+  traceThisRoutine <- FALSE
   
   sourcePath <- paste(sourceDirectory, fileBaseName, ".csv", sep = "")
   
@@ -382,6 +385,7 @@ filterMaybeSaveOrCheck <- function(fileBaseList,
   if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Entered filterMaybeSaveOrCheck\n")
   }
+  traceThisRoutine <- FALSE
   
   nFails <- 0
   
@@ -395,18 +399,19 @@ filterMaybeSaveOrCheck <- function(fileBaseList,
     
     nFails <- nFails + nFileFails
     if (nFileFails > 0) {
-      if (traceThisRoutine) {
-        cat(file = stderr(), myPrepend, fileBase, "FAILS\n")
+      if (traceFlagOnEntry) {
+        cat(file = stderr(), myPrepend,
+            fileBase, "FAILS at", nFileFails, "locations \n")
       }
     } else {
-      if (traceThisRoutine) {
+      if (traceFlagOnEntry) {
         cat(file = stderr(), myPrepend, fileBase, "passes\n")
       }
     }
   }
 
   if (traceFlagOnEntry) {
-    cat(file = stderr(), myPrepend, nFails, "failure(s)\n")
+    cat(file = stderr(), myPrepend, nFails, "failure(s) in total\n")
     cat(file = stderr(), prepend, "Leaving filterMaybeSaveOrCheck\n")
   }
 
@@ -558,14 +563,14 @@ testSuite <- function(firstInDay = FALSE,
   updateTimeSeriesDataFilesAsNecessary(staticDataQ,
                                        traceThisRoutine = traceThisRoutine,
                                        prepend = myPrepend)
-  # updateSerializedDataFilesAsNecessary(staticDataQ,
-  #                                      traceThisRoutine = traceThisRoutine,
-  #                                      prepend = myPrepend)
+  updateSerializedDataFilesAsNecessary(staticDataQ,
+                                       traceThisRoutine = traceThisRoutine,
+                                       prepend = myPrepend)
   
-  # result <- evaluateResults(firstInDay = firstInDay,
-  #                           staticDataQ = staticDataQ,
-  #                           traceThisRoutine = traceThisRoutine,
-  #                           prepend = myPrepend)
+  result <- evaluateResults(firstInDay = firstInDay,
+                            staticDataQ = staticDataQ,
+                            traceThisRoutine = traceThisRoutine,
+                            prepend = myPrepend)
   
   cat(file = stderr(), myPrepend, "testSuite", result, "\n")
 
