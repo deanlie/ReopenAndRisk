@@ -12,10 +12,6 @@ library(glue)
 source("dateFormatRoutines.R")
 source("columnUtilities.R")
 
-theDataDirectory <- function() {
-  "../ReopenAndRisk/DATA/"
-}
-
 localDataDirectory <- function() {
   "./DATA/"
 }
@@ -29,7 +25,7 @@ newUSDataPathForType <- function(aType) {
 }
 
 dataPathForDate <- function(aDate) {
-  paste(theDataDirectory(), jhuFileDateString(aDate), ".csv",
+  paste(localDataDirectory(), jhuFileDateString(aDate), ".csv",
         sep = "")
 }
 
@@ -285,7 +281,7 @@ rebuildStateDataFilesForTypes <- function(nDates = 60, stopNDaysBeforePresent = 
   firstDate <- lastDate - nDates
   
   popFileName <- "US_Population.csv"
-  commonColumns <- read_csv(paste(theDataDirectory(), popFileName, sep = ""),
+  commonColumns <- read_csv(paste(localDataDirectory(), popFileName, sep = ""),
                             col_types = populationColTypes()) %>%
     filter(Province_State == CountyName) %>%
     filter(Combined_Key != "US") %>%
@@ -354,7 +350,7 @@ rebuildUSDataFileForTypeAsSummary <- function(stateDataTibble, aType,
   }
 
   USDataFileName = newUSDataPathForType(aType)
-  popFileName <- paste(theDataDirectory(), "US_Population.csv", sep="")
+  popFileName <- paste(localDataDirectory(), "US_Population.csv", sep="")
   
   buildingUSTibble <- read_csv(popFileName,
                                   col_types = populationColTypes()) %>%
