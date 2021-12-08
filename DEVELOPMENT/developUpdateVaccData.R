@@ -6,17 +6,17 @@ source("updateTimeSeriesDataFilesAsNecessary.R")
 source("columnUtilities.R")
 
 getAndSaveVaccDailyData <- function(traceThisRoutine = FALSE) {
-   rawData <- getDataFromSpecsMaybeSave(vaccDailyUpdateDataSpecs(),
-                                traceThisRoutine = traceThisRoutine,
-                                prepend = "VaccDailyUpdate")
+  rawData <- getDataFromSpecs(vaccDailyUpdateDataSpecs(),
+                              traceThisRoutine = traceThisRoutine,
+                              prepend = "VaccDailyUpdate")
 
    return(rawData)
 }
 
 getAndSaveVaccTimelineData <- function(traceThisRoutine = FALSE) {
-  rawData <- getDataFromSpecsMaybeSave(vaccTimeSeriesDataSpecs(),
-                               traceThisRoutine = traceThisRoutine,
-                               prepend = "VaccTimeline")
+  rawData <- getDataFromSpecs(vaccTimeSeriesDataSpecs(),
+                              traceThisRoutine = traceThisRoutine,
+                              prepend = "VaccTimeline")
 
   return(rawData)
 }

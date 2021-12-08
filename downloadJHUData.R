@@ -266,11 +266,12 @@ getFileFromSpecsOrStop <- function(theSpecs, traceThisRoutine = FALSE, prepend =
   return(rawData)
 }
 
-getDataFromSpecsMaybeSave  <- function(theSpecs,
-                                       traceThisRoutine = FALSE, prepend = "") {
+getDataFromSpecs <- function(theSpecs,
+                             traceThisRoutine = FALSE,
+                             prepend = "") {
   myPrepend = paste("  ", prepend)
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered getDataFromSpecsMaybeSave\n")
+    cat(file = stderr(), prepend, "Entered getDataFromSpecs\n")
   }
   
   if (traceThisRoutine) {
@@ -292,12 +293,10 @@ getDataFromSpecsMaybeSave  <- function(theSpecs,
     rawData <- getURLFromSpecsOrStop(theSpecs,
                                      traceThisRoutine = traceThisRoutine,
                                      prepend = myPrepend)
-    write_csv(rawData, theSpecs$PATH)
-
   }
   
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving getDataFromSpecsMaybeSave\n")
+    cat(file = stderr(), prepend, "Leaving getDataFromSpecs\n")
   }
   return(rawData)
 }

@@ -11,8 +11,10 @@ BackupScripts*
 DATA/*.csv
 DATA/*.tar
 DATA/*.csv.icloud
+DATA/ARCHIVE
 DATA/DATA
 DATA/STATIC2
+DATA/STATIC3
 DATA/STATIC/*.numbers
 DATA/ClipDates
 tests/shinytest/*-current/

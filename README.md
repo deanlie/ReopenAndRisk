@@ -13,6 +13,7 @@ General Features
 Available in https://deanlie.shinyapps.io/ReopenAndRisk/ (as of Aug 22, 2021)
 Updated, Redeployed Oct 7, 2021
 Updated, Redeployed Nov 18, 2021 with test positivity page
+Updated, Redeployed Dec 7, 2021 not to save the downloaded TS_VACC data file
 
 Bugs
 ----
