@@ -492,13 +492,25 @@ updateDataForUSVaccTimeSeries <- function(traceThisRoutine = FALSE,
   }
 }
 
-updateDataFilesForUSVaccTimeSeriesIfNeeded <- function(traceThisRoutine = FALSE, prepend = "") {
+updateDataFilesForUSVaccTimeSeriesIfNeeded <- function(staticDataQ = FALSE,
+                                                       traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered updateDataFilesForUSVaccTimeSeriesIfNeeded\n")
   }
-  desiredLatestDateSlashes <- expectedLatestUpdateDataDateSlashes(UT_UpdateHour = 13)
-  US_data_path <- paste("./DATA/", "US_Vaccinations.csv", sep="")
+  if(staticDataQ) {
+    desiredLatestDateSlashes <- "11/24/21"
+    dataDir <- "./DATA/STATIC/"
+  } else {
+    desiredLatestDateSlashes <- expectedLatestUpdateDataDateSlashes(UT_UpdateHour = 13)
+    dataDir <- "./DATA/"
+  }
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "desiredLatestDateSlashes =", desiredLatestDateSlashes, "\n")
+  }
+  US_data_path <- paste(dataDir, "US_Vaccinations.csv", sep="")
+  
   US_data <- try(read_csv(US_data_path,
                           col_types = vaccColTypes()))
   if (class(US_data)[1] == "try-error") {
@@ -506,6 +518,7 @@ updateDataFilesForUSVaccTimeSeriesIfNeeded <- function(traceThisRoutine = FALSE,
       cat(file = stderr(), myPrepend, "./DATA/US_Vaccinations.csv not read\n")
     }
     # We couldn't read the file! Creating it gets us all the data we can find.
+    # OUCH pass staticDataQ  and desiredLatestDateSlashes here
     makeInitialVaccDataFiles(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   } else {
     if (traceThisRoutine) {
@@ -525,6 +538,7 @@ updateDataFilesForUSVaccTimeSeriesIfNeeded <- function(traceThisRoutine = FALSE,
       # It's not up to date. Is newer data available?
       if (url.exists(Vacc_TS_URL()) && url.exists(peopleVacc_URL())) {
         # Better create all data files!
+        # OUCH pass staticDataQ  and desiredLatestDateSlashes here
         updateDataForUSVaccTimeSeries(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
       } else {
         if (traceThisRoutine) {
@@ -553,19 +567,16 @@ updateDataFilesForUSVaccTimeSeriesIfNeededB <- function(staticDataQ,
 
   if(staticDataQ) {
     desiredLatestDateSlashes <- "11/24/21"
+    dataDir <- "./DATA/STATIC/"
   } else {
     desiredLatestDateSlashes <- expectedLatestUpdateDataDateSlashes(UT_UpdateHour = 13)
+    dataDir <- "./DATA/"
   }
 
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "desiredLatestDateSlashes =", desiredLatestDateSlashes, "\n")
   }
-  if (staticDataQ) {
-    US_data_path <- paste("./DATA/STATIC/", "US_Vaccinations.csv", sep="")
-    
-  } else {
-    US_data_path <- paste("./DATA/", "US_Vaccinations.csv", sep="")
-  }
+  US_data_path <- paste(dataDir, "US_Vaccinations.csv", sep="")
   US_data <- try(read_csv(US_data_path,
                           col_types = vaccColTypes()))
   if (class(US_data)[1] == "try-error") {
@@ -609,13 +620,13 @@ updateTimeSeriesDataFilesAsNecessary <- function(staticDataQ = FALSE,
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered updateTimeSeriesDataFilesAsNecessary\n")
   }
+  
+  # OUCH do that date filtering stuff here, load 
 
   for (aType in c("Confirmed", "Deaths")) {
     updateDataFilesForUSTimeSeriesTypeIfNeeded(aType, traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   }
-  
-  updateDataFilesForUSVaccTimeSeriesIfNeeded(traceThisRoutine = traceThisRoutine,
-                                             prepend = myPrepend)
+
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving updateTimeSeriesDataFilesAsNecessary\n")
   }

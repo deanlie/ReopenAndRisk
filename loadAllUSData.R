@@ -714,7 +714,11 @@ updateAllDataAsNecessary <- function(staticDataQ,
     cat(file = stderr(), prepend, "Entered updateAllDataAsNecessary\n")
   }
   if (!staticDataQ) {
-    updateTimeSeriesDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
+    updateDataFilesForUSVaccTimeSeriesIfNeeded(staticDataQ,
+                                               traceThisRoutine = traceThisRoutine,
+                                               prepend = myPrepend)
+    updateTimeSeriesDataFilesAsNecessary(staticDataQ,
+                                         traceThisRoutine = traceThisRoutine,
                                          prepend = myPrepend)
     updateSerializedDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
                                          prepend = myPrepend)
@@ -729,6 +733,9 @@ updateAllDataAsNecessary <- function(staticDataQ,
                                       "US_Vaccinations.csv",
                                       "US_State_Vaccinations.csv")
     # ... and left behind VaccTS_<today's date>.csv [VaccTS_11-24-2021.csv]
+    updateDataFilesForUSVaccTimeSeriesIfNeeded(staticDataQ,
+                                               traceThisRoutine = traceThisRoutine,
+                                               prepend = myPrepend)
     updateTimeSeriesDataFilesAsNecessary(staticDataQ,
                                          traceThisRoutine = traceThisRoutine,
                                          prepend = myPrepend)

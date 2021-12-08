@@ -162,7 +162,7 @@ restoreTestEnvironment <- function(staticDataQ = FALSE,
                                    traceThisRoutine = FALSE,
                                    prepend = "") {
   system2("rm",
-          c("VaccTS*"))
+          c("./DATA/12*2021.csv"))
   system2("tar",
           c("xvf",
             "./DATA/ClipDates/TarFiles/UpdateTestData.tar"))
@@ -172,7 +172,7 @@ restoreVaccFileTestEnvironment <- function(staticDataQ = FALSE,
                                            traceThisRoutine = FALSE,
                                            prepend = "") {
   system2("rm",
-          c("./DATA/VaccTS*"))
+          c("./DATA/VaccTS*", "./DATA/12*2021.csv"))
   system2("tar",
           c("xvf",
             "./DATA/ClipDates/TarFiles/UpdateVaccTestData.tar"))
@@ -560,6 +560,9 @@ testSuite <- function(firstInDay = FALSE,
                          traceThisRoutine = traceThisRoutine,
                          prepend = myPrepend)
 
+  updateDataFilesForUSVaccTimeSeriesIfNeeded(staticDataQ,
+                                             traceThisRoutine = traceThisRoutine,
+                                             prepend = myPrepend)
   updateTimeSeriesDataFilesAsNecessary(staticDataQ,
                                        traceThisRoutine = traceThisRoutine,
                                        prepend = myPrepend)
