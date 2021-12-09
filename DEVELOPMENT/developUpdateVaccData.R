@@ -548,34 +548,27 @@ testSuite <- function(firstInDay = FALSE,
   #              traceThisRoutine = traceThisRoutine,
   #              prepend = myPrepend)
 
-  # This was enough to allow me to avoid saving the 10M data file every day  
-  # restoreVaccFileTestEnvironment(staticDataQ = staticDataQ,
-  #                                traceThisRoutine = traceThisRoutine,
-  #                                prepend = myPrepend)
-  # updateDataFilesForUSVaccTimeSeriesIfNeeded(traceThisRoutine = traceThisRoutine,
-  #                                            prepend = myPrepend)
-  
-  # These two calls are what we really want:
   restoreTestEnvironment(staticDataQ = staticDataQ,
                          traceThisRoutine = traceThisRoutine,
                          prepend = myPrepend)
 
-  updateDataFilesForUSVaccTimeSeriesIfNeeded(staticDataQ,
-                                             traceThisRoutine = traceThisRoutine,
-                                             prepend = myPrepend)
+  # updateDataFilesForUSVaccTimeSeriesIfNeeded(staticDataQ,
+  #                                            traceThisRoutine = traceThisRoutine,
+  #                                            prepend = myPrepend)
+
   updateTimeSeriesDataFilesAsNecessary(staticDataQ,
                                        traceThisRoutine = traceThisRoutine,
                                        prepend = myPrepend)
-  updateSerializedDataFilesAsNecessary(staticDataQ,
-                                       traceThisRoutine = traceThisRoutine,
-                                       prepend = myPrepend)
+  # updateSerializedDataFilesAsNecessary(staticDataQ,
+  #                                      traceThisRoutine = traceThisRoutine,
+  #                                      prepend = myPrepend)
+  # 
+  # result <- evaluateResults(firstInDay = firstInDay,
+  #                           staticDataQ = staticDataQ,
+  #                           traceThisRoutine = traceThisRoutine,
+  #                           prepend = myPrepend)
   
-  result <- evaluateResults(firstInDay = firstInDay,
-                            staticDataQ = staticDataQ,
-                            traceThisRoutine = traceThisRoutine,
-                            prepend = myPrepend)
-  
-  cat(file = stderr(), myPrepend, "testSuite", result, "\n")
+  # cat(file = stderr(), myPrepend, "testSuite", result, "\n")
 
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving testSuite\n")

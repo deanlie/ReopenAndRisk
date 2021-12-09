@@ -10,42 +10,6 @@ source("dateFormatRoutines.R")
 #     with the same end date, in ./DATA/STATIC/, which can be verified by
 #     comparison with a Shinytest snapshot
 
-verifyDataUpdate <- function(files, desiredDate) {
-  # Get desired date into column header format
-  # desiredLastColName <- formatDateForColumnName(desiredDate)
-  desiredLastColName <- paste(month(desiredDate),
-                              day(desiredDate),
-                              (year(desiredDate) - 2000), sep="/")
- 
-  nErrors <- 0
-
-  mismatches <- tibble()
-
-  for (aFile in files) {
-    # Read tibble
-    aPath <- paste("./DATA/STATIC/VariousEnds/", aFile, sep = "")
-    aTibble <- read_csv(aPath, show_col_types = FALSE)
-    
-    # Get last column name
-    theNames <- names(aTibble)
-    lastName <- theNames[length(theNames)]
-    
-    # complain if it's not the date we want
-    if (!identical(lastName, desiredLastColName)) {
-      cat(file = stderr(), "MISMATCH in file ", aFile,
-          " wanted ", desiredLastColName,
-          " saw ", lastName, "\n")
-      nErrors <- nErrors + 1
-      mismatches[nErrors, "file"] = aFile
-      mismatches[nErrors, "date"] = as.Date(lastName, format = "%m/%d/%y")
-    }
-  }
-
-  earliestLastDate <- desiredDate + 1
-
-  return(mismatches)
-}
-
 verifyUpdateOfListedFiles <- function(dateString) {
   desiredDate <- as.Date(dateString)
   files <- c("US_Case_Fatality_Ratio.csv",
@@ -65,8 +29,9 @@ verifyUpdateOfListedFiles <- function(dateString) {
              "US_Total_Test_Results.csv",
              "US_Vaccinations.csv")
 
-  updateStatus <- verifyDataUpdate(files, desiredDate)
-  sortedStatus <- arrange(updateStatus, date)
+  updateStatus <- verifyFileListLatestUpdates(files, desiredDate,
+                                              "./DATA/STATIC/VariousEnds/")
+  sortedStatus <- arrange(updateStatus, lastUpdate)
 }
 
 updateDataAndCleanUp <- function() {
@@ -98,11 +63,11 @@ moveTestGroupFromVariousToStatic <- function(testGroup) {
   }
 } 
 
-testDataUpdate() {
+testDataUpdate <- function() {
   testGroup <- c("US_State_Confirmed.csv")
   testDate <- today - 1
   moveTestGroupFromVariousToStatic(testGroup)
   updateDataGroupAndCleanUp(testGroup, testDate)
-  verifyDataUpdate(testGroup, testDate)
+  verifyFileListLatestUpdates(testGroup, testDate, "./DATA/")
 }
 
