@@ -478,6 +478,8 @@ rebuildUSDataFileForTypeByNormalizing <- function(USNumeratorTibble,
     cat(file = stderr(), prepend, "Entered rebuildUSDataFileForTypeByNormalizing\n")
   }
   
+  US_Population <- read_csv("./DATA/US_Population.csv", show_col_types = FALSE)
+  
   popDivByHowMany <- as.double(US_Population %>%
                            filter(Combined_Key == "US") %>%
                            select(Population)) / perHowMany
