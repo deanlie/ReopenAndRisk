@@ -129,9 +129,9 @@ getFileFromSpecsOrStop <- function(theSpecs, traceThisRoutine = FALSE, prepend =
   return(rawData)
 }
 
-# OUCH default tracing to TRUE for development work
-getDataFromSpecs  <- function(theSpecs,
-                              traceThisRoutine = FALSE, prepend = "") {
+getDataFromSpecs <- function(theSpecs,
+                             traceThisRoutine = FALSE,
+                             prepend = "") {
   myPrepend = paste("  ", prepend)
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered getDataFromSpecs\n")
