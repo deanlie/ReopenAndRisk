@@ -206,11 +206,12 @@ pVaccTimeSeriesDataSpecs <- function(aDate = NULL) {
 #         sep = "")
 # }
 
-downloadAndSaveStateLevelUpdateData <- function(aDate,
-                                                traceThisRoutine = FALSE, prepend = "") {
+downloadStateLevelUpdateData <- function(aDate,
+                                         traceThisRoutine = FALSE,
+                                         prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered downloadAndSaveStateLevelUpdateData\n")
+    cat(file = stderr(), prepend, "Entered downloadStateLevelUpdateData\n")
   }
   
   updateTibble <- getURLOrStop(updateStateLevelDataForDate_URL(aDate),
@@ -218,17 +219,17 @@ downloadAndSaveStateLevelUpdateData <- function(aDate,
 
   updateTibble <- updateTibble %>%
     filter(!str_detect(Province_State, "Princess"))
-      
-  write_csv(updateTibble, pathnameOfStateLevelUpdateDataForDate(aDate))
 
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend,
-        "Downloaded and wrote", pathnameOfStateLevelUpdateDataForDate(aDate), "\n")
+        "Downloaded", pathnameOfStateLevelUpdateDataForDate(aDate), "\n")
   }
 
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving downloadAndSaveStateLevelUpdateData\n")
   }
+  
+  return(updateTibble)
 }
 
 # OUCH default tracing to TRUE for development work
