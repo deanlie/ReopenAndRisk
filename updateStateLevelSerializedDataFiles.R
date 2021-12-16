@@ -9,6 +9,7 @@ source("URLFunctions.R")
 source("downloadJHUData.R")
 source("columnUtilities.R")
 source("rebuildDataFileForType.R")
+source("verifyFileListLatestUpdates.R")
 
 typesStateLevelData <- function(aDate) {
   c("Incident_Rate", "Case_Fatality_Ratio",
@@ -187,6 +188,11 @@ updatePopulationEstimateData <- function(dailyStateData,
   write_csv(newData, "./DATA/US_State_Population_Est.csv")
   
   if (traceThisRoutine) {
+    cxn <- file("./DEVELOPMENT/fileWriteLog.txt", "a")
+    cat(file = cxn,
+        "Wrote ./DATA/US_State_Population_Est.csv",
+        "in updatePopulationEstimateData\n")
+    close(cxn)
     cat(file = stderr(), prepend, "Leaving updatePopulationEstimateData\n")
   }
   return(newData)
@@ -206,39 +212,18 @@ makeInitialStateLevelData <- function(nDates = 60,
                       day(firstDate),
                       (year(firstDate) - 2000), sep="/")
 
-  # If we don't have the data as a local file, download it  
-  if (!file.exists(pathnameOfStateLevelUpdateDataForDate(firstDate))) {
-    # No local file! Let's see if we can download it...
-    downloadAndSaveStateLevelUpdateData(firstDate)
-   }
+  updateTibble <- downloadStateLevelUpdateata(firstDate)
   if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend,
-        paste("before try(read_csv(", pathnameOfStateLevelUpdateDataForDate(firstDate), "))\n", sep = ""))
+    cat(file = stderr(), myPrepend, paste("downloaded update tibble", sep = ""))
   }
-  # OUCH don't expect to find this locally, download it. Don't save it!
-  updateTibble <- try(read_csv(pathnameOfStateLevelUpdateDataForDate(firstDate)))
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, paste("after try(read_csv(",
-                                          pathnameOfStateLevelUpdateDataForDate(firstDate),
-                                          "))\n", sep = ""))
-  }
-  if (class(updateTibble)[1] == "try-error") {
-    if (traceThisRoutine) {
-      cat(file = stderr(), myPrepend,
-          "Can't read ", pathnameOfStateLevelUpdateDataForDate(firstDate), "\n")
-    }
-  } else {
-    if (traceThisRoutine) {
-      cat(file = stderr(), myPrepend, "We were able to read",
-          pathnameOfStateLevelUpdateDataForDate(firstDate),
-          "from local disk/SSD\n")
-    }
-  }
-  
+
   popEstimate <- updatePopulationEstimateData(updateTibble,
                                               traceThisRoutine = traceThisRoutine,
                                               prepend = myPrepend)
-
+  if (traceThisRoutine) {
+    cxn <- file("./DEVELOPMENT/fileWriteLog.txt", "a")
+  }
+  
   aList <- typesStateLevelData()
   for (aType in aList) {
     newTibble <- updateTibble %>%
@@ -252,6 +237,9 @@ makeInitialStateLevelData <- function(nDates = 60,
     
     write_csv(newTibble, paste("./DATA/US_State_", aType, ".csv", sep=""))
     if (traceThisRoutine) {
+      cat(file = cxn, "Wrote",
+          paste("./DATA/US_State_", aType, ".csv", sep=""),
+          "in makeInitialStateLevelData\n")
       cat(file = stderr(), myPrepend, "Wrote",
           paste("./DATA/US_State_", aType, ".csv", sep=""), "\n")
       cat(file = stderr(), myPrepend, "It had", dim(newTibble)[2], "columns\n")
@@ -263,29 +251,20 @@ makeInitialStateLevelData <- function(nDates = 60,
 
     write_csv(newUSTibble, paste("./DATA/US_", aType, ".csv", sep=""))
     if (traceThisRoutine) {
+      cat(file = cxn, "Wrote",
+          paste("./DATA/US_", aType, ".csv", sep=""),
+          "in makeInitialStateLevelData\n")
       cat(file = stderr(), myPrepend, "Wrote",
           paste("./DATA/US_", aType, ".csv", sep=""), "\n")
       cat(file = stderr(), myPrepend, "It had", dim(newUSTibble)[2], "columns\n")
     }
   }
   if (traceThisRoutine) {
+    close(cxn)
     cat(file = stderr(), prepend, "Leaving makeInitialStateLevelData\n")
   }
 }
 
-updateSerializedDataFilesAsNecessary_B <- function(staticDataQ = FALSE,
-                                                   traceThisRoutine = FALSE,
-                                                   prepend = "CALLER??") {
-  myPrepend <- paste("  ", prepend)
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered updateSerializedDataFilesAsNecessary_B\n")
-  }
-  
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving updateSerializedDataFilesAsNecessary_B\n")
-  }
-}
-  
 updateSerializedDataFilesAsNecessary <- function(staticDataQ = FALSE,
                                                  traceThisRoutine = FALSE,
                                                  prepend = "CALLER??") {
@@ -294,43 +273,95 @@ updateSerializedDataFilesAsNecessary <- function(staticDataQ = FALSE,
     cat(file = stderr(), prepend, "Entered updateSerializedDataFilesAsNecessary\n")
   }
 
-  # Check the last state level serialized data file for last date;
-  if (!dataIsCurrent("./DATA/US_Testing_Rate.csv")) {
-    options(show.error.messages = traceThisRoutine)
-    US_Testing_Rate <- try(read_csv("./DATA/US_Testing_Rate.csv",
-                                    col_types = justCKColTypes()))
-    options(show.error.messages = TRUE)
-    # Update is required
-    if (class(US_Testing_Rate)[1] == "try-error") {
-      # There's no old data of the type we want.
+  filesUpdatedInSerializedCall <- c("US_Testing_Rate.csv",
+                                    "US_State_Testing_Rate.csv",
+                                    "US_Incident_Rate.csv",
+                                    "US_State_Incident_Rate.csv",
+                                    "US_Case_Fatality_Ratio.csv",
+                                    "US_State_Case_Fatality_Ratio.csv",
+                                    "US_Total_Test_Results.csv",
+                                    "US_State_Total_Test_Results.csv")
+  if(staticDataQ) {
+    desiredLatestDate <- mdy("11/24/21")
+    dataDir <- "./DATA/STATIC/"
+  } else {
+    desiredLatestDate <- expectedLatestUpdateDataDate()
+    dataDir <- "./DATA/"
+  }
+  
+  mismatches <- verifyFileListLatestUpdates(filesUpdatedInSerializedCall,
+                                            desiredLatestDate,
+                                            dataDir,
+                                            traceThisRoutine = traceThisRoutine,
+                                            prepend = myPrepend)
+
+  if (traceThisRoutine) {
+    cxn <- file("./DEVELOPMENT/fileWriteLog.txt", "a")
+  }
+
+  while (dim(mismatches)[1] > 0) {
+    overallLastUpdate <- mismatches$lastUpdate[1]
+    firstDate <- overallLastUpdate + 1
+    firstGroup <- filter(mismatches, lastUpdate <= {{overallLastUpdate}})
+    if (traceThisRoutine) {
+      cat(file = stderr(), myPrepend, dim(firstGroup)[1],
+          "files only updated to", format.Date(overallLastUpdate), "\n")
+    }
+    remainingMismatches <- filter(mismatches, lastUpdate >= {{firstDate}})
+    if (dim(remainingMismatches)[1] > 0) {
       if (traceThisRoutine) {
-        cat(file = stderr(), myPrepend, "No US_Testing_Rate.csv found on entry\n")
+        cat(file = stderr(), myPrepend, dim(remainingMismatches)[1],
+            "files remaining\n")
       }
-      makeInitialStateLevelData(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
-      # Now we should be able to get some data
-      options(show.error.messages = TRUE)
-      US_Testing_Rate <- try(read_csv("./DATA/US_Testing_Rate.csv",
-                                      col_types = justCKColTypes()))
-    } 
-    # We have US_Testing_Rate for that type -- but it may not be up-to-date
-    if (traceThisRoutine) {
-      cat(file = stderr(), myPrepend, "We have a US_Testing_Rate file, but it may not be current.\n")
+      nextDate <- remainingMismatches$lastUpdate[1]
+    } else {
+      if (traceThisRoutine) {
+        cat(file = stderr(), myPrepend, "... that's all.\n")
+      }
+      nextDate <- desiredLatestDate
     }
-    # Get date range needed
-    colNames <- names(US_Testing_Rate)
-    lastName <- colNames[length(colNames)]
-    if (traceThisRoutine) {
-      cat(file = stderr(), myPrepend, "Latest column is", lastName, "\n")
-    }
-
-    lastDate <- mdy(lastName)
-    updateDate <- lastDate + 1
-
-    if (traceThisRoutine) {
-      cat(file = stderr(), myPrepend, "Update date is ", lastName, "\n")
-    }
-
-    while (updateDate < (today("EST"))) {
+    nDays <- nextDate - firstDate
+    for (addDay in 0:nDays) {
+      updateDate <- firstDate + addDay
+      if (traceThisRoutine) {
+        cat(file = stderr(), myPrepend,
+            "Updating to", format.Date(updateDate), "\n")
+      }
+      # 
+      # # Check the last state level serialized data file for last date;
+      # if (!dataIsCurrent("./DATA/US_Testing_Rate.csv")) {
+      #   options(show.error.messages = traceThisRoutine)
+      #   US_Testing_Rate <- try(read_csv("./DATA/US_Testing_Rate.csv",
+      #                                   col_types = justCKColTypes()))
+      #   options(show.error.messages = TRUE)
+      #   # Update is required
+      #   if (class(US_Testing_Rate)[1] == "try-error") {
+      #     # There's no old data of the type we want.
+      #     if (traceThisRoutine) {
+      #       cat(file = stderr(), myPrepend, "No US_Testing_Rate.csv found on entry\n")
+      #     }
+      #     makeInitialStateLevelData(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+      #     # Now we should be able to get some data
+      #     options(show.error.messages = TRUE)
+      #     US_Testing_Rate <- try(read_csv("./DATA/US_Testing_Rate.csv",
+      #                                     col_types = justCKColTypes()))
+      #   } 
+      #   # We have US_Testing_Rate for that type -- but it may not be up-to-date
+      #   if (traceThisRoutine) {
+      #     cat(file = stderr(), myPrepend, "We have a US_Testing_Rate file, but it may not be current.\n")
+      #   }
+      #   # Get date range needed
+      #   colNames <- names(US_Testing_Rate)
+      #   lastName <- colNames[length(colNames)]
+      #   if (traceThisRoutine) {
+      #     cat(file = stderr(), myPrepend, "Latest column is", lastName, "\n")
+      #   }
+      #   
+      if (traceThisRoutine) {
+        cat(file = stderr(), myPrepend,
+            "Update date is ", format.Date(updateDate), "\n")
+      }
+      
       columnDate <- paste(month(updateDate),
                           day(updateDate),
                           (year(updateDate) - 2000), sep="/")
@@ -339,41 +370,13 @@ updateSerializedDataFilesAsNecessary <- function(staticDataQ = FALSE,
       }
       # Read or download update file for that date
       
-      if (!file.exists(pathnameOfStateLevelUpdateDataForDate(updateDate))) {
-        # No local file! Let's see if we can download it...
-        # OUCH Don't save this guy, load it and pass it around
-        downloadAndSaveStateLevelUpdateData(updateDate,
-                                            traceThisRoutine = traceThisRoutine,
-                                            prepend = myPrepend)
-      }
+      updateTibble <- downloadStateLevelUpdateData(updateDate,
+                                                   traceThisRoutine = traceThisRoutine,
+                                                   prepend = myPrepend)
+
       if (traceThisRoutine) {
-        cat(file = stderr(), myPrepend,
-            paste("before try(read_csv(", pathnameOfStateLevelUpdateDataForDate(updateDate), "))\n", sep = ""))
-      }
-      updateTibble <- try(read_csv(pathnameOfStateLevelUpdateDataForDate(updateDate),
-                                   col_types = dataFileColTypes()))
-      if (traceThisRoutine) {
-        cat(file = stderr(), myPrepend, paste("after try(read_csv(",
-                                              pathnameOfStateLevelUpdateDataForDate(updateDate),
-                                              "))\n", sep = ""))
-      }
-      if (traceThisRoutine) {
-        cat(file = stderr(), myPrepend, "class of updateTibble is",
-            class(updateTibble)[1], "\n")
-      }
-      if (class(updateTibble)[1] == "try-error") {
-        if (traceThisRoutine) {
-          cat(file = stderr(), myPrepend,
-              "Can't read ", pathnameOfStateLevelUpdateDataForDate(updateDate), "\n")
-        }
-        cat(file = stderr(), myPrepend, "FATAL ERROR -- UPDATE DATA NOT FOUND\n")
-        stop()
-      } else {
-        if (traceThisRoutine) {
-          cat(file = stderr(), myPrepend, "We were able to read",
-              pathnameOfStateLevelUpdateDataForDate(updateDate),
-              "from local disk/SSD\n")
-        }
+        cat(file = stderr(), myPrepend, paste("downloaded the update data for",
+                                              columnDate, "\n", sep = ""))
       }
 
       if ("tbl" %in% class(updateTibble)) {
@@ -408,9 +411,11 @@ updateSerializedDataFilesAsNecessary <- function(staticDataQ = FALSE,
             if (class(oldData)[1] == "try-error") {
               cat(file = stderr(), myPrepend,
                   paste("read_csv(", oldLocalDataPath,") failed\n", sep=""))
-              cat(file = stderr(), myPrepend,
-                  "newLocalStateDataPath = ", newLocalStateDataPath, "\n")
             }
+            cat(file = stderr(), myPrepend, "last col of", oldLocalDataPath,
+                "is", names(oldData)[length(names(oldData))], "\n")
+            cat(file = stderr(), myPrepend,
+                "newLocalStateDataPath = ", newLocalStateDataPath, "\n")
           }
           joinTibble <- updateTibble %>%
             mutate(Combined_Key = paste(Province_State, ", US", sep=""),
@@ -418,49 +423,53 @@ updateSerializedDataFilesAsNecessary <- function(staticDataQ = FALSE,
                    .keep = "none")
           newData <- left_join(oldData, joinTibble, by="Combined_Key")
           write_csv(newData, newLocalStateDataPath)
+          if (traceThisRoutine) {
+            cat(file = stderr(), myPrepend,
+                "Wrote", newLocalStateDataPath, "with last col",
+                names(newData)[length(names(newData))],
+                "in updateSerializedDataFilesAsNecessary\n")
+            cat(file = cxn,
+                "Wrote", newLocalStateDataPath,
+                "in updateSerializedDataFilesAsNecessary\n")
+          }
         }
-        updateDate <- updateDate + 1
       } else {
         break;
       }
     }
-    US_State_Total_Test_Results <- read_csv("./DATA/US_State_Total_Test_Results.csv",
-                                            show_col_types = FALSE)
-    US_Total_Test_Results <- rebuildUSDataFileForTypeAsSummary(US_State_Total_Test_Results,
-                                                               "Total_Test_Results",
-                                                               traceThisRoutine = traceThisRoutine,
-                                                               prepend = myPrepend)
-    write_csv(US_Total_Test_Results, "./DATA/US_Total_Test_Results.csv")
+    mismatches <- remainingMismatches
+  }
 
-    US_Deaths <- read_csv("./DATA/US_Deaths.csv",
-                          show_col_types = FALSE)
-    US_Confirmed <- read_csv("./DATA/US_Confirmed.csv",
-                             show_col_types = FALSE)
-  
-    US_Case_Fatality_Ratio <- rebuildUSDataFileForTypeFromProperData(US_Deaths,
-                                                                     US_Confirmed,
-                                                                     "Case_Fatality_Ratio",
-                                                                     traceThisRoutine = traceThisRoutine,
-                                                                     prepend = myPrepend)
-    write_csv(US_Case_Fatality_Ratio, "./DATA/US_Case_Fatality_Ratio.csv")
-  
-    US_Incident_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Confirmed,
-                                                              "Incident_Rate",
-                                                              perHowMany = 100000,
-                                                              traceThisRoutine = traceThisRoutine,
-                                                              prepend = myPrepend)
-    write_csv(US_Incident_Rate, "./DATA/US_Incident_Rate.csv")
-  
-    US_Testing_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Total_Test_Results,
-                                                             "Testing_Rate",
-                                                             perHowMany = 100,
+  US_State_Total_Test_Results <- read_csv("./DATA/US_State_Total_Test_Results.csv",
+                                          show_col_types = FALSE)
+  US_Total_Test_Results <- rebuildUSDataFileForTypeAsSummary(US_State_Total_Test_Results,
+                                                             "Total_Test_Results",
                                                              traceThisRoutine = traceThisRoutine,
                                                              prepend = myPrepend)
 
-    write_csv(US_Testing_Rate, "./DATA/US_Testing_Rate.csv")
-
-  }
+  US_Deaths <- read_csv("./DATA/US_Deaths.csv",
+                        show_col_types = FALSE)
+  US_Confirmed <- read_csv("./DATA/US_Confirmed.csv",
+                           show_col_types = FALSE)
   
+  US_Case_Fatality_Ratio <- rebuildUSDataFileForTypeFromProperData(US_Deaths,
+                                                                   US_Confirmed,
+                                                                   "Case_Fatality_Ratio",
+                                                                   traceThisRoutine = traceThisRoutine,
+                                                                   prepend = myPrepend)
+
+  US_Incident_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Confirmed,
+                                                            "Incident_Rate",
+                                                            perHowMany = 100000,
+                                                            traceThisRoutine = traceThisRoutine,
+                                                            prepend = myPrepend)
+
+  US_Testing_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Total_Test_Results,
+                                                           "Testing_Rate",
+                                                           perHowMany = 100,
+                                                           traceThisRoutine = traceThisRoutine,
+                                                           prepend = myPrepend)
+
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving updateSerializedDataFilesAsNecessary\n")
   }

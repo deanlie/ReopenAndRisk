@@ -720,52 +720,22 @@ updateAllDataAsNecessary <- function(staticDataQ,
     updateTimeSeriesDataFilesAsNecessary(staticDataQ,
                                          traceThisRoutine = traceThisRoutine,
                                          prepend = myPrepend)
-    updateSerializedDataFilesAsNecessary(traceThisRoutine = traceThisRoutine,
-                                         prepend = myPrepend)
-  } else {
-    # The following call updated the following:
-    filesUpdatedInTimeSeriesCall <- c("US_Confirmed.csv",
-                                      "US_State_Confirmed.csv",
-                                      "US_County_Confirmed.csv",
-                                      "US_Deaths.csv",
-                                      "US_State_Deaths.csv",
-                                      "US_County_Deaths.csv",
-                                      "US_Vaccinations.csv",
-                                      "US_State_Vaccinations.csv")
-    # ... and left behind VaccTS_<today's date>.csv [VaccTS_11-24-2021.csv]
-    updateDataFilesForUSVaccTimeSeriesIfNeeded(staticDataQ,
-                                               traceThisRoutine = traceThisRoutine,
-                                               prepend = myPrepend)
-    updateTimeSeriesDataFilesAsNecessary(staticDataQ,
+    updateSerializedDataFilesAsNecessary(staticDataQ,
                                          traceThisRoutine = traceThisRoutine,
                                          prepend = myPrepend)
+  } else {
+    # updateDataFilesForUSVaccTimeSeriesIfNeeded(staticDataQ,
+    #                                            traceThisRoutine = traceThisRoutine,
+    #                                            prepend = myPrepend)
+    # updateTimeSeriesDataFilesAsNecessary(staticDataQ,
+    #                                      traceThisRoutine = traceThisRoutine,
+    #                                      prepend = myPrepend)
 
     # ******************************************************************* #
-    # The following call updated the following:
-    filesUpdatedInSerializedCall <- c("US_Testing_Rate.csv",
-                                      "US_State_Testing_Rate.csv",
-                                      "US_Incident_Rate.csv",
-                                      "US_State_Incident_Rate.csv",
-                                      "US_Case_Fatality_Ratio.csv",
-                                      "US_State_Case_Fatality_Ratio.csv",
-                                      "US_Total_Test_Results.csv",
-                                      "US_State_Total_Test_Results.csv")
-    # ... and left behind <yesterday's date>.csv [11-23-2021.csv]
+    # The following call left behind <yesterday's date>.csv [11-23-2021.csv]
     # updateSerializedDataFilesAsNecessary(staticDataQ,
     #                                       traceThisRoutine = traceThisRoutine,
     #                                       prepend = myPrepend)
-
-    # For testing clean as you go updates
-    # filesNeedingDailyData <- c("US_Confirmed.csv",
-    #                            "US_State_Confirmed.csv",
-    #                            "US_County_Confirmed.csv",
-    #                            "US_Confirmed.csv",
-    #                            "US_State_Confirmed.csv",
-    #                            "US_County_Confirmed.csv",
-    #                            "US_Confirmed.csv",
-    #                            "US_State_Confirmed.csv",
-    #                            "US_County_Confirmed.csv")
-    # updateDataGroupAndCleanUp(filesNeedingDailyData, today - 1)
   }
 
   if (traceThisRoutine) {

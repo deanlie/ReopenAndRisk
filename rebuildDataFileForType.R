@@ -330,12 +330,21 @@ rebuildStateDataFilesForTypes <- function(nDates = 60, stopNDaysBeforePresent = 
   #   # }
   # }
   
+  if (traceThisRoutine) {
+    cxn <- file("./DEVELOPMENT/fileWriteLog.txt", "a")
+  }
+  
   for (aType in c("Total_Test_Results", "Case_Fatality_Ratio", "Incident_Rate", "Testing_Rate")) {
     # Save the results
     write_csv(newStateTibbles[[aType]], newStateDataPathForType(aType))
+    if (traceThisRoutine) {
+      cat(file = cxn, "Wrote", newStateDataPathForType(aType),
+          "in rebuileStateDataFilesForTypes\n")
+    }
   }
   
   if (traceThisRoutine) {
+    close(cxn)
     cat(file = stderr(), prepend, "Leaving rebuildStateDataFilesForTypes\n")
   }
   
@@ -374,6 +383,10 @@ rebuildUSDataFileForTypeAsSummary <- function(stateDataTibble, aType,
   write_csv(newUSDataTibble, USDataFileName)
 
   if (traceThisRoutine) {
+    cxn <- file("./DEVELOPMENT/fileWriteLog.txt", "a")
+    cat(file = cxn, "Wrote", USDataFileName,
+        "in rebuildUSDataFileForTypeAsSummary\n")
+    close(cxn)
     cat(file = stderr(), prepend, "Leaving rebuildUSDataFileForTypeAsSummary\n")
   }
   
@@ -417,6 +430,10 @@ rebuildUSDataFileForTypeAsWeightedAvg <- function(stateTibble, aType,
   write_csv(newUSTibble, newUSDataPathForType(aType0))
 
   if (traceThisRoutine) {
+    cxn <- file("./DEVELOPMENT/fileWriteLog.txt", "a")
+    cat(file = cxn, "Wrote", newUSDataPathForType(aType0),
+        "in rebuildUSDataFileForTypeAsWeightedAvg\n")
+    close(cxn)
     cat(file = stderr(), prepend, "Leaving rebuildUSDataFileForTypeAsWeightedAvg\n")
   }
   
@@ -463,6 +480,10 @@ rebuildUSDataFileForTypeFromProperData <- function(USNumeratorTibble,
   write_csv(newUSTibble, newUSDataPathForType(aType))
 
   if (traceThisRoutine) {
+    cxn <- file("./DEVELOPMENT/fileWriteLog.txt", "a")
+    cat(file = cxn, "Wrote", newUSDataPathForType(aType),
+        "in rebuildUSDataFileForTypeFromProperData\n")
+    close(cxn)
     cat(file = stderr(), prepend, "Leaving rebuildUSDataFileForTypeFromProperData\n")
   }
   
@@ -500,81 +521,19 @@ rebuildUSDataFileForTypeByNormalizing <- function(USNumeratorTibble,
   write_csv(newUSTibble, newUSDataPathForType(aType))
 
   if (traceThisRoutine) {
+    cxn <- file("./DEVELOPMENT/fileWriteLog.txt", "a")
+    cat(file = cxn,
+        "Wrote", newUSDataPathForType(aType),
+        "in rebuildUSDataFileForTypeByNormalizing\n")
+    close(cxn)
     cat(file = stderr(), prepend, "Leaving rebuildUSDataFileForTypeByNormalizing\n")
   }
   
   return(newUSTibble)
 }
 
-rebuildUSDataFilesForTypes <- function(stateTibbles, traceThisRoutine = FALSE, prepend = "") {
-  myPrepend = paste("  ", prepend, sep = "")
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Entered rebuildUSDataFilesForTypes\n")
-  }
-  
-  US_Total_Test_Results <- rebuildUSDataFileForTypeAsSummary(stateTibbles$Total_Test_Results,
-                                                             "Total_Test_Results",
-                                                             traceThisRoutine = traceThisRoutine,
-                                                             prepend = myPrepend)
-  
-  US_Deaths <- read_csv("./DATA/US_Deaths.csv",
-                        col_types = myTSColTypes())
-  US_Confirmed <- read_csv("./DATA/US_Confirmed.csv",
-                           col_types = myTSColTypes())
-  
-  # Hypothesis: Case_Fatality_Ratio <- Deaths / Confirmed
-  US_Case_Fatality_Ratio_0 <- rebuildUSDataFileForTypeAsWeightedAvg(stateTibbles$Case_Fatality_Ratio,
-                                                                    "Case_Fatality_Ratio",
-                                                                    traceThisRoutine = traceThisRoutine,
-                                                                    prepend = myPrepend)
-  
-  US_Case_Fatality_Ratio <- rebuildUSDataFileForTypeFromProperData(US_Deaths,
-                                                                   US_Confirmed,
-                                                                   "Case_Fatality_Ratio",
-                                                                   traceThisRoutine = traceThisRoutine,
-                                                                   prepend = myPrepend)
-  
-  # Hypothesis: Incident_Rate <- Confirmed / Population * 100000
-  US_Incident_Rate_0 <- rebuildUSDataFileForTypeAsWeightedAvg(stateTibbles$Incident_Rate,
-                                                              "Incident_Rate",
-                                                              traceThisRoutine = traceThisRoutine,
-                                                              prepend = myPrepend)
-  US_Incident_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Confirmed,
-                                                            "Incident_Rate",
-                                                            perHowMany = 100000,
-                                                            traceThisRoutine = traceThisRoutine,
-                                                            prepend = myPrepend)
-  
-  # Hypothesis: Testing_Rate <- Total_Test_Results / Population * 100000
-  US_Testing_Rate_0 <- rebuildUSDataFileForTypeAsWeightedAvg(stateTibbles$Testing_Rate,
-                                                             "Testing_Rate",
-                                                             traceThisRoutine = traceThisRoutine,
-                                                             prepend = myPrepend)
-  US_Testing_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Total_Test_Results,
-                                                           "Testing_Rate",
-                                                           perHowMany = 100,
-                                                           traceThisRoutine = traceThisRoutine,
-                                                           prepend = myPrepend)
-  
-  newUSTibbles <- list(US_TTR = US_Total_Test_Results,
-                       US_CFR_i = US_Case_Fatality_Ratio_0$IM,
-                       US_CFR_0 = US_Case_Fatality_Ratio_0$FF,
-                       US_CFR = US_Case_Fatality_Ratio,
-                       US_IR_i = US_Incident_Rate_0$IM,
-                       US_IR_0 = US_Incident_Rate_0$FF,
-                       US_IR = US_Incident_Rate,
-                       US_TR_i = US_Testing_Rate_0$IM,
-                       US_TR_0 = US_Testing_Rate_0$FF,
-                       US_TR = US_Testing_Rate)
-  
-  if (traceThisRoutine) {
-    cat(file = stderr(), prepend, "Leaving rebuildUSDataFilesForTypes\n")
-  }
-  
-  return(newUSTibbles)
-}
 
-rebuildUSDataFilesForTypes_B <- function(stateTibbles, traceThisRoutine = FALSE, prepend = "") {
+rebuildUSDataFilesForTypes <- function(stateTibbles, traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered rebuildUSDataFilesForTypes\n")
@@ -629,62 +588,11 @@ rebuildFourTypes <-  function(traceThisRoutine = FALSE, prepend = "") {
   newStateTibbles <- rebuildStateDataFilesForTypes(traceThisRoutine = traceThisRoutine,
                                                    prepend = myPrepend)
   
-  newUSTibbles <- rebuildUSDataFilesForTypes(newStateTibbles,
-                                             traceThisRoutine = traceThisRoutine,
-                                             prepend = "")
-  
-  # US_Total_Test_Results <- rebuildUSDataFileForTypeAsSummary(newStateTibbles$Total_Test_Results,
-  #                                                            "Total_Test_Results",
-  #                                                            traceThisRoutine = traceThisRoutine,
-  #                                                            prepend = myPrepend)
-  # 
-  # US_Deaths <- read_csv("./DATA/US_Deaths.csv",
-  #                       col_types = myTSColTypes())
-  # US_Confirmed <- read_csv("./DATA/US_Confirmed.csv",
-  #                          col_types = myTSColTypes())
-  # 
-  # # Hypothesis: Case_Fatality_Ratio <- Deaths / Confirmed
-  # US_Case_Fatality_Ratio_0 <- rebuildUSDataFileForTypeAsWeightedAvg(newStateTibbles$Case_Fatality_Ratio,
-  #                                                                   "Case_Fatality_Ratio",
-  #                                                                   traceThisRoutine = traceThisRoutine,
-  #                                                                   prepend = myPrepend)
-  # 
-  # US_Case_Fatality_Ratio <- rebuildUSDataFileForTypeFromProperData(US_Deaths,
-  #                                                                  US_Confirmed,
-  #                                                                  "Case_Fatality_Ratio",
-  #                                                                  traceThisRoutine = traceThisRoutine,
-  #                                                                  prepend = myPrepend)
-  # 
-  # # Hypothesis: Incident_Rate <- Confirmed / Population * 100000
-  # US_Incident_Rate_0 <- rebuildUSDataFileForTypeAsWeightedAvg(newStateTibbles$Incident_Rate,
-  #                                                             "Incident_Rate",
-  #                                                             traceThisRoutine = traceThisRoutine,
-  #                                                             prepend = myPrepend)
-  # US_Incident_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Confirmed,
-  #                                                           "Incident_Rate",
-  #                                                           traceThisRoutine = traceThisRoutine,
-  #                                                           prepend = myPrepend)
-  # 
-  # # Hypothesis: Testing_Rate <- Total_Test_Results / Population * 100000
-  # US_Testing_Rate_0 <- rebuildUSDataFileForTypeAsWeightedAvg(newStateTibbles$Testing_Rate,
-  #                                                            "Testing_Rate",
-  #                                                            perHowMany = 100,
-  #                                                            traceThisRoutine = traceThisRoutine,
-  #                                                            prepend = myPrepend)
-  # US_Testing_Rate <- rebuildUSDataFileForTypeByNormalizing(US_Total_Test_Results,
-  #                                                          "Testing_Rate",
-  #                                                          traceThisRoutine = traceThisRoutine,
-  #                                                          prepend = myPrepend)
+  rebuildUSDataFilesForTypes(newStateTibbles,
+                             traceThisRoutine = traceThisRoutine,
+                             prepend = "")
 
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving rebuildFourTypes\n")
   }
-  
-  list(US_TTR = US_Total_Test_Results,
-       US_CFR_0 = US_Case_Fatality_Ratio_0,
-       US_CFR = US_Case_Fatality_Ratio,
-       US_IR_0 = US_Incident_Rate_0,
-       US_IR = US_Incident_Rate,
-       US_TR_0 = US_Testing_Rate_0,
-       US_TR = US_Testing_Rate)
 }
