@@ -3,6 +3,7 @@ library(tidyverse)
 source("downloadJHUData.R")
 source("updateTimeSeriesDataFilesAsNecessary.R")
 source("loadAllUSData.R")
+source("testFileReconstruction.R")
 
 lastColName <- function(fileStemName,
                         traceThisRoutine = FALSE) {
@@ -20,25 +21,6 @@ lastColName <- function(fileStemName,
 
 vaccDataFileBaseNames <- function() {
   return(c("US_Vaccinations",
-           "US_State_Vaccinations"))
-}
-
-dataFileBaseNames <- function() {
-  return(c("US_Confirmed",
-           "US_State_Confirmed",
-           "US_County_Confirmed",
-           "US_Deaths",
-           "US_State_Deaths",
-           "US_County_Deaths",
-           "US_Case_Fatality_Ratio",
-           "US_State_Case_Fatality_Ratio",
-           "US_Incident_Rate",
-           "US_State_Incident_Rate",
-           "US_Testing_Rate",
-           "US_State_Testing_Rate",
-           "US_Total_Test_Results",
-           "US_State_Total_Test_Results",
-           "US_Vaccinations",
            "US_State_Vaccinations"))
 }
 
@@ -178,55 +160,8 @@ restoreVaccFileTestEnvironment <- function(staticDataQ = FALSE,
             "./DATA/ClipDates/TarFiles/UpdateVaccTestData.tar"))
 }
 
-filterATibble <- function(aTibble,
-                          traceThisRoutine = FALSE,
-                          prepend = "") {
-  myPrepend = paste("  ", prepend, sep = "")
-  traceFlagOnEntry <- traceThisRoutine
-  if (traceFlagOnEntry) {
-    cat(file = stderr(), prepend, "Entered filterATibble\n")
-  }
-  
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "input tibble has",
-        dim(aTibble)[2], "columns\n")    
-  }
 
-  resTibble <- aTibble %>%
-    select(Combined_Key, last_col(5):last_col()) %>%
-    filter((Combined_Key == "Autauga, Alabama, US") |
-             (Combined_Key == "Escambia, Alabama, US") |
-             (Combined_Key == "Kent, Delaware, US") |
-             (Combined_Key == "New Castle, Delaware, US") |
-             (Combined_Key == "Sussex, Delaware, US") |
-             (Combined_Key == "Honolulu, Hawaii, US") |
-             (Combined_Key == "Kalawao, Hawaii, US") |
-             (Combined_Key == "Maui, Hawaii, US") |
-             (Combined_Key == "Coshocton, Ohio, US") |
-             (Combined_Key == "Gallia, Ohio, US") |
-             (Combined_Key == "Cuyahoga, Ohio, US") |
-             (Combined_Key == "Greene, Ohio, US") |
-             (Combined_Key == "Boone, West Virginia, US") |
-             (Combined_Key == "Monongalia, West Virginia, US") |
-             (Combined_Key == "Alabama, US") |
-             (Combined_Key == "Delaware, US") |
-             (Combined_Key == "Hawaii, US") |
-             (Combined_Key == "Ohio, US") |
-             (Combined_Key == "West Virginia, US") |
-             (Combined_Key == "US"))
-  
-  if (traceThisRoutine) {
-    cat(file = stderr(), myPrepend, "Filtered tibble has",
-          dim(resTibble)[2], "columns and", dim(resTibble)[1], "row(s)\n")
-  }
-  
-  if (traceFlagOnEntry) {
-    cat(file = stderr(), prepend, "Leaving filterATibble\n")
-  }
-  return(resTibble)
-}
-
-saveFilteredFile <- function(resTibble,
+saveFilteredFile <- function(resultTibble,
                              fileBaseName,
                              destDirectory,
                              traceThisRoutine = FALSE,
@@ -238,7 +173,7 @@ saveFilteredFile <- function(resTibble,
   }
 
   destPath <- paste(destDirectory, fileBaseName, ".csv", sep = "")
-  write_csv(resTibble, destPath)
+  write_csv(resultTibble, destPath)
   
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "Saved", destPath, "\n")    
@@ -247,10 +182,65 @@ saveFilteredFile <- function(resTibble,
   if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Leaving saveFilteredFile\n")
   }
-  
 }
 
-checkFilteredFile <- function(resTibble,
+
+compareFileWithReference <- function(fileBaseName,
+                                     resultDirectory = "./DATA/",
+                                     referenceDirectory = "./DATA/REFERENCE/",
+                                     traceThisRoutine = FALSE,
+                                     prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  traceFlagOnEntry <- traceThisRoutine
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend,
+        "Entered compareFileWithReference", fileBaseName, "\n")
+  }
+  
+  resultPath <- paste(resultDirectory, fileBaseName, ".csv", sep = "")
+  resultTibble <- read_csv(resultPath, show_col_types = FALSE)
+  
+  referencePath <- paste(referenceDirectory, fileBaseName, ".csv", sep = "")
+  referenceTibble <- read_csv(referencePath, show_col_types = FALSE)
+  
+  nFails <- compareTibbleWithReference(resultTibble,
+                                       referenceTibble,
+                                       fileBaseName,
+                                       traceThisRoutine = traceThisRoutine,
+                                       prepend = myPrepend)
+
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Leaving compareFileWithReference\n")
+  }
+  
+  return(nFails)
+}
+
+getFilteredTibbleFromRawFile <- function(fileBaseName,
+                                         sourceDirectory,
+                                         traceThisRoutine = FALSE,
+                                         prepend = "") {
+  myPrepend = paste("  ", prepend, sep = "")
+  traceFlagOnEntry <- traceThisRoutine
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend,
+        "Entered getFilteredTibbleFromRawFile", fileBaseName, "\n")
+  }
+
+  thePath <- paste(sourceDirectory, fileBaseName, ".csv", sep = "")
+  theTibblePlus <- read_csv(thePath, show_col_types = FALSE)
+  theTibble <- filterATibble(theTibblePlus,
+                             traceThisRoutine = traceThisRoutine,
+                             prepend = myPrepend)
+
+  if (traceFlagOnEntry) {
+    cat(file = stderr(), prepend, "Leaving getFilteredTibbleFromRawFile\n")
+  }
+  
+  return(theTibble)
+}
+
+checkFilteredFile <- function(resultTibble,
                               fileBaseName,
                               referenceDirectory,
                               traceThisRoutine = FALSE,
@@ -261,71 +251,53 @@ checkFilteredFile <- function(resTibble,
     cat(file = stderr(), prepend,
         "Entered checkFilteredFile", fileBaseName, "\n")
   }
+  
+  referenceTibble <- getFilteredTibbleFromRawFile(fileBaseName,
+                                                  referenceDirectory,
+                                                  traceThisRoutine = traceThisRoutine,
+                                                  prepend = myPrepend)
 
-  maxNFails <- 5
-  nFails <- 0  
-  referencePath <- paste(referenceDirectory, fileBaseName, ".csv", sep = "")
-  referenceTibblePlus <- read_csv(referencePath, show_col_types = FALSE)
-  referenceTibble <- filterATibble(referenceTibblePlus,
-                                   traceThisRoutine = traceThisRoutine,
-                                   prepend = myPrepend)
-  if ((dim(referenceTibble)[1] == dim(resTibble)[1]) &&
-      (dim(referenceTibble)[2] == dim(resTibble)[2])) {
-    for (i in 1:dim(referenceTibble)[1]) { # for each row
-      if (referenceTibble[i, 1] != resTibble[i, 1]) {
-        if ((nFails < maxNFails) && (traceThisRoutine)) {
-          cat(file = stderr(), myPrepend,
-              " CombinedKey[", i, "] was ", resTibble[i, 1],
-              " expected ", referenceTibble[i, 1], sep = "")
-        }
-        nFails <- nFails + 1
-      }
-      for (j in 2:dim(referenceTibble)[2]) {
-        if (!is.na(referenceTibble[i, j]) && !is.na(resTibble[i, j])) {
-          if ((as.double(referenceTibble[i, j]) != as.double(resTibble[i, j]))) {
-            if ((nFails < maxNFails) && (traceThisRoutine)) {
-              cat(file = stderr(), myPrepend,
-                  " resTibble[", i,", ", j, "] was ", as.double(resTibble[i, j]),
-                  " expected ", as.double(referenceTibble[i, j]), "\n", sep = "")
-            }
-            nFails <- nFails + 1
-          }
-        } else {
-          if ((is.na(referenceTibble[i, j]) && !is.na(resTibble[i, j])) ||
-              (!is.na(referenceTibble[i, j]) && is.na(resTibble[i, j]))) {
-            nFails <- nFails + 1
-            if ((nFails < maxNFails) && (traceThisRoutine)) {
-              cat(file = stderr(), myPrepend,
-                  " NA vs value at resTibble[", i,", ", j, "]\n", sep = "")
-            }
-          }
-        }
-      }
-    }
-  } else {
-    nFails <- nFails + 1
-    if (traceThisRoutine) {
-      cat(file = stderr(), myPrepend,
-          " Array size mismatch, ",
-          "resTibble[", dim(resTibble)[1], ", ", dim(resTibble)[2], "], ",
-          "referenceTibble[", dim(referenceTibble)[1], ", ",
-          dim(referenceTibble)[2], "]\n", sep = "")
-    }
-  }
-
-  if (traceThisRoutine) {
-    if (nFails == 0) {
-      cat(file = stderr(), myPrepend, "comparison succeeds.\n")
-    } else {
-      cat(file = stderr(), myPrepend, "comparison has", nFails, "failures.\n")    
-    }
-  }
+  nFails <- compareTibbleWithReference(resultTibble,
+                                       referenceTibble,
+                                       fileBaseName,
+                                       traceThisRoutine = traceThisRoutine,
+                                       prepend = myPrepend)
   
   if (traceFlagOnEntry) {
     cat(file = stderr(), prepend, "Leaving checkFilteredFile\n")
   }
   
   return(nFails)
+}
+
+checkOne <- function(fileBaseName,
+                     resultDirectory = "./DATA/",
+                     referenceDirectory = "./DATA/REFERENCE/",
+                     filterThem = TRUE,
+                     traceThisRoutine = TRUE) {
+  if(traceThisRoutine) {
+    cat(file = stderr(), "Checking", fileBaseName, "\n")
+  }
+  resultPath <- paste(resultDirectory, fileBaseName, ".csv", sep = "")
+  refPath <- paste(referenceDirectory, fileBaseName, ".csv", sep = "")
+  
+  sourceTibble <- read_csv(resultPath, show_col_types = FALSE)
+  refTibble <- read_csv(refPath, show_col_types = FALSE)
+  
+  if (filterThem) {
+    filteredSourceTibble <- filterATibble(sourceTibble,
+                                          traceThisRoutine = traceThisRoutine,
+                                          prepend = "  ")
+    filteredRefTibble <- filterATibble(refTibble,
+                                       traceThisRoutine = traceThisRoutine,
+                                       prepend = "  ")
+    combinedTibble <- bind_rows(filteredRefTibble, filteredSourceTibble)
+  } else {
+    combinedTibble <- bind_rows(refTibble, sourceTibble)
+  }
+  
+  View(combinedTibble)
+  x <- 1
 }
 
 filterMaybeSaveOrCheckFile <- function(fileBaseName,
@@ -346,20 +318,20 @@ filterMaybeSaveOrCheckFile <- function(fileBaseName,
   sourcePath <- paste(sourceDirectory, fileBaseName, ".csv", sep = "")
   
   aTibble <- read_csv(sourcePath, show_col_types = FALSE)
-  resTibble <- filterATibble(aTibble,
+  resultTibble <- filterATibble(aTibble,
                              traceThisRoutine = traceThisRoutine,
                              prepend = myPrepend)
   nFails <- 0
 
   if (!is.null(destDirectory)) {
-    saveFilteredFile(resTibble,
+    saveFilteredFile(resultTibble,
                      fileBaseName,
                      destDirectory,
                      traceThisRoutine,
                      myPrepend)
   }
   if (!is.null(referenceDirectory)) {
-    nFails <- checkFilteredFile(resTibble,
+    nFails <- checkFilteredFile(resultTibble,
                                 fileBaseName,
                                 referenceDirectory,
                                 traceThisRoutine,
@@ -398,14 +370,12 @@ filterMaybeSaveOrCheck <- function(fileBaseList,
                                              myPrepend)
     
     nFails <- nFails + nFileFails
-    if (nFileFails > 0) {
-      if (traceFlagOnEntry) {
-        cat(file = stderr(), myPrepend,
-            fileBase, "FAILS at", nFileFails, "locations \n")
-      }
-    } else {
-      if (traceFlagOnEntry) {
-        cat(file = stderr(), myPrepend, fileBase, "passes\n")
+    if (traceFlagOnEntry) {
+      cat(file = stderr(), myPrepend, fileBase)
+      if (nFileFails > 0) {
+        cat(file = stderr(), "FAILS at", nFileFails, "locations \n")
+      } else {
+        cat(file = stderr(), "passes\n")
       }
     }
   }
@@ -415,6 +385,93 @@ filterMaybeSaveOrCheck <- function(fileBaseList,
     cat(file = stderr(), prepend, "Leaving filterMaybeSaveOrCheck\n")
   }
 
+  return(nFails)
+}
+
+evaluateFileResultAcrossProjects <- function(fileBaseName,
+                                             resultDirectory,
+                                             referenceDirectory,
+                                             doFilter = TRUE,
+                                             maxNFails = 5,
+                                             traceThisRoutine = FALSE,
+                                             prepend = "")
+{
+  myPrepend <- paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend, "Enter evaluateFileResultAcrossProjects\n")
+  }
+
+  resultPath <- paste(resultDirectory, fileBaseName, ".csv", sep = "")
+  refPath <- paste(referenceDirectory, fileBaseName, ".csv", sep = "")
+  
+  resultTibble <- read_csv(resultPath, show_col_types = FALSE)
+  refTibble <- read_csv(refPath, show_col_types = FALSE)
+  
+  if (doFilter) {
+    resultTibble <- filterATibble(resultTibble,
+                                  traceThisRoutine = traceThisRoutine,
+                                  prepend = myPrepend)
+    refTibble <- filterATibble(refTibble,
+                               traceThisRoutine = traceThisRoutine,
+                               prepend = myPrepend)
+  }
+
+  nFails <- compareTibbleWithReference(resultTibble,
+                                       refTibble,
+                                       fileBaseName,
+                                       maxNFails = maxNFails,
+                                       traceThisRoutine = traceThisRoutine,
+                                       prepend = myPrepend)
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "nFails was", nFails, "\n")
+    cat(file = stderr(), prepend, "Leaving evaluateFileResultAcrossProjects\n")
+  }
+  
+  return(nFails)
+}
+
+evaluateFileListResultsAcrossProjects <- function(fileBaseList,
+                                                  sourceDir,
+                                                  referenceDir,
+                                                  doFilter = TRUE,
+                                                  maxNFails = 5,
+                                                  traceEachFile = FALSE,
+                                                  traceThisRoutine = FALSE,
+                                                  prepend = "") {
+  myPrepend <- paste("  ", prepend, sep = "")
+  if (traceThisRoutine) {
+    cat(file = stderr(), prepend,
+        "Enter evaluateFileListResultsAcrossProjects\n")
+  }
+
+  nFails <- 0
+  
+  for (fileBase in fileBaseList) {
+    nFileFails <- evaluateFileResultAcrossProjects(fileBase,
+                                                   sourceDir,
+                                                   referenceDir,
+                                                   doFilter = doFilter,
+                                                   maxNFails = maxNFails,
+                                                   traceThisRoutine = traceEachFile,
+                                                   prepend = myPrepend)
+    
+    nFails <- nFails + nFileFails
+    if (traceThisRoutine) {
+      cat(file = stderr(), myPrepend, fileBase)
+      if (nFileFails > 0) {
+        cat(file = stderr(), " FAILS at", nFileFails, "location(s) \n")
+      } else {
+        cat(file = stderr(), " passes\n")
+      }
+    }
+  }
+
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "nFails was", nFails, "\n")
+    cat(file = stderr(), prepend, "Leaving evaluateFileListResultsAcrossProjects\n")
+  }
+  
   return(nFails)
 }
 
@@ -489,12 +546,12 @@ mungeAndTest <- function(fileBaseName,
   sourceTibble <- read_csv(paste(sourceDirectory, fileBaseName, ".csv", sep = ""),
                            show_col_types = FALSE)
   # Filter it
-  resTibble <- filterATibble(sourceTibble,
+  resultTibble <- filterATibble(sourceTibble,
                              traceThisRoutine = traceThisRoutine,
                              prepend = myPrepend)
   # Modify one or more values
-  resTibble[1, 6] <- as.double(resTibble[1,6]) - 5.0
-  resTibble[1, 4] <- NA
+  resultTibble[1, 6] <- as.double(resultTibble[1,6]) - 5.0
+  resultTibble[1, 4] <- NA
   nExpectedFails <- 2
   
   if (traceThisRoutine) {
@@ -502,7 +559,7 @@ mungeAndTest <- function(fileBaseName,
         nExpectedFails, "failures\n")
   }
   
-  nFails <- checkFilteredFile(resTibble,
+  nFails <- checkFilteredFile(resultTibble,
                               fileBaseName,
                               sourceDirectory,
                               traceThisRoutine = traceThisRoutine,
@@ -532,6 +589,70 @@ thisFails <- function() {
                                      "./DATA/STATIC3/",
                                      traceThisRoutine = TRUE,
                                      prepend = "")
+}
+
+# 
+coreOfUpdateRoutine <- function(mismatches) {
+  # OUCH
+  while (dim(mismatches)[1] > 0) {
+    firstDate <- mismatches$lastUpdate[1] + 1
+    firstGroup <- filter(mismatches, lastUpdate <= {{firstDate}})
+    if (traceThisRoutine) {
+      cat(file = stderr(), myPrepend, dim(firstGroup)[1],
+          "files only updated to", firstDate, "\n")
+    }
+    remainingMismatches <- filter(mismatches, lastUpdate >= {{firstDate}})
+    if (dim(remainingMismatches)[1] > 0) {
+      if (traceThisRoutine) {
+        cat(file = stderr(), myPrepend, dim(remainingMismatches)[1],
+            "files remaining\n")
+      }
+      nextDate <- remainingMismatches$lastUpdate[1]
+    } else {
+      if (traceThisRoutine) {
+        cat(file = stderr(), myPrepend, "... that's all.\n")
+      }
+      nextDate <- desiredLatestDate
+    }
+    for (aDate in (firstDate:nextDate)) {
+      if (traceThisRoutine) {
+        cat(file = stderr(), myPrepend, "Updating to", aDate, "\n")
+      }
+      # OUCH call the real update routine here! It can be a parameter
+      #   of this routine.
+    }
+    mismatches <- remainingMismatches
+  }
+}
+
+test1 <- function() {
+  sourceDir <- "../RefactorAndRisk/DATA/"
+  referenceDir <- "../ReopenAndRisk/DATA/"
+
+  fileBaseList1 <- dataFileBaseNames()
+  evaluateFileListResultsAcrossProjects(fileBaseList1,
+                                        sourceDir,
+                                        referenceDir,
+                                        doFilter = TRUE,
+                                        maxNFails = 5,
+                                        traceEachFile = FALSE,
+                                        traceThisRoutine = TRUE,
+                                        prepend = "")
+
+  problemFileBaseList = c("US_Confirmed",
+                          "US_Deaths",
+                          "US_Case_Fatality_Ratio",
+                          "US_State_Case_Fatality_Ratio",
+                          "US_Incident_Rate",
+                          "US_State_Incident_Rate")
+  evaluateFileListResultsAcrossProjects(problemFileBaseList,
+                                        sourceDir,
+                                        referenceDir,
+                                        doFilter = FALSE,
+                                        maxNFails = 10,
+                                        traceEachFile = TRUE,
+                                        traceThisRoutine = TRUE,
+                                        prepend = "")
 }
 
 testSuite <- function(firstInDay = FALSE,
@@ -573,5 +694,3 @@ testSuite <- function(firstInDay = FALSE,
     cat(file = stderr(), prepend, "Leaving testSuite\n")
   }
 }
-
-  
