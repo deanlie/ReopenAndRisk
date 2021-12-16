@@ -53,11 +53,17 @@ deriveRecentUSDataFromCountyLevelData <- function(rawData,
 updateDataForUSTimeSeriesType <- function(aType, traceThisRoutine = FALSE, prepend = "") {
     
   # Local function! Haven't seen those since Pascal!
-  tryWrite <- function(aTibble, aPath) {
+  tryWrite <- function(aTibble, aPath, logThisWrite = FALSE) {
     w1 <- try(write_csv(aTibble, aPath))
     if (class(w1)[1] == "try-error") {
       print(paste("Write to ", aPath, " failed!", sep=""))
       print(paste("   ", attributes(w1)["condition"]))
+    } else {
+      if (logThisWrite) {
+        cat(file = cxn,
+            "Wrote", aPath,
+            "in updateDataForUSTimeSeriesType:tryWrite\n")
+      }
     }
   }
   
@@ -85,9 +91,15 @@ updateDataForUSTimeSeriesType <- function(aType, traceThisRoutine = FALSE, prepe
     US_county_data_path <- paste(theDataDir, "US_County_", aType, ".csv", sep="")
     
     if (file.access(theDataDir, mode = 2) == 0) {
-      tryWrite(threeTibbles$US, US_data_path)
-      tryWrite(threeTibbles$States, US_state_data_path)
-      tryWrite(threeTibbles$Counties, US_county_data_path)
+      if (traceThisRoutine) {
+        cxn <- file("./DEVELOPMENT/fileWriteLog.txt", "a")
+      }
+      tryWrite(threeTibbles$US, US_data_path, logThisWrite = traceThisRoutine)
+      tryWrite(threeTibbles$States, US_state_data_path, logThisWrite = traceThisRoutine)
+      tryWrite(threeTibbles$Counties, US_county_data_path, logThisWrite = traceThisRoutine)
+      if (traceThisRoutine) {
+        close(cxn)
+      }
     } else {
       print(paste("No write access to ", theDataDir, sep=""))
     }
@@ -306,11 +318,17 @@ gatheredVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = "") 
 
 saveTwoVaccinationDataFiles <- function(theData, traceThisRoutine = FALSE, prepend = "") {
   # Local function! Haven't seen those since Pascal!
-  tryWrite <- function(aTibble, aPath) {
+  tryWrite <- function(aTibble, aPath, logThisWrite = FALSE) {
     w1 <- try(write_csv(aTibble, aPath))
     if (class(w1)[1] == "try-error") {
       print(paste("Write to ", aPath, " failed!", sep=""))
       print(paste("   ", attributes(w1)["condition"]))
+    } else {
+      if (logThisWrite) {
+        cat(file = cxn,
+            "Wrote", aPath,
+            "in saveTwoVaccinationDataFiles:tryWrite\n")
+      }
     }
   }
   
@@ -330,12 +348,14 @@ saveTwoVaccinationDataFiles <- function(theData, traceThisRoutine = FALSE, prepe
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "US file   ", US_file_name, "\n")
     cat(file = stderr(), myPrepend, "State file", US_State_file_name, "\n")
+    cxn <- file("./DEVELOPMENT/fileWriteLog.txt", "a")
   }
   
-  tryWrite(US_Data, US_file_name)
-  tryWrite(State_Data, US_State_file_name)
+  tryWrite(US_Data, US_file_name, logThisWrite = traceThisRoutine)
+  tryWrite(State_Data, US_State_file_name, logThisWrite = traceThisRoutine)
 
   if (traceThisRoutine) {
+    close(cxn)
     cat(file = stderr(), prepend, "Leaving saveTwoVaccinationDataFiles\n")
   }
 }
@@ -485,10 +505,19 @@ updateDataForUSVaccTimeSeries <- function(traceThisRoutine = FALSE,
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "Writing updated files!\n")
   }
+  
   write_csv(buildUSData, "./DATA/US_Vaccinations.csv")
   write_csv(buildStateData, "./DATA/US_State_Vaccinations.csv")
   
   if (traceThisRoutine) {
+    cxn <- file("./DEVELOPMENT/fileWriteLog.txt", "a")
+    cat(file = cxn,
+        "Wrote ./DATA/US_Vaccinations.csv",
+        "in updateDataForUSVaccTimeSeries\n")
+    cat(file = cxn,
+        "Wrote ./DATA/US_State_Vaccinations.csv",
+        "in updateDataForUSVaccTimeSeries\n")
+    close(cxn)
     cat(file = stderr(), prepend, "Leaving updateDataForUSVaccTimeSeries\n")
   }
 }
@@ -646,37 +675,10 @@ updateTimeSeriesDataFilesAsNecessary <- function(staticDataQ = FALSE,
                                             traceThisRoutine = traceThisRoutine,
                                             prepend = myPrepend)
   
-  # OUCH
-  while (dim(mismatches)[1] > 0) {
-    firstDate <- mismatches$lastUpdate[1] + 1
-    firstGroup <- filter(mismatches, lastUpdate <= {{firstDate}})
-    if (traceThisRoutine) {
-      cat(file = stderr(), myPrepend, dim(firstGroup)[1],
-          "files only updated to", firstDate, "\n")
+  if (dim(mismatches)[1] > 0) {
+    for (aType in c("Confirmed", "Deaths")) {
+      updateDataFilesForUSTimeSeriesTypeIfNeeded(aType, traceThisRoutine = traceThisRoutine, prepend = myPrepend)
     }
-    remainingMismatches <- filter(mismatches, lastUpdate >= {{firstDate}})
-    if (dim(remainingMismatches)[1] > 0) {
-      if (traceThisRoutine) {
-        cat(file = stderr(), myPrepend, dim(remainingMismatches)[1],
-            "files remaining\n")
-      }
-      nextDate <- remainingMismatches$lastUpdate[1]
-    } else {
-      if (traceThisRoutine) {
-        cat(file = stderr(), myPrepend, "... that's all.\n")
-      }
-      nextDate <- desiredLatestDate
-    }
-    for (aDate in (firstDate:nextDate)) {
-      if (traceThisRoutine) {
-        cat(file = stderr(), myPrepend, "Updating to", aDate, "\n")
-      }    
-    }
-    mismatches <- remainingMismatches
-  }
-
-  for (aType in c("Confirmed", "Deaths")) {
-    updateDataFilesForUSTimeSeriesTypeIfNeeded(aType, traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   }
 
   if (traceThisRoutine) {
