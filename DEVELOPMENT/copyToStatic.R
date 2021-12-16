@@ -216,13 +216,6 @@ redoUSFiles <- function() {
                Case_Fatality_Ratio = getInputData(StateFileName("Case_Fatality_Ratio")),
                Incident_Rate = getInputData(StateFileName("Incident_Rate")),
                Testing_Rate = getInputData(StateFileName("Testing_Rate")))
-#  newUST <- rebuildUSDataFilesForTypes(newST, traceThisRoutine = TRUE, prepend = "")
-  
-  newUST2 <- rebuildUSDataFilesForTypes_B(newST, traceThisRoutine = TRUE, prepend = "")
-  
-  writeOutputData(newUST2$US_TTR, USFileName("Total_Test_Results"))
-  writeOutputData(newUST2$US_CFR, USFileName("Case_Fatality_Ratio"))
-  writeOutputData(newUST2$US_IR, USFileName("Incident_Rate"))
-  writeOutputData(newUST2$US_TR, USFileName("Testing_Rate"))
-  
+
+  newUST2 <- rebuildUSDataFilesForTypes(newST, traceThisRoutine = TRUE, prepend = "")
 }
