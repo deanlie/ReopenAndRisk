@@ -1,4 +1,3 @@
-
 library(tidyverse)
 library(lubridate)
 library(stringi)
@@ -166,27 +165,27 @@ updatePopulationEstimateData <- function(dailyStateData,
   # estimate 1 and estimate the population of all items as
   # 100000 * Total_Test_Results / Testing_Rate.
 
-  myPrepend = paste("  ", prepend, sep = "")  
+  myPrepend = paste("  ", prepend, sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered updatePopulationEstimateData\n")
   }
-  
+
   # daily data file passed in dailyStateData
   newPopulationTibble <- dailyStateData %>%
     filter(!str_detect(Province_State, "Princess")) %>%
     mutate(Combined_Key = paste(Province_State, ", US", sep=""),
            Population = as.integer(100000 * Total_Test_Results / Testing_Rate),
            .keep = "none")
-  
+
   newUSPopTibble <- newPopulationTibble %>%
     summarise(Combined_Key = "US", across(.cols = "Population", sumIgnoreNA))
-  
+
   newData <- bind_rows(newUSPopTibble, newPopulationTibble)
-  
+
   # Save new population estimate file
-  
+
   write_csv(newData, "./DATA/US_State_Population_Est.csv")
-  
+
   if (traceThisRoutine) {
     cxn <- file("./DEVELOPMENT/fileWriteLog.txt", "a")
     cat(file = cxn,

@@ -307,12 +307,6 @@ testFileReconstruction <- function() {
                                                          traceThisRoutine = TRUE,
                                                          prepend = "")
   
-  # problemFileBaseList = c("US_Confirmed",
-  #                         "US_Deaths",
-  #                         "US_Case_Fatality_Ratio",
-  #                         "US_State_Case_Fatality_Ratio",
-  #                         "US_Incident_Rate",
-  #                         "US_State_Incident_Rate")
   if (length(fileBaseList2) > 0) {
     fileBaseList3 <- evaluateFileListResultsAcrossProjects(fileBaseList2,
                                                            sourceDir,
