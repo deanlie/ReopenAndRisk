@@ -19,6 +19,7 @@ DATA/STATIC2
 DATA/STATIC3
 DATA/STATIC/*.numbers
 tests/shinytest/*-current/
+tests/shinytest/updateTables*
 DEVELOPMENT/scratchPaper.txt
 DEVELOPMENT/Tests20210728.R
 DEVELOPMENT/TODO_updateStateDataFiles.R
