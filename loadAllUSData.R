@@ -774,7 +774,7 @@ loadAllUSData <- function(staticDataQ = FALSE, traceThisRoutine = FALSE, prepend
   }
   
   updateAllDataAsNecessary(staticDataQ,
-                           traceThisRoutine = TRUE, # OUCH
+                           traceThisRoutine = FALSE,
                            prepend = myPrepend)
 
   loadUSVaccinationData(staticDataQ = staticDataQ,
