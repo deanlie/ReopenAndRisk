@@ -296,7 +296,23 @@ evaluateFileListResultsAcrossProjects <- function(fileBaseList,
 testFileReconstruction <- function() {
   sourceDir <- "../RefactorAndRisk/DATA/"
   referenceDir <- "../ReopenAndRisk/DATA/"
+
+  problemFileBaseList = c("US_State_Case_Fatality_Ratio",
+                          "US_State_Incident_Rate",
+                          "US_State_Testing_Rate",
+                          "US_State_Total_Test_Results")
   
+  # evaluateFileListResultsAcrossProjects(problemFileBaseList,
+  #                                       sourceDir,
+  #                                       referenceDir,
+  #                                       doFilter = TRUE,
+  #                                       maxNFails = 5,
+  #                                       traceEachFile = FALSE,
+  #                                       traceThisRoutine = TRUE,
+  #                                       prepend = "")
+  # 
+  # return()
+
   fileBaseList1 <- dataFileBaseNames()
   fileBaseList2 <- evaluateFileListResultsAcrossProjects(fileBaseList1,
                                                          sourceDir,
