@@ -10,9 +10,11 @@ source("mostRecentDataDate.R")
 source("dataIsCurrent.R")
 source("columnUtilities.R")
 source("URLFunctions.R")
+source("verifyFileListLatestUpdates.R")
 
 # Get (at maximum) latest 60 columns available in data download
 deriveRecentUSDataFromCountyLevelData <- function(rawData,
+                                                  nDays = 60,
                                                   traceThisRoutine = FALSE,
                                                   prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")  
@@ -20,14 +22,14 @@ deriveRecentUSDataFromCountyLevelData <- function(rawData,
     cat(file = stderr(), prepend, "Entered deriveRecentUSDataFromCountyLevelData\n")
   }
 
-  aDay <- today("EST") - 60
+  aDay <- today("EST") - nDays
   aDateString <- paste(month(aDay), day(aDay), (year(aDay) - 2000), sep="/")
   # indexVector is all FALSE except TRUE for i such that names(rawData)[i] == aDateString
   indexVector <- str_detect(names(rawData), aDateString)
   # ... so names(rawData)[theIndex] == aDateString
   theIndex <- (1:length(indexVector))[indexVector]
   if (is.na(theIndex)) {
-    theIndex <- 60 # as of 2020-11-22, this came out to 257
+    theIndex <- nDays # as of 2020-11-22, this came out to 257
   }
   
   countyData <- rawData %>%
@@ -35,7 +37,7 @@ deriveRecentUSDataFromCountyLevelData <- function(rawData,
     select(Admin2,
            Province_State,
            Combined_Key,
-           all_of(theIndex):last_col())
+           all_of(theIndex:last_col()))
   
   stateData <- countyData %>%
     group_by(Province_State) %>%
@@ -52,11 +54,17 @@ deriveRecentUSDataFromCountyLevelData <- function(rawData,
 updateDataForUSTimeSeriesType <- function(aType, traceThisRoutine = FALSE, prepend = "") {
     
   # Local function! Haven't seen those since Pascal!
-  tryWrite <- function(aTibble, aPath) {
+  tryWrite <- function(aTibble, aPath, logThisWrite = FALSE) {
     w1 <- try(write_csv(aTibble, aPath))
     if (class(w1)[1] == "try-error") {
       print(paste("Write to ", aPath, " failed!", sep=""))
       print(paste("   ", attributes(w1)["condition"]))
+    } else {
+      if (logThisWrite) {
+        cat(file = cxn,
+            "Wrote", aPath,
+            "in updateDataForUSTimeSeriesType:tryWrite\n")
+      }
     }
   }
   
@@ -69,14 +77,17 @@ updateDataForUSTimeSeriesType <- function(aType, traceThisRoutine = FALSE, prepe
   lcType <- stri_trans_tolower(aType)
 
   if (traceThisRoutine) {
-    cat(file = stderr(), paste("rawDataURL = ", TS_URL(lcType, "US"), sep=""), "\n")
+    cat(file = stderr(), myPrepend, paste("rawDataURL = ", TS_URL(lcType, "US"), sep=""), "\n")
   }
 
   if (aType %in% c("Confirmed", "Deaths", "Recovered")) {  
     rawData <- read_csv(TS_URL(lcType, "US"),
                         col_types = TSColTypes())
 
-    threeTibbles <- deriveRecentUSDataFromCountyLevelData(rawData)
+    threeTibbles <- deriveRecentUSDataFromCountyLevelData(rawData,
+                                                          nDays = 60,
+                                                          traceThisRoutine = traceThisRoutine,
+                                                          prepend = myPrepend)
 
     theDataDir <- "./DATA/"
     US_data_path <- paste(theDataDir, "US_", aType, ".csv", sep="")
@@ -84,9 +95,15 @@ updateDataForUSTimeSeriesType <- function(aType, traceThisRoutine = FALSE, prepe
     US_county_data_path <- paste(theDataDir, "US_County_", aType, ".csv", sep="")
     
     if (file.access(theDataDir, mode = 2) == 0) {
-      tryWrite(threeTibbles$US, US_data_path)
-      tryWrite(threeTibbles$States, US_state_data_path)
-      tryWrite(threeTibbles$Counties, US_county_data_path)
+      if (traceThisRoutine) {
+        cxn <- file("./DEVELOPMENT/fileWriteLog.txt", "a")
+      }
+      tryWrite(threeTibbles$US, US_data_path, logThisWrite = traceThisRoutine)
+      tryWrite(threeTibbles$States, US_state_data_path, logThisWrite = traceThisRoutine)
+      tryWrite(threeTibbles$Counties, US_county_data_path, logThisWrite = traceThisRoutine)
+      if (traceThisRoutine) {
+        close(cxn)
+      }
     } else {
       print(paste("No write access to ", theDataDir, sep=""))
     }
@@ -97,7 +114,8 @@ updateDataForUSTimeSeriesType <- function(aType, traceThisRoutine = FALSE, prepe
   options(show.error.messages = TRUE)
 }
 
-updateDataFilesForUSTimeSeriesTypeIfNeeded <- function(aType,
+updateDataFilesForUSTimeSeriesTypeIfNeeded <- function(staticDataQ,
+                                                       aType,
                                                        traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste("  ", prepend, sep = "")  
   if (traceThisRoutine) {
@@ -105,6 +123,11 @@ updateDataFilesForUSTimeSeriesTypeIfNeeded <- function(aType,
     cat(file = stderr(), myPrepend, "aType is", aType, "\n")
   }
 
+  if(staticDataQ) {
+    desiredLatestDateSlashes <- "11/24/21"
+  } else {
+    desiredLatestDateSlashes <- expectedLatestUpdateDataDateSlashes()
+  }
   desiredLatestDateSlashes <- expectedLatestUpdateDataDateSlashes()
   
   # If ./DATA/US_Confirmed.csv has yesterday's date as its last column name,
@@ -145,6 +168,9 @@ updateDataFilesForUSTimeSeriesTypeIfNeeded <- function(aType,
   }
 }
 
+# Get vaccination data for one day from EITHER
+# the big TS file OR the daily update file;
+# Make US data as summary of state data
 allGeogVaccDataFromOneDay <- function(rawData,
                                       traceThisRoutine = FALSE, prepend = "") {
   myPrepend = paste("  ", prepend, sep = "")
@@ -234,11 +260,17 @@ gatheredVaccDataByGeography <- function(traceThisRoutine = FALSE, prepend = "") 
 
 saveTwoVaccinationDataFiles <- function(theData, traceThisRoutine = FALSE, prepend = "") {
   # Local function! Haven't seen those since Pascal!
-  tryWrite <- function(aTibble, aPath) {
+  tryWrite <- function(aTibble, aPath, logThisWrite = FALSE) {
     w1 <- try(write_csv(aTibble, aPath))
     if (class(w1)[1] == "try-error") {
       print(paste("Write to ", aPath, " failed!", sep=""))
       print(paste("   ", attributes(w1)["condition"]))
+    } else {
+      if (logThisWrite) {
+        cat(file = cxn,
+            "Wrote", aPath,
+            "in saveTwoVaccinationDataFiles:tryWrite\n")
+      }
     }
   }
   
@@ -258,12 +290,14 @@ saveTwoVaccinationDataFiles <- function(theData, traceThisRoutine = FALSE, prepe
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "US file   ", US_file_name, "\n")
     cat(file = stderr(), myPrepend, "State file", US_State_file_name, "\n")
+    cxn <- file("./DEVELOPMENT/fileWriteLog.txt", "a")
   }
   
-  tryWrite(US_Data, US_file_name)
-  tryWrite(State_Data, US_State_file_name)
+  tryWrite(US_Data, US_file_name, logThisWrite = traceThisRoutine)
+  tryWrite(State_Data, US_State_file_name, logThisWrite = traceThisRoutine)
 
   if (traceThisRoutine) {
+    close(cxn)
     cat(file = stderr(), prepend, "Leaving saveTwoVaccinationDataFiles\n")
   }
 }
@@ -413,32 +447,54 @@ updateDataForUSVaccTimeSeries <- function(traceThisRoutine = FALSE,
   if (traceThisRoutine) {
     cat(file = stderr(), myPrepend, "Writing updated files!\n")
   }
+  
   write_csv(buildUSData, "./DATA/US_Vaccinations.csv")
   write_csv(buildStateData, "./DATA/US_State_Vaccinations.csv")
   
   if (traceThisRoutine) {
+    cxn <- file("./DEVELOPMENT/fileWriteLog.txt", "a")
+    cat(file = cxn,
+        "Wrote ./DATA/US_Vaccinations.csv",
+        "in updateDataForUSVaccTimeSeries\n")
+    cat(file = cxn,
+        "Wrote ./DATA/US_State_Vaccinations.csv",
+        "in updateDataForUSVaccTimeSeries\n")
+    close(cxn)
     cat(file = stderr(), prepend, "Leaving updateDataForUSVaccTimeSeries\n")
   }
 }
 
-updateDataFilesForUSVaccTimeSeriesIfNeeded <- function(traceThisRoutine = FALSE, prepend = "") {
+updateDataFilesForUSVaccTimeSeriesIfNeeded <- function(staticDataQ = FALSE,
+                                                       traceThisRoutine = FALSE, prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered updateDataFilesForUSVaccTimeSeriesIfNeeded\n")
   }
-  desiredLatestDateSlashes <- expectedLatestUpdateDataDateSlashes(UT_UpdateHour = 13)
-  US_data_path <- paste("./DATA/", "US_Vaccinations.csv", sep="")
+  if(staticDataQ) {
+    desiredLatestDateSlashes <- "11/24/21"
+    dataDir <- "./DATA/STATIC/"
+  } else {
+    desiredLatestDateSlashes <- expectedLatestUpdateDataDateSlashes(UT_UpdateHour = 13)
+    dataDir <- "./DATA/"
+  }
+  
+  if (traceThisRoutine) {
+    cat(file = stderr(), myPrepend, "desiredLatestDateSlashes =", desiredLatestDateSlashes, "\n")
+  }
+  US_data_path <- paste(dataDir, "US_Vaccinations.csv", sep="")
+  
   US_data <- try(read_csv(US_data_path,
                           col_types = vaccColTypes()))
   if (class(US_data)[1] == "try-error") {
     if (traceThisRoutine) {
-      cat(file = stderr(), myPrepend, "./DATA/US_Vaccinations.csv not read\n")
+      cat(file = stderr(), myPrepend, US_data_path, "not read\n")
     }
     # We couldn't read the file! Creating it gets us all the data we can find.
+    # OUCH pass staticDataQ  and desiredLatestDateSlashes here
     makeInitialVaccDataFiles(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
   } else {
     if (traceThisRoutine) {
-      cat(file = stderr(), myPrepend, "./DATA/US_Vaccinations.csv was read\n")
+      cat(file = stderr(), myPrepend, US_data_path, "was read\n")
     }
     # The file exists. is it up to date?
     if (names(US_data)[dim(US_data)[2]] == desiredLatestDateSlashes) {
@@ -452,8 +508,9 @@ updateDataFilesForUSVaccTimeSeriesIfNeeded <- function(traceThisRoutine = FALSE,
         cat(file=stderr(), myPrepend, "desiredLatestDateSlashes:", desiredLatestDateSlashes, "\n")
       }
       # It's not up to date. Is newer data available?
-      if (url.exists(VaccTimeline_URL()) && url.exists(peopleVacc_URL())) {
+      if (url.exists(Vacc_TS_URL()) && url.exists(peopleVacc_URL())) {
         # Better create all data files!
+        # OUCH pass staticDataQ  and desiredLatestDateSlashes here
         updateDataForUSVaccTimeSeries(traceThisRoutine = traceThisRoutine, prepend = myPrepend)
       } else {
         if (traceThisRoutine) {
@@ -469,7 +526,9 @@ updateDataFilesForUSVaccTimeSeriesIfNeeded <- function(traceThisRoutine = FALSE,
   }
 }
 
-updateTimeSeriesDataFilesAsNecessary <- function(traceThisRoutine = FALSE, prepend = "") {
+updateTimeSeriesDataFilesAsNecessary <- function(staticDataQ = FALSE,
+                                                 traceThisRoutine = FALSE,
+                                                 prepend = "") {
   myPrepend <- paste(prepend, "  ", sep = "")
 
   # Key point for tracing vaccination data update!
@@ -478,13 +537,37 @@ updateTimeSeriesDataFilesAsNecessary <- function(traceThisRoutine = FALSE, prepe
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Entered updateTimeSeriesDataFilesAsNecessary\n")
   }
+  
+  confirmedAndDeathsFiles <- c("US_Confirmed.csv",
+                               "US_State_Confirmed.csv",
+                               "US_County_Confirmed.csv",
+                               "US_Deaths.csv",
+                               "US_State_Deaths.csv",
+                               "US_County_Deaths.csv")
 
-  for (aType in c("Confirmed", "Deaths")) {
-    updateDataFilesForUSTimeSeriesTypeIfNeeded(aType, traceThisRoutine = traceThisRoutine, prepend = myPrepend)
+  if(staticDataQ) {
+    desiredLatestDate <- mdy("11/24/21")
+    dataDir <- "./DATA/STATIC/"
+  } else {
+    desiredLatestDate <- expectedLatestUpdateDataDate()
+    dataDir <- "./DATA/"
   }
   
-  updateDataFilesForUSVaccTimeSeriesIfNeeded(traceThisRoutine = traceThisRoutine,
-                                             prepend = myPrepend)
+  mismatches <- verifyFileListLatestUpdates(confirmedAndDeathsFiles,
+                                            desiredLatestDate,
+                                            dataDir,
+                                            traceThisRoutine = traceThisRoutine,
+                                            prepend = myPrepend)
+  
+  if (dim(mismatches)[1] > 0) {
+    for (aType in c("Confirmed", "Deaths")) {
+      updateDataFilesForUSTimeSeriesTypeIfNeeded(staticDataQ,
+                                                 aType,
+                                                 traceThisRoutine = traceThisRoutine,
+                                                 prepend = myPrepend)
+    }
+  }
+
   if (traceThisRoutine) {
     cat(file = stderr(), prepend, "Leaving updateTimeSeriesDataFilesAsNecessary\n")
   }

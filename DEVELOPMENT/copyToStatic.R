@@ -1,9 +1,14 @@
+# Update for clean as you go branch
+
+library(tidyverse)
+library(lubridate)
+
 inputDirectory <- function() {
   "./DATA/" # "DATA/"
 }
 
 outputDirectory <- function() {
-  "./DATA/STATIC2/" # "./DATA/STATIC/"
+  "./DATA/STATIC3/" # "./DATA/STATIC/"
 }
 
 inputPath <- function(aFileName) {
@@ -116,8 +121,8 @@ processUSFile <- function(aType) {
   inputData <- getInputData(USFileName(aType))
   
   outputData <- discardDataOutsideDateRangeFromATibble(inputData, 
-                                                       mdy("08/12/2021"),
-                                                       mdy("09/20/2021"),
+                                                       mdy("11/08/21"),
+                                                       mdy("11/23/2021"),
                                                        traceThisRoutine = TRUE)
   writeOutputData(outputData, USFileName(aType))
 }
@@ -126,17 +131,15 @@ processStateFile <- function(aType) {
   inputData <- getInputData(StateFileName(aType))
   
   dateLimitedData <- discardDataOutsideDateRangeFromATibble(inputData, 
-                                                            mdy("08/12/2021"),
-                                                            mdy("09/20/2021"),
+                                                            mdy("11/08/21"),
+                                                            mdy("11/23/2021"),
                                                             traceThisRoutine = TRUE)
   outputData <- filter(dateLimitedData,
                        (Combined_Key == "Alabama, US") |
-                         (Combined_Key == "Louisiana, US") |
-                         (Combined_Key == "Puerto Rico, US") |
-                         (Combined_Key == "Massachusetts, US") |
-                         (Combined_Key == "Maine, US") |
-                         (Combined_Key == "Florida, US") |
-                         (Combined_Key == "Texas, US"))
+                         (Combined_Key == "Delaware, US") |
+                         (Combined_Key == "Hawaii, US") |
+                         (Combined_Key == "Ohio, US") |
+                         (Combined_Key == "West Virginia, US"))
 
   writeOutputData(outputData, StateFileName(aType))
 }
@@ -145,27 +148,24 @@ processCountyFile <- function(aType) {
   inputData <- getInputData(CountyFileName(aType))
   
   dateLimitedData <- discardDataOutsideDateRangeFromATibble(inputData, 
-                                                       mdy("08/12/2021"),
-                                                       mdy("09/20/2021"),
+                                                       mdy("11/08/2021"),
+                                                       mdy("11/23/2021"),
                                                        traceThisRoutine = TRUE)
   outputData <- filter(dateLimitedData,
                        (Combined_Key == "Autauga, Alabama, US") |
-                         (Combined_Key == "Natchitoches, Louisiana, US") |
-                         (Combined_Key == "Plaquemines, Louisiana, US") |
-                         (Combined_Key == "Arecibo, Puerto Rico, US") |
-                         (Combined_Key == "Barceloneta, Puerto Rico, US") |
-                         (Combined_Key == "Barnstable, Massachusetts, US") |
-                         (Combined_Key == "Berkshire, Massachusetts, US") |
-                         (Combined_Key == "Dukes, Massachusetts, US") |
-                         (Combined_Key == "Middlesex, Massachusetts, US") |
-                         (Combined_Key == "Nantucket, Massachusetts, US") |
-                         (Combined_Key == "Suffolk, Massachusetts, US") |
-                         (Combined_Key == "Worcester, Massachusetts, US") |
-                         (Combined_Key == "Penobscot, Maine, US") |
-                         (Combined_Key == "Broward, Florida, US") |
-                         (Combined_Key == "Brazoria, Texas, US") |
-                         (Combined_Key == "Deaf Smith, Texas, US") |
-                         (Combined_Key == "Harris, Texas, US"))
+                         (Combined_Key == "Escambia, Alabama, US") |
+                         (Combined_Key == "Kent, Delaware, US") |
+                         (Combined_Key == "New Castle, Delaware, US") |
+                         (Combined_Key == "Sussex, Delaware, US") |
+                         (Combined_Key == "Honolulu, Hawaii, US") |
+                         (Combined_Key == "Kalawao, Hawaii, US") |
+                         (Combined_Key == "Maui, Hawaii, US") |
+                         (Combined_Key == "Coshocton, Ohio, US") |
+                         (Combined_Key == "Gallia, Ohio, US") |
+                         (Combined_Key == "Cuyahoga, Ohio, US") |
+                         (Combined_Key == "Greene, Ohio, US") |
+                         (Combined_Key == "Boone, West Virginia, US") |
+                         (Combined_Key == "Monongalia, West Virginia, US"))
 
   writeOutputData(outputData, CountyFileName(aType))
 }
@@ -216,13 +216,6 @@ redoUSFiles <- function() {
                Case_Fatality_Ratio = getInputData(StateFileName("Case_Fatality_Ratio")),
                Incident_Rate = getInputData(StateFileName("Incident_Rate")),
                Testing_Rate = getInputData(StateFileName("Testing_Rate")))
-#  newUST <- rebuildUSDataFilesForTypes(newST, traceThisRoutine = TRUE, prepend = "")
-  
-  newUST2 <- rebuildUSDataFilesForTypes_B(newST, traceThisRoutine = TRUE, prepend = "")
-  
-  writeOutputData(newUST2$US_TTR, USFileName("Total_Test_Results"))
-  writeOutputData(newUST2$US_CFR, USFileName("Case_Fatality_Ratio"))
-  writeOutputData(newUST2$US_IR, USFileName("Incident_Rate"))
-  writeOutputData(newUST2$US_TR, USFileName("Testing_Rate"))
-  
+
+  newUST2 <- rebuildUSDataFilesForTypes(newST, traceThisRoutine = TRUE, prepend = "")
 }

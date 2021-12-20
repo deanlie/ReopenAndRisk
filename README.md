@@ -46,11 +46,38 @@ displayed!
 Other TODO
 ----------
  * Highlight lines of data tables containing data for selected states or counties
- * Clean up DATA subdirectory; modify update routines to clean up as you go, that is,
-    delete downloaded data as soon as the needed time series files are updated.
 
 Open Branches
 -------------
+
+CleanDataDirAsYouGo
+ * Set up a test of updating:
+    1. Save current setup
+    2. Update
+    3. Get set of results sufficient for comparison:
+      for each output file
+        select range of output columns (just last few)
+        filter out just a few rows (e.g. those in static set)
+    4. Refactor-wise, make the update limited in date; test as you go
+ * Redo static data with spaces in combined keys
+ * Clean up DATA subdirectory; modify update routines to clean up as you go, that is,
+    delete downloaded data as soon as the needed time series files are updated.
+
+    1. Add tracing to show when anything is downloaded
+      a. Find includes of RCurl
+      b. Find uses of all routines returning a URL
+      c. Put 'em in a single module (URLFunctions.R will do)
+      c. Put in tracing
+      
+    2. Create tests to update by one day; verify that updates are
+        only called once.
+        NOTE that DATA/STATIC is under version control AS ARE TESTS
+        so I can have a separate set of tests and test data for this
+        branch! Tests which display the updated, non-averaged, data
+        arr all I need as regression tests.
+    3. Create tests to update by two days; verify that they work
+    4. Implement cleanups
+    5. Test to ensure that nothing is left over
 
 Closed branches:
 ----------------
