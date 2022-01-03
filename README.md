@@ -17,6 +17,9 @@ Updated, Redeployed Dec 7, 2021 not to save the downloaded TS_VACC data file
 
 Bugs
 ----
+ * 2022-01-02: Graphs have Jan 1 on left, I imagine the rest of 2022 in the following columns
+ * 2022-01-02: see routine cleanmmdd2021Vector, which has hardcoded "2021"
+
  * 2021-10-24: I just noticed that static data for Puerto Rico in US_State_People_Tested is NA for Sept 18, and less on Sept 17 than Sept 16. This causes problems for overall US test positivity computations and messes up the graphs for state test positivity.
  * 2021-10-21: Routine assembleDirectBoxPlot_B, an attempt to refactor
   assembleDirectBoxPlot, failed when called from doTotalCaseTab.R. It gave

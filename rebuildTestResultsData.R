@@ -236,6 +236,7 @@ checkComputableForDateRange <- function(startDateString, stopDateString, MaxErro
 }
   
 rebuildTotalTestResultsFile <- function(traceThisRoutine = FALSE, prepend = "") {
+  traceThisRoutine <- TRUE # OUCH
   myPrepend = paste("  ", prepend, sep = "")
   traceFlagOnEntry <- traceThisRoutine
   if (traceFlagOnEntry) {
@@ -265,6 +266,11 @@ rebuildTotalTestResultsFile <- function(traceThisRoutine = FALSE, prepend = "") 
 
     dataFilePath <- dataPathForDate(columnDate)
     columnName <- cleanmmdd2021Vector(jhuFileDateString(columnDate))
+    if (traceThisRoutine) {
+      cat(file = stderr(), myPrepend, "columnDate ->",
+          jhuFileDateString(columnDate), "\n")
+      cat(file = stderr(), myPrepend, "cleanmmdd.. returns", columnName, "\n")
+    }
     
     newStateDataTibble <- read_csv(dataFilePath,
                               col_types = dataFileColTypes()) %>%
