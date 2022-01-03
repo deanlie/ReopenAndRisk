@@ -133,10 +133,15 @@ computePlotDataFromFrame <- function(aFrame,
   dateLabels <- NULL
   
   for (i in 2:dim(trendFrame)[2]) {
-    aSortableDate <- format(prevDate + i - 1, "%m/%d")
+    thatDate      <- prevDate + i - 1
+    aSortableDate <- format(thatDate, "%y/%m/%d")
     dateCol       <- c(dateCol,  rep(aSortableDate, dim(trendFrame)[1]))
-    aDateLabel    <- str_replace(format(mdy(paste(aSortableDate,"/20", sep="")), "%b %d"),
-                                 " 0", " ")
+    aDateLabel    <- str_replace(format(thatDate, "%b %d"), " 0", " ")
+    if (traceThisRoutine) {
+      cat(file = stderr(), myPrepend,
+          "aSortableDate =", aSortableDate,
+          "aDateLabel =", aDateLabel, "\n")
+    }
     dateLabels    <- c(dateLabels, aDateLabel)
     indexCol      <- c(indexCol, rep(i, dim(trendFrame)[1]))
     forYCol       <- as_vector(aFrame[,i])
