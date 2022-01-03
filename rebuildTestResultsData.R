@@ -18,12 +18,12 @@ dataPathForDate <- function(aDate) {
         sep = "")
 }
 
-cleanmmdd2021Vector <- function(aVector) {
+cleanmmdd202xVector <- function(aVector) {
   res <- rep(NA, times=length(aVector))
   for (i in 1:length(aVector)) {
-    matches <- str_match(aVector[i], "^0?([1-9][0-9]?)-0?([1-9][0-9]?)-2021")
-    if (length(matches) == 3) {
-      res[i] <- paste(matches[2], "/", matches[3], "/2021", sep="")
+    matches <- str_match(aVector[i], "^0?([1-9][0-9]?)-0?([1-9][0-9]?)-(202[0-9])")
+    if (length(matches) == 4) {
+      res[i] <- paste(matches[2], "/", matches[3], "/", matches[4], sep="")
     }
   }
   res
@@ -31,7 +31,7 @@ cleanmmdd2021Vector <- function(aVector) {
 
 testcleanmm_int <- function(aDate) {
   dirtyDate <- jhuFileDateString(aDate)
-  cleanDate <- cleanmmdd2021Vector(dirtyDate)
+  cleanDate <- cleanmmdd202xVector(dirtyDate)
   print(paste("dirtyDate: ", dirtyDate, ", cleanDate: ", cleanDate))
 }
 
@@ -40,6 +40,9 @@ testCleanmm_etc <- function() {
   testcleanmm_int(as.Date("2021-04-01"))
   testcleanmm_int(as.Date("2021-09-30"))
   testcleanmm_int(as.Date("2021-10-01"))
+  testcleanmm_int(as.Date("2022-01-01"))
+  testcleanmm_int(as.Date("2020-03-31"))
+  testcleanmm_int(as.Date("2029-09-30"))
 }
 
 sumIgnoreNA <- function(x) {
@@ -265,7 +268,7 @@ rebuildTotalTestResultsFile <- function(traceThisRoutine = FALSE, prepend = "") 
     }
 
     dataFilePath <- dataPathForDate(columnDate)
-    columnName <- cleanmmdd2021Vector(jhuFileDateString(columnDate))
+    columnName <- cleanmmdd202xVector(jhuFileDateString(columnDate))
     if (traceThisRoutine) {
       cat(file = stderr(), myPrepend, "columnDate ->",
           jhuFileDateString(columnDate), "\n")
