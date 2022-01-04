@@ -86,7 +86,7 @@ FixNewYearBugs
 > 1. DONE: Data for the new year is displayed to the right of December data
       for the old year.
 > 2. DONE: Removed hardcoded "2021" in routine cleanmmdd2021Vector; renamed
-      that routine to cleanmmdd20xVector.
+      that routine to cleanmmdd202xVector.
 
 FixTestingDataComputations
 
